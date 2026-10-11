@@ -405,7 +405,7 @@ export async function renderPodcastBatch(file, {delivery = false, review = false
       } catch (error) { state.status = 'failed'; state.error = error.message; await saveBatch(file, batch); throw error; }
     }
     return {ok: true, batch: file, status: 'rendered', mode: delivery ? 'delivery' : review ? 'review' : 'preview', clips: results,
-      next: delivery ? 'Probe, watch and listen to every result; then copy approved exports and run scripts/publish-pack.mjs for each clip using reviewed platform copy. Nothing was posted.' : 'Review each actual video in the live editor; previews are not delivery approval.'};
+      next: delivery ? 'Probe, watch and listen to every result; then copy approved exports and write the post description of each clip with the social-captions skill (.claude/skills/social-captions/SKILL.md; Codex: .agents/skills/social-captions/SKILL.md), which runs scripts/caption-check.mjs and scripts/publish-pack.mjs. Nothing was posted.' : 'Review each actual video in the live editor; previews are not delivery approval.'};
   });
 }
 

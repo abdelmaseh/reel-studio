@@ -80,23 +80,4 @@ The render refuses a delivery whose ending, safe zones, face check, motion or In
 
 ## 7. Publish pack
 
-First run `node scripts/profile.mjs writing --project <slug>`. Follow this video's resolved guide, including per-video overrides. `short`: maximum 450 characters, clear hook and one useful point; `educational`: useful explanation or practical points; `storytelling`: a short factual narrative. Keep platforms distinct. Changing defaults later must not silently change an already planned video's writing style.
-
-Use the platforms printed by `writing` (the current PROFILE.json platform selection). Include a comment keyword only if its printed project CTA is non-null. A saved keyword does not override a video's `--no-cta`.
-
-Write `Projects/<slug>/publish-copy.json`:
-
-```json
-{"title": "<hook>",
- "tiktok": {"caption": "<hook and benefit in the resolved writing style; keyword only when CTA is on>", "hashtags": ["#<topic>", "#<topic>"]},
- "instagram": {"caption": "<distinct useful context in the same writing style; CTA only when on>", "hashtags": ["#<topic>"]},
- "notes": ["<what the copy deliberately does not promise>"]}
-```
-
-Include only the platforms in `PROFILE.json`, put the main topic in the first line, keep every claim true to the video, and use 1 to 5 specific hashtags. Then run
-
-```
-node scripts/publish-pack.mjs --project <slug> --video Outputs/<slug>/<slug>.mp4
-```
-
-and show both captions to the creator.
+Write the post description with the `social-captions` skill (`.claude/skills/social-captions/SKILL.md`; Codex: `.agents/skills/social-captions/SKILL.md`). It is the only guide for `publish-copy.json`, its dialect, `scripts/caption-check.mjs` and `scripts/publish-pack.mjs`. The on-screen captions in the steps above are a different thing.

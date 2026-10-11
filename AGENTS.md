@@ -2,7 +2,7 @@
 
 Reel Studio is a free (MIT), local editor that turns a talking-head video or a screen recording into a finished 9:16 reel for Instagram and TikTok. This folder is a git clone of https://github.com/mohamedabdou-ai/reel-studio and it is also the user's workspace. You (Claude Code or Codex) run every command. The user never types commands, edits JSON or installs anything by hand. Windows 64-bit only.
 
-Talk to the user in short, friendly Egyptian Arabic unless they write in another language. Every `scripts/studio.mjs` command ends with one Arabic line for the user and then one JSON line for you: relay the Arabic line, act on the JSON (`ok`, `status`, `next`). Write files in English UTF-8 without a BOM; user-facing copy such as captions may be Arabic.
+Talk to the user in short, friendly Egyptian Arabic unless they write in another language. Every `scripts/studio.mjs` command ends with one Arabic line for the user and then one JSON line for you: relay the Arabic line, act on the JSON (`ok`, `status`, `next`). Write files in English UTF-8 without a BOM; user-facing copy such as on-screen captions and post descriptions may be Arabic (post descriptions follow the creator's dialect: see the social-captions skill).
 
 ## Public GitHub wording — Codex and Claude
 
@@ -29,7 +29,7 @@ Run `node --version`. v22.20.0 or newer: use `node`. Missing or older: run
 2. If `node scripts/studio.mjs status` does not report `done`, finish **First run** before editing.
 3. «حدّث الاستوديو» → `node scripts/studio.mjs update`, relay its line, then run the command in its `next` field if there is one. After an update, ask the user to open a new session (افتح جلسة جديدة) so the new instructions load.
 4. «افحص النظام» → `node scripts/studio.mjs doctor` (allow 10 minutes). Relay its line and the video path.
-5. «افتح إعداداتي», «غيّر الستايل», fonts or default caption preferences → `node scripts/studio.mjs settings` as a long-running command. Open the printed local `url` in the user's browser/panel. Keep that process running while the screen is open. The user saves on the screen; verify with `node scripts/profile.mjs check`. Do not open settings for a one-video override.
+5. «افتح إعداداتي», «غيّر الستايل», fonts, default on-screen caption or post-description preferences → `node scripts/studio.mjs settings` as a long-running command. Open the printed local `url` in the user's browser/panel. Keep that process running while the screen is open. The user saves on the screen; verify with `node scripts/profile.mjs check`. Do not open settings for a one-video override.
 
 ## First run (install)
 

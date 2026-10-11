@@ -20,7 +20,7 @@
     {"id": "captions", "label": "Caption export", "purpose": "Export reviewed word timing to SRT and ASS.", "implementationPath": "scripts/export-captions.mjs", "status": "ready", "requires": []},
     {"id": "face-check", "label": "Face check", "purpose": "Prove no graphic covers the presenter's face, move the video when one does, and ask when no face is found.", "implementationPath": "scripts/face-check.mjs", "status": "ready", "requires": ["Remotion Chromium", "BlazeFace models"]},
     {"id": "delivery-qc", "label": "Delivery checks", "purpose": "Safe zones, presenter motion, face check, plate cadence and the Instagram encode contract.", "implementationPath": "scripts/render.mjs", "status": "ready", "requires": ["ffmpeg", "ffprobe", "Remotion Chromium"]},
-    {"id": "publish-pack", "label": "Publish pack", "purpose": "TikTok and Instagram captions checked against the profile and the video's keyword.", "implementationPath": "scripts/publish-pack.mjs", "status": "ready", "requires": []},
+    {"id": "publish-pack", "label": "Publish pack", "purpose": "TikTok and Instagram post descriptions checked against the profile, the video's keyword and the spoken words.", "implementationPath": "scripts/publish-pack.mjs", "status": "ready", "requires": []},
     {"id": "transcription", "label": "Transcription", "purpose": "Local same-language transcript drafts with word timing.", "implementationPath": "engine/tools/transcribe.mjs", "status": "optional-install", "requires": ["Whisper.cpp runtime", "model download"]}
   ]
 }

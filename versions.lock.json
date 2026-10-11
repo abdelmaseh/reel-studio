@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "edition": "2.0.0",
+  "edition": "2.1.0",
   "engine": "1.0.0",
   "node": {
     "version": "22.20.0",

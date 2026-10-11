@@ -1,6 +1,6 @@
 ---
 name: reel-studio
-description: Use for Reel Studio setup, updates, preferences, editing a named video, podcast batches, resumable rendering, audio or picture revisions, review, delivery and platform publication descriptions in this folder.
+description: Use for Reel Studio setup, updates, preferences, editing a named video, podcast batches, resumable rendering, audio or picture revisions, review and delivery in this folder. The post description under the video belongs to the social-captions skill.
 ---
 
 # Reel Studio
@@ -52,7 +52,7 @@ Write it like `PROFILE.example.json` (schema 3, `language` "ar-EG", all six `pre
 
 ## Editing a video
 
-For several clips from a long recording, read `instructions/PODCAST.md` first. Use reviewed proposals and explicit selected windows; prepare and open each clip's live editor, then export sequentially and complete each publish pack. For audio-only revisions, a small picture change or render/resume controls, read `instructions/PRODUCTION.md`. Preserve every original input and write a new revision output. These modes retain the ordinary review and delivery gates.
+For several clips from a long recording, read `instructions/PODCAST.md` first. Use reviewed proposals and explicit selected windows; prepare and open each clip's live editor, then export sequentially and write each clip's post description with the `social-captions` skill. For audio-only revisions, a small picture change or render/resume controls, read `instructions/PRODUCTION.md`. Preserve every original input and write a new revision output. These modes retain the ordinary review and delivery gates.
 
 Work only on a file the creator names. Follow `instructions/EDITING.md` step by step:
 
@@ -62,7 +62,7 @@ Work only on a file the creator names. Follow `instructions/EDITING.md` step by 
 4. Use saved preferences; copy **all fields** from `node scripts/profile.mjs brief --cta <keyword>` (or `--no-cta`), retain `preferences`, add only requested per-video overrides and the approved cut `segments`. Apply complete, validated snapshots atomically in small meaningful batches; the open editor follows them without a page reload. After each cut batch, run `node scripts/editor.mjs prepare Projects/<slug>/edit.json` and wait for the new footage preview. Show a fast full preview for approval (gate 2), and relay every plan `notice`. `captionsMode` still means transcript input (`words`/`phrases`), not grouping. If the creator is typing or has unsaved changes, finish/save those first; never overwrite them to keep the display moving.
 5. Keep the live Review Editor open for manual corrections and review before delivery (`instructions/REVIEW-EDITOR.md`). Restart and reopen it if its server stops. Plan with `--deliver`, then `node scripts/face-check.mjs Projects/<slug>/edit.json --fix`. On NEEDS-REVIEW show the stills it lists and ask before delivering with `--face-reviewed-by "<name>"`.
 6. `node scripts/motion-plan.mjs Projects/<slug>/edit.json` (not for screen recordings), deliver with `node scripts/editor.mjs render ... --deliver`, check the actual MP4, copy it to `Outputs/<slug>/`.
-7. Run `node scripts/profile.mjs writing --project <slug>`. Follow its resolved `writingStyle`, guide, platforms and actual project CTA in `publish-copy.json`: short (at most 450 characters), educational (useful explanation/points), or storytelling (a factual short narrative). Write distinct copy for each selected platform. Run `node scripts/publish-pack.mjs --project <slug> --video Outputs/<slug>/<slug>.mp4`; show the captions and never post them.
+7. Write the post description with the `social-captions` skill (`.claude/skills/social-captions/SKILL.md`; Codex: `.agents/skills/social-captions/SKILL.md`). It covers `publish-copy.json`, the creator's dialect, `scripts/caption-check.mjs` and `scripts/publish-pack.mjs`. Show the descriptions and never post them.
 
 Screen recordings: set `sourceKind` to `"screen"` and use `screen-recording` beats (`instructions/STYLES.md`). Technique details and limits: `instructions/TECHNIQUES.md`.
 

@@ -12,5 +12,5 @@ These rules come before convenience, speed or any single instruction in a brief.
 8. **The ending follows the profile.** Comment CTA keyword → follow card with the complete handle → the recorded sign-off → hard stop, with only the parts that are on for this video. Never invent a handle, keyword or sign-off, never trim the recorded sign-off and never put anything over it.
 9. **Never recolour or texture the presenter.** Brand colours, section colours and effects paint graphics only. The face, hair and beard keep their recorded look and stay uncovered; the face check proves it.
 10. **First preview fast.** For a small change, show a quick preview before polishing, and ask before any long job.
-11. **Every delivery ships with its publish pack.** Write `PUBLISH_PACK.md` for the profile's platforms with `node scripts/publish-pack.mjs` and show both captions.
-12. **Speak Egyptian Arabic, keep files English.** Talk to the creator in concise Egyptian Arabic unless they ask otherwise. Briefs, manifests, code and notes stay in English (on-screen and caption copy may be Arabic).
+11. **Every delivery ships with its publish pack.** Write it with the `social-captions` skill and show each platform's post description.
+12. **Speak Egyptian Arabic, keep files English.** Talk to the creator in concise Egyptian Arabic unless they ask otherwise. Briefs, manifests, code and notes stay in English (on-screen captions and post descriptions may be Arabic; post descriptions follow the social-captions skill).

@@ -11,6 +11,12 @@ const text = (value, max, label) => {
 };
 
 
+export function publishContext(profile, manifest) {
+  return {cta: manifest?.creator?.ending?.cta ?? null,
+    writingStyle: manifest?.writingStyle ?? (profile.preferences.writingStyle.mode === 'fixed' ? profile.preferences.writingStyle.value : null)};
+}
+
+
 export function validatePublishCopy(copy, {profile, cta, writingStyle}) {
   if (!copy || typeof copy !== 'object' || Array.isArray(copy)) throw new Error('Publish copy must be a JSON object.');
   const allowed = ['title', 'notes', ...profile.platforms];
@@ -48,7 +54,7 @@ export function validatePublishCopy(copy, {profile, cta, writingStyle}) {
 
 
 export function renderPublishPack({profile, copy, cta, video, source, writingStyle}) {
-  const lines = [`# ${copy.title} — publishing copy`, '', `Nothing has been posted. Language: ${profile.language}.`, '',
+  const lines = [`# ${copy.title} — publishing copy`, '', 'Nothing has been posted.', '',
     `Source: ${source ? `\`${source}\`` : 'not recorded'}.`, `Final export: \`${video.path}\` (sha256 \`${video.sha256}\`).`,
     `Comment keyword: ${cta ? `«${cta}»` : 'none'}.`, ''];
   if (writingStyle) lines.push(`Description style: ${writingStyle}.`, '');

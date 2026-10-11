@@ -22,7 +22,7 @@ What the runtime can do, where it lives, and its limits. `technique-catalog.json
 - **Captions** (`scripts/export-captions.mjs`): reviewed word timing to SRT/ASS.
 - **Face check** (`scripts/face-check.mjs`): MediaPipe BlazeFace short-range and full-range models, run locally; FAIL moves the video and checks again; frames without a face need the creator's review.
 - **Delivery checks** (`scripts/render.mjs --deliver`, `scripts/motion-plan.mjs`): safe zones, presenter motion, face check, plate cadence and the Instagram encode contract.
-- **Publish pack** (`scripts/publish-pack.mjs`): TikTok and Instagram captions checked against the profile and the video's keyword.
+- **Publish pack** (`scripts/caption-check.mjs`, `scripts/publish-pack.mjs`): TikTok and Instagram post descriptions checked against the profile, the video's keyword and the spoken words, so they tease the video instead of retelling it. How to write them: the `social-captions` skill.
 - **Transcription** (`engine/tools/transcribe.mjs`): local Whisper.cpp drafts; needs its runtime and a model download on first use. Every transcript is a draft until reviewed.
 
 An executable component is not proof that a given source or style choice looks right: review rendered stills and the final file with the creator.

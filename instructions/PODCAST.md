@@ -72,4 +72,4 @@ Use the project path returned by preparation. Screen-only sources do not use pre
 
 ## 4. Complete each delivery
 
-Watch/listen to each actual output and follow its normal delivery checks. For every clip, run `profile.mjs writing --project <clip-project-id>`, write distinct faithful platform copy, then `publish-pack.mjs --project <clip-project-id> --video <returned-output>`. Copy the accepted MP4 to its `Outputs/` folder. Report individual paths and both platform captions. No external posting is implied.
+Watch/listen to each actual output and follow its normal delivery checks. For every clip, write its post description with the `social-captions` skill (project `<clip-project-id>`, video `<returned-output>`). Copy the accepted MP4 to its `Outputs/` folder. Report individual paths and each platform's post description. No external posting is implied.
