@@ -10,6 +10,8 @@ import { createJobManager, createManifestStore, HttpError } from './review-edito
 import { validateManifest } from '../../engine/src/review-editor/validate.ts';
 import { TOKEN_HEADER } from '../../engine/src/review-editor/types.ts';
 import {projectSceneBuild,resolveProjectScenes} from './project-scenes.mjs';
+import {ROOT} from './project-paths.mjs';
+import {recordStudioEvent} from './studio-stats.mjs';
 
 export { HttpError };
 
@@ -163,6 +165,7 @@ export async function createReviewServer({ manifestPath, port = 0, token = rando
   const ctx = { manifestPath: rel, token, store, jobs, projectSceneHash:built.projectSceneHash??null };
   const handlers = apiHandlers();
   let actualPort = port;
+  let usageRecorded = false;
 
   const server = http.createServer(async (req, res) => {
     try {
@@ -184,6 +187,10 @@ export async function createReviewServer({ manifestPath, port = 0, token = rando
         const body = method === 'POST' ? await readBody(req) : undefined;
         const result = await route.handler({ req, res, url, body, params: route.params, ctx });
         if (result !== undefined && !res.headersSent) sendJson(res, 200, result);
+        if (method === 'GET' && url.pathname === '/api/project' && !usageRecorded) {
+          usageRecorded = true;
+          void Promise.resolve().then(() => (deps.recordStudioEvent ?? recordStudioEvent)(ROOT, 'studio_used')).catch(() => {});
+        }
         return;
       }
       if (method !== 'GET' && method !== 'HEAD') throw new HttpError(405, 'read-only');

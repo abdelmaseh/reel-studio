@@ -15,6 +15,7 @@ import { renderBudget, freeBytes } from './lib/disk-report.mjs';
 import { VOICE_MODES, resolveRenderAudioMode } from './lib/mix-contract.mjs';
 import { plateGate, validateHeadFlags, headGatePlan, headCheckArgv, headGateResult, envelopeProblems, headBanner, installHeadEnvelope, readEnvelopeBack, headMethodConflict } from './lib/delivery-gates.mjs';
 import {renderIdentity,createRenderInputGuard,chunkProfile,chunkBudget,renderChunks,validateChunk,assembleChunks,CHUNK_POLICY,mediaContract} from './lib/render-chunks.mjs';
+import {recordStudioEvent} from './lib/studio-stats.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const comp = args._[0];
@@ -389,6 +390,7 @@ return report;
 console.log(JSON.stringify(published, null, 2));
 if (mode === 'deliver') await fs.rm(assertProjectOutput(`${finalOut}.head-check`), { recursive: true, force: true });
 if (published.head?.status === 'NEEDS-REVIEW') process.stderr.write(`\n${headBanner(published.head, published.head.directory)}\n`);
+if (comp !== 'Doctor') await recordStudioEvent(ROOT, 'studio_used');
 
 
 function ffmpeg(ffArgs) {

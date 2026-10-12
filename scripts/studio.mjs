@@ -11,6 +11,7 @@ import {checkForUpdate, pullUpdate, resolveGit} from './lib/studio-git.mjs';
 import {readLock} from './lib/studio-lock.mjs';
 import {runSetup, setupSteps} from './lib/studio-setup.mjs';
 import {LOG_FILE, STEP_IDS, describeSetup, readSetupState, workerAlive, writeSetupState} from './lib/studio-state.mjs';
+import {recordStudioEvent, flushStudioEvents} from './lib/studio-stats.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
 const CHECK_LINES = {
@@ -65,6 +66,7 @@ async function runWorker(stepIds, options = {}) {
     log,
     requiredIds: STEP_IDS,
   });
+  if (final.status === 'done' && stepIds.length === STEP_IDS.length) await recordStudioEvent(ROOT, 'installed');
   return describeSetup(final, {alive: false});
 }
 
@@ -94,6 +96,7 @@ const commands = {
   },
   async check() {
     const result = await checkForUpdate(ROOT, {gitExe: resolveGit(ROOT)});
+    await flushStudioEvents(ROOT);
     if (result.channel === 'store') return report(`إنت على نسخة المتجر ${result.current ?? '—'} ✓ — أي نسخة جديدة بتنزل كملف ZIP من حسابك في المتجر.`, result, 0);
     if (!result.ok) return report(CHECK_LINES[result.reason], result, 0);
     if (result.updateAvailable === null) return report('مش قادر أوصل لـ GitHub دلوقتي — هنكمل بالنسخة الحالية.', result, 0);
