@@ -9,6 +9,7 @@ import { renderBudget, freeBytes as diskFree } from './disk-report.mjs';
 import { ffprobeJson, summarizeProbe } from './media.mjs';
 import { editManifestSchema } from '../../engine/src/prepared-edit/schema.ts';
 import { validateManifest } from '../../engine/src/review-editor/validate.ts';
+import {resolveProjectScenes} from './project-scenes.mjs';
 import { tryCompile } from '../../engine/src/review-editor/time.ts';
 import { EDIT_HISTORY_KEEP } from '../../engine/src/review-editor/types.ts';
 import { manifestRevision } from './review-editor-revision.mjs';
@@ -117,6 +118,7 @@ export function createManifestStore({ manifestPath, isBusy = () => false, now = 
   const dirRel = historyDir(manifestPath);
 
   async function save(body) {
+    if(body?.manifest?.projectScenes)await resolveProjectScenes(body.manifest);
     const input = body?.manifest;
     if (!input || typeof input !== 'object' || Array.isArray(input)) throw new HttpError(400, 'مفيش manifest في الطلب.');
     if (Object.hasOwn(body, 'baseRevision') && !/^[a-f0-9]{64}$/.test(body.baseRevision ?? '')) {
@@ -437,8 +439,8 @@ export function createJobManager({
       const delivery = check.issues.filter((i) => i.stage === 'delivery');
       throw new HttpError(422, `مش جاهز للتصدير النهائي (${delivery.length} حاجة ناقصة): ${delivery[0]?.message ?? ''}`, { issues: delivery });
     }
-    const motionPlan = `${dir}/motion-plan.json`;
-    if (kind === 'export' && mode === 'deliver' && !(await exists(path.join(ROOT, ...motionPlan.split('/'))))) {
+    const motionPlan = manifest.presenter === false ? null : `${dir}/motion-plan.json`;
+    if (kind === 'export' && mode === 'deliver' && motionPlan && !(await exists(path.join(ROOT, ...motionPlan.split('/'))))) {
       throw new HttpError(422, `التصدير النهائي محتاج ${motionPlan} جنب الـ manifest (قياس حركة الـ presenter). مش موجود.`);
     }
     const budget = budgetFor(kind === 'prepare' ? 'prepare' : mode, manifest);
@@ -453,7 +455,7 @@ export function createJobManager({
     let output = outputFor('');
     for (let n = 2; await exists(path.join(ROOT, ...output.split('/'))); n++) output = outputFor(`-${n}`);
     await ensureOutput(output, { project: manifest.id });
-    const deliver = mode === 'deliver' ? ['--deliver', '--motion-plan', motionPlan, '--png', '--crf', String(DELIVERY_CRF)] : [];
+    const deliver = mode === 'deliver' ? ['--deliver', ...(motionPlan ? ['--motion-plan', motionPlan] : []), '--png', '--crf', String(DELIVERY_CRF)] : [];
     return { kind: mode, project: manifest.id, output, args: ['render', manifestPath, '--out', output, ...deliver] };
   }
 
