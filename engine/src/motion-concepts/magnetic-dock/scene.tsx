@@ -7,6 +7,7 @@ import {
   ConceptText,
   alpha,
   dirOf,
+  iconCornerK,
   rectStyle,
   styleShape,
   surfaceShadow,
@@ -68,7 +69,7 @@ const Scene: React.FC<{ data: MagneticDockData }> = ({ data }) => {
 
 
 
-  const iconRadiusK = theme.grammar?.card === "rounded-ui" || theme.grammar === undefined ? 0.26 : 0.08;
+  const iconRadiusK = iconCornerK(theme);
   const panelRadius = Math.round(shape.windowRadius * 1.2);
   const pillRadius = Math.round((LABEL_H * shape.pillK) / 2);
   const unlit = alpha(theme.dim, 0.4);

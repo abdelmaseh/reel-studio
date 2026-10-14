@@ -3,13 +3,12 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { ROOT, assertProjectOutput } from './project-paths.mjs';
 import { STYLE_IDS } from '../../engine/src/creative-kit/styles.ts';
+import { mixProfiles } from '../../engine/src/styles/registry.ts';
 
 const require = createRequire(import.meta.url);
 const specification = require('../../engine/src/core/platform/instagram-reels.json');
-const profiles = {
-  'section-deck': { slug: 'section-deck-split-explainer', lraMax: 2, source: 'instructions/STYLES.md#section-deck', section: 'Review the style audio range and preserve the recorded ending.' },
-  'split-canvas': { slug: 'split-canvas-pill-explainer', lraMax: 3, source: 'instructions/STYLES.md#split-canvas', section: 'Review the style audio range and preserve the recorded ending.' },
-};
+// Measured loudness-range profiles live in the styles' metas (`mix`); only styles with a reference have one.
+const profiles = mixProfiles();
 export const MIX_LRA_STABILITY_SECONDS = 60;
 export const MIX_LRA_BASIS = 'https://tech.ebu.ch/docs/tech/tech3341.pdf#page=6';
 
@@ -94,6 +93,21 @@ export function buildGraphicsMixFilterGraph({durationSec, tighten = false}) {
   if (!Number.isFinite(durationSec) || durationSec <= 0) throw new Error('Graphics mixing needs the measured video duration.');
   const effects = `[1:a:0]${STEREO_48K},apad,atrim=duration=${durationSec},asetpts=PTS-STARTPTS[mixed]`;
   return effects + (tighten ? ';[mixed]acompressor=threshold=-18dB:ratio=2.6:attack=12:release=180:makeup=2:detection=rms[mix]' : ';[mixed]anull[mix]');
+}
+
+// A measured volume correction cannot land on target when the limiter clamps peaks after it: a stem of a few short,
+// tall hits (the Grid Glide sub hits) loses more than a loudness unit to the clamp. One compensation pass is allowed,
+// after the first limiter and its delivery measurement, and only for a result that is too quiet by more than the
+// tolerance. The clamp returns about half of any gain added on top of it (measured on the Grid Glide demo stem:
+// -15.1 LUFS, +2 dB gives -14.4, +3 dB gives -13.9), so the gain is twice the shortfall, bounded.
+export const MIX_LOUDNESS_TOLERANCE_LU = 1;
+export const MIX_COMPENSATION_RATIO = 2;
+export const MIX_COMPENSATION_MAX_DB = 4;
+export function planLoudnessCompensation(delivered, options) {
+  if (!Number.isFinite(delivered?.LUFS)) return null;
+  const shortfallDb = +(options.lufs - delivered.LUFS).toFixed(2);
+  if (shortfallDb <= MIX_LOUDNESS_TOLERANCE_LU) return null;
+  return { shortfallDb, gainDb: +Math.min(shortfallDb * MIX_COMPENSATION_RATIO, MIX_COMPENSATION_MAX_DB).toFixed(2) };
 }
 
 export function assessMixDelivery(delivered, durationSec, options) {

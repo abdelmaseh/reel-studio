@@ -1,6 +1,8 @@
 import { clamp01, mix } from "./motion.ts";
 import { boxInZone, noNegZero, type Rect, type Size, type ZoneLike } from "./device-geo.ts";
 import type { StyleId } from "../creative-kit/styles";
+import { pipPolicies } from "../styles/registry.ts";
+import type { PipPolicy } from "../styles/types.ts";
 
 export type PipCorner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
 export const PIP_CORNERS: readonly PipCorner[] = ["top-left", "top-right", "bottom-left", "bottom-right"];
@@ -267,50 +269,11 @@ export const pipMorph = (from: PlateWindow, to: PlateWindow, p: number): PlateWi
 
 
 
-export type PipPolicy = { allowed: boolean; basis: "observed" | "inference"; evidence: string };
+export type { PipPolicy };
 
 
-export const PIP_POLICY: Record<StyleId, PipPolicy> = {
-  'liquid-glass':{allowed:false,basis:'inference',evidence:'Use the split presenter window; glass detail panels reserve the takeover canvas.'},
-  'campaign-tickets':{allowed:false,basis:'inference',evidence:'Use the split presenter window to keep tickets and comments clear.'},
-  'magazine-interview':{allowed:false,basis:'inference',evidence:'Use the split presenter window with speaker attribution above it.'},
-  'scrapbook-route':{allowed:false,basis:'inference',evidence:'Use the split presenter window; map stops reserve the takeover canvas.'},
-  "split-canvas": {
-    allowed: true,
-    basis: "observed",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "section-deck": {
-    allowed: false,
-    basis: "observed",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "kinetic-paper": {
-    allowed: true,
-    basis: "inference",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "calligraphic-receipts": {
-    allowed: true,
-    basis: "inference",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "paper-collage": {
-    allowed: true,
-    basis: "inference",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "judgment-board": {
-    allowed: true,
-    basis: "inference",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-  "stepped-editorial": {
-    allowed: true,
-    basis: "inference",
-    evidence: "See the style guide and review this layout with the creator.",
-  },
-};
+// Derived from engine/src/styles/<id>/meta.ts; edit a style's `pip` there.
+export const PIP_POLICY: Record<StyleId, PipPolicy> = pipPolicies();
 
 
 export const pipAllowed = (style: string): PipPolicy =>

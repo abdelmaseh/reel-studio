@@ -10,7 +10,7 @@ import {DOCTOR_DIR, describeFailures, doctorProps, quickChecks, renderDoctor} fr
 import {checkForUpdate, pullUpdate, resolveGit} from './lib/studio-git.mjs';
 import {readLock} from './lib/studio-lock.mjs';
 import {runSetup, setupSteps} from './lib/studio-setup.mjs';
-import {LOG_FILE, STEP_IDS, describeSetup, readSetupState, workerAlive, writeSetupState} from './lib/studio-state.mjs';
+import {LOG_FILE, STEP_IDS, describeSetup, readSetupState, workerAlive, workerSteps, writeSetupState} from './lib/studio-state.mjs';
 import {recordStudioEvent, flushStudioEvents} from './lib/studio-stats.mjs';
 
 const SELF = fileURLToPath(import.meta.url);
@@ -23,7 +23,7 @@ const UPDATE_LINES = {
   'local-changes': 'فيه ملفات من الاستوديو نفسه اتعدّلت هنا، فمش هحدّث عشان ما يضيعش حاجة. قولّي وأنا أراجعها معاك.',
   'pull-failed': 'التحديث ما نزلش — غالبًا مشكلة نت. جرّب تاني بعد شوية.',
 };
-const USAGE = 'Usage: node scripts/studio.mjs setup [--foreground] [--steps folders,packages,browser,ffmpeg,fonts,models] | status | settings [--port <port>] | check | update | doctor [--quick]';
+const USAGE = 'Usage: node scripts/studio.mjs setup [--foreground] [--steps folders,packages,browser,ffmpeg,fonts,models,transcription] | status | settings [--port <port>] | check | update | doctor [--quick]';
 
 function report(line, json, exitCode = json.ok === false ? 1 : 0) {
   console.log(line);
@@ -51,7 +51,7 @@ async function startSetup(stepIds, next = null) {
   } finally {
     closeSync(log);
   }
-  return {line: 'بدأت التجهيز في الخلفية — أول مرة بياخد من ١٠ لـ ٢٠ دقيقة حسب النت.', json: {ok: true, status: 'running', steps: stepIds, log: LOG_FILE, next: 'node scripts/studio.mjs status'}};
+  return {line: 'بدأت التجهيز في الخلفية — أول مرة بياخد من ١٥ لـ ٣٠ دقيقة حسب النت.', json: {ok: true, status: 'running', steps: stepIds, log: LOG_FILE, next: 'node scripts/studio.mjs status'}};
 }
 
 async function runWorker(stepIds, options = {}) {
@@ -79,7 +79,7 @@ const commands = {
     const {values} = parseArgs({args: rest, options: {worker: {type: 'boolean'}, foreground: {type: 'boolean'}, steps: {type: 'string'}}, strict: true});
     const stepIds = parseSteps(values.steps);
     if (values.worker) {
-      const {line, json} = await runWorker(stepIds);
+      const {line, json} = await runWorker(workerSteps(stepIds, await readSetupState(ROOT)));
       return report(line, json);
     }
     if (values.foreground) {

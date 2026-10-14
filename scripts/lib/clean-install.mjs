@@ -72,6 +72,10 @@ export async function seedPinnedArtifacts(cacheRoot, target, lock) {
     if (await copyVerified(at(cacheRoot, relative), at(target, relative), font.sha256)) copied.push(relative);
   }
   for (const model of lock.models) if (await copyVerified(at(cacheRoot, model.path), at(target, model.path), model.sha256)) copied.push(model.path);
+  const {runtime, model: speech, vad} = lock.transcription;
+  const whisperArchive = `state/cache/downloads/whisper-${runtime.release}-x64.zip`;
+  if (await copyVerified(at(cacheRoot, whisperArchive), at(target, whisperArchive), runtime.sha256)) copied.push(whisperArchive);
+  for (const file of [speech, vad]) if (await copyVerified(at(cacheRoot, file.path), at(target, file.path), file.sha256)) copied.push(file.path);
   const archive = `ffmpeg-${lock.ffmpeg.version}-full_build.7z`;
   for (const folder of ['state/cache/downloads', 'state/qa/downloads']) {
     if (await copyVerified(at(cacheRoot, `${folder}/${archive}`), at(target, `state/cache/downloads/${archive}`), lock.ffmpeg.sha256)) {
@@ -102,5 +106,5 @@ export function installEnvironment(root) {
   for (const key of Object.keys(env)) if (['NODE_PATH', 'NODE_OPTIONS', 'NODE_COMPILE_CACHE'].includes(key.toUpperCase())) delete env[key];
   const tmp = path.join(root, 'state', 'tmp');
   return {...env, TEMP: tmp, TMP: tmp, TMPDIR: tmp, npm_config_cache: path.join(root, 'state', 'cache', 'npm'),
-    NODE_COMPILE_CACHE: path.join(root, 'state', 'cache', 'node-compile'), GIT_TERMINAL_PROMPT: '0'};
+    NODE_COMPILE_CACHE: path.join(root, 'state', 'cache', 'node-compile'), GIT_TERMINAL_PROMPT: '0', REEL_STUDIO_STATS: 'off'};
 }

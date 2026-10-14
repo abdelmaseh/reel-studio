@@ -11,7 +11,7 @@ The README gallery features Mohamed Abdou's work made with the full editing syst
 - The podcast example comes from a batch of 30 short videos, including 10 with explanatory motion scenes.
 - The ChatGPT and Canva tutorial combines the presenter, screen steps and visual callouts.
 - The clinic workflow uses paper cards and connections to explain a customer journey.
-- The seven original motion previews and four additional rendered stills demonstrate the kit's eleven style directions. The four new stills use illustrative content and are not playback links.
+- The seven original motion previews and five additional rendered stills demonstrate the kit's twelve style directions. The five newer stills use illustrative content and are not playback links. The Grid Glide still is a frame from a synthetic demonstration (generic copy and generated screens) rendered with the studio itself.
 
 ## Published sources
 
@@ -25,4 +25,4 @@ The original product-page examples are available at https://store.pyraai.cloud/p
 | Arabic typography | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-calligraphy.mp4) |
 | Data story | [Video](https://store.pyraai.cloud/wp-content/uploads/2026/09/reel-studio-v1-loop-data-story.mp4) |
 
-The banner and start button are original artwork. `onboarding-2.0-full.jpg` shows the complete first-run screen, including navigation and controls. `settings-2.0-full.jpg` shows the complete Arabic style selection screen with all eleven choices and an illustrative brand name. Both screenshots show the real interface, are linked to their full-size originals, and contain no personal profile values. Source media, personal profiles and editing projects are not included in this gallery.
+The banner and start button are original artwork. `onboarding-2.0-full.jpg` shows the complete first-run screen, including navigation and controls. `settings-2.0-full.jpg` shows the complete Arabic style selection screen as shipped in 2.0, with the eleven choices available then and an illustrative brand name; later styles appear in the live screen. Both screenshots show the real interface, are linked to their full-size originals, and contain no personal profile values. Source media, personal profiles and editing projects are not included in this gallery.

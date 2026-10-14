@@ -1,5 +1,6 @@
 import type {CameraKey,EditManifest,SourceWord} from "./schema.ts";
 import {EASE} from "../core/motion.ts";
+import {clauseCaptionsDefault} from "../styles/registry.ts";
 
 export type MappedWord = SourceWord & {sourceIndex:number;segmentIndex:number;fromFrame:number;toFrame:number};
 export type EditIssue = {code:string;wordIndex:number;message:string};
@@ -39,7 +40,7 @@ export function compileEdit(m:EditManifest){
   words.sort((a,b)=>a.fromFrame-b.fromFrame || a.sourceIndex-b.sourceIndex);
 
 
-  const clauseCaptions=m.captions.grouping === undefined ? m.style==="section-deck" : m.captions.grouping === 'clauses';
+  const clauseCaptions=m.captions.grouping === undefined ? clauseCaptionsDefault(m.style) : m.captions.grouping === 'clauses';
   const maxWords=m.captions.grouping === 'single' ? 1 : clauseCaptions ? 9 : 4;
   const phraseCaptions=m.captions.mode==="phrases";
   const captionGroups:{fromFrame:number;toFrame:number;words:MappedWord[]}[]=[];

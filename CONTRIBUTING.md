@@ -7,12 +7,12 @@ and [AGENTS.md](AGENTS.md). This guide is for changes to the studio itself.
 
 | Path | Purpose |
 | --- | --- |
-| `instructions/` | Setup, editing, styles and delivery guides. |
+| `instructions/` | Setup, editing, styles and delivery guides. Add a style with [STYLE-AUTHORING.md](instructions/STYLE-AUTHORING.md). |
 | `.agents/skills/`, `.claude/skills/` | Assistant instructions for Codex and Claude Code. |
 | `scripts/` | Local setup, settings, editing, rendering and checks. |
 | `engine/src/` | Remotion scenes and the video runtime. |
 | `tests/` | Automated tests shipped with the studio. |
-| `Sound-Kits/` | Local sound recipes and style palettes. |
+| `Sound-Kits/` | Local sound recipes. Each style's sound palette lives in its `engine/src/styles/<id>/` folder. |
 | `third-party/` | Motion references, source snapshots and license notices. |
 | `docs/images/`, `docs/media/` | README images, examples and their sources. |
 

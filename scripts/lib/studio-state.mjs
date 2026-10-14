@@ -8,8 +8,11 @@ export const STEP_LABELS = Object.freeze({
   ffmpeg: 'بنزّل FFmpeg',
   fonts: 'بنزّل الخطوط',
   models: 'بنزّل موديلات كشف الوش',
+  transcription: 'بنزّل أداة التفريغ الصوتي (حجمها كبير)',
 });
 export const STEP_IDS = Object.freeze(Object.keys(STEP_LABELS));
+// A background worker also completes steps the requesting studio did not know: the update command starts it from the pre-update code.
+export const workerSteps = (requested, state) => STEP_IDS.filter((id) => requested.includes(id) || state.steps?.[id]?.ok !== true);
 export const STATE_FILE = 'state/setup.json';
 export const LOG_FILE = 'state/setup.log';
 export const STARTING_GRACE_MS = 60_000;
@@ -61,14 +64,15 @@ export function describeSetup(state, {alive}) {
   const label = state.step ? STEP_LABELS[state.step] ?? state.step : 'البداية';
   const done = Object.fromEntries(STEP_IDS.map((id) => [id, state.steps?.[id]?.ok === true]));
   const json = {ok: true, status: state.status, step: state.step ?? null, index, total, done, error: state.error ?? null, log: LOG_FILE, next: null};
-  if (state.status === 'done') {
+  if (state.status === 'done' && STEP_IDS.every((id) => done[id])) {
 
     const next = state.next ?? DOCTOR_NEXT;
     const line = next.endsWith('--quick') ? 'التجهيز خلص ✓ — الخطوة الجاية: الفحص السريع (doctor --quick).' : 'التجهيز خلص ✓ — الخطوة الجاية: فيديو التجربة (doctor).';
     return {line, json: {...json, next}};
   }
   if (state.status === 'failed') return {line: `التجهيز وقف عند «${label}»: ${state.error}. شغّل setup تاني وهيكمّل من مكانه.`, json: {...json, ok: false, next: 'node scripts/studio.mjs setup'}};
-  if (state.status === 'incomplete') return {line: 'خلصت الخطوات اللي اتطلبت، بس لسه فيه خطوات ناقصة — شغّل setup من غير --steps.', json: {...json, next: 'node scripts/studio.mjs setup'}};
+  // A state an older studio left done is incomplete while a newer required step is not done.
+  if (state.status === 'incomplete' || state.status === 'done') return {line: 'خلصت الخطوات اللي اتطلبت، بس لسه فيه خطوات ناقصة — شغّل setup من غير --steps.', json: {...json, status: 'incomplete', next: 'node scripts/studio.mjs setup'}};
   if (state.status === 'running' && alive) {
     const line = index ? `جاري التجهيز (${index} من ${total}): ${label}…` : 'بدأت التجهيز في الخلفية…';
     return {line, json: {...json, next: 'node scripts/studio.mjs status'}};

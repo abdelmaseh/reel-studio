@@ -13,10 +13,13 @@ import {
   type ChapterPalette,
   type ChapterThemeTokens,
 } from "./chapters.ts";
+import { brandStyles } from "../styles/registry.ts";
 
 export type BrandColors = { primary: string; accent: string; background: string | null; text: string | null };
 export type BrandStyle = "split-canvas" | "section-deck";
-export const BRAND_STYLES: readonly BrandStyle[] = ["split-canvas", "section-deck"];
+// Which styles take brand colours is declared in engine/src/styles/<id>/meta.ts (`brand: true`);
+// the colour tokens each of them needs stay below.
+export const BRAND_STYLES = brandStyles() as readonly BrandStyle[];
 
 
 
@@ -29,6 +32,11 @@ export const BRAND_STYLE_DEFAULTS: Record<BrandStyle, { ground: string; ink: str
   "split-canvas": { ground: "#F3EEE6", ink: "#1F1E1D" },
   "section-deck": { ground: "#0F1B33", ink: "#FFFFFF" },
 };
+
+for (const style of BRAND_STYLES) {
+  if (!BRAND_STYLE_BASES[style] || !BRAND_STYLE_DEFAULTS[style]) throw new Error(`core/brand: ${style} takes brand colours but has no brand tokens.`);
+}
+const BRAND_STYLE_NAMES = BRAND_STYLES.length > 1 ? `${BRAND_STYLES.slice(0, -1).join(", ")} and ${BRAND_STYLES[BRAND_STYLES.length - 1]}` : BRAND_STYLES.join("");
 
 const WHITE = "#FFFFFF";
 const BLACK = "#000000";
@@ -100,7 +108,7 @@ export type BrandableScene = { chapter?: ChapterPalette };
 
 export function applyBrandToScenes<S extends BrandableScene>(style: string, brand: BrandColors | null, scenes: readonly S[]): { brand: ChapterPalette | undefined; scenes: S[]; notices: string[] } {
   if (!brand) return { brand: undefined, scenes: [...scenes], notices: [] };
-  if (!(BRAND_STYLES as readonly string[]).includes(style)) return { brand: undefined, scenes: [...scenes], notices: [`Brand colours apply to split-canvas and section-deck; ${style} keeps its own colours.`] };
+  if (!(BRAND_STYLES as readonly string[]).includes(style)) return { brand: undefined, scenes: [...scenes], notices: [`Brand colours apply to ${BRAND_STYLE_NAMES}; ${style} keeps its own colours.`] };
   const plan = brandPalettes(style as BrandStyle, brand);
   if (!plan.palettes.length) return { brand: undefined, scenes: [...scenes], notices: plan.notices };
   const n = plan.palettes.length;

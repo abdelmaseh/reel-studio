@@ -2,6 +2,7 @@ import React from "react";
 import { Sequence, type CalculateMetadataFunction } from "remotion";
 import { SafeRoot } from "../core/safe";
 import { FlashBloom, LightLeak, Whiteout } from "../core/transitions";
+import { getGalleryCut } from "../styles/themes";
 import { getSceneTheme } from "./primitives";
 import {
   creativeGallerySchema,
@@ -62,6 +63,7 @@ export const CreativeKitGallery: React.FC<CreativeGalleryProps> = (input) => {
     [input],
   );
   const theme = getSceneTheme(props.style);
+  const galleryCut = getGalleryCut(props.style);
   return (
     <SafeRoot
       guides={props.guides}
@@ -76,8 +78,8 @@ export const CreativeKitGallery: React.FC<CreativeGalleryProps> = (input) => {
           durationInFrames={slot.durationInFrames}
         >
           <GalleryScene family={slot.family} props={props} />
-          {index > 0 && (props.style === "section-deck" || props.style === "split-canvas") ? (
-            props.style === "section-deck" ? (
+          {index > 0 && galleryCut !== "none" ? (
+            galleryCut === "flash-bloom" ? (
               <FlashBloom at={0} />
             ) : index % 2 === 0 ? (
               <LightLeak at={0} variant="split" />

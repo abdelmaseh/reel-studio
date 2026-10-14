@@ -1,9 +1,16 @@
+import {ownSceneStyle} from '../styles/registry.ts';
+
 type Range={fromFrame:number;toFrame:number};
 type Scene={fromFrame:number;durationInFrames:number;layout:string};
 type VisibilityEdit={scenes:Scene[];segments:Range[]};
 
 export function captionOverlayVisible(edit:{contentMode?:string;captions:{visible?:boolean}}):boolean{
   return edit.contentMode!=='graphics' && edit.captions.visible!==false;
+}
+
+/** A style-owned takeover scene draws its own words; the recorded-caption pill must not paint over them. */
+export function captionHiddenByScene(scene:{family:string}|undefined):boolean{
+  return scene!==undefined && ownSceneStyle(scene.family)!==undefined;
 }
 
 

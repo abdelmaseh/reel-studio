@@ -55,6 +55,8 @@ export const FAMILY = {
   naskh: "Noto Naskh Arabic",
 
   latinSerif: "Source Serif 4",
+
+  gridSans: "Grid Sans",
 } as const;
 
 export type FamilyName = (typeof FAMILY)[keyof typeof FAMILY];
@@ -131,6 +133,19 @@ const FACES: Face[] = [
   { family: FAMILY.plexDisplay, source: "IBM Plex Sans Arabic", subset: "arabic", file: 700, css: "1 1000" },
 
 
+  // Grid Sans: Inter (latin, variable opsz and wght) next to IBM Plex Sans Arabic (arabic, static 400-700).
+  // A browser first picks the face whose weight matches the request and applies unicode-range only among faces
+  // with identical descriptors. One Inter range face ("100 900") would lose to the exact Arabic match at every
+  // weight from 400 to 700 and leave Latin letters and digits in the system serif, so Inter is declared once per
+  // Arabic weight (the same variable file, a single weight each). The two scripts never overlap except for a few
+  // invisible joiners, which stay with the Arabic face because it is declared last; a mixed Arabic/Latin string
+  // therefore measures and renders as one family.
+  ...([400, 500, 600, 700] as const).flatMap<Face>((weight) => [
+    { family: FAMILY.gridSans, source: "Inter", subset: "latin", file: 400, css: String(weight) },
+    { family: FAMILY.gridSans, source: "IBM Plex Sans Arabic", subset: "arabic", file: weight, css: String(weight) },
+  ]),
+
+
 
   ...([400, 700] as const).flatMap<Face>((file) => [
     { family: FAMILY.naskh, source: "Noto Naskh Arabic", subset: "arabic", file, css: String(file) },
@@ -169,7 +184,7 @@ const fileFor = (f: Face): ManifestEntry => {
   if (!hit) {
     throw new Error(
       `core/fonts: engine/public/fonts/manifest.json has no ${f.source} ${f.subset} ${f.file}. ` +
-        `Re-run \`node scripts/fetch-fonts.mjs\` (its DECLARED list must contain that family and weight).`,
+        `Run \`node scripts/studio.mjs setup --steps fonts\` (it downloads the pinned fonts and checks their sha256).`,
     );
   }
   return hit;
@@ -241,7 +256,7 @@ if (typeof document !== "undefined") {
       if (missing.length > 0) {
         throw new Error(
           `core/fonts: ${missing.join(", ")} did not register. Check engine/public/fonts ` +
-            `against manifest.json and re-run \`node scripts/fetch-fonts.mjs\`.`,
+            `against manifest.json and run \`node scripts/studio.mjs setup --steps fonts\` (it downloads the pinned fonts and checks their sha256).`,
         );
       }
       ready = true;

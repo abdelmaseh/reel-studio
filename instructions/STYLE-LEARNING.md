@@ -1,6 +1,6 @@
 # Learn a reference's decisions, then apply them to new content
 
-Use this guide when the creator names finished reference videos, asks to learn a visual direction, or wants a learned direction adapted to a new edit. References show the finished result: their original footage, hidden timeline and production settings are unknown. Read [EDITORIAL.md](EDITORIAL.md) for the new video's meaning, [STYLE-RECIPES.md](STYLE-RECIPES.md) for the eleven base directions, and [PROJECT-SCENES.md](PROJECT-SCENES.md) when an authored mechanism is needed.
+Use this guide when the creator names finished reference videos, asks to learn a visual direction, or wants a learned direction adapted to a new edit. References show the finished result: their original footage, hidden timeline and production settings are unknown. Read [EDITORIAL.md](EDITORIAL.md) for the new video's meaning, [STYLES.md](STYLES.md) for the base directions and each style's recipe, and [PROJECT-SCENES.md](PROJECT-SCENES.md) when an authored mechanism is needed.
 
 The result is project-local evidence and a usable decision system, called `projectStyleDNA` here. It is saved in `Projects/<slug>/STYLE_DNA.json` and explained in `STYLE_DNA.md`; it is editorial evidence, not an extra manifest field or a new globally registered style. Keep the current supported `style` ID in `edit.json`. New scene behavior uses validated existing families or the project scene contract.
 

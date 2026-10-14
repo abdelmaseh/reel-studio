@@ -1,4 +1,8 @@
-// Anonymous installation/version counters. Network or local-state failures never affect the studio.
+// Counts successful installs (a new version counts once) and daily use per version so the maintainer can see that updates arrive and work.
+// Each event carries only schema, installationId (a random UUID created here, not derived from the user or the machine),
+// event, version and occurredAt; never names, handles, media, files or paths. README (privacy) and the thank-you line at
+// the end of setup tell the user. Network or local-state failures never affect the studio.
+// REEL_STUDIO_STATS=off disables recording and sending absolutely; QA installs (verify-clean-install) set it so they are not counted.
 import {randomUUID} from 'node:crypto';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
@@ -7,7 +11,7 @@ const ENDPOINT = 'https://store.pyraai.cloud/wp-json/reel-studio-stats/v1/events
 const MAX_AGE = 30 * 86400000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
-const enabled = options => options.endpoint || !(process.env.CI || process.env.NODE_TEST_CONTEXT);
+const enabled = options => process.env.REEL_STUDIO_STATS !== 'off' && (options.endpoint || !(process.env.CI || process.env.NODE_TEST_CONTEXT));
 const nowOf = options => options.now ? options.now() : new Date();
 const keyOf = event => `${event.event}:${event.version}:${event.occurredAt}`;
 const fileOf = root => path.join(root, 'state/studio-stats.json');

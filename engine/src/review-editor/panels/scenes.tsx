@@ -106,7 +106,9 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
   const { notice, show, clear } = useNotice();
   const run = useRunner(apply, show);
   const [open, setOpen] = useState<string | null>(selection?.kind === "scene" ? selection.id : null);
-  const [family, setFamily] = useState<string>(ops.TEMPLATE_FAMILIES[0]);
+  const families = ops.templateFamiliesFor(manifest.style);
+  const [picked, setFamily] = useState<string>(ops.TEMPLATE_FAMILIES[0]);
+  const family = families.includes(picked) ? picked : families[0];
   const getPlayhead = usePlayheadGetter();
   const toggle = useCallback((id: string) => setOpen((cur) => (cur === id ? null : id)), []);
   const fps = manifest.source.fps;
@@ -135,7 +137,7 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
       <Section title="مشهد جديد" actions={null}>
         <div className="sp-row">
           <select value={family} onChange={(e) => setFamily(e.target.value)} aria-label="نوع المشهد">
-            {ops.TEMPLATE_FAMILIES.map((f) => <option key={f} value={f}>{f}</option>)}
+            {families.map((f) => <option key={f} value={f}>{f}</option>)}
           </select>
           <button type="button" className="primary" onClick={add}>أضف عند الـ playhead</button>
         </div>

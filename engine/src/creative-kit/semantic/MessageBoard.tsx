@@ -1,12 +1,16 @@
 import React from 'react';
 import {useClock} from '../../core/motion';
 import {FitText,SceneCanvas,type SceneGeometry,type SceneTheme} from '../primitives';
+import {useProbe} from '../../core/safe';
+import {SLAB} from '../card-shape';
 import {messageBoardState,type MessageBoardData} from './message-board.ts';
 
 export const MessageBoard:React.FC<{id:string;data:MessageBoardData;theme:SceneTheme;geometry:SceneGeometry}>=({data,theme,geometry:g})=>{
   const {frame}=useClock();
+  const probe=useProbe();
   const state=messageBoardState(data,frame,{x:g.left,y:g.top+g.bodyTop,width:g.width,height:g.bodyHeight});
   const square=['ink-frame','verdict-board','offset-plate','magazine-rule'].includes(theme.grammar?.card??'');
+  const slab=theme.grammar?.card==='bevel-slab';
   return <>
     <SceneCanvas theme={theme} geometry={g}>
       <div style={{position:'absolute',left:0,top:g.titleTop??34}}>
@@ -20,7 +24,7 @@ export const MessageBoard:React.FC<{id:string;data:MessageBoardData;theme:SceneT
       const detailHeight=height-labelHeight-padding*2-12;
       return <div key={item.id} data-message-id={item.id} style={{position:'absolute',left:Math.round(pose.x),top:Math.round(pose.y),width,height,
         opacity:pose.opacity,zIndex:pose.zIndex,transform:`rotate(${pose.rotation.toFixed(3)}deg)`,transformOrigin:'50% 50%',boxSizing:'border-box',
-        background:bg,border:`2px solid ${highlight?theme.accent:theme.border}`,borderRadius:square?3:18,boxShadow:`5px 7px 0 ${theme.border}35`}}>
+        background:bg,border:slab?0:`2px solid ${highlight?theme.accent:theme.border}`,borderRadius:square?3:slab?SLAB.radius:18,boxShadow:slab?(probe?undefined:SLAB.softShadow):`5px 7px 0 ${theme.border}35`}}>
         <div style={{position:'absolute',left:padding,top:padding}}>
           <FitText text={item.label} theme={theme} role="title" width={width-padding*2} height={labelHeight}
             size={Math.round(34+pose.focus*40)} min={18} lines={item.detail?2:3} color={ink}/>

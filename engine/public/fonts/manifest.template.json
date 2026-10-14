@@ -144,6 +144,14 @@
     "bytes": 19504
   },
   {
+    "family": "Inter",
+    "file": "Inter-latin-var.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 72920
+  },
+  {
     "family": "Noto Naskh Arabic",
     "file": "NotoNaskhArabic-arabic-400.woff2",
     "subset": "arabic",

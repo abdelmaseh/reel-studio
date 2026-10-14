@@ -1,0 +1,61 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {
+      "recipe": "sub-thump",
+      "gain": 0.5,
+      "leadSec": 0.27,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "stamp": {
+      "recipe": "sub-swell-hit",
+      "gain": 0.5,
+      "leadSec": 0.2,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "swap": {
+      "recipe": "sub-thud",
+      "gain": 0.5,
+      "leadSec": 0.13,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "click": {
+      "recipe": "ui-click",
+      "gain": 0.5,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "count": {
+      "recipe": null,
+      "gain": 0,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "This style stays silent on this cue; review with the creator."
+    },
+    "reveal": {
+      "recipe": null,
+      "gain": 0,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "This style stays silent on this cue; review with the creator."
+    },
+    "type": {
+      "recipe": null,
+      "gain": 0,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "This style stays silent on this cue; review with the creator."
+    }
+  }
+}

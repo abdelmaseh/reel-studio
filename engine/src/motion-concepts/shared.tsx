@@ -186,6 +186,12 @@ export type ConceptGlyph = (props: { size?: number; strokeWidth?: number; color?
 
 
 
+/** Corner radius of a tool icon as a fraction of its size. */
+export const iconCornerK = (theme: SceneTheme): number => {
+  if (theme.grammar?.card === "bevel-slab") return 0.125;
+  return theme.grammar?.card === "rounded-ui" || theme.grammar === undefined ? 0.26 : 0.08;
+};
+
 export const ConceptIcon: React.FC<{
   src?: string;
   name: string;
@@ -194,7 +200,7 @@ export const ConceptIcon: React.FC<{
   glyph?: ConceptGlyph;
   style?: React.CSSProperties;
 }> = ({ src, name, size, theme, glyph: Glyph, style }) => {
-  const radius = px(size * (theme.grammar?.card === "rounded-ui" || theme.grammar === undefined ? 0.26 : 0.08));
+  const radius = px(size * iconCornerK(theme));
   if (src) {
     return <Img src={staticFile(src)} style={{ width: size, height: size, objectFit: "contain", borderRadius: radius, ...style }} />;
   }
@@ -254,6 +260,8 @@ export const styleShape = (theme: SceneTheme): StyleShape => {
       return { pillK: 0.06, windowRadius: 2, ring: 2, hardOffset: 5, soft: false };
     case "verdict-board":
       return { pillK: 0.08, windowRadius: 4, ring: 2, hardOffset: 0, soft: false };
+    case "bevel-slab":
+      return { pillK: 0.3, windowRadius: 24, ring: 2, hardOffset: 0, soft: true };
     default:
       return { pillK: 1, windowRadius: 36, ring: 2, hardOffset: 0, soft: true };
   }

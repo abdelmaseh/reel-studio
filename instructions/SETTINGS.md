@@ -10,14 +10,14 @@ Each preference independently uses `{"mode":"auto","value":null}` or `{"mode":"f
 
 | Preference | Fixed choices |
 | --- | --- |
-| `style` | Eleven ids in `instructions/STYLES.md` |
+| `style` | Any style id in the table in `instructions/STYLES.md` |
 | `captionsGrouping` | `compact`, `clauses`, `single` |
 | `captionsPresentation` | `pill`, `minimal`, `ink-strip` |
-| `font` | `Cairo`, `Tajawal`, `Noto Naskh Arabic`, `Plex Display` |
+| `font` | `Cairo`, `Tajawal`, `Noto Naskh Arabic`, `Plex Display`, `Grid Sans` |
 | `writingStyle` | `short`, `educational`, `storytelling` |
 | `palette` | `brand` (colours on supported styles) |
 
-Automatic selection considers all eleven styles and the authored semantic mechanisms. Explicit choices win. Style cards are illustrations; font previews use installed fonts and label missing downloads.
+Automatic selection considers every registered style and the authored semantic mechanisms. Explicit choices win. Style cards are illustrations; font previews use installed fonts and label missing downloads.
 
 **One video only:** keep PROFILE.json. Copy **all fields** printed by `node scripts/profile.mjs brief` into that video's brief. Add explicit `style`, `fontFamily`, `captionsGrouping`, `captionsPresentation` or `writingStyle` only for a user-requested override; these win over saved defaults. Example: saved paper-collage/Tajawal + «الفيديو ده بس خطوات منظمة» → brief `style: "section-deck"`, retain `preferences`, omit `fontFamily` override so Tajawal stays fixed. Explain the chosen style in the preview; don't repeat settled questions.
 

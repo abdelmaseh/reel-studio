@@ -1,83 +1,39 @@
 # Styles
 
-This edition ships eleven styles, driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. Recommendations consider all eleven directions and the authored scene mechanisms; explicit/profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
+This edition's styles are driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. Recommendations consider every style in the table below and the authored scene mechanisms; explicit/profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
 
-Use [STYLE-RECIPES.md](STYLE-RECIPES.md) for composition, hierarchy, cue/hold, material, transition and sound decisions in each direction. To learn from named finished references, use [STYLE-LEARNING.md](STYLE-LEARNING.md): evidence stays in the current project's Style DNA and transfers into its actual scene plan/data/code. It does not add an unsupported style ID or change the creator's saved choices. [PROJECT-SCENES.md](PROJECT-SCENES.md) supports project-local behavior beyond a shipped family's mechanism.
+Every style has its own guide, `styles/<id>.md`, linked from the table: Look, Best for, Layouts and footage, Palette and brand, Recipe, Style-owned scenes and Avoid. Read the chosen style's guide before planning its scenes; this page holds the rules every style shares. To learn from named finished references, use [STYLE-LEARNING.md](STYLE-LEARNING.md): evidence stays in the current project's Style DNA and transfers into its actual scene plan/data/code. It does not add an unsupported style ID or change the creator's saved choices. [PROJECT-SCENES.md](PROJECT-SCENES.md) supports project-local behavior beyond a shipped family's mechanism. Adding or promoting a global style is studio maintenance and follows [STYLE-AUTHORING.md](STYLE-AUTHORING.md).
 
-Two styles are the proven pair, refined on real footage first: **split-canvas** and **section-deck**. Five are newer: **kinetic-paper**, **calligraphic-receipts**, **paper-collage**, **judgment-board** and **stepped-editorial**. A newer style keeps its own palette (the plan adds a notice that brand colours do not apply) and every edit still needs the creator's own creative approval. For a newer style always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
+## Style table
 
-## split-canvas
+Generated from the style registry (`engine/src/styles/registry.ts`) by `node scripts/style-docs.mjs`. Edit the registry, never this block.
 
-- **Look:** a warm product-UI canvas above a continuous presenter window, rounded cards, accent rules and compact caption pills.
-- **Best for:** explainers and tutorials where the presenter stays on screen and the upper canvas shows one idea at a time.
-- **Layouts:** `split` (graphics above the seam, presenter below) for most beats; `takeover` for a full-frame idea; `presenter` when the face alone carries the line.
-- **Brand colours:** one ground (the profile background, or the style's warm paper) with ink text; the highlight colour alternates between primary and accent from scene to scene; captions become a light card pill with ink text.
+<!-- styles:table:start -->
+| Style | Label | Best for | Brand colours | Own scenes |
+| --- | --- | --- | --- | --- |
+| <a id="split-canvas"></a>[`split-canvas`](styles/split-canvas.md) | Split canvas · شرح بصري | explainer, tutorial | profile colours | none |
+| <a id="section-deck"></a>[`section-deck`](styles/section-deck.md) | Section deck · خطوات منظمة | explainer, tutorial, comparison | profile colours | none |
+| <a id="kinetic-paper"></a>[`kinetic-paper`](styles/kinetic-paper.md) | Kinetic paper · ورق متحرك | explainer, comparison, tutorial | own palette | none |
+| <a id="calligraphic-receipts"></a>[`calligraphic-receipts`](styles/calligraphic-receipts.md) | Calligraphic receipts · أدلة وأرقام | case-study, story, opinion | own palette | none |
+| <a id="paper-collage"></a>[`paper-collage`](styles/paper-collage.md) | Paper collage · كولاج | story, comparison, case-study | own palette | none |
+| <a id="judgment-board"></a>[`judgment-board`](styles/judgment-board.md) | Judgment board · مقارنة ورأي | comparison, opinion, case-study | own palette | none |
+| <a id="stepped-editorial"></a>[`stepped-editorial`](styles/stepped-editorial.md) | Stepped editorial · تحريري | opinion, case-study, story | own palette | none |
+| <a id="liquid-glass"></a>[`liquid-glass`](styles/liquid-glass.md) | Liquid glass · زجاج مضيء | explainer, tutorial, comparison | own palette | none |
+| <a id="campaign-tickets"></a>[`campaign-tickets`](styles/campaign-tickets.md) | Campaign tickets · تذاكر وحملات | explainer, case-study, story | own palette | none |
+| <a id="magazine-interview"></a>[`magazine-interview`](styles/magazine-interview.md) | Magazine interview · حوار مجلة | opinion, case-study, story | own palette | none |
+| <a id="scrapbook-route"></a>[`scrapbook-route`](styles/scrapbook-route.md) | Scrapbook route · رحلة على ورق | story, tutorial, case-study | own palette | none |
+| <a id="grid-glide"></a>[`grid-glide`](styles/grid-glide.md) | Grid glide · كلمات وكروت | explainer, tutorial, comparison | own palette | `glide-chapter`, `glide-card`, `glide-lines`, `glide-comment`, `glide-follow` |
+<!-- styles:table:end -->
 
-## section-deck
+## Choosing a style
 
-- **Look:** dark UI sections with a kicker, an accent headline, semantic chips and held clause captions.
-- **Best for:** explainers, tutorials and comparisons that fall into clear sections.
-- **Layouts:** `split` for sections under a continuous presenter; `takeover` for comparisons, processes and data.
-- **Brand colours:** sections cycle through three grounds — the profile background (or the deck's navy), a deep primary and a deep accent — each with readable ink and its own highlight; captions stay a solid pill.
+**split-canvas** and **section-deck** were refined on real footage first and are the proven styles. Every other style is newer: every edit still needs the creator's own creative approval, and a newer style that keeps its own palette adds a plan notice that brand colours do not apply. For a newer style always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
 
-## kinetic-paper
+## Recipes
 
-- **Look:** heavy poster type, ink frames, signal strips and deliberate staggered reveals; ink-strip captions.
-- **Best for:** explainers, comparisons and tutorials that want a strong, poster-like opening.
-- **Brand colours:** not applied; the style keeps its own palette.
+The Recipe section of each guide turns that style's visual grammar into choices for new content. It does not add families, data keys, transitions or palette controls to the runtime; [MOTION-CHOICES.md](MOTION-CHOICES.md) records the scene contracts. Read [EDITORIAL.md](EDITORIAL.md) first.
 
-## calligraphic-receipts
-
-- **Look:** Naskh claims paired with evidence receipts, brush rules, boxless captions and a quiet motion.
-- **Best for:** case studies, stories and opinions that lean on evidence and numbers.
-- **Brand colours:** not applied.
-
-## paper-collage
-
-- **Look:** layered taped-paper cards, tabs and restrained depth; paper-label captions.
-- **Best for:** stories, comparisons and case studies.
-- **Brand colours:** not applied.
-
-## judgment-board
-
-- **Look:** a clear two-column verdict or comparison board with serif verdict type and a divider between the sides; boxless captions.
-- **Best for:** comparisons, opinions and case studies.
-- **Brand colours:** not applied.
-
-## stepped-editorial
-
-- **Look:** editorial spreads with offset plates, serif editorial type and yellow-marker evidence; boxless captions.
-- **Best for:** opinions, case studies and stories with a magazine feel.
-- **Brand colours:** not applied.
-
-## liquid-glass
-
-- **Look:** dark aurora, translucent cards, bright rims and a detail lens.
-- **Best for:** authored educational grouping and measurements.
-- **Semantic beats:** `token-lens` and `meter-receipt` make this style eligible for automatic recommendation.
-- **Palette:** the style's own; the presenter stays natural.
-
-## campaign-tickets
-
-- **Look:** warm gold/coral tickets, perforated cards and a campaign canvas.
-- **Best for:** real offers, invitations and viewer questions.
-- **Semantic beats:** `ticket-offer` and `comment-stack`.
-- Use the real offer conditions and real comments, or clearly labelled illustrative examples.
-
-## magazine-interview
-
-- **Look:** navy editorial page, gold rules, clean quote text and speaker identification.
-- **Best for:** interviews, chapters and accurately attributed quotes.
-- **Semantic beat:** `chapter-quote`; use the speaker's actual words and verified name/role.
-- **Optional cover, off by default:** supply `data.cover` only for a `takeover` scene. The existing title sits behind your provided transparent PNG until `quoteFrame`, then the normal quote appears. The PNG keeps its original colours and proportions; no automatic background mask or depth generation is included.
-- `cover.foreground` needs a public-local PNG `src`, its exact `sha256`, `width` and `height` (up to 4096 each). Preparation checks the bytes, dimensions, alpha channel, real transparency and visible pixels. An opaque or fully empty image is refused.
-- `cover.box` is `{x,y,width,height}` relative to the safe scene canvas. Keep `x + width <= 1`, `y >= 0.05` and `y + height <= 0.82` so the chapter label and speaker attribution stay clear. Use a positive `quoteFrame` inside the scene. Review the supplied subject and title overlap before delivery. Leaving out `cover` preserves the ordinary chapter/quote behaviour.
-
-## scrapbook-route
-
-- **Look:** warm paper, grid marks, taped cards and a connected route.
-- **Best for:** journeys, conferences and meaningful multi-step stories.
-- **Semantic beat:** `route-stops`, with optional verified local images for each stop.
+Across all directions, identify the phrase's function, choose one dominant action, retain the relevant object's identity and give its resolved state time to be understood. Use source-word cues for recordings and authored reading cues for graphics. Adapt frame counts, density and presenter use to the material. A motion recipe is a decision system, not a quota of effects or seconds.
 
 ## Semantic scenes
 
@@ -97,9 +53,11 @@ The original six semantic families support `split` or `takeover`; their default 
 
 Schema limits do not guarantee font fit. Review real rendered stills before delivery; unfit text fails rather than disappearing or being clipped. Keep recorded wording intact and adapt the layout with the creator.
 
+A scene family reserved for one style appears in the table's Own scenes column, and that style's guide documents its data contract, timing rules and limits.
+
 ## Brand colours
 
-- Only `split-canvas` and `section-deck` take the profile's brand colours. The other nine keep their own palette; relay the plan notice in one line (for example: "الستايل ده بيفضل بألوانه هو").
+- Only the styles marked `profile colours` in the style table take the profile's brand colours. Every other style keeps its own palette; relay the plan notice in one line (for example: "الستايل ده بيفضل بألوانه هو").
 - `PROFILE.json` `brand.primary` and `brand.accent` are required; `background` and `text` may be `null` to keep the style's own.
 - The planner keeps the background exactly and adjusts ink and highlight lightness in fixed steps until every text pair reaches 4.5:1 contrast. If a colour cannot be made readable, that part of the video uses the style's own colours.
 - The plan result lists what changed in `notices`; tell the creator in one line each (for example: "ظبطت درجة لون التمييز شوية علشان الكلام يبان").
@@ -111,11 +69,11 @@ Only the parts that are on for this video appear, always in this order:
 
 | Part | Scene | On when |
 | --- | --- | --- |
-| Comment CTA | `comment` (or `creator-cta`) with `keyword` = this video's keyword | the brief's `creator.ending.cta` is a keyword |
-| Follow card | `follow` (or `creator-cta`) with `handle` = the profile handle | `creator.ending.followCard` is true |
+| Comment CTA | `comment` (or `creator-cta`; `glide-comment` in `grid-glide`) with `keyword` = this video's keyword | the brief's `creator.ending.cta` is a keyword |
+| Follow card | `follow` (or `creator-cta`; `glide-follow` in `grid-glide`) with `handle` = the profile handle | `creator.ending.followCard` is true |
 | Recorded sign-off | no scene; every scene ends before it | the profile has `signOff` and it is spoken in this recording |
 
-Every style draws the comment card and the follow card with the same scene families in its own register: the style's palette, type, card shapes and geometry, with the brand palette when the style takes one and the profile has one. The follow card shows the complete handle (up to @ + 30 characters) and a Follow button in the highlight colour; text that cannot fit makes the render fail instead of being cut. A `creator-cta` scene carries the keyword and the handle together, and its follow and click moments must come in that order inside the scene.
+Every style except Grid Glide draws the comment card and the follow card with the same scene families in its own register: the style's palette, type, card shapes and geometry, with the brand palette when the style takes one and the profile has one. The follow card shows the complete handle (up to @ + 30 characters) and a Follow button in the highlight colour; text that cannot fit makes the render fail instead of being cut. Grid Glide is the exception: it draws its own `glide-comment` (the keyword as the hero word) and `glide-follow` (the complete handle as the hero word above a Follow pill), because the shared scenes show fixed English header lines. The delivery check treats each as the scene it replaces, so either pair passes, and a plan in Grid Glide that uses the shared pair carries a notice. A `creator-cta` scene carries the keyword and the handle together, and its follow and click moments must come in that order inside the scene.
 
 ## Screen-recording reels
 
@@ -126,3 +84,7 @@ Every style draws the comment card and the follow card with the same scene famil
   - `callouts`: `{atFrame, untilFrame, kind: "rect" | "circle", rect}` pinned to the recording, drawn in the highlight colour.
 - Pick focus rectangles and click points from stills of the recording. The planner refuses keys that enlarge the recording more than 1.25x (text turns soft) and callouts that land outside the safe zone.
 - A screen capture inside a presenter video is a different tool: the `screen-focus` scene family with its own capture file.
+
+## Select, adapt and prove the direction
+
+Recommend a direction by the message's dominant function and source needs, preserving an explicit or saved fixed choice. Compare the same representative passage when alternatives remain consequential. Implement the relevant decisions in actual scene data/code and asset placement, then review through [VISUAL-REVIEW.md](VISUAL-REVIEW.md). A matching palette alone does not show style fidelity, and a successful technical gate does not establish creative acceptance.

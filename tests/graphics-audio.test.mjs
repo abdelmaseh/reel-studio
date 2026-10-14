@@ -34,6 +34,16 @@ test('graphics silence reports no invented loudness or true peak and still verif
   assert.equal(policy.assessGraphicsSilence(silent, 19.99, 20).ok, false, 'missing audio coverage must not pass as encoder padding');
 });
 
+test('a stem the limiter left too quiet gets one bounded compensation and every other result gets none', () => {
+  const options = policy.normalizeMixOptions(paths);
+  const plan = LUFS => policy.planLoudnessCompensation({LUFS, LRA: 5, truePeakDb: -1.4}, options);
+  for (const LUFS of [-14, -14.6, -15, -13, -12.4, null, Number.NaN]) assert.equal(plan(LUFS), null, `${LUFS} LUFS needs no compensation`);
+  assert.deepEqual(plan(-15.1), {shortfallDb: 1.1, gainDb: 2.2}, 'the clamp returns about half of any added gain');
+  assert.equal(plan(-30).gainDb, policy.MIX_COMPENSATION_MAX_DB, 'the gain is bounded');
+  assert.equal(policy.planLoudnessCompensation(undefined, options), null);
+  assert.equal(policy.planLoudnessCompensation({LUFS: -16, LRA: 5, truePeakDb: -1.4}, policy.normalizeMixOptions({...paths, lufs: -16})), null, 'the target moves with --lufs');
+});
+
 test('render accepts the graphics audio flag only for verified graphics props', () => {
   assert.equal(policy.resolveRenderAudioMode({composition: 'PreparedEdit', edit: {contentMode: 'graphics'}, graphicsAudio: true, voice: 'off'}), 'graphics');
   assert.equal(policy.resolveRenderAudioMode({composition: 'PreparedEdit', edit: {}, voice: 'off'}), 'dialogue');

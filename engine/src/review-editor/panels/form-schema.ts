@@ -4,6 +4,7 @@ import { kineticSceneVariants } from "../../creative-kit/kinetic/schema.ts";
 import { librarySceneVariants } from "../../motion-library/schema.ts";
 import {semanticSceneVariants} from '../../creative-kit/semantic/schema.ts';
 import {screenRecordingVariants} from '../../screen-recording/schema.ts';
+import {styleSceneVariants} from '../../styles/scenes.ts';
 import { getIn, type Path } from "../ops/paths.ts";
 import {PROJECT_SCENES} from '../../project-scenes/registry.ts';
 import {valuesSchema} from '../../project-scenes/schema.ts';
@@ -18,7 +19,7 @@ const FAMILY_DATA: Record<string, z.ZodType> = {
   comment: commentSchema,
   follow: followSchema,
 };
-for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...screenRecordingVariants]) {
+for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...screenRecordingVariants,...styleSceneVariants]) {
   const shape = (variant as any).shape;
   FAMILY_DATA[shape.family.value as string] = shape.data as z.ZodType;
 }
@@ -47,10 +48,21 @@ const LABELS: Record<string, string> = {
   focusIndex: "العنصر المختار (0 هو الأول)", gatherFrame: "بداية التجميع", gatherDurationFrames: "مدة التجميع",
   focusDurationFrames: "مدة إبراز النتيجة", closingFrame: "بداية النهاية", concept: "فكرة الحركة", config: "تفاصيل الحركة",
   sourceIndices: "الكلمات المختارة من التفريغ", revealFrame: "بداية المقارنة", revealDurationFrames: "مدة المقارنة",
+  ordinal: "الكلمة الكبيرة (الترتيب)", heroAt: "فريم ظهور الكلمة الكبيرة", pill: "كبسولة الأداة / زرار المتابعة", pillAt: "فريم ظهور الكبسولة", logo: "شعار الأداة",
+  lines: "الأسطر", words: "الكلمات", role: "الدور", at: "فريم البداية", cadence: "إيقاع الكلمات (فريمات على 30 فريم/ث)",
+  box: "الصندوق", media: "اللقطات", clips: "اللقطات بالترتيب", scroll: "تمرير اللقطة", from: "من", to: "إلى", distance: "مسافة الانزلاق (بكسل)",
+  dir: "الاتجاه", enter: "طريقة الدخول", exit: "طريقة الخروج", grid: "شبكة الخلفية", watermark: "العلامة الخافتة أسفل الشاشة",
+  bullets: "النقاط", sha256: "بصمة الملف (sha256)",
+};
+
+
+const VARIANT_LABELS: Record<string, string> = {
+  "enter|kind: cut": "قطع مباشر (cut)", "enter|kind: slide": "انزلاق من الجانب (slide)", "enter|kind: dip": "ضبابية وتعتيم (dip)",
+  "exit|kind: cut": "قطع مباشر (cut)", "exit|kind: push": "دفع المشهد للخارج (push)", "exit|kind: dip": "ضبابية وتعتيم (dip)",
 };
 export const fieldLabel = (key: string): string => LABELS[key] ?? key;
 
-const FRAME_KEY = /(Frame|Frames|Duration)$|^frames$/;
+const FRAME_KEY = /(Frame|Frames|Duration|At)$|^(frames|at)$/;
 const MULTILINE_FROM = 100;
 const ASSET_KEYS = new Set(["src", "image"]);
 
@@ -84,7 +96,7 @@ function fromJsonSchema(js: JS, key: string, required: boolean): Field {
         const consts: Record<string, string | number | boolean> = {};
         for (const [k, v] of Object.entries<JS>(o.properties)) if (v.const !== undefined) consts[k] = v.const;
         const shown = Object.entries(consts).map(([k, v]) => `${k}: ${v}`).join(" · ");
-        return { label: shown || `الشكل ${i + 1}`, field, consts, required: (o.required as string[]) ?? [], properties: Object.keys(o.properties), closed: o.additionalProperties === false };
+        return { label: VARIANT_LABELS[`${key}|${shown}`] ?? (shown || `الشكل ${i + 1}`), field, consts, required: (o.required as string[]) ?? [], properties: Object.keys(o.properties), closed: o.additionalProperties === false };
       }),
     };
   }

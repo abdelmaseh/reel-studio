@@ -5,6 +5,7 @@ const OPTION_NAMES = {
   pop: ['freq', 'dur', 'seed'], click: ['dur', 'seed', 'fc'], riser: ['dur', 'seed'],
   swipe: ['dur', 'seed'], paper: ['dur', 'seed'], chime: ['dur', 'seed'], tick: ['seed'],
   keyTap: ['dur', 'seed', 'fc'], mouseClick: ['dur', 'seed', 'fc'], whooshShort: ['dur', 'seed', 'f0', 'f1'],
+  subBoom: [], subThump: [], subThud: [], subSwellHit: [], uiClick: [],
 };
 export const SOUND_NAMES = Object.freeze(Object.keys(OPTION_NAMES));
 

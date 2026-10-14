@@ -10,6 +10,7 @@ import {defaultPreferences, PREFERENCE_VALUES, STYLE_LABELS, WRITING_GUIDES} fro
 import {readSetupState, describeSetup, workerAlive, STEP_LABELS} from './studio-state.mjs';
 import {browserHomeProblem} from './studio-setup.mjs';
 import {acquireProfileSaveLock} from './profile-save-lock.mjs';
+import {previewFaces} from './settings-fonts.mjs';
 
 const UI_ROOT = fileURLToPath(new URL('../settings-ui/', import.meta.url));
 const MAX_BODY = 64 * 1024;
@@ -104,7 +105,7 @@ export async function createSettingsServer({root, port = 0} = {}) {
   async function startSetup() {
     if (!(await snapshot()).profile) throw new HttpError(400, 'احفظ إعداداتك الأول عشان نبدأ التجهيز.');
     const current = await readSetupState(root);
-    if (workerAlive(current) || current.status === 'done') return status();
+    if (workerAlive(current) || describeSetup(current, {alive: false}).json.status === 'done') return status();
     const locationProblem = browserHomeProblem(root);
     if (locationProblem) throw new HttpError(400, locationProblem);
     if (starting) throw new HttpError(409, 'التجهيز بيبدأ. استنى لحظة.');
@@ -115,11 +116,8 @@ export async function createSettingsServer({root, port = 0} = {}) {
     } catch {throw new HttpError(500, 'التجهيز ما بدأش. قول للمساعد «كمّل تجهيز الاستوديو» عشان يراجع السبب.');}
     finally {starting = false;}
   }
-  const fontSpecs = (lock.fonts ?? []).filter(face => {
-    if (!['arabic', 'latin', 'latin-ext'].includes(face.subset)) return false;
-    return face.family === 'Cairo' ? face.weight === 400 : face.family === 'IBM Plex Sans Arabic' ? face.weight === 700
-      : ['Tajawal', 'Noto Naskh Arabic'].includes(face.family) && [400, 700].includes(face.weight);
-  });
+  const previews = previewFaces(lock.fonts ?? []);
+  const fontSpecs = [...new Map(previews.map(({face}) => [face.file, face])).values()];
   async function fontBytes(face) {
     const file = path.join(root, 'engine', 'public', 'fonts', face.file);
     const real = await fs.realpath(file);
@@ -130,10 +128,9 @@ export async function createSettingsServer({root, port = 0} = {}) {
   }
   async function fontCss() {
     const faces = [];
-    for (const face of fontSpecs) {
+    for (const {alias, face, css} of previews) {
       if (!await fontBytes(face).catch(() => null)) continue;
-      const family = face.family === 'IBM Plex Sans Arabic' ? 'Plex Display' : face.family;
-      faces.push(`@font-face{font-family:"${family}";src:url("/fonts/${encodeURIComponent(face.file)}?token=${token}") format("woff2");font-weight:${face.family === 'Cairo' ? '200 1000' : family === 'Plex Display' ? '1 1000' : face.weight};font-style:normal;font-display:swap;unicode-range:${face.unicodeRange};}`);
+      faces.push(`@font-face{font-family:"${alias}";src:url("/fonts/${encodeURIComponent(face.file)}?token=${token}") format("woff2");font-weight:${css};font-style:normal;font-display:swap;unicode-range:${face.unicodeRange};}`);
     }
     return faces.join('\n');
   }
@@ -154,9 +151,8 @@ export async function createSettingsServer({root, port = 0} = {}) {
       }
       if (url.pathname === '/api/profile' && req.method === 'PUT') return sendJson(res, await save(await bodyJson(req)));
       if (url.pathname === '/api/catalog' && req.method === 'GET') {
-        const available = await Promise.all(fontSpecs.map(async face => ({face, ready: !!await fontBytes(face).catch(() => null)})));
-        const readyFonts = [...new Set(fontSpecs.map(face => face.family))].filter(family => available.filter(item => item.face.family === family).every(item => item.ready))
-          .map(family => family === 'IBM Plex Sans Arabic' ? 'Plex Display' : family);
+        const ready = new Set((await Promise.all(fontSpecs.map(async face => await fontBytes(face).catch(() => null) ? face.file : null))).filter(Boolean));
+        const readyFonts = [...new Set(previews.map(item => item.alias))].filter(alias => previews.filter(item => item.alias === alias).every(item => ready.has(item.face.file)));
         return sendJson(res, {ok: true, edition: lock.edition, defaults: emptyProfile(), choices: PREFERENCE_VALUES, styles: STYLE_LABELS, writingGuides: WRITING_GUIDES, readyFonts});
       }
       if (url.pathname === '/api/status' && req.method === 'GET') return sendJson(res, await status());

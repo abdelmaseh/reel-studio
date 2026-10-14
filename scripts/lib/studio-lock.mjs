@@ -47,6 +47,17 @@ export function validateLock(lock) {
     checkDownload(problems, name, model);
     checkSource(problems, name, model);
   }
+  const transcription = lock.transcription;
+  if (!/^b\d+$/.test(transcription?.runtime?.release ?? '')) problems.push('transcription.runtime.release must be an official build tag such as b4938');
+  for (const part of ['runtime', 'model', 'vad']) {
+    checkDownload(problems, `transcription.${part}`, transcription?.[part]);
+    checkSource(problems, `transcription.${part}`, transcription?.[part]);
+  }
+  for (const part of ['model', 'vad']) {
+    const entry = transcription?.[part];
+    if (!text(entry?.name)) problems.push(`transcription.${part}.name is missing`);
+    if (!relative(entry?.path) || !entry.path.startsWith('Tools/whisper-models/')) problems.push(`transcription.${part}.path must be under Tools/whisper-models/`);
+  }
   if (!Array.isArray(lock.fonts)) problems.push('fonts must be an array');
   const files = new Set();
   for (const [index, font] of (Array.isArray(lock.fonts) ? lock.fonts : []).entries()) {

@@ -5,13 +5,13 @@ import {normalizeProfile, profileToBrief} from '../scripts/lib/branding.mjs';
 import {defaultPreferences} from '../engine/src/core/preference-options.ts';
 import {buildEditorPlan, recommendEditorStyle} from '../scripts/lib/editor-director.mjs';
 import {editSceneSchema, editManifestSchema} from '../engine/src/prepared-edit/schema.ts';
-import {resolvePalette, planSfxEvents} from '../scripts/lib/sfx-events.mjs';
+import {resolvePalette, planSfxEvents, loadStylePalettes} from '../scripts/lib/sfx-events.mjs';
 import {sceneCues} from '../scripts/lib/scene-cues.mjs';
 import {verifyKineticAssets} from '../scripts/lib/prepared-props.mjs';
 
 const baseProfile = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
 const source = {path:'Raw/example.mp4', sha256:'a'.repeat(64), fps:30, width:1080, height:1920, totalFrames:180};
-const palettes = JSON.parse(await readFile(new URL('../Sound-Kits/style-palettes.json', import.meta.url), 'utf8'));
+const palettes = await loadStylePalettes();
 const catalog = JSON.parse(await readFile(new URL('../Sound-Kits/catalog.json', import.meta.url), 'utf8'));
 export const samples = {
   'token-lens': {kicker:'LANGUAGE', title:'One sentence, smaller pieces', groups:[{label:'English', tokens:['read','ing'], atFrame:8},{label:'عربي', tokens:['كتاب','ة'], atFrame:30}], lens:{groupIndex:1, tokenIndex:0, atFrame:45}, footer:'Illustration of grouping only'},

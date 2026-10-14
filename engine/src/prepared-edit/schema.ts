@@ -6,6 +6,8 @@ import {foregroundSourceFrame} from "./visibility.ts";
 import {librarySceneVariants,librarySceneSchema,validateLibraryTiming} from '../motion-library/schema.ts';
 import {screenRecordingVariants,screenRecordingSceneSchema,screenRecordingIssues} from '../screen-recording/schema.ts';
 import {semanticSceneVariants,semanticSceneSchema,validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
+import {styleSceneVariants,styleSceneSchema,validateStyleSceneTiming,styleSceneSequenceIssues} from '../styles/scenes.ts';
+import {ownSceneStyle} from '../styles/registry.ts';
 import {validateChapter,describeIssues,contrastRatio,relativeLuminance,mixToHex,CHAPTER_MIN_CONTRAST} from '../core/chapters.ts';
 import {pipAllowed,PIP_REACH} from '../core/pip.ts';
 import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graphics-transitions.ts';
@@ -50,6 +52,7 @@ const sceneUnion = z.discriminatedUnion("family",[
   ...librarySceneVariants,
   ...screenRecordingVariants,
   ...semanticSceneVariants,
+  ...styleSceneVariants,
   projectSceneVariant,
 ]);
 
@@ -161,6 +164,12 @@ export const editManifestSchema = z.object({
       }
       if(semantic.data.family==='chapter-quote' && semantic.data.data.cover && m.style!=='magazine-interview')issue(`${s.id}: magazine cover is available only in magazine-interview`);
     }
+    const styled=styleSceneSchema.safeParse(s);
+    if(styled.success){
+      for(const message of validateStyleSceneTiming(styled.data,m.source.fps))issue(message);
+      const owner=ownSceneStyle(styled.data.family);
+      if(owner!==undefined && owner!==m.style)issue(`${s.id}: ${styled.data.family} scenes are available only in ${owner}`);
+    }
     const library=librarySceneSchema.safeParse(s);
     if(library.success)for(const message of validateLibraryTiming(library.data))issue(message);
     const screen=screenRecordingSceneSchema.safeParse(s);
@@ -181,6 +190,7 @@ export const editManifestSchema = z.object({
       }
     }
   }
+  for(const message of styleSceneSequenceIssues(m.scenes))issue(message);
   if(m.signoffFromFrame!==undefined && m.signoffFromFrame>=total) issue("Signoff must start inside the edit.");
   for(const s of m.sounds) if(s.atFrame>=(m.signoffFromFrame??total)) issue("Sound events must begin before the signoff and edit end.");
   last=-1;

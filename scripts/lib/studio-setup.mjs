@@ -171,6 +171,13 @@ export function setupSteps(root, lock) {
         for (const model of lock.models) await downloadVerified({url: model.url, sha256: model.sha256, bytes: model.bytes, target: at(model.path)});
       },
     },
+    {
+      // Loaded on first use, so status and the settings screen stay light and setup still starts before npm ci.
+      id: 'transcription',
+      key: async () => hashOf(JSON.stringify(lock.transcription)),
+      verify: async () => (await import('./transcription-install.mjs')).verifyPinnedWhisper(lock.transcription, {root}),
+      run: async (log) => { await (await import('./transcription-install.mjs')).installPinnedWhisper(lock.transcription, {root, log}); },
+    },
   ];
 }
 

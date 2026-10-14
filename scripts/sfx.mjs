@@ -2,6 +2,7 @@ import { promises as fs, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from './lib/media.mjs';
+import { GLIDE_LAYERS, GLIDE_CLICK, GLIDE_VOICES } from './lib/sfx-glide-tables.mjs';
 
 const SR = 48000;
 
@@ -27,6 +28,91 @@ const env = (n, len, attack, decay, curve = 2.2) => {
 };
 
 
+
+// ---- Grid Glide voices: sums of low sinusoidal partials under a piecewise-dB envelope -------------------
+// The parameter tables and the layer model are described in lib/sfx-glide-tables.mjs.
+
+const dbGain = (db) => Math.pow(10, db / 20);
+
+// Linear interpolation clamped to the end values (numpy.interp): xs ascending, one value per knot.
+const interp = (x, xs, ys) => {
+  const last = xs.length - 1;
+  if (x <= xs[0]) return ys[0];
+  if (x >= xs[last]) return ys[last];
+  let lo = 0, hi = last;
+  while (hi - lo > 1) { const mid = (lo + hi) >> 1; if (xs[mid] <= x) lo = mid; else hi = mid; }
+  return (ys[hi] - ys[lo]) / (xs[hi] - xs[lo]) * (x - xs[lo]) + ys[lo];
+};
+
+// One layer on a time grid of seconds relative to the reference frame: partials with their own phase, level,
+// slow dB trim and gate, multiplied by the shared envelope (exactly zero outside its first and last knot).
+const layerSignal = (spec, tau) => {
+  const n = tau.length, out = new Float64Array(n);
+  const kt = spec.env.map((knot) => knot[0]), kd = spec.env.map((knot) => knot[1]);
+  for (const q of spec.parts) {
+    const amp = dbGain(q.a), w = 2 * Math.PI * (q.f ?? 0);
+    const tc = Math.max(q.tc ?? 0, 1e-3), span = Math.max(q.T ?? 0, 1e-3);
+    for (let i = 0; i < n; i++) {
+      const t = tau[i], tt = Math.max(t - spec.tau0, 0);
+      let arg;
+      if (q.kind === 'c') arg = w * t + q.ph;
+      else if (q.kind === 'g') arg = 2 * Math.PI * (q.fb * tt + (q.fa - q.fb) * tc * (1 - Math.exp(-tt / tc))) + q.ph;
+      else arg = 2 * Math.PI * (tt < span
+        ? q.fa * tt + 0.5 * (q.fb - q.fa) * tt * tt / span
+        : q.fa * span + 0.5 * (q.fb - q.fa) * span + q.fb * (tt - span)) + q.ph;
+      let s = Math.sin(arg) * amp;
+      if (q.gate) s *= Math.min(1, Math.max(0, (t - q.gate[0]) / Math.max(q.gate[1], 0.02)));
+      if (q.mk) s *= dbGain(interp(t, spec.mk_t, q.mk));
+      out[i] += s;
+    }
+  }
+  const first = kt[0], last = kt[kt.length - 1];
+  for (let i = 0; i < n; i++) {
+    const t = tau[i];
+    out[i] *= (t < first || t > last ? 0 : dbGain(interp(t, kt, kd))) * spec.scale;
+  }
+  return out;
+};
+
+// A layered voice: left = mid + side, right = mid - side, with a short fade-in on the hard onset.
+// A voice without a side layer is mono and returns a single Float32Array.
+const renderGlideVoice = (voice) => {
+  const n = Math.round(voice.durS * SR), tau = new Float64Array(n);
+  for (let i = 0; i < n; i++) tau[i] = i / SR - voice.refOffsetS;
+  const mid = layerSignal(GLIDE_LAYERS[voice.mid], tau);
+  const side = voice.side ? layerSignal(GLIDE_LAYERS[voice.side], tau) : new Float64Array(n);
+  const fade = Math.round(voice.fadeInMs * 1e-3 * SR);
+  if (fade > 0) {
+    let start = 0;
+    for (let i = 0; i < n; i++) if (Math.abs(mid[i]) + Math.abs(side[i]) > 1e-4) { start = i; break; }
+    for (let k = 0; k < fade && start + k < n; k++) { mid[start + k] *= k / fade; side[start + k] *= k / fade; }
+  }
+  const left = new Float32Array(n), right = new Float32Array(n);
+  for (let i = 0; i < n; i++) { left[i] = mid[i] + side[i]; right[i] = mid[i] - side[i]; }
+  return voice.side ? { left, right } : left;
+};
+
+// The click: damped rings after a silent lead, plus a very short seeded noise tick on the onset.
+// makeRng is uniform in [-1, 1) with variance 1/3; scaling by sqrt(3) gives the unit variance the tick was fitted with.
+const renderGlideClick = () => {
+  const c = GLIDE_CLICK, n = Math.round(c.dur_s * SR), x = new Float64Array(n);
+  for (const r of c.rings) {
+    for (let i = 0; i < n; i++) {
+      const td = i / SR - c.lead_s - r.delay_s;
+      if (td < 0) continue;
+      x[i] += r.a * Math.sin(2 * Math.PI * r.f * td + r.ph) * Math.exp(-td / r.tau_s) * Math.min(1, td / c.attack_s);
+    }
+  }
+  const rng = makeRng(c.seed), unit = Math.sqrt(3);
+  for (let i = 0; i < n; i++) {
+    const z = rng() * unit, t = i / SR - c.lead_s;
+    if (t >= 0) x[i] += c.noise_gain * z * Math.exp(-t / c.noise_tau_s);
+  }
+  return Float32Array.from(x);
+};
+
+// These voices take no options, so each is rendered once and shared. Treat the result as read-only.
+const once = (make) => { let value; return () => (value ??= make()); };
 
 const SOUNDS = {
 
@@ -152,6 +238,13 @@ const SOUNDS = {
     }
     return out;
   },
+
+  // Grid Glide voices. subBoom and uiClick are mono; the others return { left, right }.
+  subBoom: once(() => renderGlideVoice(GLIDE_VOICES.subBoom)),
+  subThump: once(() => renderGlideVoice(GLIDE_VOICES.subThump)),
+  subThud: once(() => renderGlideVoice(GLIDE_VOICES.subThud)),
+  subSwellHit: once(() => renderGlideVoice(GLIDE_VOICES.subSwellHit)),
+  uiClick: once(renderGlideClick),
 };
 
 const render = (name, opts = {}) => {
@@ -169,6 +262,11 @@ const render = (name, opts = {}) => {
     case 'keyTap': return SOUNDS.keyTap(opts.dur ?? 0.045, opts.seed ?? 131, opts.fc ?? 3800);
     case 'mouseClick': return SOUNDS.mouseClick(opts.dur ?? 0.06, opts.seed ?? 149, opts.fc ?? 4200);
     case 'whooshShort': return SOUNDS.whooshShort(opts.dur ?? 0.2, opts.seed ?? 163, opts.f0 ?? 900, opts.f1 ?? 4200);
+    case 'subBoom': return SOUNDS.subBoom();
+    case 'subThump': return SOUNDS.subThump();
+    case 'subThud': return SOUNDS.subThud();
+    case 'subSwellHit': return SOUNDS.subSwellHit();
+    case 'uiClick': return SOUNDS.uiClick();
     default: throw new Error('unknown sound ' + name);
   }
 };
@@ -197,22 +295,25 @@ const writeWav = async (file, L, R) => { await fs.writeFile(file, encodeWav(L, R
 
 
 
+// A voice returns a mono Float32Array or { left, right }; the mixer works on stereo pairs.
+export const toStereo = (voice) => (ArrayBuffer.isView(voice) ? { left: voice, right: voice } : voice);
+
 export const mixHits = (hits, dur) => {
   const n = Math.round(dur * SR);
   const L = new Float32Array(n), R = new Float32Array(n);
   let placed = 0;
   for (const h of hits) {
-    const s = render(h.sound, h.opts ?? {});
+    const { left, right } = toStereo(render(h.sound, h.opts ?? {}));
     const start = Math.round(h.t * SR);
     const gain = h.gain ?? 1;
 
     const pan = h.pan ?? 0;
     const gl = gain * Math.min(1, 1 - pan), gr = gain * Math.min(1, 1 + pan);
-    for (let i = 0; i < s.length; i++) {
+    for (let i = 0; i < left.length; i++) {
       const k = start + i;
       if (k < 0 || k >= n) continue;
-      L[k] += s[i] * gl;
-      R[k] += s[i] * gr;
+      L[k] += left[i] * gl;
+      R[k] += right[i] * gr;
     }
     placed++;
   }
@@ -244,8 +345,8 @@ if (invokedDirectly) {
     const dir = path.resolve(args.kit);
     await fs.mkdir(dir, { recursive: true });
     for (const name of Object.keys(SOUNDS)) {
-      const s = render(name);
-      await writeWav(path.join(dir, `${name}.wav`), s, s);
+      const { left, right } = toStereo(render(name));
+      await writeWav(path.join(dir, `${name}.wav`), left, right);
     }
     console.log(JSON.stringify({ ok: true, kit: dir, sounds: Object.keys(SOUNDS) }, null, 2));
     process.exit(0);

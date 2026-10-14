@@ -2,11 +2,15 @@ import './project-tmp.mjs';
 import path from 'node:path';
 import {promises as fs} from 'node:fs';
 import {EDITION_STYLE_IDS as STYLE_IDS, getStyleProfile} from '../../engine/src/creative-kit/styles.ts';
+import {purposeFit, semanticEligibility, toneFit} from '../../engine/src/styles/registry.ts';
 import {introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema} from '../../engine/src/creative-kit/schema.ts';
 import {kineticSceneVariants} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneVariants} from '../../engine/src/motion-library/schema.ts';
 import {screenRecordingVariants} from '../../engine/src/screen-recording/schema.ts';
 import {semanticSceneVariants} from '../../engine/src/creative-kit/semantic/schema.ts';
+import {styleSceneVariants} from '../../engine/src/styles/scenes.ts';
+import {GRID_GLIDE_FAMILIES} from '../../engine/src/styles/grid-glide/scenes/schema.ts';
+import {ownSceneStyle} from '../../engine/src/styles/registry.ts';
 import {editManifestSchema, editSceneSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {ROOT, atomicJson, checkedPath, ensureOutput, readJson, relativePath, slug, object, finite, digest, fileSnapshot, withFileLock} from './job-paths.mjs';
@@ -32,33 +36,30 @@ import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} fr
 export const EDITOR_PURPOSES = Object.freeze(['explainer','case-study','tutorial','comparison','opinion','story']);
 export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
 export const EDITOR_SOUND_MODES = Object.freeze(['recipes','auto']);
-const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants].map(schema=>[schema.shape.family.value,schema]));
+const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...styleSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
   comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow','project-scene':'project-scene',
   ...Object.fromEntries(Object.keys(KINETIC_SCHEMAS).map(family=>[family,family]))});
 const DATA_SCHEMAS = {intro:introSchema,proof:proofSchema,process:processSchema,comparison:comparisonSchema,comment:commentSchema,follow:followSchema,'project-scene':projectSceneDataSchema,
   ...Object.fromEntries(Object.entries(KINETIC_SCHEMAS).map(([family,schema])=>[family,schema.shape.data]))};
 const SEMANTIC_FAMILIES=semanticSceneVariants.map(schema=>schema.shape.family.value);
-const defaultLayout=family=>family==='project-scene'||SEMANTIC_FAMILIES.includes(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
+const GLIDE_FAMILY_SET=new Set(GRID_GLIDE_FAMILIES);
+export const isGlideFamily=family=>GLIDE_FAMILY_SET.has(family);
+const defaultLayout=family=>family==='project-scene'||SEMANTIC_FAMILIES.includes(family)||isGlideFamily(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
+// false turns the automatic watermark off, a text (1 to 40 characters, checked in validateEditorBrief and stored trimmed) replaces the profile handle, and omitting
+// the field uses the handle when the profile has one. It is filled into every Grid Glide scene except glide-follow, whose hero already is the complete handle.
+// A scene's own data.watermark always wins: it is only filled in where the scene left it out, and a follow scene shows one only if it sets its own.
+const glideWatermark=brief=>brief.watermark===false?undefined:typeof brief.watermark==='string'?brief.watermark.trim():brief.creator.handle??undefined;
 
-const PURPOSE_FIT = {
-  explainer: {'section-deck':16,'split-canvas':13,'kinetic-paper':12,'stepped-editorial':10},
-  'case-study': {'calligraphic-receipts':18,'stepped-editorial':13,'section-deck':12,'paper-collage':9},
-  tutorial: {'section-deck':16,'split-canvas':13,'kinetic-paper':12,'calligraphic-receipts':8},
-  comparison: {'split-canvas':18,'judgment-board':13,'section-deck':12,'paper-collage':10},
-  opinion: {'judgment-board':18,'stepped-editorial':13,'kinetic-paper':10,'calligraphic-receipts':8},
-  story: {'paper-collage':18,'kinetic-paper':13,'calligraphic-receipts':10,'stepped-editorial':9},
-};
-const TONE_FIT = {
-  energetic: {'kinetic-paper':6,'split-canvas':4,'paper-collage':4,'judgment-board':2},
-  calm: {'section-deck':4,'calligraphic-receipts':3,'paper-collage':2},
-  editorial: {'stepped-editorial':6,'judgment-board':4,'calligraphic-receipts':4,'paper-collage':2},
-};
+// Editorial points per purpose and tone come from each style's meta (`fit`); a style that is not listed scores 4 content and 0 tone points.
+const PURPOSE_FIT = purposeFit();
+const TONE_FIT = toneFit();
 const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process:'paper-reveal',comparison:'paper-reveal',comment:'ui-confirmation',follow:'soft-transition',
   'token-lens':'highlight-swipe','meter-receipt':'counter-accent','ticket-offer':'restrained-reveal','comment-stack':'ui-confirmation','chapter-quote':'chapter-shift','route-stops':'paper-reveal',
   'kinetic-text':'restrained-reveal','evidence-wipe':'paper-reveal','motion-concept':'restrained-reveal','message-board':'paper-reveal',
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
-  statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent'};
+  statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent',
+  'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump'};
 const text = (value,label,max=200) => {
   if(typeof value!=='string' || !value.trim() || value.length>max) throw new Error(`${label} must be nonblank text (maximum ${max} characters).`);
   return value;
@@ -90,7 +91,7 @@ export function listEditorStyles() {
 }
 
 export function validateEditorBrief(raw) {
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes'],'editor brief');
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
   if(raw.projectScenePack!==undefined){relativePath(raw.projectScenePack);if(!raw.projectScenePack.startsWith(`Projects/${raw.id}/`))throw new Error('Project scene pack must belong to its project');}
@@ -112,6 +113,7 @@ export function validateEditorBrief(raw) {
   if(raw.signoffFromSec!==undefined) finite(raw.signoffFromSec,0,600,'signoffFromSec');
   if(raw.endAtSec!==undefined) finite(raw.endAtSec,0.000001,600,'endAtSec');
   if(raw.sound!==undefined) choice(raw.sound,EDITOR_SOUND_MODES,'sound');
+  if(raw.watermark!==undefined && raw.watermark!==false) text(raw.watermark,'watermark',40);
   if(raw.sourceKind!==undefined) choice(raw.sourceKind,['presenter','screen'],'sourceKind');
   const brand=raw.brand===undefined||raw.brand===null?null:normalizeBrand(raw.brand);
   if(raw.emphasisFile!==undefined) {
@@ -153,8 +155,7 @@ export function recommendEditorStyle(raw) {
   const brief=validateEditorBrief(raw);
   // Every public style competes. Authored semantic beats reward compatible visual grammars.
   // Explicit and saved fixed choices always win; existing manifests are never regenerated here.
-  const eligibility={'liquid-glass':['token-lens','meter-receipt'],'campaign-tickets':['ticket-offer','comment-stack'],'magazine-interview':['chapter-quote'],'scrapbook-route':['route-stops'],
-    'kinetic-paper':['kinetic-text'],'paper-collage':['evidence-wipe','message-board']};
+  const eligibility=semanticEligibility();
   const eligible=Object.entries(eligibility).filter(([,families])=>brief.beats.some(beat=>families.includes(BEAT_FAMILIES[beat.intent]))).map(([id])=>id);
   const candidates=STYLE_IDS.map((id,index)=>{
     const contentScore=PURPOSE_FIT[brief.purpose][id]??4;
@@ -177,6 +178,10 @@ export function recommendEditorStyle(raw) {
 
 export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}) {
   const brief=validateEditorBrief(raw),selection=recommendEditorStyle(brief);
+  for(const beat of brief.beats) {
+    const owner=ownSceneStyle(BEAT_FAMILIES[beat.intent]);
+    if(owner!==undefined && owner!==selection.style) throw new Error(`Beat ${beat.id} uses ${beat.intent}, a scene that only exists in the ${owner} style, but this edit resolves to ${selection.style}. Pin style "${owner}" in the brief or in the saved style preference, or choose another beat intent.`);
+  }
   const defaults=brief.preferences?resolvePreferences(brief.preferences,{purpose:brief.purpose,tone:brief.tone,style:selection.style}):{};
   const preferences={...defaults,...Object.fromEntries(['fontFamily','writingStyle','captionsGrouping','captionsPresentation'].filter(key=>brief[key]!==undefined).map(key=>[key,brief[key]]))};
   if(source.path!==brief.source) throw new Error('Inspected source path disagrees with the named brief source.');
@@ -202,15 +207,23 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     throw new Error('endAtSec cannot cut or omit supplied caption speech. Place the endpoint after the last reviewed word.');
   }
   if(delivery && !brief.captionsReviewedBy) throw new Error('Delivery needs reviewed captions and an explicit captionsReviewedBy reviewer.');
+  const watermark=glideWatermark(brief);let watermarked=0;
   const scenes=brief.beats.map(beat=>{
     if(beat.toSec>retainedFrames/source.fps+1e-7) throw new Error(`Beat ${beat.id} exceeds the retained source duration.`);
     const fromFrame=editFrame(beat.fromSec,'start'),toFrame=editFrame(beat.toSec,'end');
     if(toFrame<=fromFrame) throw new Error(`Beat ${beat.id} occupies no complete source frame.`);
     const family=BEAT_FAMILIES[beat.intent];
+    let data=beat.data;
+    if(isGlideFamily(family) && family!=='glide-follow' && watermark!==undefined && data.watermark===undefined) {data={...data,watermark};watermarked++;}
     return editSceneSchema.parse({id:beat.id,family,fromFrame,durationInFrames:toFrame-fromFrame,
       layout:beat.layout??defaultLayout(family),
-      motion:beat.motion??(brief.tone==='calm'?'quiet':brief.tone==='energetic'?'stagger':selection.profile.grammar.motion),data:beat.data});
+      motion:beat.motion??(brief.tone==='calm'?'quiet':brief.tone==='energetic'?'stagger':selection.profile.grammar.motion),data});
   });
+  const glideNotices=watermarked?[`Watermark "${watermark}" was added to ${watermarked} Grid Glide scene(s) that did not set one. Set "watermark": false in the brief to leave it out.`]:[];
+  // The style that owns the glide ending scenes draws its own comment and follow cards; the shared ones show fixed English header lines there.
+  if(selection.style===ownSceneStyle('glide-comment') && scenes.some(scene=>scene.family==='comment' || scene.family==='follow')) {
+    glideNotices.push('Grid Glide has its own ending scenes: use glide-comment and glide-follow; the shared comment and follow draw fixed English header lines.');
+  }
   const ending=resolveEnding({creator:brief.creator,words,signoffFromSec:brief.signoffFromSec});
   const signoffFromFrame=ending.signoffFromSec===null?undefined:editFrame(ending.signoffFromSec,'start');
   const branded=applyBrandToScenes(selection.style,brief.brand??null,scenes);
@@ -247,7 +260,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
       rounding:{fromSec:brief.beats[index].fromSec,toSec:brief.beats[index].toSec},soundCandidate:SOUND_FOR_FAMILY[scene.family]})),
     reviewRequired:['Check source-specific framing and timing in rendered media.','Verify all on-screen copy and supplied evidence.',
       'Review style adaptation separately from source approval.','Preserve comment CTA, complete follow handle, recorded signoff and hard stop.'],
-    ...(emphasisRecord?{emphasis:emphasisRecord}:{}),notices:[...ending.notices,...branded.notices]};
+    ...(emphasisRecord?{emphasis:emphasisRecord}:{}),notices:[...ending.notices,...branded.notices,...glideNotices]};
   return {manifest,decision};
 }
 
@@ -269,7 +282,7 @@ export function assertDeliveryReady(manifest) {
 
 
 
-export function autoSoundPlan(manifest,palette) {
+export function autoSoundPlan(manifest,palette,{opening}={}) {
   const fps=manifest.source.fps,durationInFrames=compileEdit(manifest).durationInFrames;
   const limit=manifest.signoffFromFrame??durationInFrames;
   const planned=planSfxEvents(editCues(manifest),palette,{fps,signoffFromFrame:manifest.signoffFromFrame,durationInFrames});
@@ -281,8 +294,18 @@ export function autoSoundPlan(manifest,palette) {
     if(event.atFrame/fps+duration>limit/fps+1e-7) {dropped.push({atFrame:event.atFrame,recipe:event.recipe,reason:'recipe-crosses-signoff'});continue;}
     sounds.push({atFrame:event.atFrame,recipe:event.recipe,gain:event.gain});
   }
-  return {style:planned.style,maxPerSec:planned.maxPerSec,sounds,decisions:planned.decisions,dropped};
+  // An edit that opens on a Grid Glide scene starts with the boom: a normal sounds[] entry on frame 0 at the palette's transition gain.
+  const transition=palette.entries.transition;
+  const boom=opening!=null && startsOnGlide(manifest) && transition?.recipe && opening.duration<=limit/fps+1e-7
+    ?{atFrame:0,recipe:opening.id,gain:transition.gain}:null;
+  if(boom) sounds.unshift(boom);
+  return {style:planned.style,maxPerSec:planned.maxPerSec,sounds,decisions:planned.decisions,dropped,opening:boom};
 }
+
+export const OPENING_BOOM_RECIPE='sub-boom';
+export const startsOnGlide=manifest=>{const first=manifest.scenes[0];return first!==undefined && first.fromFrame===0 && isGlideFamily(first.family);};
+// The boom recipe is read from the catalog only when it can sound: the edit opens on a Grid Glide scene and the palette's transition kind has a recipe.
+export const openingRecipe=async(manifest,palette,load=soundRecipe)=>startsOnGlide(manifest) && palette.entries.transition?.recipe?load(OPENING_BOOM_RECIPE):undefined;
 
 
 
@@ -401,9 +424,11 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
   return withFileLock(`${base}/plan.lock`,opts,async()=>{
     if(!replace && await readJson(manifestPath,{optional:true})) throw new Error(`Edit output already exists: ${manifestPath}. Use --replace after reviewing the authored edits.`);
     if(brief.sound==='auto') {
-      const auto=autoSoundPlan(plan.manifest,await loadStylePalette(plan.manifest.style));
+      const palette=await loadStylePalette(plan.manifest.style);
+      const opening=await openingRecipe(plan.manifest,palette);
+      const auto=autoSoundPlan(plan.manifest,palette,{opening});
       plan.manifest.sounds.push(...auto.sounds);
-      plan.decision.sound={mode:'auto',style:auto.style,maxPerSec:auto.maxPerSec,placed:auto.sounds.length,decisions:auto.decisions,droppedForSignoff:auto.dropped};
+      plan.decision.sound={mode:'auto',style:auto.style,maxPerSec:auto.maxPerSec,placed:auto.sounds.length,decisions:auto.decisions,droppedForSignoff:auto.dropped,...(auto.opening?{opening:auto.opening}:{})};
       for(const beat of plan.decision.beatDecisions) {
         const placed=auto.sounds.filter(s=>s.atFrame>=beat.fromFrame && s.atFrame<beat.fromFrame+beat.durationInFrames).map(s=>s.recipe);
         if(placed.length) beat.soundRecipe=placed.join(' + ');

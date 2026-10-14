@@ -4,7 +4,7 @@ import path from 'node:path';
 import {pathToFileURL} from 'node:url';
 import {isStoreEdition} from './studio-git.mjs';
 import {browserHomeProblem} from './studio-setup.mjs';
-import {readSetupState} from './studio-state.mjs';
+import {STEP_IDS, readSetupState} from './studio-state.mjs';
 import {checkEngineDependencies} from './engine-dependencies.mjs';
 
 export const CHECK_LABELS = Object.freeze({
@@ -18,6 +18,7 @@ export const CHECK_LABELS = Object.freeze({
   ffmpeg: 'FFmpeg',
   fonts: 'الخطوط',
   models: 'موديلات كشف الوش',
+  transcription: 'أداة التفريغ الصوتي',
   profile: 'البروفايل (PROFILE.json)',
 });
 export const DOCTOR_DIR = 'Projects/_doctor';
@@ -52,16 +53,18 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
   const state = await readSetupState(root);
   const misplaced = locationProblem(root);
   const store = isStoreEdition(root);
+  const finished = state.status === 'done' && STEP_IDS.every((id) => state.steps?.[id]?.ok === true);
   const checks = {
     platform: {ok: process.platform === 'win32' && process.arch === 'x64', actual: `${process.platform} ${process.arch}`},
     node: {ok: major > 22 || (major === 22 && minor >= 20), actual: process.versions.node},
     location: {ok: misplaced === null, error: misplaced},
-    setup: {ok: state.status === 'done', actual: state.status},
+    setup: {ok: finished, actual: state.status === 'done' && !finished ? 'incomplete' : state.status},
     packages: await checkEngineDependencies(root),
     browser: {ok: (await exists(at(`engine/node_modules/.remotion/${lock.browser.exe}`))) && (await exists(at(`.remotion/${lock.browser.exe}`)))},
     ffmpeg: {ok: runsTool(at('Tools/bin/ffmpeg.exe')) && runsTool(at('Tools/bin/ffprobe.exe'))},
     fonts: {ok: false, missing: []},
     models: {ok: false, missing: []},
+    transcription: {ok: false, missing: []},
     profile: {ok: false, error: null},
     git: {ok: store || !!gitExe, warnOnly: true},
     clean: {ok: true, warnOnly: true, dirty: []},
@@ -71,6 +74,8 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
   checks.fonts.ok = checks.fonts.missing.length === 0 && (await exists(at('engine/public/fonts/manifest.json')));
   for (const model of lock.models) if (!(await exists(at(model.path)))) checks.models.missing.push(model.path);
   checks.models.ok = checks.models.missing.length === 0;
+  for (const file of ['Tools/whisper-runtime.json', lock.transcription.model.path, lock.transcription.vad.path]) if (!(await exists(at(file)))) checks.transcription.missing.push(file);
+  checks.transcription.ok = checks.transcription.missing.length === 0;
   try {
     await readProfile(root);
     checks.profile.ok = true;

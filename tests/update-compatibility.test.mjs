@@ -40,6 +40,14 @@ test('the current release retains existing profile and manifest formats and a ma
   assert.equal(JSON.stringify(profile), bytes);
 });
 
+test('the engine package lock carries the runtime version of the release lock', async () => {
+  const lock = JSON.parse(await readFile(new URL('../versions.lock.json', import.meta.url), 'utf8'));
+  const packageLock = JSON.parse(await readFile(new URL('../engine/package-lock.json', import.meta.url), 'utf8'));
+  assert.match(lock.edition, /^\d+\.\d+\.\d+$/);
+  assert.equal(packageLock.version, lock.engine);
+  assert.equal(packageLock.packages[''].version, lock.engine);
+});
+
 test('a 1.8.6 clone updates by fast-forward while preserving profile and project bytes', async t => {
   const root = await mkdtemp(path.join(os.tmpdir(), 'studio-update-'));
   t.after(() => rm(root, {recursive: true, force: true}));

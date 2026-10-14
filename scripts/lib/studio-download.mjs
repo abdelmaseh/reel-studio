@@ -12,7 +12,22 @@ export async function sha256File(file) {
   return hash.digest('hex');
 }
 
-export async function downloadVerified({url, sha256, bytes = null, target, timeoutMs = 30 * 60 * 1000}) {
+// 30 minutes, or the time a 200 KB/s connection needs, whichever is longer: the 1.5 GB model must not time out on a slow line.
+export const downloadTimeoutMs = bytes => Math.max(30 * 60 * 1000, Math.ceil((bytes ?? 0) / 200_000) * 1000);
+
+// Antivirus may hold a freshly written file for a moment; retry only that kind of error so the verified download is kept.
+const LOCKED = new Set(['EPERM', 'EBUSY', 'EACCES']);
+export async function renameWithRetry(from, to, {rename = fs.rename, tries = 10, delayMs = 500} = {}) {
+  for (let attempt = 1; ; attempt += 1) {
+    try { return await rename(from, to); }
+    catch (error) {
+      if (!LOCKED.has(error.code) || attempt >= tries) throw error;
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+}
+
+export async function downloadVerified({url, sha256, bytes = null, target, timeoutMs = downloadTimeoutMs(bytes)}) {
   if ((await sha256File(target)) === sha256) return {cached: true, target};
   await fs.mkdir(path.dirname(target), {recursive: true});
   const partial = `${target}.partial`;
@@ -33,7 +48,7 @@ export async function downloadVerified({url, sha256, bytes = null, target, timeo
     const actual = hash.digest('hex');
     if (actual !== sha256) throw new Error(`Downloaded file failed its SHA-256 check (expected ${sha256}, got ${actual}): ${url}`);
     if (bytes !== null && size !== bytes) throw new Error(`Downloaded file has ${size} bytes, expected ${bytes}: ${url}`);
-    await fs.rename(partial, target);
+    await renameWithRetry(partial, target, {tries: 30, delayMs: 1000}); // Antivirus may hold a large fresh file for a while.
     return {cached: false, target, bytes: size};
   } finally {
     await fs.rm(partial, {force: true});

@@ -97,7 +97,7 @@ test('HTML, scripts and fonts stay local; foreign hosts and oversized writes are
 test('setup executes the edition command from the edition root and reports its result', async t => {
   const {root, api, save} = await instance(t);
   await mkdir(path.join(root, 'scripts'), {recursive: true});
-  await writeFile(path.join(root, 'scripts', 'studio.mjs'), "import {writeFile,mkdir} from 'node:fs/promises'; await mkdir('state',{recursive:true}); await writeFile('state/args.json',JSON.stringify(process.argv.slice(2))); await writeFile('state/setup.json',JSON.stringify({status:'done',steps:{folders:{ok:true},packages:{ok:true},browser:{ok:true},ffmpeg:{ok:true},fonts:{ok:true},models:{ok:true}}}));");
+  await writeFile(path.join(root, 'scripts', 'studio.mjs'), "import {writeFile,mkdir} from 'node:fs/promises'; await mkdir('state',{recursive:true}); await writeFile('state/args.json',JSON.stringify(process.argv.slice(2))); await writeFile('state/setup.json',JSON.stringify({status:'done',steps:{folders:{ok:true},packages:{ok:true},browser:{ok:true},ffmpeg:{ok:true},fonts:{ok:true},models:{ok:true},transcription:{ok:true}}}));");
   await save(example, null);
   const response = await api('setup', {method: 'POST', headers: {'content-type': 'application/json'}, body: '{}'});
   assert.equal(response.status, 200); assert.equal((await response.json()).setup.status, 'done');
@@ -119,4 +119,17 @@ test('setup refuses an unsafe Node package location before invoking the installe
   const response = await api('setup', {method: 'POST', headers: {'content-type': 'application/json'}, body: '{}'});
   assert.equal(response.status, 400);
   assert.match((await response.json()).error, /package.json/);
+});
+
+test('setup runs again when an older studio left it done with a step missing', async t => {
+  const {root, api, save} = await instance(t);
+  await mkdir(path.join(root, 'scripts'), {recursive: true});
+  await mkdir(path.join(root, 'state'), {recursive: true});
+  await writeFile(path.join(root, 'scripts', 'studio.mjs'), "import {writeFile} from 'node:fs/promises'; await writeFile('state/args.json',JSON.stringify(process.argv.slice(2)));");
+  await writeFile(path.join(root, 'state', 'setup.json'), JSON.stringify({status: 'done', steps: {folders: {ok: true}, packages: {ok: true}, browser: {ok: true}, ffmpeg: {ok: true}, fonts: {ok: true}, models: {ok: true}}}));
+  await save(example, null);
+  assert.equal((await (await api('status')).json()).setup.status, 'incomplete');
+  const response = await api('setup', {method: 'POST', headers: {'content-type': 'application/json'}, body: '{}'});
+  assert.equal(response.status, 200);
+  assert.deepEqual(JSON.parse(await readFile(path.join(root, 'state', 'args.json'), 'utf8')), ['setup']);
 });

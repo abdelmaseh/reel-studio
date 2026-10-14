@@ -7,6 +7,7 @@ import { pipeline } from 'node:stream/promises';
 import { execFileSync, spawnSync } from 'node:child_process';
 import { ROOT } from './media.mjs';
 import { sha256File, transcriptionCacheKey, assertTranscriptionOutputPath, writeTranscriptionJson } from './transcription.mjs';
+import { downloadVerified, renameWithRetry } from './studio-download.mjs';
 
 export const DEFAULT_WHISPER_RELEASE = 'b4938';
 export const WHISPER_RUNTIME_FILE = path.join(ROOT, 'Tools', 'whisper-runtime.json');
@@ -53,7 +54,7 @@ export async function resolveWhisperModel(model, { download = false } = {}) {
   const legacy = path.join(ROOT, 'Tools', 'whisper', `ggml-${model}.bin`);
   const modern = path.join(ROOT, 'Tools', 'whisper-models', `ggml-${model}.bin`);
   for (const file of [legacy, modern]) if (fs.existsSync(file)) return { path: file, sha256: await sha256File(file), reused: true };
-  if (!download) throw new Error(`Model ${model} is not installed. Run node engine/tools/install-whisper.mjs --model ${model}.`);
+  if (!download) throw new Error(`Model ${model} is not installed. Run node scripts/studio.mjs setup for the default medium model, or node engine/tools/install-whisper.mjs --model ${model}.`);
   return hfModel('ggerganov/whisper.cpp', `ggml-${model}.bin`, modern);
 }
 
@@ -73,10 +74,18 @@ async function hashWhisperRuntime(directory) {
   return { executable, binaryFiles };
 }
 
-function probeWhisperRuntime({ executable, binaryFiles }) {
+// STATUS_DLL_NOT_FOUND (0xC0000135) as Windows reports it unsigned and as a signed 32-bit exit code: the loader found no Visual C++ runtime DLL.
+const DLL_NOT_FOUND = [3221225781, -1073741515];
+export const isMissingRuntimeDll = failure => DLL_NOT_FOUND.includes(failure?.status) || DLL_NOT_FOUND.includes(failure?.code);
+const MISSING_VC_RUNTIME = 'whisper-cli.exe could not start because a required DLL is missing, most likely the Microsoft Visual C++ Redistributable (x64). Install it from https://aka.ms/vs/17/release/vc_redist.x64.exe, then run node scripts/studio.mjs setup again.';
+
+export function probeWhisperRuntime({ executable, binaryFiles }, run = { execFileSync, spawnSync }) {
   const opts = { encoding: 'utf8', windowsHide: true, cwd: path.dirname(executable), stdio: ['ignore', 'pipe', 'pipe'], timeout: 30000 };
-  const binaryVersion = execFileSync(executable, ['--version'], opts).trim();
-  const helpResult = spawnSync(executable, ['--help'], opts);
+  let binaryVersion;
+  try { binaryVersion = run.execFileSync(executable, ['--version'], opts).trim(); }
+  catch (error) { throw isMissingRuntimeDll(error) ? new Error(MISSING_VC_RUNTIME) : error; }
+  const helpResult = run.spawnSync(executable, ['--help'], opts);
+  if (isMissingRuntimeDll(helpResult)) throw new Error(MISSING_VC_RUNTIME);
   if (helpResult.status !== 0) throw new Error(`whisper --help failed: ${helpResult.stderr}`);
   const help = helpResult.stdout + helpResult.stderr;
   if (!help.includes('--output-json-full') || !help.includes('--dtw')) throw new Error('Installed CLI lacks full JSON or DTW timing support.');
@@ -89,6 +98,29 @@ function probeWhisperRuntime({ executable, binaryFiles }) {
 function assertRuntimeHashes(actual, expected) {
   if (!expected || typeof expected !== 'object' || Array.isArray(expected) || transcriptionCacheKey(actual) !== transcriptionCacheKey(expected)) {
     throw new Error('Whisper binary/DLL hashes differ from the installation manifest or saved runtime. Reinstall or inspect before execution.');
+  }
+}
+
+function unzipArchive(archive, destination) {
+  const extraction = `$ErrorActionPreference = 'Stop'\nAdd-Type -AssemblyName System.IO.Compression.FileSystem\n$transcriptZip = [System.IO.Compression.ZipFile]::OpenRead($env:WHISPER_ARCHIVE)\ntry { foreach ($entry in $transcriptZip.Entries) { if ([System.IO.Path]::IsPathRooted($entry.FullName) -or $entry.FullName -match '(^|[\\\\/])\\.\\.([\\\\/]|$)') { throw 'Unsafe archive entry' } } } finally { $transcriptZip.Dispose() }\n[System.IO.Compression.ZipFile]::ExtractToDirectory($env:WHISPER_ARCHIVE, $env:WHISPER_DESTINATION)`;
+  execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', extraction], { windowsHide: true, stdio: 'pipe', env: { ...process.env, WHISPER_ARCHIVE: archive, WHISPER_DESTINATION: destination }, timeout: 120000 });
+}
+
+// Extract an official archive into a staging folder, probe it and write install.json there, then rename it to its Tools/whisper-<tag> folder:
+// the final folder never exists without install.json, and a failed attempt removes its staging folder. A folder that already has one is kept.
+export async function extractRuntime({ archive, directory, record }, { unzip = unzipArchive, probe = probeWhisperRuntime } = {}) {
+  if (fs.existsSync(path.join(directory, 'install.json'))) return;
+  await fsp.mkdir(path.dirname(directory), { recursive: true });
+  const staging = await fsp.mkdtemp(`${directory}.install-`);
+  try {
+    await unzip(archive, staging);
+    const inspected = probe(await hashWhisperRuntime(staging));
+    if (fs.existsSync(directory)) throw new Error(`Incomplete install already exists at ${directory}; preserve it for inspection before retrying.`);
+    await writeTranscriptionJson(path.join(staging, 'install.json'), { schema: 1, ...record, installedAt: new Date().toISOString(), ...inspected, executable: path.join(directory, path.relative(staging, inspected.executable)) });
+    await renameWithRetry(staging, directory);
+  } catch (error) {
+    await fsp.rm(staging, { recursive: true, force: true, maxRetries: 3 }).catch(() => {});
+    throw error;
   }
 }
 
@@ -115,19 +147,7 @@ export async function installWhisper({ releaseTag = DEFAULT_WHISPER_RELEASE, mod
   const archive = path.join(ROOT, 'state', 'cache', 'downloads', `whisper-${releaseTag}-x64.zip`);
   await downloadVerifiedFile(asset.browser_download_url, archive, digest);
   const directory = assertTranscriptionOutputPath(path.join(ROOT, 'Tools', `whisper-${releaseTag}`));
-  if (!fs.existsSync(path.join(directory, 'install.json'))) {
-    await fsp.mkdir(path.join(ROOT, 'Tools'), { recursive: true });
-    const staging = await fsp.mkdtemp(path.join(ROOT, 'Tools', `whisper-${releaseTag}.install-`));
-    const extraction = `$ErrorActionPreference = 'Stop'\nAdd-Type -AssemblyName System.IO.Compression.FileSystem\n$transcriptZip = [System.IO.Compression.ZipFile]::OpenRead($env:WHISPER_ARCHIVE)\ntry { foreach ($entry in $transcriptZip.Entries) { if ([System.IO.Path]::IsPathRooted($entry.FullName) -or $entry.FullName -match '(^|[\\\\/])\\.\\.([\\\\/]|$)') { throw 'Unsafe archive entry' } } } finally { $transcriptZip.Dispose() }\n[System.IO.Compression.ZipFile]::ExtractToDirectory($env:WHISPER_ARCHIVE, $env:WHISPER_DESTINATION)`;
-    execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', extraction], { windowsHide: true, stdio: 'pipe', env: { ...process.env, WHISPER_ARCHIVE: archive, WHISPER_DESTINATION: staging }, timeout: 120000 });
-
-
-    const inspected = probeWhisperRuntime(await hashWhisperRuntime(staging));
-    if (fs.existsSync(directory)) throw new Error(`Incomplete install already exists at ${directory}; preserve it for inspection before retrying.`);
-    await fsp.rename(staging, directory);
-    const record = { schema: 1, releaseTag, releaseUrl: release.html_url, releaseCommit: release.target_commitish, archiveSha256: digest, archiveUrl: asset.browser_download_url, installedAt: new Date().toISOString(), ...inspected, executable: path.join(directory, path.relative(staging, inspected.executable)) };
-    await writeTranscriptionJson(path.join(directory, 'install.json'), record);
-  }
+  await extractRuntime({ archive, directory, record: { releaseTag, releaseUrl: release.html_url, releaseCommit: release.target_commitish, archiveSha256: digest, archiveUrl: asset.browser_download_url } });
   const installed = await inspectWhisperRuntime(directory);
   const saved = JSON.parse(await fsp.readFile(path.join(directory, 'install.json'), 'utf8'));
   const modelInfo = await resolveWhisperModel(model, { download: true });
@@ -143,4 +163,53 @@ export async function installWhisper({ releaseTag = DEFAULT_WHISPER_RELEASE, mod
   const runtime = { ...saved, ...installed, capabilities: { ...installed.capabilities, ...previousEvidence }, directory, model: { name: model, ...modelInfo }, vad, legacyDirectory: path.join(ROOT, 'Tools', 'whisper') };
   await writeTranscriptionJson(WHISPER_RUNTIME_FILE, runtime);
   return runtime;
+}
+
+export function pinnedWhisperPaths({ runtime, model, vad }, root = ROOT) {
+  const at = relative => path.join(root, ...relative.split('/'));
+  return {
+    archive: at(`state/cache/downloads/whisper-${runtime.release}-x64.zip`),
+    directory: at(`Tools/whisper-${runtime.release}`),
+    model: at(model.path),
+    vad: at(vad.path),
+    runtimeFile: at('Tools/whisper-runtime.json'),
+  };
+}
+
+// Setup's transcription step: the runtime, model and VAD pinned in versions.lock.json, verified files reused.
+export async function installPinnedWhisper(pins, { root = ROOT, download = downloadVerified, extract = extractRuntime, inspect = inspectWhisperRuntime, log = () => {} } = {}) {
+  if (process.platform !== 'win32' || process.arch !== 'x64') throw new Error('This installer is scoped to the project Windows x64 host.');
+  const { runtime, model, vad } = pins;
+  const paths = pinnedWhisperPaths(pins, root);
+  if (!fs.existsSync(path.join(paths.directory, 'install.json'))) {
+    log(`transcription: whisper.cpp ${runtime.release}`);
+    await download({ url: runtime.url, sha256: runtime.sha256, bytes: runtime.bytes, target: paths.archive });
+    await extract({ archive: paths.archive, directory: paths.directory, record: { releaseTag: runtime.release, releaseUrl: `https://github.com/ggml-org/whisper.cpp/releases/tag/${runtime.release}`, releaseCommit: null, archiveSha256: runtime.sha256, archiveUrl: runtime.url } });
+  }
+  const installed = await inspect(paths.directory);
+  const saved = JSON.parse(await fsp.readFile(path.join(paths.directory, 'install.json'), 'utf8'));
+  log(`transcription: ${model.name} model (${Math.round(model.bytes / 1e6)} MB) and VAD`);
+  const modelResult = await download({ url: model.url, sha256: model.sha256, bytes: model.bytes, target: paths.model });
+  const vadResult = await download({ url: vad.url, sha256: vad.sha256, bytes: vad.bytes, target: paths.vad });
+  const previous = await fsp.readFile(paths.runtimeFile, 'utf8').then(JSON.parse).catch(() => null);
+  const evidence = previous && JSON.stringify(previous.binaryFiles) === JSON.stringify(installed.binaryFiles) ? previous.capabilities : {};
+  const record = {
+    ...saved, ...installed, capabilities: { ...installed.capabilities, ...evidence }, directory: paths.directory,
+    model: { name: model.name, path: paths.model, source: model.url, cached: modelResult.cached, sha256: model.sha256 },
+    vad: { path: paths.vad, source: vad.url, cached: vadResult.cached, sha256: vad.sha256 },
+    legacyDirectory: path.join(root, 'Tools', 'whisper'),
+  };
+  await writeTranscriptionJson(paths.runtimeFile, record);
+  return record;
+}
+
+export async function verifyPinnedWhisper(pins, { root = ROOT, inspect = inspectWhisperRuntime } = {}) {
+  const paths = pinnedWhisperPaths(pins, root);
+  try {
+    const runtime = JSON.parse(await fsp.readFile(paths.runtimeFile, 'utf8'));
+    if (path.resolve(runtime.directory ?? '') !== paths.directory || path.resolve(runtime.model?.path ?? '') !== paths.model || path.resolve(runtime.vad?.path ?? '') !== paths.vad) return false;
+    if (await sha256File(paths.model) !== pins.model.sha256 || await sha256File(paths.vad) !== pins.vad.sha256) return false;
+    await inspect(paths.directory);
+    return true;
+  } catch { return false; }
 }

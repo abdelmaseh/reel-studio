@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "provenance": "Per-style mapping from scene cue kinds to Sound-Kits/catalog.json recipes. gain multiplies the recipe's own hit gains (the edit-manifest sounds[].gain). leadSec starts the recipe early so its peak lands on the cue frame. confidence and basis describe the evidence for the SOUND, not for the visual event: 'none'/'authored' means the style's references say nothing about that sound and the entry is a project default to confirm at the Edit Plan gate. A null recipe means the references show no sound there.",
+  "cueKinds": [
+    "transition",
+    "stamp",
+    "swap",
+    "click",
+    "count",
+    "reveal",
+    "type"
+  ]
+}

@@ -1,5 +1,5 @@
-import { FAMILY } from "../core/fonts";
-import { zone } from "../core/safe";
+import { FAMILY } from "../../core/fonts";
+import { zone } from "../../core/safe";
 
 export const FORMAT = { width: 1080, height: 1920, fps: 30 } as const;
 

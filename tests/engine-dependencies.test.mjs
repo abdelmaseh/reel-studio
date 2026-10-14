@@ -26,7 +26,7 @@ async function incompleteInstall(t) {
   return root;
 }
 
-const lock = {ffmpeg: {version: '0'}, browser: {exe: 'browser.exe'}, fonts: [], models: []};
+const lock = {ffmpeg: {version: '0'}, browser: {exe: 'browser.exe'}, fonts: [], models: [], transcription: {model: {path: 'model.bin'}, vad: {path: 'vad.bin'}}};
 
 test('setup refuses a remotion-only install when an editor dependency is missing', async t => {
   const root = await incompleteInstall(t);

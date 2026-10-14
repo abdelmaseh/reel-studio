@@ -9,19 +9,12 @@ import {
   isArabic,
   safeWidthFor,
 } from "../core/type";
-import {
-  FONT as SPLIT_FONT,
-  LAYOUT as SPLIT_LAYOUT,
-  PALETTE as SPLIT_COLOR,
-} from "../style-split-canvas/format";
-import {
-  FONT as DECK_FONT,
-  LAYOUT as DECK_LAYOUT,
-  PALETTE as DECK_COLOR,
-  SECTION_BG,
-} from "../style-section-deck/format";
+import { getStyleLayout, getStyleTheme } from "../styles/themes";
+import type { SceneTheme } from "../styles/theme-types";
 import type { MotionVariant, SceneLayout, StyleFamily } from "./schema";
-import { getStyleProfile, type StyleGrammar } from "./styles";
+import { SLAB } from "./card-shape";
+
+export type { SceneTheme } from "../styles/theme-types";
 
 export type SceneOptions = {
   style?: StyleFamily;
@@ -31,167 +24,8 @@ export type SceneOptions = {
   showCaption?: boolean;
 };
 
-export type SceneTheme = {
-  background: string;
-  card: string;
-  border: string;
-  text: string;
-  dim: string;
-  accent: string;
-  good: string;
-  bad: string;
-  pill: string;
-  pillText: string;
-  ar: string;
-  display: string;
-  mono: string;
-
-  grammar?: StyleGrammar;
-  accentInk?: string;
-  onAccent?: string;
-  badInk?: string;
-};
-
-
-export const getSceneTheme = (style: StyleFamily): SceneTheme => {
-  const { grammar } = getStyleProfile(style);
-  if (style === "split-canvas")
-    return {
-      background: SPLIT_COLOR.canvas,
-      card: SPLIT_COLOR.canvasDeep,
-      border: SPLIT_COLOR.band,
-      text: SPLIT_COLOR.ink,
-      dim: SPLIT_COLOR.inkSoft,
-      accent: SPLIT_COLOR.accent,
-      good: SPLIT_COLOR.success,
-      bad: SPLIT_COLOR.alert,
-      pill: SPLIT_COLOR.pillBg,
-      pillText: SPLIT_COLOR.pillText,
-      ar: SPLIT_FONT.ar,
-      display: SPLIT_FONT.display,
-      mono: SPLIT_FONT.mono,
-    };
-  if (style === "section-deck")
-    return {
-      background: SECTION_BG.navy,
-      card: DECK_COLOR.cardBg,
-      border: DECK_COLOR.cardBorder,
-      text: DECK_COLOR.text,
-      dim: DECK_COLOR.dim,
-      accent: DECK_COLOR.accent,
-      good: DECK_COLOR.chipGreen,
-      bad: DECK_COLOR.chipRed,
-      pill: DECK_COLOR.pillBg,
-      pillText: DECK_COLOR.pillText,
-      ar: DECK_FONT.arNaskh,
-      display: DECK_FONT.sans,
-      mono: DECK_FONT.mono,
-    };
-  const mono = FAMILY.plexMono;
-  switch (style) {
-    case "liquid-glass":
-      return {background:'#050916',card:'#172338',border:'#647991',text:'#F5FAFF',dim:'#C2D0E4',accent:'#64E4FF',good:'#86E8BC',bad:'#FF8DAB',pill:'#172338',pillText:'#F5FAFF',ar:FAMILY.cairo,display:FAMILY.plexDisplay,mono,onAccent:'#050916',grammar};
-    case "campaign-tickets":
-      return {background:'#1A100D',card:'#35231B',border:'#BA8755',text:'#FFF4E5',dim:'#DEC8AD',accent:'#FFD075',good:'#9FE0B0',bad:'#F09576',pill:'#2E1D17',pillText:'#FFF4E5',ar:FAMILY.cairo,display:FAMILY.plexDisplay,mono,onAccent:'#35210A',grammar};
-    case "magazine-interview":
-      return {background:'#081321',card:'#102338',border:'#4F6D80',text:'#F5F3EC',dim:'#BBCED9',accent:'#F3C776',good:'#79CBBB',bad:'#F2A3A3',pill:'transparent',pillText:'#F5F3EC',ar:FAMILY.cairo,display:FAMILY.latinSerif,mono,onAccent:'#081321',grammar};
-    case "scrapbook-route":
-      return {background:'#EFE5D4',card:'#FFFCF3',border:'#5B554C',text:'#24242B',dim:'#665E53',accent:'#C93474',good:'#276D52',bad:'#B43E31',pill:'#FFFCF3',pillText:'#24242B',ar:FAMILY.tajawal,display:FAMILY.plexDisplay,mono,onAccent:'#FFFFFF',grammar};
-    case "kinetic-paper":
-      return {
-        background: "#F6F1E8",
-        card: "#FFFFFF",
-        border: "#15231F",
-        text: "#15231F",
-        dim: "#52645A",
-        accent: "#DDF25E",
-        good: "#286C45",
-        bad: "#E96245",
-        pill: "#15231F",
-        pillText: "#FFFFFF",
-        ar: FAMILY.cairo,
-        display: FAMILY.plexDisplay,
-        mono,
-        accentInk: "#365126",
-        onAccent: "#15231F",
-        badInk: "#AB3824",
-        grammar,
-      };
-    case "calligraphic-receipts":
-      return {
-        background: "#F4EDE1",
-        card: "#FFFCF5",
-        border: "#B6A28B",
-        text: "#2E2019",
-        dim: "#75604F",
-        accent: "#A54522",
-        good: "#2D6948",
-        bad: "#AF352A",
-        pill: "transparent",
-        pillText: "#2E2019",
-        ar: FAMILY.naskh,
-        display: FAMILY.latinSerif,
-        mono,
-        onAccent: "#FFFFFF",
-        grammar,
-      };
-    case "paper-collage":
-      return {
-        background: "#EAE7DC",
-        card: "#FFFEF7",
-        border: "#575A50",
-        text: "#28322E",
-        dim: "#60665C",
-        accent: "#1E6470",
-        good: "#347147",
-        bad: "#A6422E",
-        pill: "#FFFEF7",
-        pillText: "#28322E",
-        ar: FAMILY.tajawal,
-        display: FAMILY.latinSerif,
-        mono,
-        onAccent: "#FFFFFF",
-        grammar,
-      };
-    case "judgment-board":
-      return {
-        background: "#171C24",
-        card: "#252D37",
-        border: "#758290",
-        text: "#F8F2E8",
-        dim: "#CCD3D9",
-        accent: "#F3C665",
-        good: "#8FDEA8",
-        bad: "#F58A84",
-        pill: "transparent",
-        pillText: "#F8F2E8",
-        ar: FAMILY.cairo,
-        display: FAMILY.latinSerif,
-        mono,
-        onAccent: "#171C24",
-        grammar,
-      };
-    case "stepped-editorial":
-      return {
-        background: "#D9D9D4",
-        card: "#F6F5EE",
-        border: "#262823",
-        text: "#262823",
-        dim: "#5D6057",
-        accent: "#E4C62F",
-        good: "#376A40",
-        bad: "#A13727",
-        pill: "#F6F5EE",
-        pillText: "#262823",
-        ar: FAMILY.naskh,
-        display: FAMILY.latinSerif,
-        mono,
-        accentInk: "#655510",
-        onAccent: "#262823",
-        grammar,
-      };
-  }
-};
+export const getSceneTheme = (style: StyleFamily): SceneTheme =>
+  getStyleTheme(style);
 
 export type SceneGeometry = {
   left: number;
@@ -212,60 +46,10 @@ export const getSceneGeometry = (
   style: StyleFamily,
   layout: SceneLayout,
 ): SceneGeometry => {
-  getStyleProfile(style);
-  const adapted = style !== "split-canvas" && style !== "section-deck";
-  const layouts = {
-    "liquid-glass": {seam:1080,caption:1340,title:138,body:208,titleTop:40},
-    "campaign-tickets": {seam:1080,caption:1320,title:138,body:210,titleTop:40},
-    "magazine-interview": {seam:1080,caption:1300,title:148,body:218,titleTop:40},
-    "scrapbook-route": {seam:1080,caption:1320,title:136,body:208,titleTop:40},
-    "kinetic-paper": {
-      seam: 1056,
-      caption: 1320,
-      title: 142,
-      body: 208,
-      titleTop: 42,
-    },
-    "calligraphic-receipts": {
-      seam: 1000,
-      caption: 1260,
-      title: 156,
-      body: 218,
-      titleTop: 38,
-    },
-    "paper-collage": {
-      seam: 1030,
-      caption: 1240,
-      title: 128,
-      body: 204,
-      titleTop: 48,
-    },
-    "judgment-board": {
-      seam: 1056,
-      caption: 1240,
-      title: 118,
-      body: 190,
-      titleTop: 44,
-    },
-    "stepped-editorial": {
-      seam: 1000,
-      caption: 1300,
-      title: 144,
-      body: 212,
-      titleTop: 44,
-    },
-  };
-  const adaptedLayout = adapted ? layouts[style] : undefined;
-  const seam =
-    adaptedLayout?.seam ??
-    (style === "split-canvas" ? SPLIT_LAYOUT.seamY : DECK_LAYOUT.seamY);
-  const captionCenter =
-    layout === "split"
-      ? seam
-      : (adaptedLayout?.caption ??
-        (style === "split-canvas"
-          ? SPLIT_LAYOUT.captionY.lowThirdSafe
-          : DECK_LAYOUT.captionY.centerFull));
+  const styleLayout = getStyleLayout(style);
+  const adapted = styleLayout.kind === "adapted";
+  const seam = styleLayout.seam;
+  const captionCenter = layout === "split" ? seam : styleLayout.caption;
   const top =
     Math.max(zone("ig-reels-organic").top, zone("ig-reels-ads").top) + 24;
 
@@ -276,8 +60,12 @@ export const getSceneGeometry = (
   });
   const height = bottom - top;
   const compact = height < 410;
-  const titleHeight = adaptedLayout?.title ?? (compact ? 82 : 116);
-  const bodyTop = adaptedLayout?.body ?? 36 + titleHeight + (compact ? 16 : 24);
+  const titleHeight =
+    styleLayout.kind === "adapted" ? styleLayout.title : compact ? 82 : 116;
+  const bodyTop =
+    styleLayout.kind === "adapted"
+      ? styleLayout.body
+      : 36 + titleHeight + (compact ? 16 : 24);
   return {
     left: band.left,
     top,
@@ -289,14 +77,9 @@ export const getSceneGeometry = (
     captionCenter,
     canvasHeight: layout === "split" ? seam : FRAME.height,
     compact,
-    ...(adaptedLayout ? { titleTop: adaptedLayout.titleTop } : {}),
+    ...(styleLayout.kind === "adapted" ? { titleTop: styleLayout.titleTop } : {}),
   };
 };
-
-
-
-
-
 
 export const CreativeFonts: React.FC<{ children: React.ReactNode }> = ({
   children,
@@ -710,6 +493,7 @@ export const SceneCard: React.FC<{
 }> = ({ theme, motion, order = 2, left = 0, top, width, height, children }) => {
   const card = theme.grammar?.card;
   const probe=useProbe();
+  const slab=card==='bevel-slab';
   const treatment: React.CSSProperties =
     card === "ink-frame"
       ? {
@@ -751,7 +535,8 @@ export const SceneCard: React.FC<{
     backdropFilter:probe?undefined:'blur(18px) saturate(150%)',boxShadow:probe?undefined:'inset 2px 2px 0 #FFFFFF40, inset -2px -2px 0 #72D8FF20, 0 15px 30px #00000030',
   }:card==='perforated-ticket'?{borderRadius:16,border:`2px solid ${theme.border}`,borderInlineEnd:`4px dashed ${theme.accent}`,background:`linear-gradient(110deg,${theme.card},#463021)`,boxShadow:probe?undefined:'0 14px 28px #00000035'}
     :card==='magazine-rule'?{borderRadius:0,border:0,borderInlineStart:`5px solid ${theme.accent}`,background:'transparent'}
-    :card==='route-paper'?{borderRadius:2,border:`2px solid ${theme.border}`,boxShadow:probe?undefined:'5px 6px 0 #B6AC984A',transform:`rotate(${order%2===0?-0.6:0.6}deg)`}:{};
+    :card==='route-paper'?{borderRadius:2,border:`2px solid ${theme.border}`,boxShadow:probe?undefined:'5px 6px 0 #B6AC984A',transform:`rotate(${order%2===0?-0.6:0.6}deg)`}
+    :slab?{borderRadius:SLAB.radius,border:0,boxShadow:probe?undefined:`${SLAB.bevel}, ${SLAB.shadow}`}:{};
   return (
     <Reveal
       motion={motion}
@@ -812,6 +597,7 @@ export const SceneCard: React.FC<{
             }}
           />
         ) : null}
+        {slab ? <div aria-hidden="true" style={{ position: "absolute", inset: SLAB.inset, borderRadius: SLAB.innerRadius, background: SLAB.screen }} /> : null}
         {children}
       </div>
     </Reveal>

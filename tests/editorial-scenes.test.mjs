@@ -49,9 +49,9 @@ test('evidence wipe bounds authored timing and media references',()=>{
   const unsafe=structuredClone(input);unsafe.data.before.src='../private.png';
   assert.equal(editSceneSchema.safeParse(unsafe).success,false);
 });
-test('all eleven styles can compete automatically and explicit/profile choices win',()=>{
+test('every registered style can compete automatically and explicit/profile choices win',()=>{
   const candidates=recommendEditorStyle(brief()).candidates.map(candidate=>candidate.style);
-  assert.equal(new Set(candidates).size,11);
+  assert.equal(new Set(candidates).size,12);
   assert.equal(recommendEditorStyle(brief('story','calm')).style,'paper-collage');
   assert.equal(recommendEditorStyle(brief('opinion','editorial')).style,'judgment-board');
   const fixed=brief();fixed.preferences.style={mode:'fixed',value:'liquid-glass'};

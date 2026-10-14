@@ -1,4 +1,5 @@
 import type {ChapterPalette} from '../core/chapters.ts';
+import {glideVideoSources} from '../styles/grid-glide/scenes/media.ts';
 
 export const OVERLAY_KINDS=['whiteout','leak','bloom','burn'] as const;
 
@@ -45,6 +46,7 @@ function mountsVideo(scene:TransitionScene):boolean{
   const data=scene.data as {foreground?:unknown;steps?:readonly {kind?:string}[]}|undefined;
   if(scene.family==='kinetic-hook' && data?.foreground)return true;
   if((scene.family==='screens' || scene.family==='screen-focus') && (data?.steps??[]).some(step=>step?.kind==='video'))return true;
+  if(glideVideoSources(scene).length>0)return true;
   return false;
 }
 

@@ -2,6 +2,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
+import { glideVideoSources } from '../../engine/src/styles/grid-glide/scenes/media.ts';
 
 export const FOOTAGE_EXT = /\.(mp4|mov|webm|mkv)$/i;
 export const HEAD_FLAG_KEYS = Object.freeze(['head-envelope', 'head-geometry', 'head-source', 'head-method', 'head-exempt']);
@@ -38,6 +39,7 @@ export function manifestFootage(props) {
     const data = isObject(scene) ? scene.data : null;
     if (!isObject(data)) continue;
     if (isObject(data.foreground)) pushUnique(found, footageName(data.foreground.src));
+    for (const src of glideVideoSources(scene)) pushUnique(found, footageName(src));
     if (!Array.isArray(data.steps)) continue;
     for (const step of data.steps) if (isObject(step) && step.kind === 'video') pushUnique(found, footageName(step.src));
   }

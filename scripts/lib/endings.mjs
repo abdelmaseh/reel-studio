@@ -21,7 +21,10 @@ export function resolveEnding({creator, words, signoffFromSec}) {
   return {creator: {...creator, ending}, signoffFromSec: at, notices};
 }
 
-const ENDING_FAMILIES = ['comment', 'follow', 'creator-cta'];
+// Grid Glide draws its own ending scenes (glide-comment, glide-follow); each counts as the shared scene it replaces.
+const COMMENT_FAMILIES = ['comment', 'glide-comment'];
+const FOLLOW_FAMILIES = ['follow', 'glide-follow'];
+const ENDING_FAMILIES = [...COMMENT_FAMILIES, ...FOLLOW_FAMILIES, 'creator-cta'];
 
 
 export function endingIssues(manifest) {
@@ -33,7 +36,7 @@ export function endingIssues(manifest) {
   const issues = [];
   const keyword = (scene) => { if (scene.data.keyword !== ending.cta) issues.push(`The comment CTA keyword must be «${ending.cta}».`); };
   const followHandle = (scene) => { if (scene.data.handle !== handle) issues.push(`The follow card must show the complete profile handle ${handle}.`); };
-  const present = (family) => scenes.some((scene) => scene.family === family);
+  const present = (families) => scenes.some((scene) => families.includes(scene.family));
   if (cta && follow) {
     if (last?.family === 'creator-cta') {
       keyword(last);
@@ -41,16 +44,16 @@ export function endingIssues(manifest) {
       if (!(last.data.followFrame > 0 && last.data.clickedFrame > last.data.followFrame && last.data.clickedFrame < last.durationInFrames)) {
         issues.push('Creator CTA needs comment, follow and click in order.');
       }
-    } else if (prior?.family === 'comment' && last?.family === 'follow') { keyword(prior); followHandle(last); }
+    } else if (COMMENT_FAMILIES.includes(prior?.family) && FOLLOW_FAMILIES.includes(last?.family)) { keyword(prior); followHandle(last); }
     else issues.push('The ending needs the comment CTA scene and then the follow card as the last two scenes.');
   } else if (cta) {
-    if (last?.family === 'comment') keyword(last);
+    if (COMMENT_FAMILIES.includes(last?.family)) keyword(last);
     else issues.push('The ending needs the comment CTA scene as the last scene.');
-    if (present('follow') || present('creator-cta')) issues.push('The follow card is off in the profile; remove the follow scene.');
+    if (present(FOLLOW_FAMILIES) || present(['creator-cta'])) issues.push('The follow card is off in the profile; remove the follow scene.');
   } else if (follow) {
-    if (last?.family === 'follow') followHandle(last);
+    if (FOLLOW_FAMILIES.includes(last?.family)) followHandle(last);
     else issues.push('The ending needs the follow card as the last scene.');
-    if (present('comment') || present('creator-cta')) issues.push('No CTA keyword was chosen for this video; remove the comment CTA scene.');
+    if (present(COMMENT_FAMILIES) || present(['creator-cta'])) issues.push('No CTA keyword was chosen for this video; remove the comment CTA scene.');
   } else if (scenes.some((scene) => ENDING_FAMILIES.includes(scene.family))) {
     issues.push('The CTA and the follow card are both off for this video; remove the ending scenes.');
   }

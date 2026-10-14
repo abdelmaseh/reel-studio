@@ -1,6 +1,6 @@
 # From meaning to an edit
 
-The edit should make the idea easier to see. A style supplies its material, type and motion grammar; the sentence supplies the action. Start here for recorded and authored graphics videos, then use [motion choices](MOTION-CHOICES.md), [examples](EXAMPLES.md) and [visual review](VISUAL-REVIEW.md). [Style recipes](STYLE-RECIPES.md) explain the eleven directions' decisions; named references use [style learning](STYLE-LEARNING.md), and supporting media uses [asset production](ASSET-PRODUCTION.md).
+The edit should make the idea easier to see. A style supplies its material, type and motion grammar; the sentence supplies the action. Start here for recorded and authored graphics videos, then use [motion choices](MOTION-CHOICES.md), [examples](EXAMPLES.md) and [visual review](VISUAL-REVIEW.md). [Styles](STYLES.md) lists every style and links each style's own guide, whose Recipe section explains its decisions; named references use [style learning](STYLE-LEARNING.md), and supporting media uses [asset production](ASSET-PRODUCTION.md).
 
 ## Build the idea before choosing an effect
 

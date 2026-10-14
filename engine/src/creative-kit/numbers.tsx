@@ -29,6 +29,7 @@ import {
   type TypeStyle,
 } from "../core/type";
 import { FitText, type SceneTheme } from "./primitives";
+import { isRoundCard } from "./card-shape";
 
 export type NumberAlign = "left" | "center" | "right";
 
@@ -339,7 +340,7 @@ export const PriceDrop: React.FC<PriceDropProps> = ({
   const strike = useRampF(ph.strikeF, ph.strikeEndF - ph.strikeF, EASE.inOut);
   const newLand = useLand(ph.newInF, "stamp", 3);
   const pillLand = useLand(ph.labelInF, "snap");
-  const round = !theme.grammar || theme.grammar.card === "rounded-ui";
+  const round = isRoundCard(theme);
   const oldLeft = px((width - oldBox.width) / 2);
   const strikeW = oldBox.width + 2 * STRIKE_PAD;
   const strikeH = oldBox.height;
@@ -875,7 +876,7 @@ export const PlanCards: React.FC<PlanCardsProps> = ({
     );
   }
   const rtl = direction === "rtl";
-  const round = !theme.grammar || theme.grammar.card === "rounded-ui";
+  const round = isRoundCard(theme);
   const badgeReserve = plans.some((p) => p.badge !== undefined) ? BADGE_RESERVE : 0;
   const step = Math.max(0, Math.round(stagger));
   const featureStep = Math.max(0, Math.round(featureStagger));

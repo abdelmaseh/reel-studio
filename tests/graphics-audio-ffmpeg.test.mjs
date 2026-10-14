@@ -9,6 +9,7 @@ import {createHash} from 'node:crypto';
 import {ROOT} from '../scripts/lib/project-paths.mjs';
 import {PROJECT_TMP} from '../scripts/lib/project-tmp.mjs';
 import {mixDelivery} from '../scripts/lib/mix-run.mjs';
+import {soundRecipe} from '../scripts/lib/job-sound.mjs';
 
 const exec = promisify(execFile), ffmpeg = path.join(ROOT, 'Tools', 'bin', 'ffmpeg.exe');
 const command = async args => exec(ffmpeg, ['-hide_banner', '-loglevel', 'error', '-nostdin', '-y', ...args], {cwd: ROOT, env: process.env, windowsHide: true, timeout: 90000, maxBuffer: 4 * 1024 * 1024});
@@ -53,9 +54,41 @@ test('audible graphics effects retain normal mastering and copied video', async 
   assert.equal(result.voice.applicable, false);
   assert.ok(Math.abs(result.delivered.LUFS + 14) <= 1);
   assert.ok(result.delivered.truePeakDb <= -0.7);
+  assert.equal(result.mastering.compensation, null, 'a stem that lands in tolerance in one pass is not touched again');
   const videoHash = async file => (await command(['-i', file, '-map', '0:v:0', '-c:v', 'copy', '-f', 'hash', '-hash', 'sha256', '-'])).stdout.trim();
   assert.equal(await videoHash(result.out), await videoHash(f.base));
   t.diagnostic(JSON.stringify({mode: result.audio.mode, expectedSilence: result.audio.expectedSilence, LUFS: result.delivered.LUFS, truePeakDb: result.delivered.truePeakDb}));
+});
+
+// The stem a voice-less Grid Glide edit really carries: the demo's planned sub hits through the real sfx renderer.
+async function glideStem(directory) {
+  const spec = JSON.parse(await fs.readFile(path.join(ROOT, 'instructions', 'examples', 'grid-glide-demo.json'), 'utf8'));
+  const hits = [];
+  for (const event of spec.sounds) {
+    const recipe = await soundRecipe(event.recipe);
+    hits.push(...recipe.hits.map(hit => ({...hit, t: hit.t + event.atFrame / spec.fps, gain: (hit.gain ?? 1) * event.gain})));
+  }
+  const seconds = spec.durationInFrames / spec.fps, hitsFile = path.join(directory, 'glide-hits.json'), stem = path.join(directory, 'glide-sounds.wav'), base = path.join(directory, 'glide-base.mp4');
+  await fs.writeFile(hitsFile, JSON.stringify(hits));
+  await exec(process.execPath, [path.join(ROOT, 'scripts', 'sfx.mjs'), '--hits', hitsFile, '--dur', String(seconds), '--out', stem], {cwd: ROOT, env: process.env, windowsHide: true, timeout: 120000, maxBuffer: 4 * 1024 * 1024});
+  await command(['-f', 'lavfi', '-i', `color=c=black:s=64x96:r=${spec.fps}:d=${seconds}`, '-f', 'lavfi', '-i', 'anullsrc=r=48000:cl=stereo', '-t', String(seconds), '-c:v', 'libx264', '-preset', 'ultrafast', '-pix_fmt', 'yuv420p', '-c:a', 'aac', base]);
+  return {base, stem};
+}
+
+test('a voice-less Grid Glide graphics mix of short sub hits passes the loudness and peak gates', async t => {
+  const f = await audioFixtures(t), {base, stem} = await glideStem(f.directory);
+  const result = await mix(base, path.join(f.directory, 'glide.mp4'), {'graphics-audio': true, sfx: stem, style: 'grid-glide'});
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+  assert.equal(result.audio.expectedSilence, false);
+  assert.ok(Math.abs(result.delivered.LUFS + 14) <= 1, `delivered ${result.delivered.LUFS} LUFS`);
+  assert.ok(result.delivered.truePeakDb <= -0.7, `true peak ${result.delivered.truePeakDb} dBTP`);
+  // Seven short hits are a tall, sparse stem: the limiter clamp alone leaves pass one about 1.1 LU short, so the one allowed compensation does the rest.
+  const compensation = result.mastering.compensation;
+  assert.equal(compensation?.adopted, true, 'the post-limiter compensation was adopted');
+  assert.ok(compensation.firstPass.LUFS < -15, `first pass ${compensation.firstPass.LUFS} LUFS`);
+  assert.ok(Math.abs(compensation.secondPass.LUFS + 14) < Math.abs(compensation.firstPass.LUFS + 14));
+  assert.ok(result.warnings.some(warning => warning.code === 'loudness_compensated'));
+  t.diagnostic(JSON.stringify({first: compensation.firstPass, second: compensation.secondPass, gainDb: compensation.gainDb}));
 });
 
 test('recording silence and audible graphics bases are still refused without publishing', async t => {
@@ -77,6 +110,7 @@ test('ordinary recorded audio keeps its existing loudness and peak gates', async
   assert.equal(result.audio.expectedSilence, false);
   assert.ok(Math.abs(result.delivered.LUFS + 14) <= 1);
   assert.ok(result.delivered.truePeakDb <= -0.7);
+  assert.equal(result.mastering.compensation, null, 'a recording that lands in tolerance in one pass is not touched again');
 });
 
 test('a 20-second graphics timeline trims padded AAC without dropping video or short audio coverage', async t => {

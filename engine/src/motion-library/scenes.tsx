@@ -6,6 +6,7 @@ import {Footage} from '../core/plate';
 import {VectorLayer,DrawPath,rectPath,circlePath,calloutPath} from '../core/draw';
 import {fitToWidth} from '../core/type';
 import {FitText,type SceneTheme} from '../creative-kit/primitives';
+import {isRoundCard} from '../creative-kit/card-shape';
 import {useSceneTheme} from '../creative-kit/chapter-theme';
 import {getStyleProfile} from '../creative-kit/styles';
 import type {StyleFamily} from '../creative-kit/schema';
@@ -17,7 +18,7 @@ import {FrameReveal,DrawProgress,FocusCursor,AnimatedNumber} from './upstream';
 type Data<F extends LibraryScene['family']>=Extract<LibraryScene,{family:F}>['data'];
 const INK_LEFT=95;
 const INK_WIDTH=735;
-const isRound=(theme:SceneTheme)=>!theme.grammar || theme.grammar.card==='rounded-ui';
+const isRound=(theme:SceneTheme)=>isRoundCard(theme);
 
 const Heading:React.FC<{theme:SceneTheme;kicker:string;title:string;frame:number;distance:number}>=({theme,kicker,title,frame,distance})=>
   <div style={{position:'absolute',left:INK_LEFT,top:286,width:865}}><FrameReveal frame={frame} duration={18} distance={distance}>

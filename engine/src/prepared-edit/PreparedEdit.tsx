@@ -15,6 +15,7 @@ import {IntroScene, ProofScene, ProcessScene, ComparisonScene, CommentGateScene,
 import {editManifestSchema, type EditManifest, type EditScene} from "./schema.ts";
 import {compileEdit} from "./timeline.ts";
 import {fittingCaptionCue} from './caption-fit.ts';
+import {clauseCaptionsDefault,isLegacyStyle} from '../styles/registry.ts';
 import {footageFrameState,type LayoutTransition,type SceneLayoutName} from "./footage.ts";
 import {captionEmphasisInk,emphasisBySource,popScale,underlineMetrics} from "./caption-emphasis.ts";
 import {entranceBox,hueCrossfadeFor,isOverlayKind,sceneEntrance} from "./graphics-transitions.ts";
@@ -24,7 +25,7 @@ import proxyRegistry from "../../proxies.json";
 import {resolvePreviewSource,type ProxyRegistry} from "../core/preview-source";
 import {KineticSceneRenderer} from "../creative-kit/kinetic/scenes";
 import {kineticSceneSchema} from "../creative-kit/kinetic/schema.ts";
-import {footageVisibility,captionOverlayVisible} from "./visibility.ts";
+import {footageVisibility,captionOverlayVisible,captionHiddenByScene} from "./visibility.ts";
 import {headGuideSchema,headGuideIssues,headBoxForScene,type HeadGuide} from "./head-guide.ts";
 import {PRESENTER_CAPTION_CENTER,type HeadBoxPx} from "../creative-kit/head-clear.ts";
 import {librarySceneSchema} from '../motion-library/schema.ts';
@@ -34,6 +35,8 @@ import {screenRecordingSceneSchema} from '../screen-recording/schema.ts';
 import {semanticSceneSchema} from '../creative-kit/semantic/schema.ts';
 import {SemanticSceneRenderer} from '../creative-kit/semantic/scenes';
 import {ProjectScene} from '../project-scenes/ProjectScene';
+import {styleSceneSchema} from '../styles/scenes.ts';
+import {StyleSceneRenderer} from '../styles/scene-renderers';
 
 export type PreparedEditProps = SafeProps & {
   edit:EditManifest|null;
@@ -65,6 +68,8 @@ export const calculatePreparedMetadata:CalculateMetadataFunction<PreparedEditPro
 
 export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null;words?:ReturnType<typeof compileEdit>['words']}> = ({scene,style,geometry,aspect,seam,headBox=null,words=[]})=>{
   if(scene.family==='project-scene')return <ProjectScene component={scene.data.component} values={scene.data.values} style={style} layout={scene.layout} motion={scene.motion} durationInFrames={scene.durationInFrames} seam={seam} headBox={headBox}/>;
+  const styled=styleSceneSchema.safeParse(scene);
+  if(styled.success)return <StyleSceneRenderer scene={styled.data} style={style}/>;
   const semantic=semanticSceneSchema.safeParse(scene);
   if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style} words={words}/>;
   const screen=screenRecordingSceneSchema.safeParse(scene);
@@ -93,9 +98,9 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
   let cue=compiled.captionGroups.find(c=>frame>=c.fromFrame && frame<c.toFrame);
   if(!cue) return null;
   const scene=edit.scenes.find(s=>frame>=s.fromFrame && frame<s.fromFrame+s.durationInFrames);
-  if(scene?.family==='creator-cta')return null;
+  if(scene?.family==='creator-cta' || captionHiddenByScene(scene))return null;
   const band=safeWidthFor(center-64,128,"organic",{inset:32});
-  const modern=edit.style!=='section-deck'&&edit.style!=='split-canvas';
+  const modern=!isLegacyStyle(edit.style);
   const role=edit.fontFamily?{...EDITOR_FONT_ROLE.caption,fontFamily:edit.fontFamily,fontWeight:700}
     :modern?{...EDITOR_FONT_ROLE.caption,fontFamily:theme.ar,fontWeight:800}:EDITOR_FONT_ROLE.caption;
   if(edit.fontFamily)cue=fittingCaptionCue(cue,frame,text=>fitToWidth(text,{fontFamily:role.fontFamily,fontWeight:role.fontWeight,fontSize:30},band.width-60,{min:30,max:30}).fits);
@@ -104,7 +109,7 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
   if(!fit.fits) throw new Error(`Caption does not fit safely: ${text}`);
   const height=Math.ceil(fit.fontSize*role.lineHeight)+22;
   const width=Math.min(band.width,Math.ceil(fit.width)+60);
-  const clauseCaption=edit.captions.grouping===undefined?edit.style==="section-deck":edit.captions.grouping==='clauses';
+  const clauseCaption=edit.captions.grouping===undefined?clauseCaptionsDefault(edit.style):edit.captions.grouping==='clauses';
   const enter=clauseCaption?1:Math.min(1,(frame-cue.fromFrame+1)/4);
 
 

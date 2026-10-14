@@ -1,6 +1,6 @@
 # Choose a mechanism for the idea
 
-Read the [editorial recipe](EDITORIAL.md) first. Author the visual action, then choose the smallest supported mechanism that performs it. The same family can look different across the eleven styles; changing the palette alone does not create a new explanation.
+Read the [editorial recipe](EDITORIAL.md) first. Author the visual action, then choose the smallest supported mechanism that performs it. The same family can look different across the styles; changing the palette alone does not create a new explanation.
 
 ## Supported paths
 
@@ -28,6 +28,10 @@ Find a concept with `node scripts/concept-stills.mjs --list --query <idea>`. Rea
 | Compare actual images | `evidence-wipe` or `image-compare` |
 | Emphasize words that were recorded | `kinetic-text` with literal transcript indices |
 | Real screen or source image supports the claim | `screens`, `screen-focus`, or `screen-recording` according to source type |
+| A countable explainer (steps, tools, options), each with a real capture | `glide-chapter`, `glide-card` and `glide-lines`, only in the `grid-glide` style |
+| The comment call to action and the follow card in the `grid-glide` style | `glide-comment` and `glide-follow`, instead of the shared `comment` and `follow` |
+
+`glide-chapter`, `glide-card`, `glide-lines`, `glide-comment` and `glide-follow` are style-owned takeover families: the manifest accepts them only when `style` is `grid-glide`, and their enter, exit and dip behaviour lives inside the scene, so the shared transition list is not used. Their frames are relative to the scene start, a card's captures are public-local files whose `sha256` and pixel size the scene states, and the data contracts are summarised in [styles/grid-glide.md](styles/grid-glide.md).
 
 The catalog is authoritative for exact inputs and supported lengths. Replace SAMPLE numbers, names and claims with recorded facts, cited evidence or clearly reviewed illustrative content. For a geographic explanation, use verified map geometry and region labels; a decorative route or random dot layout is not a map.
 

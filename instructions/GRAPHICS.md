@@ -2,17 +2,19 @@
 
 Use this route when the creator asks for an animated explanation, map, title sequence or other motion video and has supplied no recording. The studio can create a silent generated base and run authored scenes through the normal editor. It does not need an uploaded source or a made-up transcript. Read [RULES.md](RULES.md), [EDITORIAL.md](EDITORIAL.md) and [MOTION-CHOICES.md](MOTION-CHOICES.md).
 
-Use [STYLE-RECIPES.md](STYLE-RECIPES.md) to decide the visual grammar, [STYLE-LEARNING.md](STYLE-LEARNING.md) for named-reference evidence and its content-specific application, and [ASSET-PRODUCTION.md](ASSET-PRODUCTION.md) for any supporting media. An authored mechanism can use [PROJECT-SCENES.md](PROJECT-SCENES.md) with project-local React code, declared fields and the normal live preview/render/checks. Reference notes alone do not change scene behavior.
+Use the chosen style's guide, linked from [STYLES.md](STYLES.md), to decide the visual grammar, [STYLE-LEARNING.md](STYLE-LEARNING.md) for named-reference evidence and its content-specific application, and [ASSET-PRODUCTION.md](ASSET-PRODUCTION.md) for any supporting media. An authored mechanism can use [PROJECT-SCENES.md](PROJECT-SCENES.md) with project-local React code, declared fields and the normal live preview/render/checks. Reference notes alone do not change scene behavior.
 
 ## Author and check the specification
 
-Write `Projects/<slug>/graphics-spec.json` with `version: 1`, `id`, one of the eleven `style` ids, `fps` (30, 50 or 60), optional `durationInFrames`, and `scenes`. Scenes use the normal scene schema: `id`, `family`, `fromFrame`, `durationInFrames`, `layout: "takeover"`, `motion`, and `data`. They must cover the whole timeline without gaps or overlapping intervals. Plan readable final holds and meet each family's duration floor.
+Write `Projects/<slug>/graphics-spec.json` with `version: 1`, `id`, one of the registered `style` ids listed in [STYLES.md](STYLES.md), `fps` (30, 50 or 60), optional `durationInFrames`, and `scenes`. Scenes use the normal scene schema: `id`, `family`, `fromFrame`, `durationInFrames`, `layout: "takeover"`, `motion`, and `data`. They must cover the whole timeline without gaps or overlapping intervals. Plan readable final holds and meet each family's duration floor.
 
 Copy review is independent of speech. Include `reviewedBy` naming the actual reviewer of the authored copy; graphics mode requires reviewed copy before initialization. Do not record an approval that did not occur. Optional `creator` and endings are authored explicitly; the default has no comment keyword, follow card or sign-off. Preserve only endings applicable to this request. Do not invent narration, pretend that generated silence is a recording, or use literal `kinetic-text` word indices without recorded words.
 
 Start from the [complete illustrative example](examples/idea-to-results.json). Its review attribution concerns the bundled synthetic copy, not approval of a customer's video. It demonstrates messages gathering into a board and a selected result moving into focus; it is not a fixed recipe for every topic.
 
 For scattered messages → one board → one selected result, use the optional `message-board` takeover family described in `MOTION-CHOICES.md`. It carries the same item IDs through gathering and focus with authored frame cues. The example demonstrates this continuous action across twenty seconds with no assets or invented speech. The existing fifteen `motion-concept` choices remain available for other ideas.
+
+For a countable explainer in the `grid-glide` style (steps, tools or options that each have a real capture), author `glide-chapter`, `glide-card` and `glide-lines` scenes as described in [styles/grid-glide.md](styles/grid-glide.md), and end with `glide-comment` and `glide-follow` when the creator's endings are on. Their frames are relative to the scene start, the captures inside a card are public-local files whose `sha256` and pixel size the scene states, and the optional `watermark` text is whatever you write (or leave it out). Other shared families such as `screens` may sit between them and change by hard cuts; the shared `comment` and `follow` draw fixed English header lines, so this style does not use them.
 
 ```powershell
 node scripts/editor.mjs graphics Projects/<slug>/graphics-spec.json --check

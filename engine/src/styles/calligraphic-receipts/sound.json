@@ -1,0 +1,61 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {
+      "recipe": "directional-whoosh",
+      "gain": 0.45,
+      "leadSec": 0.07,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "stamp": {
+      "recipe": "restrained-reveal",
+      "gain": 0.5,
+      "leadSec": 0.44,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "swap": {
+      "recipe": "directional-whoosh",
+      "gain": 0.35,
+      "leadSec": 0.07,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "click": {
+      "recipe": "cursor-click",
+      "gain": 0.4,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "count": {
+      "recipe": "counter-accent",
+      "gain": 0.35,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "reveal": {
+      "recipe": "paper-reveal",
+      "gain": 0.35,
+      "leadSec": 0.16,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "type": {
+      "recipe": "typing-burst",
+      "gain": 0.3,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    }
+  }
+}

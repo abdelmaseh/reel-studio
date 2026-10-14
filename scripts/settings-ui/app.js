@@ -6,7 +6,7 @@ const steps = ['بياناتك', 'ستايل الفيديو', 'الكلام عل
 const labels = {
   captionsGrouping: {compact: 'كلمات قصيرة', clauses: 'جُمل هادية', single: 'كلمة في كل مرة'},
   captionsPresentation: {pill: 'كبسولة واضحة', minimal: 'كلام من غير خلفية', 'ink-strip': 'شريط غامق'},
-  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display'},
+  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display', 'Grid Sans': 'Grid Sans'},
   writingStyle: {short: 'مختصر ومباشر', educational: 'شرح ونقط عملية', storytelling: 'حكاية قصيرة'},
 };
 const sampleWriting = {
@@ -133,7 +133,8 @@ function fontsPage() {
     const card = button('', 'choice-card', () => setPref('font', 'fixed', family, id), {id, 'aria-pressed': String(selected)});
     const ready = catalog.readyFonts.includes(family); const sample = el('div', ready ? 'فكرتك تستاهل تتشاف' : 'الخط لسه بيتجهّز', {class: 'font-sample'});
     if (ready) sample.style.fontFamily = `"${family}"`;
-    const copy = el('div', null, {class: 'card-copy'}); copy.append(el('strong', labels.font[family]), el('small', ready ? 'معاينة بالخط الحقيقي على جهازك' : 'اختاره دلوقتي، والمعاينة تظهر بعد تنزيل الخطوط.', {class: ready ? '' : 'waiting'})); card.append(sample, copy);
+    if (ready && family === 'Grid Sans') sample.textContent += ' · Your idea';
+    const copy = el('div', null, {class: 'card-copy'}); copy.append(el('strong', labels.font[family] ?? family), el('small', ready ? 'معاينة بالخط الحقيقي على جهازك' : 'اختاره دلوقتي، والمعاينة تظهر بعد تنزيل الخطوط.', {class: ready ? '' : 'waiting'})); card.append(sample, copy);
     if (selected) card.append(el('span', '✓', {class: 'selected', 'aria-hidden': 'true'})); grid.append(card);
   }
   content.append(grid, note('التلقائي بيختار خط مناسب للستايل. لو ثبّتّ خط، هيفضل هو الأساس لكل فيديو.'));
@@ -220,12 +221,13 @@ function successPage() {
 function renderProgress() {
   const region = document.querySelector('#setup-progress'); if (!region) return;
   region.replaceChildren(); if (!setup) {region.append(note('بنراجع التجهيز…')); return;}
-  const stageLabels = {folders: 'فولدرات الشغل', packages: 'مكتبات المونتاج', browser: 'متصفح الرندر', ffmpeg: 'أدوات الفيديو', fonts: 'الخطوط', models: 'أدوات كشف الوجه'};
+  const stageLabels = {folders: 'فولدرات الشغل', packages: 'مكتبات المونتاج', browser: 'متصفح الرندر', ffmpeg: 'أدوات الفيديو', fonts: 'الخطوط', models: 'أدوات كشف الوجه', transcription: 'التفريغ الصوتي'};
+  const total = Object.keys(stageLabels).length, arabic = (value) => value.toLocaleString('ar-EG');
   const completed = Object.values(setup.done).filter(Boolean).length;
   region.append(el('h3', setup.status === 'done' ? 'التجهيز خلص ✓' : setup.status === 'running' ? 'بنجهّز الاستوديو على جهازك' : 'التجهيز محتاج تكملة', {class: 'section-title'}));
-  const track = el('div', null, {class: 'progress-track', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': '6', 'aria-valuenow': completed, 'aria-label': 'مراحل التجهيز المكتملة'});
-  const bar = el('div'); bar.style.width = `${completed / 6 * 100}%`; track.append(bar); region.append(track);
-  region.append(el('p', setup.status === 'done' ? 'ارجع للمساعد عشان يعمل فحص النظام. حفظ الإعدادات والتجهيز خلصوا.' : setup.status === 'running' ? `${completed} من ٦ مراحل خلصوا. أول تجهيز ممكن ياخد ١٠–٢٠ دقيقة حسب النت.` : 'قول للمساعد «كمّل تجهيز الاستوديو» لو واجهت مشكلة.', {class: 'status-line'}));
+  const track = el('div', null, {class: 'progress-track', role: 'progressbar', 'aria-valuemin': '0', 'aria-valuemax': String(total), 'aria-valuenow': completed, 'aria-label': 'مراحل التجهيز المكتملة'});
+  const bar = el('div'); bar.style.width = `${completed / total * 100}%`; track.append(bar); region.append(track);
+  region.append(el('p', setup.status === 'done' ? 'ارجع للمساعد عشان يعمل فحص النظام. حفظ الإعدادات والتجهيز خلصوا.' : setup.status === 'running' ? `${arabic(completed)} من ${arabic(total)} مراحل خلصوا. أول تجهيز ممكن ياخد ١٥–٣٠ دقيقة حسب النت.` : 'قول للمساعد «كمّل تجهيز الاستوديو» لو واجهت مشكلة.', {class: 'status-line'}));
   const list = el('ul', null, {class: 'progress-list'});
   for (const [id, text] of Object.entries(stageLabels)) {
     const done = setup.done[id]; const active = id === setup.step && setup.status === 'running'; const item = el('li', null, {class: done ? 'done' : active ? 'active' : ''});
@@ -239,7 +241,7 @@ async function refreshStatus() {
   try {
     const previous = setup?.status; setup = (await api('status')).setup;
     if (step === 7) {if (previous !== setup.status) render(); else renderProgress();}
-    if (setup.done.fonts && catalog.readyFonts.length < 4) {
+    if (setup.done.fonts && catalog.readyFonts.length < catalog.choices.font.length) {
       catalog = await api('catalog'); document.querySelector('#font-styles').href = `/fonts.css?token=${token}&v=${Date.now()}`;
       if (step === 3) render();
     }

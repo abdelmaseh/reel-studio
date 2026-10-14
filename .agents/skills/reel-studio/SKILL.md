@@ -20,7 +20,7 @@ For an edit, read [EDITORIAL](../../../instructions/EDITORIAL.md), then choose:
 | Several clips from one recording | [PODCAST](../../../instructions/PODCAST.md) |
 | Render/resume or audio/picture revision | [PRODUCTION](../../../instructions/PRODUCTION.md) |
 
-Named finished references use [STYLE-LEARNING](../../../instructions/STYLE-LEARNING.md): keep evidence/timecodes/confidence in project-local Style DNA and map its decisions to the new scene. Choose a base grammar with [STYLE-RECIPES](../../../instructions/STYLE-RECIPES.md). Supporting media uses [ASSET-PRODUCTION](../../../instructions/ASSET-PRODUCTION.md) for tool selection, current-project authorization, provenance, revisions and destination review.
+Named finished references use [STYLE-LEARNING](../../../instructions/STYLE-LEARNING.md): keep evidence/timecodes/confidence in project-local Style DNA and map its decisions to the new scene. Choose a style with [STYLES](../../../instructions/STYLES.md) and read the guide it links for that style (look, recipe, own scenes, what to avoid). Adding or promoting a global style is studio maintenance, done only on an explicit request with [STYLE-AUTHORING](../../../instructions/STYLE-AUTHORING.md). Supporting media uses [ASSET-PRODUCTION](../../../instructions/ASSET-PRODUCTION.md) for tool selection, current-project authorization, provenance, revisions and destination review.
 
 ## Make and review the scene plan
 

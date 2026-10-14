@@ -15,7 +15,12 @@
     { "id": "tick", "use": "A brief counter increment or small emphasis.", "defaultDuration": 0.03 },
     { "id": "keyTap", "use": "One keyboard key inside a typing burst; vary seed and fc per key.", "defaultDuration": 0.045 },
     { "id": "mouseClick", "use": "A mouse press and release for an on-screen cursor click.", "defaultDuration": 0.06 },
-    { "id": "whooshShort", "use": "A short directional air sweep: f0 below f1 rises, f0 above f1 falls.", "defaultDuration": 0.2 }
+    { "id": "whooshShort", "use": "A short directional air sweep: f0 below f1 rises, f0 above f1 falls.", "defaultDuration": 0.2 },
+    { "id": "subBoom", "use": "A mono low boom for the first frame of a Grid Glide edit. No options.", "defaultDuration": 0.62 },
+    { "id": "subThump", "use": "A stereo low impact with a 0.27 s swell before its reference frame, for scene changes. No options.", "defaultDuration": 1.25 },
+    { "id": "subThud", "use": "A short stereo low landing, about 10 dB under subThump. No options.", "defaultDuration": 0.75 },
+    { "id": "subSwellHit", "use": "A stereo rising swell that stops abruptly at 0.31 s, for a climax. No options.", "defaultDuration": 0.34 },
+    { "id": "uiClick", "use": "A mono damped interface tick that rings 29 ms into the file. No options.", "defaultDuration": 0.06 }
   ],
   "recipes": [
     {
@@ -94,6 +99,26 @@
         { "t": 0, "sound": "whooshShort", "gain": 0.28, "pan": 0.14, "opts": { "seed": 1103, "dur": 0.3, "f0": 3800, "f1": 600 } },
         { "t": 0.2, "sound": "impact", "gain": 0.13, "pan": -0.04, "opts": { "seed": 1131, "dur": 0.4, "f0": 110, "f1": 46 } }
       ]
+    },
+    {
+      "id": "sub-boom", "name": "Sub boom", "use": "Opening hit for the first frame of an edit that starts on a Grid Glide scene. Mono and the heaviest of the five low hits; its hit gain is 0.5 so it does not set the stem level alone.", "duration": 0.62,
+      "hits": [{ "t": 0, "sound": "subBoom", "gain": 0.5, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "sub-thump", "name": "Sub thump", "use": "A scene change: a low impact with a 0.27 s swell before the cut and a body that lands just after it, so the palette starts it 0.27 s before the cut frame. Stereo.", "duration": 1.25,
+      "hits": [{ "t": 0, "sound": "subThump", "gain": 1, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "sub-thud", "name": "Sub thud", "use": "A short soft landing for a motion-matched cut or an object that lands; the 0.13 s lead-in plays before the landing frame. Stereo, about 10 dB under sub-thump.", "duration": 0.75,
+      "hits": [{ "t": 0, "sound": "subThud", "gain": 1, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "sub-swell-hit", "name": "Sub swell hit", "use": "A rising swell that stops abruptly at 0.31 s, for a climax or a blur dip; start it 0.2 s before the climax frame so the peak lands on it. Stereo.", "duration": 0.34,
+      "hits": [{ "t": 0, "sound": "subSwellHit", "gain": 1, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "ui-click", "name": "Interface click", "use": "One damped interface tick for a pill: a chapter's tool or the follow card. The ring starts 29 ms into the file, so place the recipe on the cue frame and the click lands about one frame later. Mono.", "duration": 0.2,
+      "hits": [{ "t": 0, "sound": "uiClick", "gain": 1, "pan": 0, "opts": {} }]
     }
   ]
 }

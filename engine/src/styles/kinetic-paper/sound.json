@@ -1,0 +1,61 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {
+      "recipe": "soft-transition",
+      "gain": 0.5,
+      "leadSec": 0.11,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "stamp": {
+      "recipe": "restrained-reveal",
+      "gain": 0.5,
+      "leadSec": 0.44,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "swap": {
+      "recipe": "highlight-swipe",
+      "gain": 0.4,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "click": {
+      "recipe": "ui-confirmation",
+      "gain": 0.35,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "count": {
+      "recipe": "counter-accent",
+      "gain": 0.45,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "reveal": {
+      "recipe": "paper-reveal",
+      "gain": 0.4,
+      "leadSec": 0.16,
+      "confidence": "medium",
+      "basis": "observed",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    },
+    "type": {
+      "recipe": "typing-burst",
+      "gain": 0.35,
+      "leadSec": 0,
+      "confidence": "none",
+      "basis": "authored",
+      "evidence": "Style-specific sound palette; review each cue with the creator."
+    }
+  }
+}

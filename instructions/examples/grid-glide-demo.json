@@ -1,0 +1,310 @@
+{
+  "version": 1,
+  "id": "grid-glide-demo",
+  "style": "grid-glide",
+  "fps": 30,
+  "durationInFrames": 600,
+  "reviewedBy": "Illustrative example review",
+  "creator": {
+    "displayName": "Example Studio",
+    "handle": "@example.creator",
+    "ending": {
+      "cta": "خطة",
+      "followCard": true,
+      "signOff": null
+    }
+  },
+  "scenes": [
+    {
+      "id": "hook",
+      "family": "glide-lines",
+      "fromFrame": 0,
+      "durationInFrames": 105,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "lines": [
+          {
+            "words": [
+              "قبل",
+              "التصوير"
+            ],
+            "role": "lead",
+            "at": 6,
+            "cadence": 7
+          },
+          {
+            "words": [
+              "3",
+              "أسئلة",
+              "فقط"
+            ],
+            "role": "hero",
+            "at": 20,
+            "cadence": 7
+          }
+        ],
+        "box": {
+          "text": "تختصر عليك الوقت",
+          "at": 50
+        },
+        "grid": true,
+        "enter": {
+          "kind": "cut"
+        },
+        "exit": {
+          "kind": "cut"
+        },
+        "watermark": "@example.creator"
+      }
+    },
+    {
+      "id": "chapter-one",
+      "family": "glide-chapter",
+      "fromFrame": 105,
+      "durationInFrames": 60,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "ordinal": "الخطوة الأولى",
+        "heroAt": 0,
+        "pill": {
+          "label": "PLAN"
+        },
+        "enter": {
+          "kind": "cut"
+        },
+        "exit": {
+          "kind": "push",
+          "dir": "left"
+        },
+        "watermark": "@example.creator"
+      }
+    },
+    {
+      "id": "card-questions",
+      "family": "glide-card",
+      "fromFrame": 165,
+      "durationInFrames": 195,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "lines": [
+          {
+            "words": [
+              "اكتب",
+              "الفكرة"
+            ],
+            "role": "lead",
+            "at": 8,
+            "cadence": 6.5
+          },
+          {
+            "words": [
+              "في",
+              "جملة",
+              "واحدة"
+            ],
+            "role": "hero",
+            "at": 22,
+            "cadence": 7
+          }
+        ],
+        "media": {
+          "clips": [
+            {
+              "at": 0,
+              "src": "examples/glide-screen-a.png",
+              "sha256": "e7d9b162be23c07b6e938d92e2f87be640893c6c9bb4a44287ec84d634555cde",
+              "width": 960,
+              "height": 540,
+              "kind": "image"
+            },
+            {
+              "at": 96,
+              "src": "examples/glide-screen-b.png",
+              "sha256": "488279357cec820a10149af257daa447e1c234ca3da7b6b8c9a750b1243d79b8",
+              "width": 960,
+              "height": 540,
+              "kind": "image"
+            }
+          ]
+        },
+        "bullets": [
+          {
+            "text": "الهدف من الفيديو",
+            "at": 78
+          },
+          {
+            "text": "من سيشاهده",
+            "at": 108
+          },
+          {
+            "text": "فكرة واحدة واضحة",
+            "at": 138
+          }
+        ],
+        "enter": {
+          "kind": "slide",
+          "from": "right",
+          "distance": 400
+        },
+        "exit": {
+          "kind": "dip"
+        },
+        "watermark": "@example.creator"
+      }
+    },
+    {
+      "id": "recap",
+      "family": "glide-lines",
+      "fromFrame": 360,
+      "durationInFrames": 90,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "lines": [
+          {
+            "words": [
+              "ثلاثة",
+              "أسئلة"
+            ],
+            "role": "lead",
+            "at": 3,
+            "cadence": 7
+          },
+          {
+            "words": [
+              "تبني",
+              "فيديو",
+              "أوضح"
+            ],
+            "role": "hero",
+            "at": 17,
+            "cadence": 7
+          }
+        ],
+        "box": {
+          "text": "ثم ابدأ التصوير",
+          "at": 40
+        },
+        "grid": false,
+        "enter": {
+          "kind": "dip"
+        },
+        "exit": {
+          "kind": "cut"
+        },
+        "watermark": "@example.creator"
+      }
+    },
+    {
+      "id": "comment",
+      "family": "glide-comment",
+      "fromFrame": 450,
+      "durationInFrames": 75,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "lines": [
+          {
+            "words": [
+              "اكتب",
+              "الكلمة"
+            ],
+            "role": "lead",
+            "at": 2,
+            "cadence": 7
+          }
+        ],
+        "keyword": "خطة",
+        "heroAt": 16,
+        "box": {
+          "text": "قائمة الأسئلة الجاهزة",
+          "at": 26
+        },
+        "enter": {
+          "kind": "cut"
+        },
+        "exit": {
+          "kind": "cut"
+        },
+        "watermark": "@example.creator"
+      }
+    },
+    {
+      "id": "follow",
+      "family": "glide-follow",
+      "fromFrame": 525,
+      "durationInFrames": 75,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "lines": [
+          {
+            "words": [
+              "تابعنا",
+              "للمزيد"
+            ],
+            "role": "lead",
+            "at": 0,
+            "cadence": 7
+          }
+        ],
+        "handle": "@example.creator",
+        "heroAt": 12,
+        "pill": {
+          "label": "تابع"
+        },
+        "enter": {
+          "kind": "cut"
+        },
+        "exit": {
+          "kind": "cut"
+        }
+      }
+    }
+  ],
+  "sounds": [
+    {
+      "atFrame": 0,
+      "recipe": "sub-boom",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 97,
+      "recipe": "sub-thump",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 125,
+      "recipe": "ui-click",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 157,
+      "recipe": "sub-thump",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 354,
+      "recipe": "sub-swell-hit",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 442,
+      "recipe": "sub-thump",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 517,
+      "recipe": "sub-thump",
+      "gain": 0.5
+    },
+    {
+      "atFrame": 557,
+      "recipe": "ui-click",
+      "gain": 0.5
+    }
+  ]
+}

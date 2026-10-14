@@ -38,7 +38,9 @@ async function project(t, makeManifest, {motionPlan = false} = {}) {
   await writeFile(path.join(ROOT, manifestPath), JSON.stringify(manifest) + '\n');
   if (motionPlan) await writeFile(path.join(directory, 'motion-plan.json'), '{}\n');
   // The real job planner/launcher runs; only the expensive media pipeline is replaced.
-  await writeFile(pipelineScript, `import {writeFileSync} from 'node:fs';\nwriteFileSync(${JSON.stringify(captured)}, JSON.stringify(process.argv.slice(2)));\nprocess.stdout.write(JSON.stringify({ok:false}));\n`);
+  // It writes beside the target and renames, so captureArguments never reads a half-written file.
+  const pending = `${captured}.tmp`;
+  await writeFile(pipelineScript, `import {renameSync, writeFileSync} from 'node:fs';\nwriteFileSync(${JSON.stringify(pending)}, JSON.stringify(process.argv.slice(2)));\nrenameSync(${JSON.stringify(pending)}, ${JSON.stringify(captured)});\nprocess.stdout.write(JSON.stringify({ok:false}));\n`);
   const manager = createJobManager({manifestPath, pipelineScript, freeBytes: () => 100 * GB, freeMem: () => 100 * GB});
   t.after(async () => {
     const deadline = Date.now() + 5000;

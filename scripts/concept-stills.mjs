@@ -286,7 +286,7 @@ async function main() {
     mkdirSync(path.join(publicDir, 'fonts'), { recursive: true });
     for (const file of fonts) {
       const from = path.join(ENGINE, 'public', 'fonts', file);
-      if (!existsSync(from)) throw new Error(`Font file engine/public/fonts/${file} is missing (core/fonts registers it). Run node scripts/fetch-fonts.mjs.`);
+      if (!existsSync(from)) throw new Error(`Font file engine/public/fonts/${file} is missing (core/fonts registers it). Run \`node scripts/studio.mjs setup --steps fonts\` (it downloads the pinned fonts and checks their sha256).`);
       copyFileSync(from, path.join(publicDir, 'fonts', file));
     }
     for (const a of assets) {

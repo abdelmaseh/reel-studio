@@ -10,3 +10,6 @@
 .illustration.magazine-interview{background:#0b1926;color:#f9f1df;border-block:1px solid #b3a777}.illustration.magazine-interview span{color:#d7bc73;letter-spacing:.05em}.illustration.magazine-interview b{border-inline-start:2px solid #d7bc73;padding-inline-start:8px}.illustration.magazine-interview .bars i{height:2px;background:#8ba69e;border-radius:0}
 .illustration.scrapbook-route{background:linear-gradient(#dbcdb22b 1px,transparent 1px),linear-gradient(90deg,#dbcdb22b 1px,transparent 1px),#f0e7d3;background-size:16px 16px;color:#33302b}.illustration.scrapbook-route span{color:#af3b78}.illustration.scrapbook-route .bars{border-inline-start:2px dotted #af3b78;padding-inline-start:10px}.illustration.scrapbook-route .bars i{background:#fffaf0;border:1px solid #978f7d;border-radius:1px;box-shadow:2px 2px #b8ae9966}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+.illustration.grid-glide{background:#f2f2f2;color:#242424;border-color:#d6d6d6}
+.illustration.grid-glide span{color:#5a5a5a}
+.illustration.grid-glide .bars i{background:#f9f9f7;border-radius:9px;box-shadow:inset 0 1px #fff,inset 0 -1px #8d8d8d,4px 5px 9px -2px #00000047}

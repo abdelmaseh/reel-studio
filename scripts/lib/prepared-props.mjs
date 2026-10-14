@@ -4,6 +4,8 @@ import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {kineticSceneSchema,kineticAssets} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneSchema,libraryAssets} from '../../engine/src/motion-library/schema.ts';
 import {semanticSceneSchema,semanticAssets} from '../../engine/src/creative-kit/semantic/schema.ts';
+import {styleSceneSchema,styleSceneAssets,styleSceneAssetClaims} from '../../engine/src/styles/scenes.ts';
+import {glideVideoSources} from '../../engine/src/styles/grid-glide/scenes/media.ts';
 import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
@@ -25,6 +27,7 @@ async function svgVideo(file){
   return {codec_type:'video',codec_name:'svg',width,height};
 }
 
+const STILL_CODECS=['png','mjpeg','webp','gif','bmp','tiff','svg'];
 let alphaFormats;
 export async function hasForegroundAlpha(video){
   if(String(video.tags?.alpha_mode??video.tags?.ALPHA_MODE)==='1')return true;
@@ -36,11 +39,11 @@ export async function hasForegroundAlpha(video){
 export async function verifyKineticAssets(edit){
   const assets=new Map();
   for(const input of edit.scenes){
-    const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input);
+    const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input),styled=styleSceneSchema.safeParse(input);
     const custom=input.family==='project-scene';
-    if(!parsed.success && !library.success && !semantic.success && !custom)continue;
-    const scene=parsed.success?parsed.data:library.success?library.data:semantic.success?semantic.data:input;
-    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):projectSceneAssets({...edit,scenes:[input]});
+    if(!parsed.success && !library.success && !semantic.success && !styled.success && !custom)continue;
+    const scene=parsed.success?parsed.data:library.success?library.data:semantic.success?semantic.data:styled.success?styled.data:input;
+    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):styled.success?styleSceneAssets(styled.data):projectSceneAssets({...edit,scenes:[input]});
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
@@ -49,12 +52,23 @@ export async function verifyKineticAssets(edit){
         if(!video?.width || !video.height)throw new Error(`Scene asset is not a decodable image/video: ${src}`);
         assets.set(src,{...identity,src,absolute,video});
       }
-      const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video'));
+      const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video')) || glideVideoSources(scene).includes(src);
       if(!isMoving && !['png','mjpeg','webp','gif','bmp','tiff','svg'].includes(assets.get(src).video.codec_name))throw new Error(`Static scene asset must contain an image: ${src}`);
     }
     if(scene.family==='evidence-wipe')for(const image of [scene.data.before,scene.data.after]){
       const asset=assets.get(image.src);
       if(asset.video.width!==image.width || asset.video.height!==image.height)throw new Error('Comparison image dimensions disagree with its provided image.');
+    }
+    if(styled.success)for(const claim of styleSceneAssetClaims(styled.data)){
+      const asset=assets.get(claim.src),video=asset.video,still=STILL_CODECS.includes(video.codec_name);
+      if(asset.sha256!==claim.sha256)throw new Error(`Scene asset bytes do not match the supplied hash: ${claim.src}`);
+      if(video.width!==claim.width || video.height!==claim.height)throw new Error(`Scene asset dimensions disagree with its provided file: ${claim.src}`);
+      if(claim.kind==='image' && !still)throw new Error(`Scene media declared as an image contains video: ${claim.src}`);
+      if(claim.kind==='video'){
+        if(still)throw new Error(`Scene media declared as a video contains an image: ${claim.src}`);
+        const available=Number(video.duration??video.tags?.DURATION?.split(':').reduce((a,n)=>a*60+Number(n),0));
+        if(!Number.isFinite(available) || available+1/edit.source.fps<claim.frames/edit.source.fps)throw new Error(`Scene video is too short: ${claim.src}`);
+      }
     }
     if(scene.family==='chapter-quote' && scene.data.cover){
       const supplied=scene.data.cover.foreground,asset=assets.get(supplied.src);

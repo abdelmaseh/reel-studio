@@ -5,6 +5,7 @@ import path from 'node:path';
 import {promises as fs} from 'node:fs';
 import {ROOT} from '../lib/project-paths.mjs';
 import {recordStudioEvent, flushStudioEvents} from '../lib/studio-stats.mjs';
+import {installEnvironment} from '../lib/clean-install.mjs';
 
 async function fixture(t, handler) {
   await fs.mkdir(path.join(ROOT, 'state/tmp'), {recursive: true});
@@ -151,4 +152,30 @@ test('an install evicted by the outbox cap may be observed again without resetti
   offline = false;
   for (let attempt = 0; attempt < 16; attempt += 1) await flushStudioEvents(root, options);
   assert.ok(events.some(row => row.value.event === 'installed' && row.value.version === '3.0.0' && row.value.occurredAt === '2026-10-14T08:00:00.000Z'));
+});
+
+test('REEL_STUDIO_STATS=off records and sends nothing, even with an explicit endpoint', async t => {
+  const {root, events, options} = await fixture(t);
+  const previous = process.env.REEL_STUDIO_STATS;
+  process.env.REEL_STUDIO_STATS = 'off';
+  try {
+    await recordStudioEvent(root, 'installed', options);
+    await recordStudioEvent(root, 'studio_used', options);
+    await flushStudioEvents(root, options);
+    assert.equal(events.length, 0);
+    await assert.rejects(fs.stat(path.join(root, 'state/studio-stats.json')), {code: 'ENOENT'}, 'nothing is even queued');
+  } finally {
+    if (previous === undefined) delete process.env.REEL_STUDIO_STATS; else process.env.REEL_STUDIO_STATS = previous;
+  }
+  await recordStudioEvent(root, 'installed', options);
+  assert.equal(events.length, 1, 'the same call sends once the variable is gone');
+});
+
+test('the QA install environment switches the signal off', () => {
+  const env = installEnvironment(path.join(ROOT, 'state/tmp/qa-install'));
+  assert.equal(env.REEL_STUDIO_STATS, 'off');
+  const previous = process.env.REEL_STUDIO_STATS;
+  process.env.REEL_STUDIO_STATS = 'on';
+  try { assert.equal(installEnvironment(ROOT).REEL_STUDIO_STATS, 'off', 'an inherited value cannot turn it back on'); }
+  finally { if (previous === undefined) delete process.env.REEL_STUDIO_STATS; else process.env.REEL_STUDIO_STATS = previous; }
 });

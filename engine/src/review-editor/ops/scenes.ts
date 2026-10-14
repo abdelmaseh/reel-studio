@@ -2,6 +2,10 @@ import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { editSceneSchema } from "../../prepared-edit/schema.ts";
 import { creativeGalleryDefaults, sceneFamilies } from "../../creative-kit/schema.ts";
 import {semanticFamilies} from '../../creative-kit/semantic/schema.ts';
+import {GRID_GLIDE_FAMILIES} from '../../styles/grid-glide/scenes/schema.ts';
+import {gridGlideTemplate, gridGlideTemplateFrames} from '../../styles/grid-glide/scenes/templates.ts';
+import {glideWords} from '../../styles/grid-glide/scenes/text.ts';
+import {ownSceneStyle} from '../../styles/registry.ts';
 import {compileEdit} from '../../prepared-edit/timeline.ts';
 import {minFramesAtFps} from '../../motion-concepts/timeline.ts';
 import {getCatalogEntry} from '../../motion-concepts/catalog.ts';
@@ -20,7 +24,15 @@ export type SceneLayout = (typeof LAYOUTS)[number];
 export type SceneMotion = (typeof MOTIONS)[number];
 
 
-export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies];
+export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...GRID_GLIDE_FAMILIES];
+
+
+export function templateFamiliesFor(style: string): string[] {
+  return TEMPLATE_FAMILIES.filter((family) => {
+    const owner = ownSceneStyle(family);
+    return owner === undefined || owner === style;
+  });
+}
 const MIN_SCENE_FRAMES = 30;
 const DEFAULT_SCENE_FRAMES = creativeGalleryDefaults.framesPerScene;
 
@@ -222,11 +234,16 @@ export function setMotion(m: EditManifest, id: string, motion: SceneMotion): OpR
 export function addSceneFromTemplate(m: EditManifest, family: string, options: { atFrame?: number; durationInFrames?: number } = {}): OpResult<{ id: string; index: number }> {
   const data = TEMPLATE_DATA[family];
   if (!data) return refuse(`مفيش قالب آمن للـ family «${family}». انسخ مشهد موجود منها (نسخ) وعدّل عليه.`);
-  const defaultFrames=family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
+  const owner = ownSceneStyle(family);
+  if (owner !== undefined && owner !== m.style) return refuse(`المشهد «${family}» متاح في ستايل ${owner} فقط، والستايل الحالي ${m.style}. غيّر الستايل أولا أو اختر نوع مشهد آخر.`);
+  const glide = (GRID_GLIDE_FAMILIES as readonly string[]).includes(family);
+  const defaultFrames=glide?gridGlideTemplateFrames(family,m.source.fps):family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
     ?minFramesAtFps(Math.max(DEFAULT_SCENE_FRAMES,getCatalogEntry((data as {concept:string}).concept).minFrames),m.source.fps):DEFAULT_SCENE_FRAMES;
   const wanted = Math.round(options.durationInFrames ?? defaultFrames);
   if (!(wanted >= 1)) return refuse("مدة المشهد لازم تبقى فريم واحد على الأقل.");
-  const slot = freeRoomAt(m, options.atFrame ?? 0, limitFrame(m), Math.min(MIN_SCENE_FRAMES, wanted));
+  // A glide template keeps its cue positions at full length, so it needs a gap that holds the whole scene; other families may shrink to fit.
+  const minRoom = glide ? wanted : Math.min(MIN_SCENE_FRAMES, wanted);
+  const slot = freeRoomAt(m, options.atFrame ?? 0, limitFrame(m), minRoom);
   if (!slot) return refuse("مفيش مساحة فاضية كفاية لمشهد جديد. قصّر مشهد أو حرّك الـ playhead لمكان فاضي.");
   const id = uniqueSlug(family, new Set(m.scenes.map((x) => x.id)));
   const scene = {
@@ -236,8 +253,13 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
     family,
     layout: creativeGalleryDefaults.layout,
     motion: creativeGalleryDefaults.motion,
-    data: structuredClone(data),
+    data: glide ? gridGlideTemplate(family, m.source.fps) : structuredClone(data),
   } as Scene;
+  // The Grid Glide ending scenes say the creator's own words: the CTA keyword and the profile handle. A profile that has none
+  // (or a CTA of more than three words, which a keyword scene cannot hold) keeps the template placeholder.
+  const cta=m.creator?.ending.cta;
+  if(scene.family==='glide-comment' && typeof cta==='string' && glideWords(cta).length<=3)scene.data.keyword=cta;
+  if(scene.family==='glide-follow' && m.creator?.handle)scene.data.handle=m.creator.handle;
   if(scene.family==='message-board'){
     for(const key of ['gatherFrame','gatherDurationFrames','focusFrame','focusDurationFrames'] as const)scene.data[key]=Math.round(scene.data[key]*m.source.fps/30);
     if(scene.data.closingFrame!==undefined)scene.data.closingFrame=Math.round(scene.data.closingFrame*m.source.fps/30);

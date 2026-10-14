@@ -1,6 +1,6 @@
 # A project-authored scene in the normal editor
 
-Use this when the editorial action cannot be expressed well by a shipped family: a custom map, a diagram whose same objects change state, a collage, a visual metaphor or another authored explanation. Read EDITORIAL.md and the relevant STYLE-RECIPES.md section. Decide the visual action and reviewed copy before writing code. Keep ordinary families when they already serve the idea.
+Use this when the editorial action cannot be expressed well by a shipped family: a custom map, a diagram whose same objects change state, a collage, a visual metaphor or another authored explanation. Read EDITORIAL.md and the Recipe section of the chosen style's guide (linked from STYLES.md). Decide the visual action and reviewed copy before writing code. Keep ordinary families when they already serve the idea.
 
 The assistant authors the scene inside the project's folder. The creator reviews its copy, timing and editable values in the same live editor. The project does not modify tracked engine files or register a new global composition.
 

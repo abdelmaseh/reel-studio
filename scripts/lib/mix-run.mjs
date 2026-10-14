@@ -8,7 +8,7 @@ import { promisify } from 'node:util';
 import { createHash } from 'node:crypto';
 import { ROOT } from './project-paths.mjs';
 import { CACHE_DIR, fileKey } from './media.mjs';
-import { normalizeMixOptions, mixOutputPath, chooseMixSfxGain, chooseGraphicsSfx, parseMixStemStats, parseMixLoudness, assessMixDelivery, assessGraphicsSilence, VOICE_SILENCE, buildVoiceChain, buildVoiceMeasureFilter, buildMixFilterGraph, buildGraphicsMixFilterGraph, parseSilenceSpans, silenceSpansFromAudioCache, selectFloorWindows, parseRmsLevelDb, estimateNoiseFloorDb, decideDenoise } from './mix-contract.mjs';
+import { normalizeMixOptions, mixOutputPath, chooseMixSfxGain, chooseGraphicsSfx, parseMixStemStats, parseMixLoudness, assessMixDelivery, assessGraphicsSilence, VOICE_SILENCE, buildVoiceChain, buildVoiceMeasureFilter, buildMixFilterGraph, buildGraphicsMixFilterGraph, planLoudnessCompensation, parseSilenceSpans, silenceSpansFromAudioCache, selectFloorWindows, parseRmsLevelDb, estimateNoiseFloorDb, decideDenoise } from './mix-contract.mjs';
 
 const execute = promisify(execFile);
 const ffmpeg = path.join(ROOT, 'Tools/bin/ffmpeg.exe'), ffprobe = path.join(ROOT, 'Tools/bin/ffprobe.exe');
@@ -50,6 +50,7 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
   const options = normalizeMixOptions(args);
   const result = { schema: 1, ok: false, status: 'failed', out: options.out, published: false, style: options.style, styleProfile: options.styleProfile, audio: {mode: options.graphicsAudio ? 'graphics' : 'dialogue', expectedSilence: false, verifiedSilence: false}, targets: { LUFS: options.lufs, truePeakDb: options.tp, loudnessToleranceLU: 1, peakToleranceDb: 0.3, lraBand: options.lraBand }, voice: { applicable: !options.graphicsAudio, mode: options.voice, chain: '', denoise: null, intermediateCodec: options.voice === 'off' ? 'pcm_s24le' : 'pcm_f32le', stemMeasuredAfterChain: options.voice !== 'off' }, errors: [], warnings: [] };
   let stage = 'preflight';
+  let finished = null; // the master that is published: the first pass, or the compensated one
   try {
     const inputs = [await assertInput(options.video)];
     if (options.sfx) inputs.push(await assertInput(options.sfx));
@@ -119,18 +120,49 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
     const measuredI = Number(measured.input_i), measuredTP = Number(measured.input_tp);
     if (!Number.isFinite(measuredI) || !Number.isFinite(measuredTP)) throw new Error('Mix integrated loudness and true peak must be finite before gain correction.');
     const delta = +(options.lufs - measuredI).toFixed(2);
-    const limiter = `volume=${delta}dB,alimiter=level_in=1:level_out=1:limit=${Math.pow(10, (options.tp - options.ceilPad) / 20).toFixed(4)}:attack=5:release=60:level=disabled`;
-    result.mastering = { chain: 'measured volume correction + alimiter level=disabled', tighten: options.tighten, measuredLUFS: measuredI, measuredTruePeakDb: measuredTP, correctionDb: delta, limiterFilter: limiter, samplePeakPaddingDb: options.ceilPad };
+    const peakLimiter = `alimiter=level_in=1:level_out=1:limit=${Math.pow(10, (options.tp - options.ceilPad) / 20).toFixed(4)}:attack=5:release=60:level=disabled`;
+    const limiter = `volume=${delta}dB,${peakLimiter}`;
+    result.mastering = { chain: 'measured volume correction + alimiter level=disabled', tighten: options.tighten, measuredLUFS: measuredI, measuredTruePeakDb: measuredTP, correctionDb: delta, limiterFilter: limiter, samplePeakPaddingDb: options.ceilPad, compensation: null };
     onProgress(`mix measured ${measuredI} LUFS / TP ${measuredTP}; applying ${delta} dB.`);
-    stage = 'master_encode';
-    await runFfmpeg(['-hide_banner', '-loglevel', 'error', '-y', '-i', options.video, '-i', tmp, '-map', '0:v:0', '-map', '1:a:0', '-af', limiter, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '320k', '-ar', '48000', '-movflags', '+faststart+negative_cts_offsets', candidate], path.join(scratch, 'master.log'));
-    stage = 'delivery_measurement';
-    const deliveredProbe = await probe(candidate);
-    const deliveredAudio = deliveredProbe.streams.find(stream => stream.codec_type === 'audio');
-    if (!deliveredAudio) throw new Error('Mastered output has no audio stream.');
-    const deliveredDuration = Number(deliveredAudio.duration ?? deliveredProbe.format.duration);
-    const delivered = parseMixLoudness(await runFfmpeg(['-hide_banner', '-i', candidate, '-map', '0:a:0', '-vn', '-af', 'ebur128=peak=true', '-f', 'null', '-'], path.join(scratch, 'verify.log')));
-    Object.assign(result, assessMixDelivery(delivered, deliveredDuration, options), { delivered, durationSec: deliveredDuration });
+    // Encode the master with a filter chain, then measure the delivered file; the compensation pass reuses both steps.
+    // The stage names say which half failed: the encode, or the probe and loudness measurement of the delivered file.
+    const master = async (filter, file, name, names) => {
+      stage = names.encode;
+      await runFfmpeg(['-hide_banner', '-loglevel', 'error', '-y', '-i', options.video, '-i', tmp, '-map', '0:v:0', '-map', '1:a:0', '-af', filter, '-c:v', 'copy', '-c:a', 'aac', '-b:a', '320k', '-ar', '48000', '-movflags', '+faststart+negative_cts_offsets', file], path.join(scratch, `${name}.log`));
+      stage = names.measure;
+      const deliveredProbe = await probe(file);
+      const deliveredAudio = deliveredProbe.streams.find(stream => stream.codec_type === 'audio');
+      if (!deliveredAudio) throw new Error('Mastered output has no audio stream.');
+      const durationSec = Number(deliveredAudio.duration ?? deliveredProbe.format.duration);
+      return { file, durationSec, delivered: parseMixLoudness(await runFfmpeg(['-hide_banner', '-i', file, '-map', '0:a:0', '-vn', '-af', 'ebur128=peak=true', '-f', 'null', '-'], path.join(scratch, name === 'master' ? 'verify.log' : `verify-${name}.log`))) };
+    };
+    finished = await master(limiter, candidate, 'master', { encode: 'master_encode', measure: 'delivery_measurement' });
+    const compensation = planLoudnessCompensation(finished.delivered, options);
+    let compensated = null;
+    if (compensation) {
+      // One compensation, never a loop: add gain after the first limiter and limit again at the same ceiling.
+      // The first pass is a complete, measured master, so a failed second pass keeps it and records why.
+      try {
+        const compensatedLimiter = `${limiter},volume=${compensation.gainDb}dB,${peakLimiter}`;
+        onProgress(`delivered ${finished.delivered.LUFS} LUFS is ${compensation.shortfallDb} LU below target after the limiter; one compensation of ${compensation.gainDb} dB.`);
+        const second = await master(compensatedLimiter, mixOutputPath(path.join(scratch, 'compensated.mp4')), 'master-compensated', { encode: 'loudness_compensation', measure: 'loudness_compensation' });
+        const distance = measured => Math.abs(measured.LUFS - options.lufs);
+        const adopted = second.delivered.truePeakDb <= options.tp + 0.3 && distance(second.delivered) < distance(finished.delivered);
+        const pick = ({ LUFS, LRA, truePeakDb }) => ({ LUFS, LRA, truePeakDb });
+        result.mastering.compensation = { ...compensation, adopted, firstPass: pick(finished.delivered), secondPass: pick(second.delivered), limiterFilter: compensatedLimiter };
+        if (adopted) {
+          result.mastering.chain = 'measured volume correction + alimiter level=disabled + one post-limiter loudness compensation';
+          compensated = { code: 'loudness_compensated', gainDb: compensation.gainDb, firstPassLUFS: finished.delivered.LUFS, deliveredLUFS: second.delivered.LUFS, message: `The limiter left the master ${compensation.shortfallDb} LU below target; one ${compensation.gainDb} dB compensation after it brought the delivered file to ${second.delivered.LUFS} LUFS.` };
+          finished = second;
+        }
+      } catch (error) {
+        stage = 'delivery_measurement';
+        result.mastering.compensation = { ...compensation, adopted: false, error: error.message };
+        onProgress(`loudness compensation failed (${error.message}); keeping the first-pass master.`);
+      }
+    }
+    Object.assign(result, assessMixDelivery(finished.delivered, finished.durationSec, options), { delivered: finished.delivered, durationSec: finished.durationSec });
+    if (compensated) result.warnings.push(compensated);
     }
     if (sfx.status === 'silent_bypassed') result.warnings.push({ code: 'silent_sfx_bypassed', message: 'The supplied SFX stem contains digital silence; it was bypassed without amplification.' });
     if (denoiseSkipped) result.warnings.push(denoiseSkipped);
@@ -139,7 +171,7 @@ export async function mixDelivery(args, { onProgress = message => process.stderr
       stage = 'publish';
       mixOutputPath(options.out);
       await fsp.mkdir(path.dirname(options.out), { recursive: true });
-      await fsp.rename(candidate, options.out);
+      await fsp.rename(finished?.file ?? candidate, options.out);
       result.published = true;
       result.outputSha256 = await hashFile(options.out);
       result.bytes = (await fsp.stat(options.out)).size;

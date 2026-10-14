@@ -139,7 +139,7 @@ export async function transcribeMedia(args, { onProgress = message => console.er
   options.media = source;
   if (options.outDir && path.relative(options.outDir, source) === '') throw new Error('Output directory cannot be the input file.');
   let runtime;
-  try { runtime = JSON.parse(await fsp.readFile(WHISPER_RUNTIME_FILE, 'utf8')); } catch { throw new Error('Modern whisper.cpp is not installed. Run node engine/tools/install-whisper.mjs --with-vad.'); }
+  try { runtime = JSON.parse(await fsp.readFile(WHISPER_RUNTIME_FILE, 'utf8')); } catch { throw new Error('Transcription is not installed yet. Run node scripts/studio.mjs setup; it installs only what is missing.'); }
   const toolsDir = path.join(ROOT, 'Tools', 'bin');
   const ffmpeg = path.join(toolsDir, 'ffmpeg.exe'), ffprobe = path.join(toolsDir, 'ffprobe.exe');
   if (!fs.existsSync(ffmpeg) || !fs.existsSync(ffprobe)) throw new Error('Project-local Tools/bin/ffmpeg.exe and ffprobe.exe are required.');
@@ -148,7 +148,7 @@ export async function transcribeMedia(args, { onProgress = message => console.er
     sha256File(source), resolveWhisperModel(options.model), inspectWhisperRuntime(runtime.directory, { expectedBinaryFiles: runtime.binaryFiles }), probeAudio(ffprobe, source), sha256File(ffmpeg),
   ]);
   runtime = { ...runtime, ...actualRuntime };
-  if (options.vad && (!runtime.capabilities.vadFlag || !runtime.vad?.path || !fs.existsSync(runtime.vad.path))) throw new Error('VAD model is unavailable. Run node engine/tools/install-whisper.mjs --with-vad.');
+  if (options.vad && (!runtime.capabilities.vadFlag || !runtime.vad?.path || !fs.existsSync(runtime.vad.path))) throw new Error('The VAD model is unavailable. Run node scripts/studio.mjs setup.');
   const vadSha256 = options.vad ? await sha256File(runtime.vad.path) : null;
   if (options.vad && vadSha256 !== runtime.vad.sha256) throw new Error('VAD model hash changed since installation.');
   if (options.startMs >= audioProbe.durationMs) throw new Error('--start is outside the audio duration.');

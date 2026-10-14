@@ -2,6 +2,15 @@ export const CUE_KINDS = Object.freeze(['transition', 'stamp', 'swap', 'click', 
 
 const KIND_ORDER = new Map(CUE_KINDS.map((kind, index) => [kind, index]));
 
+// Grid Glide scene families (tests/grid-glide-director.test.mjs keeps this list equal to GRID_GLIDE_FAMILIES).
+export const GLIDE_CUE_FAMILIES = Object.freeze(['glide-chapter', 'glide-card', 'glide-lines', 'glide-comment', 'glide-follow']);
+// A chapter pill (and the follow pill of glide-follow) starts 14.75 frames (at 30 fps) after its hero word unless the scene sets pillAt, and its click lands 5 frames
+// (at 30 fps) after that. Both defaults are fixed in time, so they scale with the edit's frame rate: 14.75 * fps / 30 and
+// 5 * fps / 30 frames. An explicit pillAt is already written in the edit's frames and is never scaled.
+const GLIDE_PILL_AFTER_HERO = 14.75;
+const GLIDE_CLICK_AFTER_PILL = 5;
+const glideFrames = (frames30, fps) => (frames30 * (typeof fps === 'number' && Number.isFinite(fps) && fps > 0 ? fps : 30)) / 30;
+
 const frameOf = (value) => (typeof value === 'number' && Number.isFinite(value) ? Math.round(value) : null);
 const list = (value) => (Array.isArray(value) ? value : []);
 
@@ -22,7 +31,7 @@ export function sortCues(cues) {
 }
 
 
-export function sceneCues(scene) {
+export function sceneCues(scene, fps = 30) {
   const from = frameOf(scene?.fromFrame);
   if (from === null || from < 0) return [];
   const length = Number.isInteger(scene.durationInFrames) && scene.durationInFrames > 0 ? scene.durationInFrames : Infinity;
@@ -35,7 +44,9 @@ export function sceneCues(scene) {
     cues.push({ frame: from + frame, kind, sceneId });
   };
 
-  add(0, 'transition');
+  // An entrance that is a dip has its climax on the boundary: it gets the stamp, not the cut sound.
+  const dipEntrance = GLIDE_CUE_FAMILIES.includes(scene.family) && data.enter?.kind === 'dip';
+  add(0, dipEntrance ? 'stamp' : 'transition');
   switch (scene.family) {
     case 'message-board':
       add(data.gatherFrame,'reveal');add(data.focusFrame,'swap');if(data.closingFrame!==undefined)add(data.closingFrame,'reveal');break;
@@ -103,6 +114,18 @@ export function sceneCues(scene) {
         }
       });
       break;
+    case 'glide-chapter':
+    case 'glide-follow': // the FOLLOW pill clicks exactly like a tool pill
+      if (data.pill && typeof data.pill === 'object') {
+        const heroAt = typeof data.heroAt === 'number' ? data.heroAt : 0;
+        const pillAt = typeof data.pillAt === 'number' ? data.pillAt : heroAt + glideFrames(GLIDE_PILL_AFTER_HERO, fps);
+        add(pillAt + glideFrames(GLIDE_CLICK_AFTER_PILL, fps), 'click');
+      }
+      break;
+    case 'glide-card':
+    case 'glide-lines':
+    case 'glide-comment':
+      break; // Words, boxes, bullets and media changes are silent in this style.
     default:
       break;
   }
@@ -112,7 +135,9 @@ export function sceneCues(scene) {
 
 export function editCues(manifest) {
   const scenes = list(manifest?.scenes);
-  const cues = scenes.flatMap(sceneCues);
+  // Not flatMap(sceneCues): flatMap would hand the array index to sceneCues as its fps.
+  const fps = manifest?.source?.fps;
+  const cues = scenes.flatMap((scene) => sceneCues(scene, fps));
   for (const transition of list(manifest?.transitions)) {
     const frame = frameOf(transition?.atFrame);
     if (frame === null || frame < 0) continue;

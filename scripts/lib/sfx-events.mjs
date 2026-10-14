@@ -78,9 +78,35 @@ export function resolvePalette(palettes, catalog, styleId) {
 }
 
 
+const PALETTE_HEADER_PATH = 'engine/src/styles/sound-palettes.json';
+const stylePalettePath = (styleId) => `engine/src/styles/${styleId}/sound.json`;
+
+
+export function assembleStylePalettes(header, paletteByStyle) {
+  exactKeys(header, ['version', 'provenance', 'cueKinds'], PALETTE_HEADER_PATH);
+  const styles = {};
+  for (const styleId of STYLE_IDS) {
+    if (!Object.hasOwn(paletteByStyle, styleId) || paletteByStyle[styleId] == null) {
+      fail(`Style ${styleId} has no sound palette: add ${stylePalettePath(styleId)}.`);
+    }
+    styles[styleId] = paletteByStyle[styleId];
+  }
+  return { version: header.version, provenance: header.provenance, cueKinds: header.cueKinds, styles };
+}
+
+
+export async function loadStylePalettes() {
+  const { readJson } = await import('./job-paths.mjs');
+  const header = await readJson(PALETTE_HEADER_PATH);
+  const paletteByStyle = {};
+  for (const styleId of STYLE_IDS) paletteByStyle[styleId] = await readJson(stylePalettePath(styleId), { optional: true });
+  return assembleStylePalettes(header, paletteByStyle);
+}
+
+
 export async function loadStylePalette(styleId) {
-  const [{ readJson }, { loadSoundCatalog }] = await Promise.all([import('./job-paths.mjs'), import('./job-sound.mjs')]);
-  return resolvePalette(await readJson('Sound-Kits/style-palettes.json'), await loadSoundCatalog(), styleId);
+  const { loadSoundCatalog } = await import('./job-sound.mjs');
+  return resolvePalette(await loadStylePalettes(), await loadSoundCatalog(), styleId);
 }
 
 const checkOptions = ({ fps, signoffFromFrame, durationInFrames, maxPerSec = DEFAULT_MAX_PER_SEC } = {}) => {
