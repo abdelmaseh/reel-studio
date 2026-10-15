@@ -13,3 +13,5 @@
 .illustration.grid-glide{background:#f2f2f2;color:#242424;border-color:#d6d6d6}
 .illustration.grid-glide span{color:#5a5a5a}
 .illustration.grid-glide .bars i{background:#f9f9f7;border-radius:9px;box-shadow:inset 0 1px #fff,inset 0 -1px #8d8d8d,4px 5px 9px -2px #00000047}
+.support-link{margin-top:auto;display:flex;gap:11px;align-items:center;padding:12px 14px;border:1px solid #547065;border-radius:10px;color:#edf4ec;text-decoration:none;transition:background .2s,border-color .2s}.support-link:hover{background:#34534b;border-color:#eaaa79}.support-icon{color:#eaaa79;font-size:17px;line-height:1}.support-link strong{display:block;font-size:13px;color:#fff}.support-link small{display:block;font-size:11px;color:#c0d0c4}.support-link+.privacy-note{margin-top:0}
+@media(max-width:700px){.support-link{margin-top:0;padding:8px 12px}}

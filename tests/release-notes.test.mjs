@@ -100,6 +100,41 @@ test('first-run setup ends with the thank-you line before the ready line', () =>
   assert.ok(ready > thanks, 'the thank-you line comes first');
 });
 
+const SUPPORT_URL = 'https://store.pyraai.cloud/product/reel-studio/';
+const SUPPORT_LABEL = 'ادعمنا واحجز جلستك';
+// Every placement says the session is optional and paid, so it never reads as free support.
+const OPTIONAL_PAID = /اختيارية[^\n]{0,20}(?:مدفوعة|تُدفع)|مدفوعة[^\n]{0,5}واختيارية/;
+
+test('README links to support sessions at the start, in the FAQ, when setup stops and in the footer', () => {
+  const readme = read('README.md'), link = `[${SUPPORT_LABEL}](${SUPPORT_URL})`;
+  const hero = readme.slice(0, readme.indexOf('<a id="start"></a>'));
+  assert.ok(hero.includes(`<a href="${SUPPORT_URL}"><b>${SUPPORT_LABEL}</b></a>`), 'start of the page');
+  assert.match(hero, OPTIONAL_PAID);
+  const faq = readme.slice(readme.indexOf('## أسئلة سريعة'), readme.indexOf('## أدلة للمساعد'));
+  const entries = faq.split('<details>').slice(1);
+  const help = entries.find(entry => entry.includes('تحتاج مساعدة مباشرة'));
+  assert.ok(help?.includes(link), 'its own FAQ entry');
+  assert.match(help, OPTIONAL_PAID);
+  assert.deepEqual(dialectIn(help.replace(/<[^>]+>/g, '')), []);
+  const stopped = entries.find(entry => entry.includes('التجهيز وقف'));
+  assert.ok(stopped?.includes(link), 'the setup-stopped answer');
+  assert.match(stopped, OPTIONAL_PAID);
+  assert.ok(readme.slice(readme.lastIndexOf('\n---\n')).includes(link), 'the footer');
+});
+
+test('the install thank-you and the settings screen offer the support link', () => {
+  const setup = read('instructions/SETUP.md');
+  const thanks = setup.indexOf(`«${THANKS}»`), support = setup.indexOf(`${SUPPORT_LABEL}: ${SUPPORT_URL}»`), ready = setup.indexOf('«كده الاستوديو جاهز.');
+  assert.ok(thanks > 0 && support > thanks && ready > support, 'support line sits between the thank-you and ready lines');
+  assert.match(setup.slice(thanks + THANKS.length, support), OPTIONAL_PAID);
+  const html = read('scripts/settings-ui/index.html');
+  const anchor = html.match(/<a class="support-link"[^>]*>/)?.[0];
+  assert.ok(anchor, 'settings sidebar has the support link');
+  for (const attribute of [`href="${SUPPORT_URL}"`, 'target="_blank"', 'rel="noopener noreferrer"']) assert.ok(anchor.includes(attribute), attribute);
+  assert.ok(html.includes(`<strong>${SUPPORT_LABEL}</strong>`));
+  assert.match(html.slice(html.indexOf('class="support-link"')), OPTIONAL_PAID);
+});
+
 test('README explains the install counter in White Arabic', () => {
   const readme = read('README.md'), at = readme.indexOf('يرسل الاستوديو إشارة صغيرة');
   assert.ok(at > 0, 'README has the counter paragraph');

@@ -17,6 +17,11 @@
 </p>
 
 <p align="center">
+  <a href="https://store.pyraai.cloud/product/reel-studio/"><b>ادعمنا واحجز جلستك</b></a><br>
+  <sub>جلسة خاصة اختيارية ومدفوعة مع صانع الاستوديو عبر الإنترنت: التثبيت، أو حل مشكلة، أو ضبط ريل على ذوقك.</sub>
+</p>
+
+<p align="center">
   <a href="#whats-new">الجديد في 2.5</a> ·
   <a href="#styles">الـ١٢ ستايل</a> ·
   <a href="#podcast-clipping">دفعات البودكاست</a> ·
@@ -384,9 +389,20 @@
 </details>
 
 <details>
+<summary><b>تحتاج مساعدة مباشرة، أو تريد دعم المشروع؟</b></summary>
+
+احجز جلسة خاصة عبر الإنترنت مع صانع الاستوديو. تشارك شاشتك ونعمل معًا على جهازك: التثبيت، أو حل خطأ، أو ضبط ريل حتى يخرج كما تريد. الأداة مجانية، والجلسة اختيارية تُدفع مرة واحدة، ومقابلها يدعم تطوير Reel Studio.
+
+[ادعمنا واحجز جلستك](https://store.pyraai.cloud/product/reel-studio/)
+
+</details>
+
+<details>
 <summary><b>التجهيز وقف أو عايز تبلغ عن مشكلة؟</b></summary>
 
 ابعت للمساعد رسالة الخطأ. ولو هتفتح [Issue](https://github.com/mohamedabdou-ai/reel-studio/issues/new)، اكتب الإصدار والخطوة اللي وقفت ورسالة الخطأ، واحذف أي بيانات شخصية من الصور والسجلات.
+
+وإذا أردت أن نحلها معك مباشرة على جهازك في جلسة خاصة اختيارية ومدفوعة: [ادعمنا واحجز جلستك](https://store.pyraai.cloud/product/reel-studio/).
 
 </details>
 
@@ -407,7 +423,7 @@
 
 ---
 
-**صنعه محمد عبده.** لو فادك، حط ⭐ للريبو، وتابع [@mohamed.abdou90 على إنستجرام](https://www.instagram.com/mohamed.abdou90/) للأمثلة والجديد.
+**صنعه محمد عبده.** لو فادك، حط ⭐ للريبو أو [ادعمنا واحجز جلستك](https://store.pyraai.cloud/product/reel-studio/)، وتابع [@mohamed.abdou90 على إنستجرام](https://www.instagram.com/mohamed.abdou90/) للأمثلة والجديد.
 
 [رخصة MIT](LICENSE) · [تراخيص الأدوات الخارجية](NOTICE.md)
 
