@@ -2,6 +2,7 @@ import React from "react";
 import { formatNumber } from "../../core/numbers";
 import { ConceptIcon, ConceptStage, ConceptText, dirOf, rectStyle, styleShape, surfaceShadow, uiColors, useConcept, useConceptTimeline } from "../shared";
 import type { ConceptSceneProps } from "../types.ts";
+import { useDigits } from "../../creative-kit/digits";
 import { MIN_FRAMES, PAINT_ORDER, layoutFor, stateAt, type ToolStackParams } from "./math.ts";
 import type { ToolStackSpreadData } from "./schema.ts";
 
@@ -17,7 +18,7 @@ const Scene: React.FC<{ data: ToolStackSpreadData }> = ({ data }) => {
 
   const arabicLines = data.tools.filter((t) => dirOf(t.function) === "rtl").length;
   const rtl = arabicLines * 2 > data.tools.length;
-  const digits = rtl ? "arabic-indic" : "latin";
+  const digits = useDigits() ?? (rtl ? "arabic-indic" : "latin");
   const align = rtl ? "right" : "left";
   const params: ToolStackParams = { mode, box, rtl };
   const L = layoutFor(box, params);

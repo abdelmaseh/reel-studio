@@ -284,10 +284,10 @@ export const ExportDialog: React.FC<Props> = ({ open, onClose, intent, project, 
             {!deliverAvail.enabled ? <em>{deliverAvail.reason}</em> : null}
           </button>
         </div>
-        {!validation.deliveryReady && validation.ok && missing.length ? (
+        {validation.ok && missing.length ? (
           <details className="rv-warnings">
-            <summary>ناقص للتصدير النهائي ({missing.length})</summary>
-            <ul>{missing.slice(0, 8).map((i) => <li key={`${i.code}-${i.path}`}>{i.where}: {i.message}</li>)}</ul>
+            <summary>{validation.deliveryReady ? `ملاحظات قبل التصدير النهائي (${missing.length})` : `ناقص للتصدير النهائي (${missing.filter((i) => i.severity === "error").length})`}</summary>
+            <ul>{missing.slice(0, 8).map((i) => <li key={`${i.code}-${i.path}`}>{i.severity === "warning" ? "تنبيه · " : ""}{i.where}: {i.message}</li>)}</ul>
           </details>
         ) : null}
         <footer><button type="button" onClick={onClose}>إغلاق</button></footer>

@@ -8,7 +8,7 @@ The result is project-local evidence and a usable decision system, called `proje
 
 1. Record the exact named files or supplied accessible links and their role: style reference, evidence, source footage or reusable asset. A style reference is not automatically licensed footage for the new video. Preserve the originals and do not scan unrelated media folders.
 2. For local videos, record SHA-256, duration, dimensions, fps, audio presence and the inspected coverage. Store the reference ledger and analyses under `Projects/<slug>/style-analysis/`. Use the original reference timeline for evidence timecodes, independently of the new recording's source/edit time.
-3. Inspect the opening, middle, important idea transitions and ending. Watch motion and listen to sound; contact sheets locate moments but do not establish easing, audio cues or sequence. If only part of a reference is available, state that limitation.
+3. Inspect the opening, middle, important idea transitions and ending. Inspect motion frame by frame; contact sheets locate moments but do not establish easing, audio cues or sequence. You cannot hear the reference: ask the creator what the sound does at the moments that matter, or record the sound as unknown. If only part of a reference is available, state that limitation.
 4. Compare observed composition and pacing separately. A cut detector suggests candidate cuts, not their editorial purpose. Check the frames around a candidate before calling it a cut, punch-in, mask or transition.
 
 The bundled helpers support named-file analysis. Create the project directories first and replace the example filename and time samples with the selected reference:

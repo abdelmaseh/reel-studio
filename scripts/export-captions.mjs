@@ -1,14 +1,23 @@
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { parseArgs } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const src = args._[0];
-if (!src) { console.error('Usage: node scripts/export-captions.mjs <captions.json> [--outdir dir]'); process.exit(1); }
-const data = JSON.parse(await fs.readFile(src, 'utf8'));
-const outDir = path.resolve(args.outdir ?? path.dirname(src));
-await fs.mkdir(outDir, { recursive: true });
+if (!src) { console.error('Usage: node scripts/export-captions.mjs <captions.json> [--outdir dir] [--force]'); process.exit(1); }
+// Subtitles stay inside the studio folder, and an existing file (possibly an approved delivery) is replaced only with --force.
+const outDir = assertProjectOutput(path.resolve(args.outdir ?? path.dirname(src)));
 const base = path.basename(src, '.json');
+const targets = { srt: assertProjectOutput(path.join(outDir, `${base}.srt`)), ass: assertProjectOutput(path.join(outDir, `${base}.ass`)) };
+for (const file of Object.values(targets)) {
+  if (!args.force && await fs.stat(file).then(() => true, () => false)) {
+    console.error(`${file} already exists; pass --force to replace it.`);
+    process.exit(1);
+  }
+}
+const data = JSON.parse(await fs.readFile(src, 'utf8'));
+await fs.mkdir(outDir, { recursive: true });
 
 const pad = (n, w = 2) => String(n).padStart(w, '0');
 const srtTime = (s) => {
@@ -29,7 +38,7 @@ const cues = [
 const srt = cues
   .map((c, i) => `${i + 1}\n${srtTime(c.from)} --> ${srtTime(c.to)}\n${c.text}\n`)
   .join('\n');
-await fs.writeFile(path.join(outDir, `${base}.srt`), '﻿' + srt, 'utf8');
+await fs.writeFile(targets.srt, '﻿' + srt, 'utf8');
 
 
 const ass = `[Script Info]
@@ -54,6 +63,6 @@ ${cues
   })
   .join('\n')}
 `;
-await fs.writeFile(path.join(outDir, `${base}.ass`), '﻿' + ass, 'utf8');
+await fs.writeFile(targets.ass, '﻿' + ass, 'utf8');
 
-console.log(JSON.stringify({ ok: true, cues: cues.length, srt: path.join(outDir, `${base}.srt`), ass: path.join(outDir, `${base}.ass`) }, null, 2));
+console.log(JSON.stringify({ ok: true, cues: cues.length, srt: targets.srt, ass: targets.ass }, null, 2));

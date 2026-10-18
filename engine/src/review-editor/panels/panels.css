@@ -1,5 +1,5 @@
-/* Styles for the four edit panels and the schema-driven form. Prefixes: pk- shared kit, cp- captions, sp- scenes,
-   cu- cuts, fx- effects, sf- schema form. Colours come from the shell's variables (app.css :root). */
+/* Styles for the five edit panels and the schema-driven form. Prefixes: pk- shared kit, cp- captions, sp- scenes,
+   cu- cuts, fx- effects, lk- look, sf- schema form. Colours come from the shell's variables (app.css :root). */
 
 /* ------------------------------------------------------------------ shared kit */
 .pk-muted { color: var(--muted); font-size: 12px; }
@@ -106,6 +106,15 @@ button.danger:hover:not(:disabled) { border-color: var(--bad); }
 .fx-at { color: var(--muted); }
 .fx-row input[type="range"] { width: 90px; }
 .fx-row select { max-width: 170px; }
+
+/* ---------------------------------------------------------------------- look (lk-) */
+.lk { padding-bottom: 24px; }
+.lk-style { display: flex; align-items: baseline; gap: 8px; margin: 6px 0; }
+.lk-style dt { color: var(--muted); font-size: 12px; }
+.lk-style dd { margin: 0; }
+.lk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 6px 0; }
+.lk-row select { min-width: 190px; max-width: 100%; }
+.lk-note { margin: 4px 0; color: var(--warn); font-size: 12px; line-height: 1.6; }
 
 /* ------------------------------------------------------------- schema form (sf-) */
 .sf { display: grid; gap: 8px; }

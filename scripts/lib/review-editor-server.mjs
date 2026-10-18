@@ -7,6 +7,7 @@ import { randomBytes, timingSafeEqual } from 'node:crypto';
 import { buildReviewApp } from './review-editor-build.mjs';
 import { loadReviewProject, resolveManifestPath, PUBLIC_DIR } from './review-editor-project.mjs';
 import { createJobManager, createManifestStore, HttpError } from './review-editor-jobs.mjs';
+import { createSfxPreview } from './review-editor-sfx.mjs';
 import { validateManifest } from '../../engine/src/review-editor/validate.ts';
 import { TOKEN_HEADER } from '../../engine/src/review-editor/types.ts';
 import {projectSceneBuild,resolveProjectScenes} from './project-scenes.mjs';
@@ -126,6 +127,7 @@ export function apiHandlers() {
     'GET /api/jobs/:id/events': ({ req, res, params, ctx }) => ctx.jobs.stream(params.id, req, res),
     'POST /api/jobs/:id/cancel': ({ params, ctx }) => ctx.jobs.cancel(params.id),
     'GET /api/disk': ({ url, ctx }) => ctx.jobs.disk(url.searchParams.get('mode')),
+    'GET /api/sfx/:recipe': ({ req, res, params, url, ctx }) => ctx.sfx.handle({ req, res, params, url }),
   };
 }
 
@@ -162,7 +164,7 @@ export async function createReviewServer({ manifestPath, port = 0, token = rando
   const built = bundle ?? (await buildReviewApp({ dev, edit:initialProject.manifest }));
   const jobs = createJobManager({ manifestPath: rel, log, ...deps });
   const store = createManifestStore({ manifestPath: rel, isBusy: jobs.busy, ...(deps.now ? { now: deps.now } : {}) });
-  const ctx = { manifestPath: rel, token, store, jobs, projectSceneHash:built.projectSceneHash??null };
+  const ctx = { manifestPath: rel, token, store, jobs, projectSceneHash:built.projectSceneHash??null, sfx: deps.sfx ?? createSfxPreview() };
   const handlers = apiHandlers();
   let actualPort = port;
   let usageRecorded = false;

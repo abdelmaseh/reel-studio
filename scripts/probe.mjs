@@ -1,9 +1,13 @@
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
 import { ffprobeJson, summarizeProbe, parseArgs, writeJson, cacheDirFor, readCachedJson } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const VIDEO_EXT = new Set(['.mp4', '.mov', '.mkv', '.webm', '.avi', '.m4v', '.mts', '.wav', '.mp3', '.m4a', '.aac', '.flac']);
 const args = parseArgs(process.argv.slice(2));
+if (args.json === true) { console.error('Usage: node scripts/probe.mjs <file-or-folder>... [--json out.json]'); process.exit(1); }
+// The --json report stays inside the studio folder (never Raw/ or Reference/); it is checked before any file is probed.
+const jsonOut = args.json === undefined ? null : assertProjectOutput(path.resolve(String(args.json)));
 
 async function collect(p) {
   const stat = await fs.stat(p);
@@ -36,4 +40,4 @@ for (const f of files) {
 
 const table = results.map(({ raw, ...s }) => s);
 console.log(JSON.stringify(table, null, 2));
-if (args.json) await writeJson(args.json, table);
+if (jsonOut) await writeJson(jsonOut, table);

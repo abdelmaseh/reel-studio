@@ -15,13 +15,15 @@ import campaignTickets from './campaign-tickets/meta.ts';
 import magazineInterview from './magazine-interview/meta.ts';
 import scrapbookRoute from './scrapbook-route/meta.ts';
 import gridGlide from './grid-glide/meta.ts';
+import oneShot from './one-shot/meta.ts';
+import cartoon from './cartoon/meta.ts';
 import {EDITOR_TONES, STYLE_USE_CASES} from './types.ts';
 import type {CaptionPresentation, EditorPurpose, EditorTone, MixProfile, PipPolicy, PreferredFont, StyleMeta} from './types.ts';
 
 // Registry order is the old STYLE_IDS order: recommendation ties follow it, so a new style goes last.
 export const STYLE_METAS = [
   splitCanvas, sectionDeck, kineticPaper, calligraphicReceipts, paperCollage, judgmentBoard,
-  steppedEditorial, liquidGlass, campaignTickets, magazineInterview, scrapbookRoute, gridGlide,
+  steppedEditorial, liquidGlass, campaignTickets, magazineInterview, scrapbookRoute, gridGlide, oneShot, cartoon,
 ] as const;
 
 type Meta = (typeof STYLE_METAS)[number];

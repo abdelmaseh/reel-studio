@@ -1,6 +1,7 @@
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {PREFERENCE_VALUES, defaultPreferences} from '../../engine/src/core/preference-options.ts';
+import {characterIssues, normalizeCharacter} from '../../engine/src/styles/cartoon/scenes/character.ts';
 
 export const PROFILE_SCHEMA_VERSION = 3;
 export const PROFILE_FILE = 'PROFILE.json';
@@ -84,10 +85,17 @@ export function normalizeProfile(value) {
     preferences: profile.schemaVersion === 2 ? defaultPreferences({legacy: true}) : normalizePreferences(profile.preferences)};
 }
 
+// Keys a saved file may leave out. A missing key and {mode: 'auto'} both mean "as it is today", so neither is written back.
+// `character` is the cartoon narrator the creator assembled from presets; it is checked by the same Node-safe module the scenes use.
+export const OPTIONAL_PREFERENCES = Object.freeze(['digits', 'character']);
+
 export function normalizePreferences(value) {
   const preferences = record(value, 'اختيارات المونتاج', 'preferences');
-  exactKeys(preferences, Object.keys(PREFERENCE_VALUES), 'اختيارات المونتاج', 'preferences');
-  return Object.fromEntries(Object.entries(PREFERENCE_VALUES).map(([key, values]) => {
+  const expected = [...Object.keys(PREFERENCE_VALUES).filter((key) => !OPTIONAL_PREFERENCES.includes(key) || Object.hasOwn(preferences, key)),
+    ...(Object.hasOwn(preferences, 'character') ? ['character'] : [])];
+  exactKeys(preferences, expected, 'اختيارات المونتاج', 'preferences');
+  const character = Object.hasOwn(preferences, 'character') ? normalizeCharacterPreference(preferences.character) : null;
+  const entries = Object.entries(PREFERENCE_VALUES).filter(([key]) => expected.includes(key)).map(([key, values]) => {
     const preference = record(preferences[key], key, key);
     exactKeys(preference, ['mode', 'value'], key, key);
     if (!['auto', 'fixed'].includes(preference.mode) ||
@@ -95,7 +103,20 @@ export function normalizePreferences(value) {
       fail(`اختيار ${key} لازم يكون تلقائي أو اختيار ثابت من القائمة.`, `Invalid ${key} preference; auto requires null, fixed requires a listed value.`);
     }
     return [key, {mode: preference.mode, value: preference.value}];
-  }));
+  });
+  const out = Object.fromEntries(entries.filter(([key, preference]) => !(OPTIONAL_PREFERENCES.includes(key) && preference.mode === 'auto')));
+  return character ? {...out, character} : out;
+}
+
+/** {mode: 'auto', value: null} means the generic default (not written back); {mode: 'fixed', value: <character>} keeps the creator's narrator. */
+function normalizeCharacterPreference(value) {
+  const preference = record(value, 'شخصية الكارتون', 'preferences.character');
+  exactKeys(preference, ['mode', 'value'], 'شخصية الكارتون', 'preferences.character');
+  if (preference.mode === 'auto' && preference.value === null) return null;
+  if (preference.mode !== 'fixed') fail('اختيار الشخصية لازم يكون تلقائي أو شخصية ثابتة.', 'preferences.character: auto with null, or fixed with a character object.');
+  const issues = characterIssues(preference.value);
+  if (issues.length) fail(`شخصية الكارتون فيها مشكلة: ${issues[0]}`, `preferences.character: ${issues.join('; ')}`);
+  return {mode: 'fixed', value: normalizeCharacter(preference.value)};
 }
 
 

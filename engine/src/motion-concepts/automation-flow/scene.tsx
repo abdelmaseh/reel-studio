@@ -9,7 +9,7 @@ import {
   ConceptText,
   Dressing,
   alpha,
-  digitsFor,
+  useConceptDigits,
   dirOf,
   numberFont,
   rectStyle,
@@ -184,7 +184,7 @@ const Scene: React.FC<{ data: AutomationFlowData }> = ({ data }) => {
   const all = labels.join(" ");
 
   const rtl = dirOf(all) === "rtl";
-  const digits = digitsFor(all);
+  const digits = useConceptDigits(all);
   const params: AutomationFlowParams = { mode, box, rtl, pillK: shape.pillK, windowRadius: shape.windowRadius };
   const L = layoutFor(box, params);
   const S = stateAt(frame, duration, params);

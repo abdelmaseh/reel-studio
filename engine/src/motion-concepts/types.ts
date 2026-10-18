@@ -1,6 +1,23 @@
 import type React from "react";
 import type { ZodType } from "zod";
 import type { StyleFamily } from "../creative-kit/schema.ts";
+import type { ButtonToWindowData } from './button-to-window/schema.ts';
+import type { PromptToResultsData } from './prompt-to-results/schema.ts';
+import type { BriefToWorkspaceData } from './brief-to-workspace/schema.ts';
+import type { DepartmentTabsData } from './department-tabs/schema.ts';
+import type { DataMorphData } from './data-morph/schema.ts';
+import type { KpiZoomData } from './kpi-zoom/schema.ts';
+import type { ToolStackSpreadData } from './tool-stack-spread/schema.ts';
+import type { MagneticDockData } from './magnetic-dock/schema.ts';
+import type { KeywordRevealData } from './keyword-reveal/schema.ts';
+import type { HeadlineToSystemData } from './headline-to-system/schema.ts';
+import type { PanelRevealData } from './panel-reveal/schema.ts';
+import type { SystemLayersData } from './system-layers/schema.ts';
+import type { GlassLensData } from './glass-lens/schema.ts';
+import type { AutomationFlowData } from './automation-flow/schema.ts';
+import type { ChaosToBrandData } from './chaos-to-brand/schema.ts';
+import type { ConditionalBranchingData } from './conditional-branching/schema.ts';
+import type { IdentityFilteringData } from './identity-filtering/schema.ts';
 
 
 export const CONCEPT_FPS = 30;
@@ -50,8 +67,32 @@ export const CONCEPT_IDS = [
   "glass-lens",
   "automation-flow",
   "chaos-to-brand",
+  "conditional-branching",
+  "identity-filtering",
 ] as const;
 export type ConceptId = (typeof CONCEPT_IDS)[number];
+
+/** Each concept keeps its own validated config through normal editor manifests. */
+export type ConceptDataMap = {
+  'button-to-window': ButtonToWindowData;
+  'prompt-to-results': PromptToResultsData;
+  'brief-to-workspace': BriefToWorkspaceData;
+  'department-tabs': DepartmentTabsData;
+  'data-morph': DataMorphData;
+  'kpi-zoom': KpiZoomData;
+  'tool-stack-spread': ToolStackSpreadData;
+  'magnetic-dock': MagneticDockData;
+  'keyword-reveal': KeywordRevealData;
+  'headline-to-system': HeadlineToSystemData;
+  'panel-reveal': PanelRevealData;
+  'system-layers': SystemLayersData;
+  'glass-lens': GlassLensData;
+  'automation-flow': AutomationFlowData;
+  'chaos-to-brand': ChaosToBrandData;
+  'conditional-branching': ConditionalBranchingData;
+  'identity-filtering': IdentityFilteringData;
+};
+export type MotionConceptData = {[K in ConceptId]: {concept: K; config: ConceptDataMap[K]}}[ConceptId];
 
 
 export const CONCEPT_FAMILIES = ["morph", "data", "stack", "reveal", "flow", "type"] as const;
@@ -78,6 +119,8 @@ export const SUGGESTED_FAMILY: Readonly<Record<ConceptId, ConceptFamily>> = {
   "glass-lens": "reveal",
   "automation-flow": "flow",
   "chaos-to-brand": "morph",
+  "conditional-branching": "flow",
+  "identity-filtering": "flow",
 };
 
 
@@ -172,9 +215,9 @@ export const conceptDefIssues = (def: {
     }
   }
   if (typeof def.Component !== "function") issues.push("Component must be a React function component");
-  if (def.defaultFrames !== CONCEPT_DEFAULT_FRAMES) issues.push(`defaultFrames must be ${CONCEPT_DEFAULT_FRAMES}`);
-  if (!Number.isInteger(def.minFrames) || (def.minFrames as number) < 90 || (def.minFrames as number) > CONCEPT_DEFAULT_FRAMES) {
-    issues.push("minFrames must be a whole number in 90..240");
+  if (!Number.isInteger(def.defaultFrames) || (def.defaultFrames as number) < 90 || (def.defaultFrames as number) > 1800) issues.push('defaultFrames must be a whole number in 90..1800');
+  if (!Number.isInteger(def.minFrames) || (def.minFrames as number) < 90 || (def.minFrames as number) > (def.defaultFrames as number)) {
+    issues.push("minFrames must be a whole number from 90 up to defaultFrames");
   }
   if (typeof def.loopable !== "boolean") issues.push("loopable must be a boolean");
   return issues;

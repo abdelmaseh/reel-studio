@@ -23,7 +23,7 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 - **Decision:** Choose it for a strong claim, question or contrast that benefits from poster-scale hierarchy. Break the argument into meaningful units rather than animating every spoken word equally.
 - **Composition/material:** Let heavy poster type dominate, with ink frames or signal strips supporting a hierarchy. Reserve empty space around the important phrase. Keep mixed Arabic/English labels legible and joined; the style's own palette applies.
 - **Timing/action:** Reveal subordinate context before the key statement, then let the statement land and hold. Use stagger to create a reading order, with movement stopped during the essential read.
-- **Transition/sound:** Continue an ink edge, strip or key word into the next composition, or make a deliberate clean change after resolution. A single impact can mark the main claim; quieter supporting lines let that contrast work.
+- **Transition/sound:** Continue an ink edge, strip or key word into the next composition, or make a deliberate clean change after resolution. A single impact can mark the main claim; quieter supporting lines let that contrast work. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** Use reviewed titles or a suitable `motion-concept`; literal `kinetic-text` requires real recorded word indices. Check that text motion expresses emphasis and leaves enough reading time, without treating authored titles as subtitles.
 
 ## Style-owned scenes

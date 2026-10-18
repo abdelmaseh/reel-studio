@@ -1,6 +1,8 @@
 import React from "react";
 import { cancelRender, continueRender, delayRender } from "remotion";
 import { assertFontsReady, FAMILY, fontsReady } from "../core/fonts";
+import { displayDigits } from "../core/digits.ts";
+import { useDigits } from "./digits";
 import { clamp01, mix, px, useClock, useEnterF, useRamp } from "../core/motion";
 import { CanvasFill, FRAME, zone, SafeExempt, useProbe } from "../core/safe";
 import {
@@ -278,6 +280,8 @@ export const FitText: React.FC<{
 
 
   fitTo?: string;
+  /** Strings that keep their digits exactly as written, for example the comment keyword. */
+  keep?: readonly string[];
 }> = ({
   text,
   theme,
@@ -291,17 +295,26 @@ export const FitText: React.FC<{
   align,
   style,
   fitTo,
+  keep,
 }) => {
-  const arabic = isArabic(text);
+  // Digits follow the video's digits preference. The text and its width template are mapped before they are measured, so
+  // the box fits what is drawn. With no preference both come back unchanged.
+  const digits = useDigits();
+  const mapping = keep === undefined ? undefined : { keep };
+  const shown = displayDigits(text, digits, mapping);
+  const template = fitTo === undefined ? undefined : displayDigits(fitTo, digits, mapping);
+  // The face follows the shown text (Arabic-Indic digits need the Arabic face); the reading side follows what was written.
+  const arabic = isArabic(shown);
+  const rightToLeft = isArabic(text);
   const adapted = Boolean(theme.grammar);
   const naskh = arabic && theme.ar === FAMILY.naskh;
   const lineHeight = naskh ? 1.6 : 1.28;
-  const measured = fitTo ?? text;
+  const measured = template ?? shown;
   const fit = React.useMemo(
-    () => fitTextLayout({ text, theme, width, height, size, min, lines, role, fitTo }),
+    () => fitTextLayout({ text: shown, theme, width, height, size, min, lines, role, fitTo: template }),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [measured, arabic, theme.ar, theme.mono, theme.display, adapted, lineHeight, role, size, width, height, lines, min],
+    [shown, measured, arabic, theme.ar, theme.mono, theme.display, adapted, lineHeight, role, size, width, height, lines, min],
   );
   if (fitTo !== undefined && lines !== 1) {
     throw new Error(
@@ -310,7 +323,7 @@ export const FitText: React.FC<{
   }
   if (!fit.fits || fit.height > height) {
     throw new Error(
-      `creative-kit: text does not fit its ${width}x${height}px box: ${JSON.stringify(text)}. Shorten the copy or choose a larger layout.`,
+      `creative-kit: text does not fit its ${width}x${height}px box: ${JSON.stringify(shown)}. Shorten the copy or choose a larger layout.`,
     );
   }
   return (
@@ -320,12 +333,12 @@ export const FitText: React.FC<{
         position: "relative",
         width,
         color: color ?? theme.text,
-        textAlign: align ?? (arabic ? "right" : "left"),
+        textAlign: align ?? (rightToLeft ? "right" : "left"),
         ...(adapted ? { fontSynthesis: "none" as const } : {}),
         ...style,
       }}
     >
-      {(fitTo === undefined ? fit.lines : [text]).map((line, index) => (
+      {(fitTo === undefined ? fit.lines : [shown]).map((line, index) => (
         <div key={index} style={{ whiteSpace: "pre" }}>
           {!adapted &&
           role === "title" &&

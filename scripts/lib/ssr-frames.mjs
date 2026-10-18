@@ -56,11 +56,14 @@ const ENTRY = `
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
 import {Internals} from 'remotion';
-import {SceneLayer} from './engine/src/prepared-edit/PreparedEdit';
+import {SceneLayer, CaptionTrack} from './engine/src/prepared-edit/PreparedEdit';
+import {compileEdit} from './engine/src/prepared-edit/timeline';
 import {CreativeKitGallery} from './engine/src/creative-kit/Gallery';
 import {creativeGalleryDefaults, getGalleryDuration} from './engine/src/creative-kit/schema';
 import {getSceneGeometry, getSceneTheme} from './engine/src/creative-kit/primitives';
 import {LOADED_FAMILIES} from './engine/src/core/fonts';
+import {DigitsProvider} from './engine/src/creative-kit/digits';
+import {TypographyProvider} from './engine/src/creative-kit/chapter-theme';
 
 const h = React.createElement;
 
@@ -82,10 +85,19 @@ function inComposition(node, frame, durationInFrames) {
         h(Internals.CompositionManager.Provider, {value: {compositions: [composition], folders: [], currentCompositionMetadata: metadata, currentAssetMetadata: null, canvasContent: {type: 'composition', compositionId: 'frame'}}}, node)))));
 }
 
-export function renderScene(scene, style, frame) {
+export function renderScene(scene, style, frame, options = {}) {
   const seam = getSceneGeometry(style, 'split').canvasHeight;
   const geometry = {windowTop: seam, windowHeight: 1920 - seam, videoWidth: 486, videoLeft: 297, videoTop: seam};
-  return inComposition(h(SceneLayer, {scene, style, geometry, aspect: 16 / 9, seam, headBox: null, words: []}), frame, scene.durationInFrames);
+  let node = h(SceneLayer, {scene, style, geometry, aspect: 16 / 9, seam, headBox: null, words: options.words ?? []});
+  // The providers PreparedEdit mounts. An option that is left out mounts nothing, so the default markup is the old markup.
+  if (options.fontFamily) node = h(TypographyProvider, {fontFamily: options.fontFamily}, node);
+  if (options.digits !== undefined) node = h(DigitsProvider, {digits: options.digits}, node);
+  return inComposition(node, frame, scene.durationInFrames);
+}
+
+export function renderCaptionTrack(edit, frame, center = 1500) {
+  const compiled = compileEdit(edit);
+  return inComposition(h(CaptionTrack, {edit, compiled, center}), frame, Math.max(frame + 1, compiled.durationInFrames));
 }
 
 export function renderGallery(style, frame, props) {
@@ -122,7 +134,8 @@ export async function createFrameRenderer() {
   new Function('require', 'module', 'exports', bundle.outputFiles[0].text)(engineRequire, module, module.exports);
   const api = module.exports;
   return {
-    renderScene: ({scene, style, frame}) => api.renderScene(scene, style, frame),
+    renderScene: ({scene, style, frame, ...options}) => api.renderScene(scene, style, frame, options),
+    renderCaptions: ({edit, frame, center}) => api.renderCaptionTrack(edit, frame, center),
     renderGallery: ({style, frame, props = {}}) => api.renderGallery(style, frame, props),
     theme: (style) => api.getSceneTheme(style),
     geometry: (style, layout) => api.getSceneGeometry(style, layout),

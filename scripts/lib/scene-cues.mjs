@@ -1,3 +1,7 @@
+import { oneShotCues } from '../../engine/src/styles/one-shot/scenes/math.ts';
+import { CARTOON_FAMILIES, cartoonCues } from '../../engine/src/styles/cartoon/scenes/math.ts';
+import { compileEdit } from '../../engine/src/prepared-edit/timeline.ts';
+
 export const CUE_KINDS = Object.freeze(['transition', 'stamp', 'swap', 'click', 'count', 'reveal', 'type']);
 
 const KIND_ORDER = new Map(CUE_KINDS.map((kind, index) => [kind, index]));
@@ -31,7 +35,8 @@ export function sortCues(cues) {
 }
 
 
-export function sceneCues(scene, fps = 30) {
+/** `words` are the compiled edit words; only cartoon scenes read them (their times are word anchors). */
+export function sceneCues(scene, fps = 30, { words = [] } = {}) {
   const from = frameOf(scene?.fromFrame);
   if (from === null || from < 0) return [];
   const length = Number.isInteger(scene.durationInFrames) && scene.durationInFrames > 0 ? scene.durationInFrames : Infinity;
@@ -46,8 +51,17 @@ export function sceneCues(scene, fps = 30) {
 
   // An entrance that is a dip has its climax on the boundary: it gets the stamp, not the cut sound.
   const dipEntrance = GLIDE_CUE_FAMILIES.includes(scene.family) && data.enter?.kind === 'dip';
-  add(0, dipEntrance ? 'stamp' : 'transition');
+  // A one-shot take starts silent on its home page and a cartoon body opens on its first act: their own cues carry every sound.
+  // The cartoon ending's first frame is its flip, so it keeps the scene-start transition.
+  if (scene.family !== 'one-shot' && scene.family !== CARTOON_FAMILIES[0]) add(0, dipEntrance ? 'stamp' : 'transition');
   switch (scene.family) {
+    case CARTOON_FAMILIES[0]:
+    case CARTOON_FAMILIES[1]:
+      if (words.length && Number.isInteger(fps) && fps > 0) for (const cue of cartoonCues(scene, words, fps)) add(cue.frame, cue.kind);
+      break;
+    case 'one-shot':
+      for (const cue of oneShotCues(data, fps)) add(cue.frame, cue.kind);
+      break;
     case 'message-board':
       add(data.gatherFrame,'reveal');add(data.focusFrame,'swap');if(data.closingFrame!==undefined)add(data.closingFrame,'reveal');break;
     case 'kinetic-text':add(0,'type');break;
@@ -137,7 +151,10 @@ export function editCues(manifest) {
   const scenes = list(manifest?.scenes);
   // Not flatMap(sceneCues): flatMap would hand the array index to sceneCues as its fps.
   const fps = manifest?.source?.fps;
-  const cues = scenes.flatMap((scene) => sceneCues(scene, fps));
+  // Cartoon scenes cue on the recorded words: compile them once for the whole edit.
+  let words = [];
+  if (scenes.some((scene) => CARTOON_FAMILIES.includes(scene?.family))) { try { words = compileEdit(manifest).words; } catch { words = []; } }
+  const cues = scenes.flatMap((scene) => sceneCues(scene, fps, { words }));
   for (const transition of list(manifest?.transitions)) {
     const frame = frameOf(transition?.atFrame);
     if (frame === null || frame < 0) continue;

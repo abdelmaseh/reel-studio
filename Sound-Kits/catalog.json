@@ -3,29 +3,31 @@
   "sampleRate": 48000,
   "provenance": "Original deterministic synthesis through scripts/sfx.mjs. No downloads, external recordings, paid generation or cloned voices. Recipe placements are optional editing controls; approved Style DNA and review gates still decide their use.",
   "sounds": [
-    { "id": "whoosh", "use": "A deliberate scene transition; leave room for speech.", "defaultDuration": 0.38 },
-    { "id": "whooshSoft", "use": "A quiet short join or small overlay arrival.", "defaultDuration": 0.24 },
+    { "id": "whoosh", "use": "A deliberate scene transition; leave room for speech. Legacy: only the -sweep recipes and old hits files use it; a style palette never does.", "defaultDuration": 0.38 },
+    { "id": "whooshSoft", "use": "A quiet short join or small overlay arrival. Legacy: only the -sweep recipes and old hits files use it; a style palette never does.", "defaultDuration": 0.24 },
     { "id": "impact", "use": "A weighted landing on an important visual reveal.", "defaultDuration": 0.5 },
     { "id": "pop", "use": "A compact interface element or label arrival.", "defaultDuration": 0.11 },
     { "id": "click", "use": "A button action or precise mechanical cut.", "defaultDuration": 0.055 },
     { "id": "riser", "use": "Anticipation immediately before a reveal.", "defaultDuration": 0.8 },
-    { "id": "swipe", "use": "A line, highlight or strike-through moving across the frame.", "defaultDuration": 0.26 },
+    { "id": "swipe", "use": "A line, highlight or strike-through moving across the frame. Legacy: only the -sweep recipes and old hits files use it; a style palette never does.", "defaultDuration": 0.26 },
     { "id": "paper", "use": "An editorial card or genuine paper/collage element.", "defaultDuration": 0.3 },
     { "id": "chime", "use": "A confirmation event before the spoken sign-off.", "defaultDuration": 0.7 },
     { "id": "tick", "use": "A brief counter increment or small emphasis.", "defaultDuration": 0.03 },
     { "id": "keyTap", "use": "One keyboard key inside a typing burst; vary seed and fc per key.", "defaultDuration": 0.045 },
     { "id": "mouseClick", "use": "A mouse press and release for an on-screen cursor click.", "defaultDuration": 0.06 },
-    { "id": "whooshShort", "use": "A short directional air sweep: f0 below f1 rises, f0 above f1 falls.", "defaultDuration": 0.2 },
+    { "id": "whooshShort", "use": "A short directional air sweep: f0 below f1 rises, f0 above f1 falls. Legacy: only the -sweep recipes and old hits files use it; a style palette never does.", "defaultDuration": 0.2 },
     { "id": "subBoom", "use": "A mono low boom for the first frame of a Grid Glide edit. No options.", "defaultDuration": 0.62 },
     { "id": "subThump", "use": "A stereo low impact with a 0.27 s swell before its reference frame, for scene changes. No options.", "defaultDuration": 1.25 },
     { "id": "subThud", "use": "A short stereo low landing, about 10 dB under subThump. No options.", "defaultDuration": 0.75 },
     { "id": "subSwellHit", "use": "A stereo rising swell that stops abruptly at 0.31 s, for a climax. No options.", "defaultDuration": 0.34 },
-    { "id": "uiClick", "use": "A mono damped interface tick that rings 29 ms into the file. No options.", "defaultDuration": 0.06 }
+    { "id": "uiClick", "use": "A mono damped interface tick that rings 29 ms into the file. No options.", "defaultDuration": 0.06 },
+    { "id": "airRise", "use": "Soft wind pulled toward the camera that stops abruptly as the next world arrives. Stereo; options dur, seed, lo and hi (the sweep in Hz).", "defaultDuration": 0.9 },
+    { "id": "airPass", "use": "A soft stereo fly-by of air that peaks a little after its middle. Options dur, seed, lo and hi (the sweep in Hz).", "defaultDuration": 0.9 }
   ],
   "recipes": [
     {
-      "id": "soft-transition", "name": "Soft transition", "use": "Low-level air for a short join. Align the middle of the whoosh with the picture cut.", "duration": 0.4,
-      "hits": [{ "t": 0, "sound": "whooshSoft", "gain": 0.34, "pan": -0.12, "opts": { "seed": 123 } }]
+      "id": "soft-transition", "name": "Soft transition", "use": "A soft low landing for a short join, on the frame the move settles. No air: a sweep is placed only through soft-transition-sweep on the creator's explicit request.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "impact", "gain": 0.16, "pan": -0.06, "opts": { "seed": 123, "dur": 0.38, "f0": 92, "f1": 44 } }]
     },
     {
       "id": "paper-reveal", "name": "Paper reveal", "use": "Paper arrival with a restrained low landing for an approved editorial card.", "duration": 0.85,
@@ -51,8 +53,8 @@
       ]
     },
     {
-      "id": "highlight-swipe", "name": "Highlight swipe", "use": "A restrained swipe that follows a drawn highlight.", "duration": 0.4,
-      "hits": [{ "t": 0, "sound": "swipe", "gain": 0.22, "pan": 0.08, "opts": { "seed": 471, "dur": 0.26 } }]
+      "id": "highlight-swipe", "name": "Highlight tap", "use": "A small pop as a drawn highlight or an underline settles. The id is kept for old manifests; there is no swipe in it.", "duration": 0.14,
+      "hits": [{ "t": 0, "sound": "pop", "gain": 0.22, "pan": 0.08, "opts": { "freq": 700, "dur": 0.1 } }]
     },
     {
       "id": "restrained-reveal", "name": "Restrained reveal", "use": "A short rise ending on a soft impact for an approved reveal beat.", "duration": 1.1,
@@ -78,8 +80,8 @@
       "hits": [{ "t": 0, "sound": "mouseClick", "gain": 0.3, "pan": 0.04, "opts": { "seed": 811 } }]
     },
     {
-      "id": "directional-whoosh", "name": "Directional whoosh", "use": "A short rising sweep for a push, slide or cut; its peak is 0.077 s after the start.", "duration": 0.3,
-      "hits": [{ "t": 0, "sound": "whooshShort", "gain": 0.3, "pan": -0.18, "opts": { "seed": 907, "dur": 0.22, "f0": 700, "f1": 4600 } }]
+      "id": "directional-whoosh", "name": "Push landing", "use": "A push, slide or pan: a soft low landing as the move settles. The id is kept for old manifests; there is no sweep in it.", "duration": 0.3,
+      "hits": [{ "t": 0, "sound": "impact", "gain": 0.15, "pan": -0.08, "opts": { "seed": 907, "dur": 0.3, "f0": 100, "f1": 48 } }]
     },
     {
       "id": "count-tick", "name": "Count tick", "use": "Six accelerating ticks and a light landing under a rolling number.", "duration": 0.5,
@@ -94,11 +96,8 @@
       ]
     },
     {
-      "id": "chapter-shift", "name": "Chapter shift", "use": "A falling sweep settling on a soft low landing for a new section or chapter; the sweep peaks 0.105 s after the start.", "duration": 0.7,
-      "hits": [
-        { "t": 0, "sound": "whooshShort", "gain": 0.28, "pan": 0.14, "opts": { "seed": 1103, "dur": 0.3, "f0": 3800, "f1": 600 } },
-        { "t": 0.2, "sound": "impact", "gain": 0.13, "pan": -0.04, "opts": { "seed": 1131, "dur": 0.4, "f0": 110, "f1": 46 } }
-      ]
+      "id": "chapter-shift", "name": "Chapter shift", "use": "A new section or chapter: one soft low landing on the cue frame. No sweep.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "impact", "gain": 0.13, "pan": -0.04, "opts": { "seed": 1131, "dur": 0.4, "f0": 110, "f1": 46 } }]
     },
     {
       "id": "sub-boom", "name": "Sub boom", "use": "Opening hit for the first frame of an edit that starts on a Grid Glide scene. Mono and the heaviest of the five low hits; its hit gain is 0.5 so it does not set the stem level alone.", "duration": 0.62,
@@ -119,6 +118,48 @@
     {
       "id": "ui-click", "name": "Interface click", "use": "One damped interface tick for a pill: a chapter's tool or the follow card. The ring starts 29 ms into the file, so place the recipe on the cue frame and the click lands about one frame later. Mono.", "duration": 0.2,
       "hits": [{ "t": 0, "sound": "uiClick", "gain": 1, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "air-rise", "name": "Air rise", "use": "Wind pulled toward the camera for a button that swallows the screen or a circle that opens the next world, with a soft landing under its end; the world arrives 0.85 s in, so start it 0.85 s before the arrival frame. Stereo.", "duration": 1.5,
+      "hits": [
+        { "t": 0, "sound": "airRise", "gain": 0.5, "pan": 0, "opts": { "dur": 0.9, "seed": 11, "lo": 220, "hi": 3200 } },
+        { "t": 0.72, "sound": "subThud", "gain": 0.7, "pan": 0, "opts": {} }
+      ]
+    },
+    {
+      "id": "air-pass", "name": "Air pass", "use": "A soft stereo pass of air for a shape that morphs into another or a screen that swipes; it peaks about 0.55 s in, so the 0.5 s lead-in lands the peak on the middle of the move.", "duration": 0.9,
+      "hits": [{ "t": 0, "sound": "airPass", "gain": 0.5, "pan": 0, "opts": { "dur": 0.9, "seed": 21, "lo": 260, "hi": 2400 } }]
+    },
+    {
+      "id": "soft-pop", "name": "Soft pop", "use": "A tiny pop for a badge, a finished job or a chip that appears.", "duration": 0.14,
+      "hits": [{ "t": 0, "sound": "pop", "gain": 0.3, "pan": 0, "opts": { "freq": 880, "dur": 0.12 } }]
+    },
+    {
+      "id": "soft-transition-sweep", "name": "Soft transition (sweep)", "use": "The earlier air sweep of soft-transition. Only for a creator who asks for sweeps explicitly (\"sweeps\": true); a style palette never names it.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "whooshSoft", "gain": 0.34, "pan": -0.12, "opts": { "seed": 123 } }]
+    },
+    {
+      "id": "directional-whoosh-sweep", "name": "Directional whoosh (sweep)", "use": "The earlier rising sweep of directional-whoosh; its peak is 0.077 s after the start. Only on the creator's explicit request; a style palette never names it.", "duration": 0.3,
+      "hits": [{ "t": 0, "sound": "whooshShort", "gain": 0.3, "pan": -0.18, "opts": { "seed": 907, "dur": 0.22, "f0": 700, "f1": 4600 } }]
+    },
+    {
+      "id": "chapter-shift-sweep", "name": "Chapter shift (sweep)", "use": "The earlier falling sweep and landing of chapter-shift; the sweep peaks 0.105 s after the start. Only on the creator's explicit request; a style palette never names it.", "duration": 0.7,
+      "hits": [
+        { "t": 0, "sound": "whooshShort", "gain": 0.28, "pan": 0.14, "opts": { "seed": 1103, "dur": 0.3, "f0": 3800, "f1": 600 } },
+        { "t": 0.2, "sound": "impact", "gain": 0.13, "pan": -0.04, "opts": { "seed": 1131, "dur": 0.4, "f0": 110, "f1": 46 } }
+      ]
+    },
+    {
+      "id": "highlight-swipe-sweep", "name": "Highlight swipe (sweep)", "use": "The earlier swipe of highlight-swipe. Only on the creator's explicit request; a style palette never names it.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "swipe", "gain": 0.22, "pan": 0.08, "opts": { "seed": 471, "dur": 0.26 } }]
+    },
+    {
+      "id": "cartoon-flip", "name": "Cartoon flip", "use": "A soft pass of air when a cartoon ground flips through the circle reveal; its peak sits about 0.2 s after the start. Not a sweep voice, so a style palette may name it.", "duration": 0.4,
+      "hits": [{ "t": 0, "sound": "airPass", "gain": 0.1, "pan": 0, "opts": { "dur": 0.36, "seed": 300, "lo": 600, "hi": 3200 } }]
+    },
+    {
+      "id": "cartoon-stamp", "name": "Cartoon stamp", "use": "One weighted impact when a black stamp lands, a block is crossed out or a layer drops in the cartoon style.", "duration": 0.5,
+      "hits": [{ "t": 0, "sound": "impact", "gain": 0.18, "pan": 0, "opts": { "seed": 701 } }]
     }
   ]
 }

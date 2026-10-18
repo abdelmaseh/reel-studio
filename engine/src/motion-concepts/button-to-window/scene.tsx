@@ -11,7 +11,7 @@ import {
   Dressing,
   alpha,
   dirOf,
-  digitsFor,
+  useConceptDigits,
   numberFont,
   rectStyle,
   styleShape,
@@ -50,7 +50,7 @@ const Scene: React.FC<{ data: ButtonToWindowData }> = ({ data }) => {
   const q = seg(S.p, 0.1, 0.6);
   const fill = tint(colors.accentFill, theme.card, q);
   const ring = tint(shape.soft ? colors.accentFill : theme.border, theme.border, q);
-  const digits = digitsFor(data.ctaLabel);
+  const digits = useConceptDigits(data.ctaLabel);
   const numFont = numberFont(theme, digits);
   const radius = (h: number) => Math.round((h * shape.pillK) / 2);
   const cx = L.window.x + W / 2;

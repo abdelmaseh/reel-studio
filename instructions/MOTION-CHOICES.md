@@ -2,11 +2,15 @@
 
 Read the [editorial recipe](EDITORIAL.md) first. Author the visual action, then choose the smallest supported mechanism that performs it. The same family can look different across the styles; changing the palette alone does not create a new explanation.
 
+## Transitions between scenes
+
+The manifest's `transitions` (`{atFrame, durationInFrames, kind, dir?}`) offers `clip-wipe`, `light-scan` and `whip-pan` (graphics scene entrances), `hue-crossfade`, and the overlay flashes `whiteout`, `leak`, `bloom` and `burn`. `layoutTransitions` (`curtain`, `window-morph`) move between the presenter and split layouts. Prefer one calm entrance kind per video between graphics scenes; keep flashes rare and never over the presenter speaking. They are editable in the live editor.
+
 ## Supported paths
 
 - Recording: a brief beat's `intent` selects the scene family; the director maps reviewed source seconds onto the cut. See [EDITING.md](EDITING.md).
 - No recording: author full-timeline takeover scenes in a graphics specification. See [GRAPHICS.md](GRAPHICS.md). Do not manufacture a speech transcript.
-- All fifteen motion concepts are reachable in the normal `PreparedEdit` manifest and live editor through `family: "motion-concept"`, `data: {"concept": "<id>", "config": {...}}`. Use `takeover`. The config is the selected concept's existing schema, not arbitrary JSX or a free-form prompt.
+- Registered motion concepts are reachable in the normal `PreparedEdit` manifest and live editor through `family: "motion-concept"`, `data: {"concept": "<id>", "config": {...}}`. Use `takeover`. The config is the selected concept's existing schema, not arbitrary JSX or a free-form prompt.
 
 Find a concept with `node scripts/concept-stills.mjs --list --query <idea>`. Read `engine/src/motion-concepts/<id>/schema.ts` and `math.ts`; the catalog gives the duration floor. Its 30 fps minimum scales to the actual fps through `minFramesAtFps`. Preview it with the real copy, then mount that same data through the normal family. Listing and schema checks do not render or approve it.
 
@@ -17,6 +21,8 @@ Find a concept with `node scripts/concept-stills.mjs --list --query <idea>`. Rea
 | A short input unfolds into a complete workspace | `brief-to-workspace` |
 | One idea connects to multiple content formats | `headline-to-system` |
 | Trigger → ordered operations → result | `automation-flow`; `route-stops` for an explained journey |
+| A typed condition chooses one of two routes for the same input | `conditional-branching`; supplied boolean equality or numeric minimum, with one computed selected outcome |
+| The same candidates pass successive criteria and form a shortlist | `identity-filtering`; stable IDs, supplied typed attributes, computed survivor sets and traceable rejections |
 | The same system applied across departments | `department-tabs` |
 | Stack opens into individually meaningful tools | `tool-stack-spread`; `magnetic-dock` for six sequential introductions |
 | A headline or reveal carries the moment | `keyword-reveal`; `panel-reveal` with a supplied visual |
@@ -30,12 +36,14 @@ Find a concept with `node scripts/concept-stills.mjs --list --query <idea>`. Rea
 | Real screen or source image supports the claim | `screens`, `screen-focus`, or `screen-recording` according to source type |
 | A countable explainer (steps, tools, options), each with a real capture | `glide-chapter`, `glide-card` and `glide-lines`, only in the `grid-glide` style |
 | The comment call to action and the follow card in the `grid-glide` style | `glide-comment` and `glide-follow`, instead of the shared `comment` and `follow` |
+| A how-to told in one unbroken take (open, put something in, type, choose, wait, receive) | `one-shot`, only in the `one-shot` style |
+| An explainer told by an illustrated narrator over flipping grounds, with the headline built on the recorded words | `cartoon` (body) and `cartoon-ending`, only in the `cartoon` style |
 
 `glide-chapter`, `glide-card`, `glide-lines`, `glide-comment` and `glide-follow` are style-owned takeover families: the manifest accepts them only when `style` is `grid-glide`, and their enter, exit and dip behaviour lives inside the scene, so the shared transition list is not used. Their frames are relative to the scene start, a card's captures are public-local files whose `sha256` and pixel size the scene states, and the data contracts are summarised in [styles/grid-glide.md](styles/grid-glide.md).
 
 The catalog is authoritative for exact inputs and supported lengths. Replace SAMPLE numbers, names and claims with recorded facts, cited evidence or clearly reviewed illustrative content. For a geographic explanation, use verified map geometry and region labels; a decorative route or random dot layout is not a map.
 
-`message-board` is an optional additional takeover family, separate from the existing fifteen concepts. Its data has `initialTitle`, `boardTitle`, `focusTitle`, `closingTitle`, three to six `items` with unique `id`, `label` and optional `detail`, `focusIndex`, `gatherFrame`, `gatherDurationFrames`, `focusFrame`, `focusDurationFrames` and optional `closingFrame`. The same objects travel from scattered positions into the board and the selected object moves forward; a card-image cut is not required. Author at the project fps: allow at least 0.6 s before gathering, 0.75 s on the completed board before focus, and 1 s after focus resolves. An optional closing starts after that focus hold and must remain readable for at least one second. Use it when this action serves the message; other explanations keep their appropriate mechanisms.
+`message-board` is an optional additional takeover family, separate from the concept bank. Its data has `initialTitle`, `boardTitle`, `focusTitle`, `closingTitle`, three to six `items` with unique `id`, `label` and optional `detail`, `focusIndex`, `gatherFrame`, `gatherDurationFrames`, `focusFrame`, `focusDurationFrames` and optional `closingFrame`. The same objects travel from scattered positions into the board and the selected object moves forward; a card-image cut is not required. Author at the project fps: allow at least 0.6 s before gathering, 0.75 s on the completed board before focus, and 1 s after focus resolves. An optional closing starts after that focus hold and must remain readable for at least one second. Use it when this action serves the message; other explanations keep their appropriate mechanisms.
 
 ## Layout and text contracts
 

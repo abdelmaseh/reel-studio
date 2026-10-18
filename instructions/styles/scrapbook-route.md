@@ -23,7 +23,7 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 - **Decision:** Choose it for a journey, sequence or milestone story where the relationship between stops matters. Distinguish chronology/process from geographic location.
 - **Composition/material:** Use a warm paper route, grid marks, taped photos and station markers. Keep a stable route and visibly selected stop; photo detail supports that stop rather than replacing its label.
 - **Timing/action:** Establish the route, advance to each stop, reveal its meaning, then hold the combined journey. Retain visited stops when their context matters to the final explanation.
-- **Transition/sound:** Move along the actual connected path and let the next marker settle. A soft travel/tap cue can mark arrival; avoid teleporting a marker across disconnected scenes.
+- **Transition/sound:** Move along the actual connected path and let the next marker settle. A soft travel/tap cue can mark arrival; avoid teleporting a marker across disconnected scenes. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** `route-stops` supports two to four stops and optional verified local images; more complex movement can use a project scene. A diagram is not a factual map: verified borders/locations need supplied geometry. Check path endpoints, names, photo provenance and final context.
 
 ## Style-owned scenes

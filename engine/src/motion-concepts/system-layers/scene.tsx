@@ -17,6 +17,7 @@ import {
   useConceptTimeline,
 } from "../shared";
 import type { ConceptSceneProps } from "../types.ts";
+import { useDigits } from "../../creative-kit/digits";
 import { FL, FR, LAYER_COUNT, MIN_FRAMES, NL, NR, flatten, layoutFor, roundedPath, stateAt, type Pt, type SystemLayersParams } from "./math.ts";
 import type { SystemLayersData } from "./schema.ts";
 
@@ -41,7 +42,7 @@ const Scene: React.FC<{ data: SystemLayersData }> = ({ data }) => {
 
   const arabicLabels = data.layers.filter((l) => dirOf(l.label) === "rtl").length;
   const rtl = arabicLabels * 2 > data.layers.length;
-  const digits = rtl ? "arabic-indic" : "latin";
+  const digits = useDigits() ?? (rtl ? "arabic-indic" : "latin");
   const numFont = numberFont(theme, digits);
   const params: SystemLayersParams = { mode, box, rtl };
   const L = layoutFor(box, params);

@@ -10,7 +10,11 @@ export const DECLARED_FONTS = Object.freeze([
   {family: 'Tajawal', weights: [400, 500, 700, 800], subsets: ['arabic', 'latin']},
   {family: 'IBM Plex Mono', weights: [400, 600], subsets: ['latin']},
   {family: 'Noto Naskh Arabic', weights: [400, 700], subsets: ['arabic', 'latin-ext', 'latin']},
-  {family: 'Source Serif 4', weights: [400, 700], subsets: ['vietnamese', 'latin-ext', 'latin']},
+  // The cartoon headline sets Latin words in the real italic (latin subset only); the upright weights stay as they were.
+  {family: 'Source Serif 4', weights: [400, 700], subsets: ['vietnamese', 'latin-ext', 'latin'], italic: {weights: [400], subsets: ['latin']}},
+  {family: 'Noto Kufi Arabic', weights: [400, 700], subsets: ['arabic', 'latin']},
+  {family: 'Readex Pro', weights: [400, 700], subsets: ['arabic', 'latin']},
+  {family: 'El Messiri', weights: [400, 700], subsets: ['arabic', 'latin']},
 ]);
 
 export const slug = (family) => family.replace(/[^A-Za-z0-9]+/g, '');
@@ -26,6 +30,8 @@ export function cssRequestUrl(spec) {
   if (spec.axes) {
     const tags = Object.keys(spec.axes).sort(byAxis);
     axes = `${tags.join(',')}@${tags.map((tag) => axisValue(spec.axes[tag])).join(',')}`;
+  } else if (spec.italic) {
+    axes = `ital,wght@${[...spec.weights.map((w) => `0,${w}`), ...spec.italic.weights.map((w) => `1,${w}`)].join(';')}`;
   } else {
     axes = `wght@${spec.weights.join(';')}`;
   }

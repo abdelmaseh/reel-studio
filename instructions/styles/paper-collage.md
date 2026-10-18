@@ -23,7 +23,7 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 - **Decision:** Choose it for an assembly, contrast or story whose pieces become a coherent whole. Every piece needs an explanatory role: input, evidence, alternative or result.
 - **Composition/material:** Use taped-paper cards, tabs and restrained depth. Make the focal layer clear through scale, overlap and contrast; keep text on readable surfaces. Paper texture belongs to graphics and does not alter the presenter's likeness.
 - **Timing/action:** Introduce pieces in meaning order, move the same pieces into their relationship and hold the assembled result. A selected piece can become the next scene's focus without losing its identity.
-- **Transition/sound:** Match a card's edge, location or direction between beats. Paper moves and taps belong on the visible action; avoid constant rustling behind speech.
+- **Transition/sound:** Match a card's edge, location or direction between beats. Paper moves and taps belong on the visible action; avoid constant rustling behind speech. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** `message-board`, suitable concepts or a project scene can preserve individual pieces. Check the incoming/assembled/focused states for unwanted swaps, collisions and hidden labels. Adding more scraps is not a substitute for showing the relationship.
 
 ## Style-owned scenes

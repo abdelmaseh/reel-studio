@@ -11,7 +11,8 @@ export type Command =
 
 export type KeyInfo = { key?: string; code?: string; ctrlKey?: boolean; metaKey?: boolean; shiftKey?: boolean; altKey?: boolean; repeat?: boolean };
 
-export type KeyContext = { editable: boolean; modal: boolean };
+/** `select`: the focused control is a <select>, which keeps its own arrows and typing but has no text undo. */
+export type KeyContext = { editable: boolean; modal: boolean; select?: boolean };
 
 const STEP = 1;
 const BIG_STEP = 10;
@@ -22,7 +23,7 @@ export function resolveKey(e: KeyInfo, ctx: KeyContext): Command | null {
   if (mod && !e.altKey) {
 
     if (code === "KeyS") return ctx.modal ? null : { type: "save" };
-    if (ctx.editable || ctx.modal) return null;
+    if (ctx.modal || (ctx.editable && !ctx.select)) return null;
     if (code === "KeyZ") return e.shiftKey ? { type: "redo" } : { type: "undo" };
     if (code === "KeyY") return { type: "redo" };
     return null;

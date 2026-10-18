@@ -1,0 +1,61 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {
+      "recipe": "air-rise",
+      "gain": 0.9,
+      "leadSec": 0.85,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "The camera pulls the viewer into the next world: a soft rising air that ends as the world arrives."
+    },
+    "stamp": {
+      "recipe": "sub-thud",
+      "gain": 0.35,
+      "leadSec": 0.13,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "A low landing when a world arrives or the reel appears; kept well under the air so the take stays soft."
+    },
+    "swap": {
+      "recipe": "air-pass",
+      "gain": 0.8,
+      "leadSec": 0.5,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "A shape morphs into the next one (tile into field, card into reel, phone into the next reel): a soft air pass."
+    },
+    "click": {
+      "recipe": "cursor-click",
+      "gain": 0.6,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "Every cursor press that changes something on screen."
+    },
+    "type": {
+      "recipe": "ui-click",
+      "gain": 0.45,
+      "leadSec": 0,
+      "confidence": "medium",
+      "basis": "inferred",
+      "evidence": "One quiet tick for each word that is typed into the field."
+    },
+    "count": {
+      "recipe": "ui-click",
+      "gain": 0.3,
+      "leadSec": 0,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "A quiet tick for each number step and each reel caption word that lights up."
+    },
+    "reveal": {
+      "recipe": "soft-pop",
+      "gain": 0.6,
+      "leadSec": 0,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "A step badge, a finished job or a platform chip popping in."
+    }
+  }
+}

@@ -41,7 +41,7 @@ const Group: React.FC<{ title: string; hint?: string; issues: Issue[]; manifest:
 export const IssuesDrawer: React.FC<Props> = ({ open, onClose, validation, manifest, onNavigate }) => {
   if (!open) return null;
   const errors = validation.issues.filter((i) => i.severity === "error" && i.stage !== "delivery");
-  const warnings = validation.issues.filter((i) => i.severity === "warning");
+  const warnings = validation.issues.filter((i) => i.severity === "warning" && i.stage !== "delivery");
   const delivery = validation.issues.filter((i) => i.stage === "delivery");
   return (
     <aside className="rv-drawer" role="complementary" aria-label="ملاحظات الـ manifest" dir="rtl">

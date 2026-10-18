@@ -5,6 +5,12 @@ export const CONFIDENCE_LEVELS = Object.freeze(['high', 'medium', 'low', 'none']
 export const EVIDENCE_BASES = Object.freeze(['observed', 'inferred', 'authored']);
 export const DEFAULT_MAX_PER_SEC = 2.5;
 export const DROP_REASONS = Object.freeze(['no-sound-for-kind', 'before-start', 'signoff', 'edit-end', 'density']);
+// The four landing recipes have a sweep twin for a creator who explicitly asks for sweeps ("sweeps": true in a brief or a
+// graphics specification). A palette never names a twin or a sweep voice (validatePalettes refuses it); resolvePalette swaps
+// the landing for its twin only when asked.
+export const SWEEP_RECIPES = Object.freeze({'soft-transition': 'soft-transition-sweep', 'directional-whoosh': 'directional-whoosh-sweep', 'chapter-shift': 'chapter-shift-sweep', 'highlight-swipe': 'highlight-swipe-sweep'});
+const SWEEP_VOICES = new Set(['whoosh', 'whooshSoft', 'whooshShort', 'swipe']);
+const TWIN_IDS = new Set(Object.values(SWEEP_RECIPES));
 
 const PRIORITY = new Map(CUE_KINDS.map((kind, index) => [kind, index]));
 const ENTRY_KEYS = ['recipe', 'gain', 'leadSec', 'confidence', 'basis', 'evidence'];
@@ -56,6 +62,9 @@ export function validatePalettes(palettes, catalog) {
       }
       const recipe = recipes.get(entry.recipe);
       if (!recipe) fail(`${label} names an unknown recipe: ${String(entry.recipe)}.`);
+      if (TWIN_IDS.has(entry.recipe) || recipe.hits.some((hit) => SWEEP_VOICES.has(hit.sound))) {
+        fail(`${label} names a sweep (${entry.recipe}): palettes place soft landings; a sweep needs the creator's explicit "sweeps": true.`);
+      }
       number(entry.gain, 0.01, 2, `${label} gain`);
       number(entry.leadSec, 0, 1, `${label} leadSec`);
       if (entry.leadSec >= recipe.duration) fail(`${label} leadSec must be shorter than ${recipe.id}.`);
@@ -65,16 +74,19 @@ export function validatePalettes(palettes, catalog) {
 }
 
 
-export function resolvePalette(palettes, catalog, styleId) {
+export function resolvePalette(palettes, catalog, styleId, {sweeps = false} = {}) {
   validatePalettes(palettes, catalog);
   if (!STYLE_IDS.includes(styleId)) fail(`Unknown style ${JSON.stringify(styleId)}. Choose one of: ${STYLE_IDS.join(', ')}.`);
+  if (typeof sweeps !== 'boolean') fail('sweeps must be true or false.');
   const recipes = new Map(catalog.recipes.map((recipe) => [recipe.id, recipe]));
   const source = palettes.styles[styleId];
   const entries = Object.fromEntries(CUE_KINDS.map((kind) => {
     const entry = source.kinds[kind];
-    return [kind, { ...entry, recipe: entry.recipe === null ? null : structuredClone(recipes.get(entry.recipe)) }];
+    const id = entry.recipe === null ? null : sweeps ? SWEEP_RECIPES[entry.recipe] ?? entry.recipe : entry.recipe;
+    const recipe = id === null ? null : recipes.get(id) ?? fail(`Recipe ${id} (the sweep twin of ${entry.recipe}) is missing from the catalog.`);
+    return [kind, { ...entry, recipe: recipe === null ? null : structuredClone(recipe) }];
   }));
-  return { style: styleId, dna: source.dna, entries };
+  return { style: styleId, dna: source.dna, sweeps, entries };
 }
 
 
@@ -104,9 +116,9 @@ export async function loadStylePalettes() {
 }
 
 
-export async function loadStylePalette(styleId) {
+export async function loadStylePalette(styleId, options = {}) {
   const { loadSoundCatalog } = await import('./job-sound.mjs');
-  return resolvePalette(await loadStylePalettes(), await loadSoundCatalog(), styleId);
+  return resolvePalette(await loadStylePalettes(), await loadSoundCatalog(), styleId, options);
 }
 
 const checkOptions = ({ fps, signoffFromFrame, durationInFrames, maxPerSec = DEFAULT_MAX_PER_SEC } = {}) => {

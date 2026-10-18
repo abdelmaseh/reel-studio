@@ -53,14 +53,39 @@ const LABELS: Record<string, string> = {
   box: "الصندوق", media: "اللقطات", clips: "اللقطات بالترتيب", scroll: "تمرير اللقطة", from: "من", to: "إلى", distance: "مسافة الانزلاق (بكسل)",
   dir: "الاتجاه", enter: "طريقة الدخول", exit: "طريقة الخروج", grid: "شبكة الخلفية", watermark: "العلامة الخافتة أسفل الشاشة",
   bullets: "النقاط", sha256: "بصمة الملف (sha256)",
+  brand: "اسم الأداة أو القناة (فوق)", intro: "الافتتاحية", top: "السطر الأول", bottom: "السطر التاني", sub: "السطر الصغير", start: "كلمة الزرار", item: "اسم الملف", target: "اسم المكان", placeholder: "النص الباهت في الخانة", options: "الاختيارات", on: "شغّال", decimals: "الأرقام بعد الفاصلة", jobs: "الشغل", file: "اسم الملف", result: "الريل الجاهز", closing: "الختام", platforms: "المنصات", accent: "لون التمييز",
+  input: "العنصر الداخل", condition: "الشرط", branches: "مسارات النتيجة", equals: "القيمة المطلوبة", threshold: "الحد الأدنى", whenTrue: "لو الشرط اتحقق", whenFalse: "لو الشرط ماتحققش",
+  acts: "الأقسام (الخلفيات)", theme: "الخلفية", sentence: "أول جملة في القسم", tag: "عنوان القسم الصغير", sentences: "جمل العنوان", accents: "كلمات التمييز",
+  counter: "العداد", total: "الرقم الكامل", saidAt: "الكلمة اللي بتقول الرقم", stop: "لحظة التوقف", brackets: "زوايا الكاميرا في البداية",
+  word: "رقم الكلمة", dt: "إزاحة بالثواني", term: "الكلمة الكبيرة", glyphs: "الأشكال", left: "اليسار", right: "اليمين", name: "الاسم", linkLabel: "كلمة الرابط",
+  rightAt: "لحظة اليمين", leftAt: "لحظة اليسار", linkAt: "لحظة الرابط", icon: "الأيقونة", shape: "الشكل", hitAt: "لحظات الإبراز", filename: "اسم الملف",
+  prefixLen: "عدد حروف التمييز", stampAt: "لحظة الختم", cableAt: "لحظة الكابل", picked: "العنصر المختار (0 هو الأول)", command: "الأمر المكتوب",
+  pickAt: "لحظة الاختيار", runAt: "لحظة التنفيذ", tiles: "عدد البلوكات", lit: "البلوك المضيء", crossAt: "لحظة الشطب", layers: "الطبقات", tone: "لون الطبقة",
+  shapes: "الأشكال", arrowLabel: "كلمة السهم", dropAt: "لحظة النزول", arrowAt: "لحظة السهم", nodes: "العقد", rings: "الدواير", ringsAt: "لحظة الدواير",
+  beforeLabel: "الاسم قبل", afterLabel: "الاسم بعد", equalsBefore: "يساوي قبل", equalsAfter: "يساوي بعد", morphAt: "لحظة التحول", oneAt: "لحظة الشكل الواحد",
+  clip: "لقطة الشاشة", crop: "قص اللقطة (x, y, w)", w: "العرض المقصوص", places: "أماكن الشخصية", scale: "حجم الشخصية", gestures: "حركات الشخصية",
+  arm: "الدراع", anchor: "الهدف", card: "الكارت", point: "النقطة", brow: "الحاجب", tilt: "ميل الراس", look: "النظرة", tail: "ذيل السلام",
+  character: "الشخصية", skin: "لون البشرة", hair: "الشعر", style: "الشكل", color: "اللون", headwear: "غطاء الرأس", beard: "الدقن", glasses: "النضارة",
+  frame: "لون الإطار", eyes: "العينين", iris: "لون العين", outfit: "اللبس", base: "اللون التحتي",
+  fromTheme: "خلفية القسم السابق", entrance: "مكان الدخول", comment: "كارت الكومنت", follow: "كارت المتابعة", tapAt: "لحظة الضغطة", shareAt: "لحظة المشاركة",
+  sourceLabel: "عنوان البداية", retainedLabel: "عنوان القائمة النهائية", rejectedLabel: "عنوان المستبعد", cards: "الكروت بنفس الهوية", attributes: "خصائص الكارت", criteria: "شروط التصفية", field: "اسم الخاصية", op: "طريقة المقارنة",
 };
 
 
 const VARIANT_LABELS: Record<string, string> = {
   "enter|kind: cut": "قطع مباشر (cut)", "enter|kind: slide": "انزلاق من الجانب (slide)", "enter|kind: dip": "ضبابية وتعتيم (dip)",
   "exit|kind: cut": "قطع مباشر (cut)", "exit|kind: push": "دفع المشهد للخارج (push)", "exit|kind: dip": "ضبابية وتعتيم (dip)",
+  "steps|kind: drop": "سحب ملف لمكان (drop)", "steps|kind: field": "كتابة طلب (field)", "steps|kind: toggle": "تشغيل اختيارات (toggle)",
+  "steps|kind: stat": "رقم كبير (stat)", "steps|kind: work": "شغل بيخلص (work)",
+  "condition|kind: boolean-equals": "اختيار صح أو غلط", "condition|kind: number-at-least": "رقم بحد أدنى",
 };
 export const fieldLabel = (key: string): string => LABELS[key] ?? key;
+
+// A short note under a field whose rule the label does not say, keyed by `family.path`. Neutral Arabic.
+const HINTS: Record<string, string> = {
+  "creator-cta.prompt": "اكتب {keyword} داخل الجملة ليظهر مكانه كلمة التعليق، أو اكتب الكلمة نفسها. التصدير النهائي يتطلب أحد الأمرين.",
+};
+export const fieldHint = (family: string, path: string): string | undefined => HINTS[`${family}.${path}`];
 
 const FRAME_KEY = /(Frame|Frames|Duration|At)$|^(frames|at)$/;
 const MULTILINE_FROM = 100;
@@ -77,17 +102,24 @@ export type ObjectField = Base & { kind: "object"; fields: Field[]; default?:Rec
 export type ArrayField = Base & { kind: "array"; item: Field; minItems: number; maxItems: number; fixedLength: boolean; default?:unknown[] };
 export type UnionVariant = { label: string; field: ObjectField;                                                                                         consts: Record<string, string | number | boolean>; required: string[]; properties: string[]; closed: boolean };
 export type UnionField = Base & { kind: "union"; variants: UnionVariant[] };
+export type ScalarUnionField = Base & { kind: "scalar-union"; variants: Field[] };
+export type RecordField = Base & { kind: "record"; item: Field; keyPattern?: string };
 export type JsonField = Base & { kind: "json"; schema: unknown };
-export type Field = StringField | NumberField | BooleanField | EnumField | ObjectField | ArrayField | UnionField | JsonField;
+export type Field = StringField | NumberField | BooleanField | EnumField | ObjectField | ArrayField | UnionField | ScalarUnionField | RecordField | JsonField;
 
 type JS = Record<string, any>;
 
 function fromJsonSchema(js: JS, key: string, required: boolean): Field {
   const base: Base = { key, label: typeof js.title==='string'?js.title:fieldLabel(key), required, ...(typeof js.description === "string" ? { description: js.description } : {}) };
-  const options = (js.anyOf ?? js.oneOf) as JS[] | undefined;
+  const options = (js.anyOf ?? js.oneOf ?? (Array.isArray(js.type) ? js.type.map((type: string) => ({...js, type})) : undefined)) as JS[] | undefined;
   if (Array.isArray(options)) {
     const objects = options.every((o) => o.type === "object" && o.properties);
-    if (!objects) return { ...base, kind: "json", schema: js };
+    if (!objects) {
+      if (options.every(o => ['string', 'number', 'integer', 'boolean'].includes(o.type))) {
+        return {...base, kind: 'scalar-union', variants: options.map(o => fromJsonSchema(o, key, true))};
+      }
+      return { ...base, kind: "json", schema: js };
+    }
     return {
       ...base,
       kind: "union",
@@ -123,6 +155,10 @@ function fromJsonSchema(js: JS, key: string, required: boolean): Field {
     case "boolean":
       return { ...base, kind: "boolean", ...(typeof js.default === "boolean" ? { default: js.default } : {}) };
     case "object": {
+      if (!js.properties && js.additionalProperties && typeof js.additionalProperties === 'object') {
+        return {...base, kind: 'record', item: fromJsonSchema(js.additionalProperties, '', true),
+          ...(typeof js.propertyNames?.pattern === 'string' ? {keyPattern: js.propertyNames.pattern} : {})};
+      }
       if (!js.properties) return { ...base, kind: "json", schema: js };
       const need = new Set<string>(js.required ?? []);
       return { ...base, kind: "object", fields: Object.entries<JS>(js.properties).map(([k, v]) => fromJsonSchema(v, k, need.has(k))),...(js.default!==undefined?{default:js.default}:{}) };
@@ -167,6 +203,8 @@ export function describeFields(fields: Field[], prefix = ""): string[] {
     if (f.kind === "object") out.push(...describeFields(f.fields, at));
     else if (f.kind === "array") out.push(...describeFields([{ ...f.item, key: "[]" }], at));
     else if (f.kind === "union") f.variants.forEach((v, i) => out.push(...describeFields(v.field.fields, `${at}|${i}`)));
+    else if (f.kind === 'scalar-union') out.push(...describeFields(f.variants, `${at}|value`));
+    else if (f.kind === 'record') out.push(...describeFields([{...f.item, key: '*'}], at));
   }
   return out;
 }
@@ -190,8 +228,23 @@ export function blankValue(field: Field): unknown {
     }
     case "array": return Array.from({ length: field.minItems }, () => blankValue(field.item));
     case "union": return blankVariant(field.variants[0]);
+    case 'scalar-union': return blankValue(field.variants[0]);
+    case 'record': return {};
     case "json": return null;
   }
+}
+
+export function scalarVariantIndex(field: ScalarUnionField, value: unknown): number {
+  const index = field.variants.findIndex(variant => variant.kind === 'enum' ? variant.options.includes(value as never)
+    : variant.kind === 'number' ? typeof value === 'number' : variant.kind === 'boolean' ? typeof value === 'boolean' : variant.kind === 'string' && typeof value === 'string');
+  return Math.max(0, index);
+}
+
+export function recordKeyIssue(field: RecordField, key: string, current: Record<string, unknown>): string | null {
+  if (!key.trim() || ['__proto__', 'prototype', 'constructor'].includes(key)) return 'اسم الخاصية غير صالح.';
+  if (Object.hasOwn(current, key)) return 'الخاصية دي موجودة بالفعل.';
+  if (field.keyPattern && !new RegExp(field.keyPattern).test(key)) return 'اسم الخاصية مش مطابق للصيغة المطلوبة.';
+  return null;
 }
 
 

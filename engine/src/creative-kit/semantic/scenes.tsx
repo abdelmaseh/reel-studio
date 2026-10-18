@@ -1,6 +1,9 @@
 import React from 'react';
 import {Img,staticFile} from 'remotion';
 import {clamp01,EASE,useClock,useEnterF} from '../../core/motion';
+import {cardLabel} from '../labels';
+import {useDigits} from '../digits';
+import {displayDigitList,displayDigits} from '../../core/digits.ts';
 import {useProbe} from '../../core/safe';
 import {FitText,SceneCanvas,SceneHeader,SceneCard,getSceneGeometry,type SceneGeometry,type SceneTheme} from '../primitives';
 import {useSceneTheme} from '../chapter-theme';
@@ -91,17 +94,18 @@ const TicketOffer:React.FC<Common&{data:Data<'ticket-offer'>}>=({data,theme,g,mo
 };
 
 const CommentStack:React.FC<Common&{data:Data<'comment-stack'>}>=({data,theme,g,motion})=>{
+  const digits=useDigits();
   const cardH=Math.floor((g.bodyHeight-92)/data.comments.length);
   return <>
     {data.comments.map((comment,index)=><At key={index} at={comment.atFrame} motion={motion}>
       <SceneCard theme={theme} motion={motion} order={index+2} top={g.bodyTop+index*cardH} width={g.width} height={cardH-12}>
-        <div style={{position:'absolute',left:18,top:12,width:42,height:42,borderRadius:'50%',background:theme.accent,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:theme.mono,fontSize:22,color:theme.onAccent??theme.background}}>{index+1}</div>
+        <div style={{position:'absolute',left:18,top:12,width:42,height:42,borderRadius:'50%',background:theme.accent,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:digits==='arabic-indic'?theme.ar:theme.mono,fontSize:22,color:theme.onAccent??theme.background}}>{displayDigits(String(index+1),digits)}</div>
         <div style={{position:'absolute',left:78,top:12}}><FitText text={comment.author} theme={theme} width={g.width-102} height={28} size={22} min={16} lines={1} role="label" color={theme.accent}/></div>
         <div style={{position:'absolute',left:78,top:46}}><FitText text={comment.text} theme={theme} width={g.width-102} height={cardH-64} size={36} min={17} lines={2}/></div>
       </SceneCard>
     </At>)}
     <div style={{position:'absolute',top:g.bodyTop+g.bodyHeight-76,left:0,width:g.width,height:64,borderTop:`2px solid ${theme.accent}`,paddingTop:10}}>
-      <FitText text={`${data.keyword} · ${data.prompt}`} theme={theme} width={g.width} height={54} size={32} min={20} lines={2} color={theme.accent}/>
+      <FitText text={`${data.keyword} · ${data.prompt}`} keep={[data.keyword]} theme={theme} width={g.width} height={54} size={32} min={20} lines={2} color={theme.accent}/>
     </div>
   </>;
 };
@@ -128,6 +132,7 @@ const ChapterQuote:React.FC<Common&{data:Data<'chapter-quote'>}>=({data,theme,g,
 
 const RouteStops:React.FC<Common&{data:Data<'route-stops'>}>=({data,theme,g,motion})=>{
   const {frame}=useClock();
+  const digits=useDigits();
   const rowH=Math.floor((g.bodyHeight-65)/data.stops.length),markerX=34;
   const completed=data.stops.filter(stop=>frame>=stop.atFrame).length;
   return <>
@@ -136,7 +141,7 @@ const RouteStops:React.FC<Common&{data:Data<'route-stops'>}>=({data,theme,g,moti
       {completed>1?<path d={`M ${markerX} 24 L ${markerX} ${(completed-1)*rowH+24}`} stroke={theme.accent} strokeWidth={6} fill="none"/>:null}
     </svg>
     {data.stops.map((stop,index)=><At key={index} at={stop.atFrame} motion={motion}>
-      <div style={{position:'absolute',left:12,top:g.bodyTop+index*rowH,width:44,height:44,borderRadius:'50%',background:theme.accent,border:`3px solid ${theme.card}`,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:theme.mono,fontWeight:700,fontSize:24,color:theme.onAccent??'#FFFFFF'}}>{index+1}</div>
+      <div style={{position:'absolute',left:12,top:g.bodyTop+index*rowH,width:44,height:44,borderRadius:'50%',background:theme.accent,border:`3px solid ${theme.card}`,display:'flex',alignItems:'center',justifyContent:'center',fontFamily:digits==='arabic-indic'?theme.ar:theme.mono,fontWeight:700,fontSize:24,color:theme.onAccent??'#FFFFFF'}}>{displayDigits(String(index+1),digits)}</div>
       <SceneCard theme={theme} motion={motion} order={index+2} left={82} top={g.bodyTop+index*rowH-1} width={g.width-86} height={rowH-12}>
         {stop.image?<div style={{position:'absolute',right:14,top:10,width:Math.min(100,rowH-35),height:rowH-34,padding:4,background:'#FFFFFF',border:`1px solid ${theme.border}`,transform:`rotate(${index%2?3:-3}deg)`}}><Img src={staticFile(stop.image)} style={{width:'100%',height:'100%',objectFit:'cover'}}/></div>:null}
         <div style={{position:'absolute',left:20,top:10}}>
@@ -161,7 +166,10 @@ const EvidenceWipe:React.FC<Common&{data:Data<'evidence-wipe'>}>=({data,theme,g}
 };
 
 const KineticText:React.FC<{scene:Extract<SemanticScene,{family:'kinetic-text'}>;theme:SceneTheme;g:SceneGeometry;words:readonly MappedWord[]}>=({scene,theme,g,words})=>{
-  const selected=words.filter(word=>scene.data.sourceIndices.includes(word.sourceIndex));
+  const digits=useDigits();
+  const chosen=words.filter(word=>scene.data.sourceIndices.includes(word.sourceIndex));
+  const shown=displayDigitList(chosen.map(word=>word.text),digits);
+  const selected=digits===null?chosen:chosen.map((word,index)=>({...word,text:shown[index]}));
   const hits=selected.filter(word=>scene.data.emphasis?.some(mark=>mark.sourceIndex===word.sourceIndex)).map(word=>word.fromFrame-scene.fromFrame);
   return <>
     <SceneCanvas theme={theme} geometry={g}>
@@ -186,7 +194,7 @@ export const SemanticSceneRenderer:React.FC<{scene:SemanticScene;style:StyleFami
   }
   if(scene.family==='kinetic-text')return <KineticText scene={scene} theme={theme} g={g} words={words}/>;
   const common={theme,g,motion};
-  const heading=scene.family==='chapter-quote'?{kicker:`CHAPTER ${scene.data.chapter}`,title:scene.data.title}:scene.data;
+  const heading=scene.family==='chapter-quote'?{kicker:`${cardLabel('chapter',scene.data)} ${scene.data.chapter}`,title:scene.data.title}:scene.data;
   let body:React.ReactNode;
   switch(scene.family){
     case 'evidence-wipe':body=<EvidenceWipe {...common} data={scene.data}/>;break;

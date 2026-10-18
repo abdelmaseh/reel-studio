@@ -8,7 +8,7 @@ import { randomUUID } from 'node:crypto';
 import { ROOT } from './media.mjs';
 import { WHISPER_RUNTIME_FILE, inspectWhisperRuntime, resolveWhisperModel } from './transcription-install.mjs';
 import {
-  TRANSCRIPTION_SCHEMA, sha256File, transcriptionCacheKey, planTranscriptionChunks,
+  TRANSCRIPTION_SCHEMA, DEFAULT_CHUNK_MS, DEFAULT_OVERLAP_MS, sha256File, transcriptionCacheKey, planTranscriptionChunks, chunkProgressLine,
   mergeTranscriptionChunks, captionsToSrt, assertTranscriptionOutputPath,
   writeTranscriptionJson, writeTranscriptionCache, readTranscriptionCache,
 } from './transcription.mjs';
@@ -27,8 +27,8 @@ export function normalizeTranscriptionOptions(args) {
   if (args.backend !== undefined && args.backend !== 'cpu') throw new Error('Only the verified CPU backend is supported.');
   if (args.timing !== undefined && !['token', 'dtw'].includes(args.timing)) throw new Error('--timing accepts token or dtw.');
   if (args.vad !== undefined && ![true, false, 'on', 'off'].includes(args.vad)) throw new Error('--vad accepts on or off.');
-  const chunkMs = Math.round(number(args['chunk-seconds'], 'chunk-seconds', 2, 30, 14) * 1000);
-  const overlapMs = Math.round(number(args['overlap-seconds'], 'overlap-seconds', 0, 10, 2) * 1000);
+  const chunkMs = Math.round(number(args['chunk-seconds'], 'chunk-seconds', 2, 30, DEFAULT_CHUNK_MS / 1000) * 1000);
+  const overlapMs = Math.round(number(args['overlap-seconds'], 'overlap-seconds', 0, 10, DEFAULT_OVERLAP_MS / 1000) * 1000);
   if (overlapMs >= chunkMs) throw new Error('Overlap must be smaller than the chunk.');
   const startMs = Math.round(number(args.start, 'start', 0, 86400, 0) * 1000);
   const durationMs = args.duration === undefined ? null : Math.round(number(args.duration, 'duration', 0.1, 86400, 1) * 1000);
@@ -104,7 +104,7 @@ export async function transcriptionCodeIdentity({
   };
 }
 
-async function transcribeChunk({ chunk, identity, options, runtime, model, ffmpeg, ffprobe, onProgress }) {
+async function transcribeChunk({ chunk, total, decodedMs, identity, options, runtime, model, ffmpeg, ffprobe, onProgress }) {
   const directory = assertTranscriptionOutputPath(path.join(ROOT, 'state', 'cache', 'transcript-chunks', transcriptionCacheKey(identity)));
   const existing = options.force ? null : await readTranscriptionChunk(directory, identity);
   if (existing) return { ...existing, chunk, cached: true, cacheDir: directory };
@@ -114,7 +114,7 @@ async function transcribeChunk({ chunk, identity, options, runtime, model, ffmpe
   const startedAt = performance.now();
   const durationMs = chunk.endMs - chunk.startMs;
   const wav = path.join(attempt, 'audio-16k.wav');
-  onProgress(`Chunk ${chunk.index + 1}: ${chunk.startMs / 1000}-${chunk.endMs / 1000}s, ${options.threads} CPU threads.`);
+  onProgress(chunkProgressLine({ chunk, total, threads: options.threads, decodedMs }));
   await runTranscriptionCommand(ffmpeg, ['-hide_banner', '-nostdin', '-y', '-i', options.media, '-ss', (chunk.startMs / 1000).toFixed(3), '-t', (durationMs / 1000).toFixed(3), '-map', '0:a:0', '-vn', '-ac', '1', '-ar', '16000', '-c:a', 'pcm_s16le', wav], path.join(attempt, 'ffmpeg.log'));
   const converted = await probeAudio(ffprobe, wav);
   if (converted.codec !== 'pcm_s16le' || converted.sampleRate !== 16000 || converted.channels !== 1 || Math.abs(converted.durationMs - durationMs) > 50) throw new Error(`Chunk audio does not match 16 kHz mono PCM or its requested duration: ${wav}.`);
@@ -174,7 +174,12 @@ export async function transcribeMedia(args, { onProgress = message => console.er
   }
   const chunks = planTranscriptionChunks({ startMs: options.startMs, durationMs: duration, chunkMs: options.chunkMs, overlapMs: options.overlapMs });
   const results = [];
-  for (const chunk of chunks) results.push(await transcribeChunk({ chunk, identity: { ...decodeIdentity, startMs: chunk.startMs, endMs: chunk.endMs }, options, runtime, model, ffmpeg, ffprobe, onProgress }));
+  const decodedMs = [];
+  for (const chunk of chunks) {
+    const result = await transcribeChunk({ chunk, total: chunks.length, decodedMs, identity: { ...decodeIdentity, startMs: chunk.startMs, endMs: chunk.endMs }, options, runtime, model, ffmpeg, ffprobe, onProgress });
+    if (!result.cached) decodedMs.push(result.elapsedMs);
+    results.push(result);
+  }
   const sourceAfter = await fsp.stat(source);
   if (sourceAfter.size !== sourceStat.size || sourceAfter.mtimeMs !== sourceStat.mtimeMs) throw new Error('Source changed during transcription; cached output was not promoted.');
   const merged = mergeTranscriptionChunks(results);

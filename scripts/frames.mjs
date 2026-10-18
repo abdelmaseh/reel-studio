@@ -1,13 +1,16 @@
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { run, parseArgs, cacheDirFor, writeJson, ffprobeJson, summarizeProbe, hms } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const args = parseArgs(process.argv.slice(2), { height: '480' });
 const file = args._[0];
-if (!file) { console.error('Usage: node scripts/frames.mjs <file> --fps 1 | --at t1,t2,...'); process.exit(1); }
+if (!file || args.out === true) { console.error('Usage: node scripts/frames.mjs <file> --fps 1 | --at t1,t2,... [--out <folder inside the studio>]'); process.exit(1); }
+// A chosen folder stays inside the studio and out of Raw/; it is checked before any work.
+const chosenOut = args.out ? assertProjectOutput(path.resolve(String(args.out))) : null;
 
 const probe = summarizeProbe(file, await ffprobeJson(file));
-const outDir = args.out ? path.resolve(args.out) : path.join(await cacheDirFor(file, 'frames'), 'set');
+const outDir = chosenOut ?? path.join(await cacheDirFor(file, 'frames'), 'set');
 await fs.mkdir(outDir, { recursive: true });
 const H = Number(args.height);
 const manifest = { file: probe.name, height: H, frames: [] };

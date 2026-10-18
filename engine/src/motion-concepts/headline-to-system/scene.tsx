@@ -8,7 +8,7 @@ import {
   ConceptText,
   alpha,
   dirOf,
-  digitsFor,
+  useConceptDigits,
   numberFont,
   rectStyle,
   styleShape,
@@ -39,7 +39,7 @@ const Scene: React.FC<{ data: HeadlineToSystemData }> = ({ data }) => {
   const params: HeadlineToSystemParams = { mode, box, rtl, pillK: shape.pillK, windowRadius: shape.windowRadius };
   const L = layoutFor(box, params);
   const S = stateAt(frame, duration, params);
-  const digits = digitsFor(data.coreIdea);
+  const digits = useConceptDigits(data.coreIdea);
   const numFont = numberFont(theme, digits);
   const round = (h: number) => Math.round((h * shape.pillK) / 2);
   const hubFill = tint(theme.card, colors.accentFill, HUB_TINT);

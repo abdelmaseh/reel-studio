@@ -1,5 +1,8 @@
 import { editManifestSchema, type EditManifest } from "../prepared-edit/schema.ts";
+import { manifestSampleNumbers, SAMPLE_NUMBER } from "../prepared-edit/sample-numbers.ts";
 import { tryCompile } from "./time.ts";
+import { sceneDemoFields } from "./ops/demo.ts";
+import { isKitFamily } from "./ops/templates.ts";
 import spec from "../core/platform/instagram-reels.json" with { type: "json" };
 import type { Issue, IssueSeverity, IssueStage, ValidationResult } from "./types.ts";
 
@@ -93,6 +96,26 @@ function delivery(m: EditManifest, compiledIssues: number): Issue[] {
   if (!m.scenes.length) add("scenes", "مفيش مشاهد.", ["scenes"], "Delivery requires authored scenes.");
   if (m.source.fps < spec.video.fps.organicMin) add("fps", `الـ fps (${m.source.fps}) أقل من ${spec.video.fps.organicMin}: إنستجرام بيرفضه.`, ["source", "fps"], `PreparedEdit delivery needs at least ${spec.video.fps.organicMin} fps.`);
   if (compiledIssues) add("cut-review", "قص بيقطع كلمة من الكابشن. راجع حدود القص قبل التصدير.", ["segments"], "Delivery caption cuts need review before rendering.");
+  // A made-up number and placeholder words must not be published, so both are errors; assertDeliveryReady refuses them on the command line too.
+  // The figure comes first because it is the clearer reason.
+  for (const hit of manifestSampleNumbers(m)) {
+    const index = m.scenes.findIndex((scene) => scene.id === hit.sceneId);
+    const path = ["data", ...hit.path.split(".").map((part) => (/^\d+$/.test(part) ? Number(part) : part))];
+    out.push(issue(m, ["scenes", index, ...path], `الرقم ${SAMPLE_NUMBER} في المشهد «${hit.sceneId}» رقم تجريبي. اكتب رقمك الحقيقي قبل التصدير النهائي.`, "delivery", "delivery:sample-number", "error",
+      `Delivery sample number: scene ${hit.sceneId} still shows the template figure ${SAMPLE_NUMBER} at data.${hit.path}.`));
+  }
+  m.scenes.forEach((scene, index) => {
+    const fields = isKitFamily(scene.family) ? sceneDemoFields(scene) : [];
+    if (fields.length) {
+      out.push(issue(m, ["scenes", index, "data"], `المشهد «${scene.id}» ما زال يحمل نصًا تجريبيًا في ${fields.length} حقل. بدّله بكلامك قبل التصدير النهائي.`, "delivery", "delivery:sample-text", "error",
+        `Delivery sample text: scene ${scene.id} still holds the template words at ${fields.map((field) => `data.${field}`).join(", ")}.`));
+    }
+    // The creator CTA fills {keyword} in at draw time, so any other prompt has to spell the keyword out (scripts/lib/endings.mjs holds the same rule).
+    if (scene.family === "creator-cta" && !scene.data.prompt.includes("{keyword}") && !scene.data.prompt.includes(scene.data.keyword)) {
+      add("cta-keyword", `المشهد «${scene.id}» لا يعرض الكلمة المفتاحية «${scene.data.keyword}». اكتب {keyword} في الجملة أو اكتب الكلمة نفسها قبل التصدير النهائي.`,
+        ["scenes", index, "data", "prompt"], `The creator CTA scene ${scene.id} never shows the comment keyword ${scene.data.keyword}: write {keyword} in its prompt, or the keyword itself.`);
+    }
+  });
 
   return out;
 }
@@ -134,7 +157,7 @@ export function validateManifest(input: unknown): ValidationResult {
   const ok = !issues.some((i) => i.severity === "error");
   const d = ok ? delivery(m, cutWords) : [];
   issues.push(...d);
-  return { ok, deliveryReady: ok && d.length === 0, issues };
+  return { ok, deliveryReady: ok && d.every((i) => i.severity !== "error"), issues };
 }
 
 

@@ -202,8 +202,9 @@ test('a dip exit is followed contiguously by a dip enter', () => {
 });
 
 test('the aggregate matches the style registry and stays disjoint from other families', () => {
-  assert.deepEqual([...styleSceneFamilies], [...GRID_GLIDE_FAMILIES]);
-  for (const family of styleSceneFamilies) assert.equal(ownSceneStyle(family), 'grid-glide', family);
+  assert.deepEqual([...styleSceneFamilies], [...GRID_GLIDE_FAMILIES, 'one-shot', 'cartoon', 'cartoon-ending']);
+  for (const family of GRID_GLIDE_FAMILIES) assert.equal(ownSceneStyle(family), 'grid-glide', family);
+  assert.equal(ownSceneStyle('one-shot'), 'one-shot');
   assert.deepEqual(STYLE_METAS.flatMap((meta) => [...meta.ownScenes]).sort(), [...styleSceneFamilies].sort(),
     'every owned family has exactly one schema variant and the reverse');
   for (const input of [chapter(), card(), lines()]) {

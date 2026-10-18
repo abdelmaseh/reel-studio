@@ -5,18 +5,27 @@ import {semanticFamilies} from '../../creative-kit/semantic/schema.ts';
 import {GRID_GLIDE_FAMILIES} from '../../styles/grid-glide/scenes/schema.ts';
 import {gridGlideTemplate, gridGlideTemplateFrames} from '../../styles/grid-glide/scenes/templates.ts';
 import {glideWords} from '../../styles/grid-glide/scenes/text.ts';
+import {ONE_SHOT_FAMILIES} from '../../styles/one-shot/scenes/schema.ts';
+import {oneShotTemplateFrames} from '../../styles/one-shot/scenes/templates.ts';
+import {CARTOON_FAMILIES} from '../../styles/cartoon/scenes/math.ts';
+import {cartoonEndingTemplate, cartoonTemplate, cartoonTemplateFrames} from '../../styles/cartoon/scenes/templates.ts';
 import {ownSceneStyle} from '../../styles/registry.ts';
 import {compileEdit} from '../../prepared-edit/timeline.ts';
 import {minFramesAtFps} from '../../motion-concepts/timeline.ts';
-import {getCatalogEntry} from '../../motion-concepts/catalog.ts';
+import {getCatalogEntry,catalogDemo} from '../../motion-concepts/catalog.ts';
+import type {ConceptId} from '../../motion-concepts/types.ts';
 import { totalFrames } from "../time.ts";
+import { HANDLE_PATTERN } from "../../prepared-edit/creator.ts";
+import { sampleNumberPaths } from "../../prepared-edit/sample-numbers.ts";
 import { carryEntrances, dropForegrounds, repairForegrounds } from "./anchors.ts";
 import { deepEqual, removeIn, setIn, type Path } from "./paths.ts";
 import { TEMPLATE_DATA } from "./demo.ts";
 import { finalize, refuse, unchanged, type OpResult } from "./result.ts";
+import { KIT_LAYOUT, KIT_TEMPLATE_FAMILIES, TEMPLATE_TEXT, isKitFamily, kitTemplate, type KitTemplateFamily } from "./templates.ts";
 import { clamp, insertSorted, limitFrame, removeAt, replaceAt, sceneEnd, sceneIndex, uniqueSlug, type Scene } from "./util.ts";
 
 export { sceneDemoFields, demoScenes, type DemoScene } from "./demo.ts";
+export { KIT_TEMPLATE_FAMILIES, kitTemplate, type KitTemplateFamily } from "./templates.ts";
 
 export const LAYOUTS = ["presenter", "split", "takeover"] as const;
 export const MOTIONS = ["land", "stagger", "quiet"] as const;
@@ -24,13 +33,43 @@ export type SceneLayout = (typeof LAYOUTS)[number];
 export type SceneMotion = (typeof MOTIONS)[number];
 
 
-export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...GRID_GLIDE_FAMILIES];
+export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...KIT_TEMPLATE_FAMILIES,...GRID_GLIDE_FAMILIES,...ONE_SHOT_FAMILIES,...CARTOON_FAMILIES];
+
+// The scene families that count as the video's ending: the delivery gate (scripts/lib/endings.mjs) allows only one ending.
+const ENDING_FAMILIES: readonly string[] = ["comment", "follow", "glide-comment", "glide-follow", "creator-cta"];
+const NO_ROOM_AFTER_LAST = "لا توجد مساحة بعد آخر مشهد وقبل نهاية الفيديو. قصّر المشهد الأخير أولًا.";
 
 
-export function templateFamiliesFor(style: string): string[] {
+/**
+ * Why the creator-cta scene cannot be added to this edit, or null when it can. The delivery gate accepts it only with the
+ * profile's comment keyword and a complete handle, as the last scene, and only when no other ending scene exists.
+ */
+export function creatorCtaIssue(m: EditManifest): string | null {
+  const creator = m.creator;
+  if (!creator) return "لا يوجد ملف للمبدع في هذا الفيديو، فلا يمكن إضافة دعوة التعليق والمتابعة.";
+  const { cta, followCard } = creator.ending;
+  if (typeof cta !== "string" || cta.length === 0 || cta.length > 20) return "الملف الشخصي لا يحدد كلمة مفتاحية للتعليق (حتى ٢٠ حرفًا).";
+  if (!followCard) return "بطاقة المتابعة مغلقة في الملف الشخصي.";
+  if (!creator.handle || !HANDLE_PATTERN.test(creator.handle)) return "الملف الشخصي لا يحتوي معرّفًا كاملًا بصيغة @name.";
+  if (m.scenes.some((scene) => ENDING_FAMILIES.includes(scene.family))) return "في الفيديو مشهد ختام موجود بالفعل. عدّله أو احذفه أولًا.";
+  const last = m.scenes[m.scenes.length - 1];
+  if (limitFrame(m) - (last ? sceneEnd(last) : 0) < Math.ceil(2 * m.source.fps)) return NO_ROOM_AFTER_LAST;
+  return null;
+}
+
+
+function kitRefusal(m: EditManifest, family: KitTemplateFamily): string | null {
+  if (m.contentMode === "graphics" && KIT_LAYOUT[family] !== "takeover") return `مشاريع الجرافيك تقبل مشاهد الشاشة الكاملة فقط، والمشهد «${family}» ليس منها.`;
+  return family === "creator-cta" ? creatorCtaIssue(m) : null;
+}
+
+
+/** The families the picker offers: own-style families only for their style and, when the edit is given, only the kit templates it can take. */
+export function templateFamiliesFor(style: string, m?: EditManifest): string[] {
   return TEMPLATE_FAMILIES.filter((family) => {
     const owner = ownSceneStyle(family);
-    return owner === undefined || owner === style;
+    if (owner !== undefined && owner !== style) return false;
+    return !(m !== undefined && isKitFamily(family) && kitRefusal(m, family) !== null);
   });
 }
 const MIN_SCENE_FRAMES = 30;
@@ -231,18 +270,49 @@ export function setMotion(m: EditManifest, id: string, motion: SceneMotion): OpR
 
 
 
-export function addSceneFromTemplate(m: EditManifest, family: string, options: { atFrame?: number; durationInFrames?: number } = {}): OpResult<{ id: string; index: number }> {
-  const data = TEMPLATE_DATA[family];
+function addKitScene(m: EditManifest, family: KitTemplateFamily, options: { atFrame?: number; durationInFrames?: number }): OpResult<{ id: string; index: number }> {
+  const refusal = kitRefusal(m, family);
+  if (refusal) return refuse(refusal);
+  const fps = m.source.fps;
+  const least = Math.ceil(2 * fps);
+  const limit = limitFrame(m);
+  const last = m.scenes[m.scenes.length - 1];
+  const after = last ? sceneEnd(last) : 0;
+  // The ending scene is always the last one, whatever the playhead says; every other template goes where the playhead finds room.
+  const slot = family === "creator-cta" ? (limit - after >= least ? { from: after, room: limit - after } : null) : freeRoomAt(m, options.atFrame ?? 0, limit, least);
+  if (!slot) return refuse(family === "creator-cta" ? NO_ROOM_AFTER_LAST : "لا توجد مساحة خالية بطول ثانيتين على الأقل لمشهد جديد. قصّر مشهدًا أو انقل المؤشر إلى مكان خالٍ.");
+  const asked = options.durationInFrames === undefined ? slot.room : Math.min(slot.room, Math.round(options.durationInFrames));
+  if (!(asked >= least)) return refuse("مدة المشهد يجب ألا تقل عن ثانيتين.");
+  const kit = kitTemplate(family, fps, asked);
+  if (family === "creator-cta") {
+    kit.data.keyword = m.creator!.ending.cta;
+    kit.data.handle = m.creator!.handle;
+  }
+  const id = uniqueSlug(family, new Set(m.scenes.map((x) => x.id)));
+  const scene = { id, fromFrame: slot.from, durationInFrames: kit.frames, family, layout: kit.layout, motion: creativeGalleryDefaults.motion, data: kit.data } as Scene;
+  const [scenes, index] = insertSorted(m.scenes, scene, (x) => x.fromFrame);
+  return finalize(m, { ...m, scenes }, { id, index }, sampleNumberPaths(scene).length ? [TEMPLATE_TEXT.added, TEMPLATE_TEXT.addedWithNumber] : [TEMPLATE_TEXT.added]);
+}
+
+
+export function addSceneFromTemplate(m: EditManifest, family: string, options: { atFrame?: number; durationInFrames?: number; concept?: ConceptId } = {}): OpResult<{ id: string; index: number }> {
+  const data = family === 'motion-concept' && options.concept ? {concept: options.concept, config: catalogDemo(options.concept)} : TEMPLATE_DATA[family];
   if (!data) return refuse(`مفيش قالب آمن للـ family «${family}». انسخ مشهد موجود منها (نسخ) وعدّل عليه.`);
   const owner = ownSceneStyle(family);
   if (owner !== undefined && owner !== m.style) return refuse(`المشهد «${family}» متاح في ستايل ${owner} فقط، والستايل الحالي ${m.style}. غيّر الستايل أولا أو اختر نوع مشهد آخر.`);
+  if (isKitFamily(family)) return addKitScene(m, family, options);
   const glide = (GRID_GLIDE_FAMILIES as readonly string[]).includes(family);
-  const defaultFrames=glide?gridGlideTemplateFrames(family,m.source.fps):family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
-    ?minFramesAtFps(Math.max(DEFAULT_SCENE_FRAMES,getCatalogEntry((data as {concept:string}).concept).minFrames),m.source.fps):DEFAULT_SCENE_FRAMES;
+  const oneShot = (ONE_SHOT_FAMILIES as readonly string[]).includes(family);
+  const cartoon = (CARTOON_FAMILIES as readonly string[]).includes(family);
+  const defaultFrames=glide?gridGlideTemplateFrames(family,m.source.fps):oneShot?oneShotTemplateFrames(m.source.fps):cartoon?cartoonTemplateFrames(m.source.fps):family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
+    ?minFramesAtFps(getCatalogEntry((data as {concept:string}).concept).defaultFrames,m.source.fps):DEFAULT_SCENE_FRAMES;
   const wanted = Math.round(options.durationInFrames ?? defaultFrames);
   if (!(wanted >= 1)) return refuse("مدة المشهد لازم تبقى فريم واحد على الأقل.");
-  // A glide template keeps its cue positions at full length, so it needs a gap that holds the whole scene; other families may shrink to fit.
-  const minRoom = glide ? wanted : Math.min(MIN_SCENE_FRAMES, wanted);
+  // Fixed-cue templates need their whole duration; concepts may shrink only to their native
+  // fps-scaled choreography floor. Short ordinary scenes keep their existing gap behaviour.
+  const minRoom = glide || oneShot || cartoon ? wanted : family === 'motion-concept'
+    ? minFramesAtFps(getCatalogEntry((data as {concept: string}).concept).minFrames, m.source.fps)
+    : Math.min(MIN_SCENE_FRAMES, wanted);
   const slot = freeRoomAt(m, options.atFrame ?? 0, limitFrame(m), minRoom);
   if (!slot) return refuse("مفيش مساحة فاضية كفاية لمشهد جديد. قصّر مشهد أو حرّك الـ playhead لمكان فاضي.");
   const id = uniqueSlug(family, new Set(m.scenes.map((x) => x.id)));
@@ -260,6 +330,18 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
   const cta=m.creator?.ending.cta;
   if(scene.family==='glide-comment' && typeof cta==='string' && glideWords(cta).length<=3)scene.data.keyword=cta;
   if(scene.family==='glide-follow' && m.creator?.handle)scene.data.handle=m.creator.handle;
+  if(cartoon){
+    // A cartoon scene is built over the reviewed words inside its own window: its sentences, cards and flips are word anchors.
+    let compiled:ReturnType<typeof compileEdit>;
+    try{compiled=compileEdit(m);}
+    catch{return refuse('توقيت الكلمات مش كافي لعرضها على فريمات الفيديو. راجع التوقيت قبل إضافة مشهد كارتون.');}
+    const inScene=compiled.words.filter(word=>word.fromFrame>=scene.fromFrame && word.fromFrame<sceneEnd(scene));
+    if(inScene.length<2)return refuse('مشهد الكارتون محتاج كلمات مراجَعة جوه مدته: حرّك الـ playhead لمكان فيه كلام.');
+    scene.layout='takeover';scene.motion='quiet';
+    scene.data=family===CARTOON_FAMILIES[0]
+      ?cartoonTemplate(inScene,{fps:m.source.fps,sceneFrom:scene.fromFrame,durationInFrames:scene.durationInFrames})
+      :cartoonEndingTemplate(inScene,{handle:m.creator?.handle??null});
+  }
   if(scene.family==='message-board'){
     for(const key of ['gatherFrame','gatherDurationFrames','focusFrame','focusDurationFrames'] as const)scene.data[key]=Math.round(scene.data[key]*m.source.fps/30);
     if(scene.data.closingFrame!==undefined)scene.data.closingFrame=Math.round(scene.data.closingFrame*m.source.fps/30);
@@ -274,5 +356,5 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
     scene.data.lang=selected.some(word=>/[\u0600-\u06ff]/.test(word.text))?'ar':'en';
   }
   const [scenes, index] = insertSorted(m.scenes, scene, (x) => x.fromFrame);
-  return finalize(m, { ...m, scenes }, { id, index }, ["ده نص تجريبي من الـ kit. لازم تبدّله بكلامك قبل التصدير."]);
+  return finalize(m, { ...m, scenes }, { id, index }, [TEMPLATE_TEXT.added]);
 }

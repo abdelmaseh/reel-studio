@@ -11,6 +11,7 @@ export {
   ProofScene,
 } from "./scenes";
 export { CreativeFonts, getSceneGeometry, getSceneTheme } from "./primitives";
+export { DigitsProvider, useDigits, useStatDigits, useDisplayText } from "./digits";
 export {SemanticSceneRenderer} from './semantic/scenes';
 export {semanticSceneSchema,semanticSceneVariants,semanticFamilies,semanticTemplateData,validateSemanticTiming,semanticAssets} from './semantic/schema';
 export type {SemanticScene} from './semantic/schema';

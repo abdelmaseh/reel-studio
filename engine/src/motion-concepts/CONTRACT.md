@@ -1,6 +1,6 @@
 # Motion concept authoring contract
 
-Fifteen reusable graphics scenes live in this directory. Each targets a
+Seventeen reusable graphics scenes live in this directory. Each targets a
 1080x1920 composition, supports the seven studio styles and accepts validated
 copy. Use `button-to-window/` as a source example and see the
 [library guide](../../../third-party/motion-concepts/README.md) for usage.
@@ -30,8 +30,13 @@ preview compositions are registered separately in `entry.ts`, used by
    `beatFrames` and `EASE`. Mount with an explicit `durationInFrames`. The
    `minFrames` floor is defined at 30 fps; `minFramesAtFps` scales it to the
    composition's frame rate while preserving its minimum length in seconds.
+   Defaults also scale from 30 fps; use each catalog entry's `defaultFrames`
+   rather than assuming every concept lasts 240 frames. Conditional branching
+   uses 210 minimum / 270 default frames; identity filtering uses 270 / 330.
 2. **Modes.** `once` ends in a frozen hold of at least 20% of the sequence.
-   `loop` returns to its opening state at the sequence end. Use shared timing
+   Loopable scenes return to their opening state in `loop` mode. Branching
+   and filtering explain a completed decision and are intentionally once-only.
+   Use shared timing
    helpers for pulses, envelopes and whole-cycle ambient motion.
 3. **Safe layout.** Derive layout from `CONCEPT_BOX`, `mainBottom`,
    `SURFACE_INSET` and `SURFACE_REACH`; include shadows in the bounds. Avoid
@@ -41,8 +46,8 @@ preview compositions are registered separately in `entry.ts`, used by
 4. **Presenter.** Concepts draw graphics only and do not locate a face.
    The caller must keep cards and text away from the presenter's face, hair
    and beard and review overlap with footage.
-5. **Arabic copy.** Use `ConceptText`, `Bidi`, `formatNumber`, `digitsFor`
-   and `numberFont`. Fitted text rejects overflow. Use `copy(max)` and strict
+5. **Arabic copy.** Use `ConceptText`, `Bidi`, `formatNumber`, `useConceptDigits`
+   (the video's digits choice, otherwise what the copy implies) and `numberFont`. Fitted text rejects overflow. Use `copy(max)` and strict
    schemas, with limits counted in code points. Reject blank or unsafe control
    text. The optional caption is one line, at most `CAPTION_MAX` characters.
 6. **Styles.** Use `getSceneTheme`, `uiColors`, `tint`, `alpha`, `styleShape`

@@ -7,6 +7,7 @@ import {withOutputTransaction} from './delivery.mjs';
 import {profileToBrief, readProfileFile} from './branding.mjs';
 import {planEditorBrief, prepareEditorManifest, renderEditorManifest, validateEditorBrief} from './editor-director.mjs';
 import {verifyPreparedProps} from './prepared-props.mjs';
+import {CARTOON_SOURCE_KIND} from '../../engine/src/styles/cartoon/scenes/math.ts';
 
 const MAX_CLIP_SEC = 600;
 const text = (value, label, max = 200) => {
@@ -118,7 +119,7 @@ export function validatePodcastSelections(raw, {source, words: rawWords, batchId
       const recorded = normalized(signoffWords.map(w => w.text).join(' ')), phrase = normalized(clip.signoff.text);
       if (recorded !== phrase && !recorded.startsWith(`${phrase} `)) throw new Error('The approved recorded signoff must match the reviewed transcript at its named time.');
     }
-    object(clip.editor, ['purpose', 'tone', 'style', 'sourceKind', 'beats', 'fontFamily', 'captionsGrouping', 'captionsPresentation', 'captionsMode', 'writingStyle', 'sound', 'footage', 'transitions'], 'clip editor');
+    object(clip.editor, ['purpose', 'tone', 'style', 'sourceKind', 'beats', 'fontFamily', 'digits', 'captionsGrouping', 'captionsPresentation', 'captionsMode', 'writingStyle', 'sound', 'footage', 'transitions'], 'clip editor');
     if (!Array.isArray(clip.editor.beats) || !clip.editor.beats.length) throw new Error('Each clip needs authored editor beats in original source seconds.');
     const rebased = rebasePodcastClip(clip, words);
     for (const beat of clip.editor.beats) {
@@ -271,7 +272,7 @@ async function extractClip(batch, clip, base, onProgress) {
 
 async function assertApprovedClipManifest(batch, clip, manifest, words) {
   if (manifest.id !== clip.projectId) throw new Error('Authored manifest does not belong to this approved clip.');
-  if (manifest.presenter !== (clip.editor.sourceKind === 'screen' ? false : undefined)) throw new Error('Authored source kind/presenter exemption disagrees with the explicitly selected clip.');
+  if (manifest.presenter !== (['screen', CARTOON_SOURCE_KIND].includes(clip.editor.sourceKind) ? false : undefined)) throw new Error('Authored source kind/presenter exemption disagrees with the explicitly selected clip.');
   const intake = await readJson(`Projects/${clip.projectId}/source/intake.json`);
   if (manifest.source?.path !== intake.edit) throw new Error('Authored source changed from the approved extracted window.');
   const rebased = rebasePodcastClip(clip, words);

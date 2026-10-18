@@ -6,6 +6,7 @@ import { CanvasFill, FRAME, contentBox, useProbe, zone, type ProfileId } from ".
 import { isArabic } from "../core/type";
 import { CreativeFonts, FitText, SceneCaption, type SceneTheme } from "../creative-kit/primitives";
 import {useSceneTheme} from '../creative-kit/chapter-theme';
+import { useDigits } from "../creative-kit/digits";
 import type { StyleFamily } from "../creative-kit/schema";
 import { uiColors } from "../creative-kit/ui-chat";
 import { mixColor, withAlpha } from "./color.ts";
@@ -170,6 +171,8 @@ export const ConceptText: React.FC<FitTextProps> = (props) => {
 
 
 export const digitsFor = (text: string): DigitSet => (isArabic(text) ? "arabic-indic" : "latin");
+/** The digits of a concept: the video's choice when the creator made one, otherwise what the copy implies, as always. */
+export const useConceptDigits = (text: string): DigitSet => useDigits() ?? digitsFor(text);
 export const numberFont = (theme: SceneTheme, digits: DigitSet): string => (digits === "arabic-indic" ? theme.ar : theme.display);
 
 

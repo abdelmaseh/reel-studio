@@ -44,7 +44,19 @@ export function assertTranscriptionOutputPath(file) {
   return target;
 }
 
-export function planTranscriptionChunks({ startMs = 0, durationMs, chunkMs = 14000, overlapMs = 2000 }) {
+// The default piece length changes only after a measured A/B (scripts/transcription-ab.mjs) returns an adopt verdict.
+export const DEFAULT_CHUNK_MS = 14000;
+export const DEFAULT_OVERLAP_MS = 2000;
+
+// The progress line for one chunk. `decodedMs` holds the times of chunks decoded so far in this run (cached chunks do not count).
+export function chunkProgressLine({ chunk, total, threads, decodedMs }) {
+  const base = `Chunk ${chunk.index + 1}/${total}: ${chunk.startMs / 1000}-${chunk.endMs / 1000} s, ${threads} CPU threads`;
+  if (!decodedMs.length) return `${base}, estimating the time left`;
+  const meanMs = decodedMs.reduce((sum, value) => sum + value, 0) / decodedMs.length;
+  return `${base}, about ${Math.max(1, Math.ceil((meanMs * (total - chunk.index)) / 60000))} min left`;
+}
+
+export function planTranscriptionChunks({ startMs = 0, durationMs, chunkMs = DEFAULT_CHUNK_MS, overlapMs = DEFAULT_OVERLAP_MS }) {
   if (!Number.isSafeInteger(durationMs) || durationMs <= 0) throw new Error('A positive duration in milliseconds is required.');
   if (!Number.isSafeInteger(startMs) || startMs < 0) throw new Error('Invalid source start.');
   if (!Number.isSafeInteger(chunkMs) || chunkMs <= 0 || !Number.isSafeInteger(overlapMs) || overlapMs < 0 || overlapMs >= chunkMs) {

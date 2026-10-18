@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Player, type PlayerRef } from "@remotion/player";
-import { PreparedEdit, type PreparedEditProps } from "../prepared-edit/PreparedEdit";
 import type { EditManifest } from "../prepared-edit/schema.ts";
 import { Boundary } from "./Boundary";
 import { PlayerControls } from "./PlayerControls";
-import { remember } from "./api.ts";
+import { PreviewComposition, type PreviewCompositionProps } from "./PreviewComposition";
+import { remember, sfxUrl } from "./api.ts";
+import { PREVIEW_SFX_TEXT, SHARED_AUDIO_TAGS, previewSoundsFor, type PreviewSound } from "./shell/preview-sounds.ts";
 import { useEditor, useEditorStore } from "./store.ts";
 import { plateIsStale, totalFrames, tryCompile } from "./time.ts";
 import { parseManifest } from "./validate.ts";
@@ -25,6 +26,7 @@ export const PreviewPlayer: React.FC<{ project: ProjectResponse; guides: GuidesM
   const [rate, setRate] = useState<number>(() => Number(remember.get("rate")) || 1);
   const [muted, setMuted] = useState<boolean>(() => remember.get("muted") === "1");
   const [loop, setLoop] = useState(false);
+  const [sfxOn, setSfxOn] = useState<boolean>(() => remember.get("sfx") !== "0");
   const plate = project.plate;
   const stale = plate ? plateIsStale(manifest, plate) : false;
 
@@ -36,7 +38,32 @@ export const PreviewPlayer: React.FC<{ project: ProjectResponse; guides: GuidesM
   const shown = parsed ?? lastValid.current;
 
   const useProxy = quality === "proxy" && Boolean(plate?.proxySrc);
-  const inputProps = useMemo<PreparedEditProps | null>(() => {
+
+  // The effects the preview can play: only when the chip is on, and never more than the Player's audio pool can hold.
+  const shownSounds = shown?.sounds;
+  const shownFps = shown?.source.fps;
+  const sfx = useMemo(() => {
+    if (!shownSounds || !shownFps || !sfxOn) return { sounds: [] as PreviewSound[], skipped: 0 };
+    return previewSoundsFor({ sounds: shownSounds, source: { fps: shownFps } }, project.recipeInfo, sfxUrl);
+  }, [shownSounds, shownFps, sfxOn, project.recipeInfo]);
+
+  // Warm the server cache a moment after the last change, one effect at a time, so the first play is not waiting for a mix.
+  // The key lists the distinct sound URLs, so an edit that leaves them as they were does not start the warm-up again.
+  const warmKey = useMemo(() => [...new Set(sfx.sounds.map((sound) => sound.src))].join("\n"), [sfx.sounds]);
+  useEffect(() => {
+    if (!warmKey) return;
+    const urls = warmKey.split("\n");
+    let cancelled = false;
+    const timer = setTimeout(async () => {
+      for (const url of urls) {
+        if (cancelled) return;
+        try { await (await fetch(url)).arrayBuffer(); } catch { /* a sound is optional; the Player retries on play */ }
+      }
+    }, 250);
+    return () => { cancelled = true; clearTimeout(timer); };
+  }, [warmKey]);
+
+  const inputProps = useMemo<PreviewCompositionProps | null>(() => {
     if (!shown || !plate) return null;
     return {
       edit: shown,
@@ -44,8 +71,10 @@ export const PreviewPlayer: React.FC<{ project: ProjectResponse; guides: GuidesM
       guides: guidesProp(guides),
       plates: [],
       ...(project.headGuide ? { headGuide: project.headGuide } : {}),
+      ...(project.mouth ? { mouth: project.mouth } : {}),
+      sounds: sfx.sounds,
     };
-  }, [shown, plate, useProxy, guides, project.headGuide]);
+  }, [shown, plate, useProxy, guides, project.headGuide, project.mouth, sfx.sounds]);
 
   const compiled = shown ? tryCompile(shown) : null;
   const durationInFrames = Math.max(1, shown ? (compiled?.ok ? compiled.compiled.durationInFrames : totalFrames(shown)) : 1);
@@ -105,8 +134,9 @@ export const PreviewPlayer: React.FC<{ project: ProjectResponse; guides: GuidesM
             <Player
               key={inputProps.plate?.src}
               ref={setInstance}
-              component={PreparedEdit}
+              component={PreviewComposition}
               inputProps={inputProps}
+              numberOfSharedAudioTags={SHARED_AUDIO_TAGS}
               durationInFrames={durationInFrames}
               fps={shown!.source.fps}
               compositionWidth={1080}
@@ -148,6 +178,12 @@ export const PreviewPlayer: React.FC<{ project: ProjectResponse; guides: GuidesM
           <button type="button" className="rv-chip-btn" onClick={() => { const q: Quality = quality === "proxy" ? "full" : "proxy"; setQuality(q); remember.set("quality", q); }}
             title="المعاينة الخفيفة (540p) أسرع على الجهاز. التصدير النهائي دايماً بالجودة الكاملة.">
             {useProxy ? "معاينة خفيفة 540p" : "الجودة الكاملة"}
+          </button>
+        ) : null}
+        {shown && shown.sounds.length ? (
+          <button type="button" className="rv-chip-btn" title={sfx.skipped ? PREVIEW_SFX_TEXT.skippedTitle : PREVIEW_SFX_TEXT.title}
+            onClick={() => { const v = !sfxOn; setSfxOn(v); remember.set("sfx", v ? "1" : "0"); }}>
+            {sfxOn ? PREVIEW_SFX_TEXT.on : PREVIEW_SFX_TEXT.off}{sfxOn && sfx.skipped ? PREVIEW_SFX_TEXT.skipped(sfx.skipped) : ""}
           </button>
         ) : null}
         {stale && plate ? <span className="chip warn">القص اتغيّر: المعاينة لسه بالقص القديم لحد «حضّر»</span> : null}

@@ -1,0 +1,12 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {"recipe": "cartoon-flip", "gain": 1, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A soft pass of air on the first frame of every ground flip; the circle reveal is the only full-frame change in this style."},
+    "stamp": {"recipe": "cartoon-stamp", "gain": 1, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "One weighted impact when a black stamp lands, a block is crossed out or a layer drops."},
+    "swap": {"recipe": "highlight-swipe", "gain": 0.5, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A small pop for a link line, a cable, an arrow or the morph of shapes into one."},
+    "click": {"recipe": "ui-confirmation", "gain": 1, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "The follow button tap: a click and the Following chime."},
+    "count": {"recipe": "soft-pop", "gain": 0.5, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "The counter stopping with its check and the follow tally changing."},
+    "reveal": {"recipe": "soft-pop", "gain": 0.6, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A card landing or an item arrival the author marked as sounded; words, entrances and the narrator stay silent."},
+    "type": {"recipe": "typing-burst", "gain": 0.5, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A code line or a command being typed inside a card."}
+  }
+}

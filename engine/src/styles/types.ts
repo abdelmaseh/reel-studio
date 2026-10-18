@@ -4,8 +4,12 @@
 // stripping, before `npm ci` (studio setup imports them through preference-options.ts).
 // Keep explicit `.ts` import extensions, no JSX and no packages here.
 
-export const FONT_CHOICES = ['Cairo', 'Tajawal', 'Noto Naskh Arabic', 'Plex Display', 'Grid Sans'] as const;
+export const FONT_CHOICES = ['Cairo', 'Tajawal', 'Noto Naskh Arabic', 'Plex Display', 'Grid Sans', 'Noto Kufi Arabic', 'Readex Pro', 'El Messiri'] as const;
 export type PreferredFont = (typeof FONT_CHOICES)[number];
+
+// How digits are drawn on screen. A missing preference is the third state, "as it is today", and is not listed here.
+export const DIGIT_CHOICES = ['latin', 'arabic-indic'] as const;
+export type DigitChoice = (typeof DIGIT_CHOICES)[number];
 
 export const CAPTION_PRESENTATION = ['pill', 'minimal', 'ink-strip'] as const;
 export type CaptionPresentation = (typeof CAPTION_PRESENTATION)[number];

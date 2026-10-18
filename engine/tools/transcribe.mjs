@@ -1,14 +1,15 @@
 import '../../scripts/lib/project-tmp.mjs';
 import { parseArgs } from '../../scripts/lib/media.mjs';
 import { transcribeMedia } from '../../scripts/lib/transcription-run.mjs';
+import { DEFAULT_CHUNK_MS, DEFAULT_OVERLAP_MS } from '../../scripts/lib/transcription.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 try {
   if (args.help) console.log(`Usage: node engine/tools/transcribe.mjs --media "Raw/my-video.mp4" [options]
   --lang ar --model medium       Multilingual speech recognition; never translation.
   --start 0 --duration 10        Optional source range in seconds. Timestamps stay source-absolute.
-  --chunk-seconds 14             Short chunks reduce long-form timing drift.
-  --overlap-seconds 2            Keep overlap context; review every seam.
+  --chunk-seconds ${DEFAULT_CHUNK_MS / 1000}             Length of each decoded piece, 2 to 30. Progress lines show the piece number and the time left.
+  --overlap-seconds ${DEFAULT_OVERLAP_MS / 1000}            Keep overlap context; review every seam.
   --threads 4 --backend cpu      Local CPU backend.
   --timing token|dtw             Token estimates by default; optional DTW can be expensive.
   --vad on|off                   Optional installed Silero VAD; default off.

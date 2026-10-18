@@ -1,6 +1,6 @@
 # Resumable rendering and revisions
 
-Use the ordinary editing, transcript, cut, privacy and delivery gates in `EDITING.md`. Preserve the original master and named media. Every revision writes a new output; review its real frames and audio before accepting it.
+Use the ordinary editing, transcript, cut, privacy and delivery gates in `EDITING.md`. Preserve the original master and named media. Every revision writes a new output; review its real frames and ask the creator to play its sound before accepting it. A second version of a delivered reel is a new project (`EDITING.md`, delivery).
 
 ## Render and resume
 
@@ -39,6 +39,17 @@ node scripts/render-audio.mjs --base Projects/example/master.mp4 --timeline Proj
 ```
 
 The command verifies unchanged video packets/timing, source integrity, frame count, stereo AAC, final loudness and encoding. Music and effects have separate gain controls. Check the balance on the resulting file as well as the approved preview. The QC sidecar records the revision.
+
+## Effects level
+
+The delivery mix places the effects stem so its peak sits a fixed distance under the voice peak (`--under`, default 7 dB). Start from 7 for sparse effects (a cue on real state changes only), 9 to 10 for dense effects or a stem that carries music, and add 2 whenever the creator says the effects are loud. Judge by the measured `sfxGainDb` in the mix report, not by the number alone: one loud cue lowers every other cue with it, so a single too-loud recipe is better quietened in the edit (`gain`) than by the whole stem. Pass it through the editor render or the mix directly:
+
+```text
+node scripts/editor.mjs render Projects/<slug>/edit.json --deliver --motion-plan Projects/<slug>/motion-plan.json --sfx-under 9
+node scripts/mix.mjs --video Projects/<slug>/renders/edit-delivery.vo.mp4 --sfx Projects/<slug>/prepared/sounds.wav --out Projects/<slug>/renders/edit-delivery.mp4 --under 9
+```
+
+Which effect, when and how loud: [SOUND.md](SOUND.md).
 
 ## Picture-range revision
 

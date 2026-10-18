@@ -5,6 +5,8 @@ import {useClock,EASE,clamp01} from '../core/motion';
 import {Footage} from '../core/plate';
 import {VectorLayer,DrawPath,rectPath,circlePath,calloutPath} from '../core/draw';
 import {fitToWidth} from '../core/type';
+import {displayDigits} from '../core/digits.ts';
+import {useDigits} from '../creative-kit/digits';
 import {FitText,type SceneTheme} from '../creative-kit/primitives';
 import {isRoundCard} from '../creative-kit/card-shape';
 import {useSceneTheme} from '../creative-kit/chapter-theme';
@@ -19,6 +21,15 @@ type Data<F extends LibraryScene['family']>=Extract<LibraryScene,{family:F}>['da
 const INK_LEFT=95;
 const INK_WIDTH=735;
 const isRound=(theme:SceneTheme)=>isRoundCard(theme);
+
+// AnimatedNumber is vendored and checksum-pinned, and it always draws Latin digits. For the Arabic-Indic choice a plain span
+// draws the same number through the shared digit mapping; every other case keeps the vendored component.
+const NumberText:React.FC<{from:number;to:number;progress:number;toFixed:number;postfix:string}>=(props)=>{
+  const digits=useDigits();
+  if(digits!=='arabic-indic')return <AnimatedNumber {...props}/>;
+  const value=props.from+(props.to-props.from)*clamp01(props.progress);
+  return <span style={{display:'inline-flex',alignItems:'center'}}><span>{displayDigits(`${value.toFixed(props.toFixed)}${props.postfix}`,digits)}</span></span>;
+};
 
 const Heading:React.FC<{theme:SceneTheme;kicker:string;title:string;frame:number;distance:number}>=({theme,kicker,title,frame,distance})=>
   <div style={{position:'absolute',left:INK_LEFT,top:286,width:865}}><FrameReveal frame={frame} duration={18} distance={distance}>
@@ -122,11 +133,12 @@ const Metric:React.FC<{data:Data<'data-story'>;theme:SceneTheme;frame:number;dis
   const item=data.items[0],local=frame-item.atFrame;
   const progress=EASE.land(clamp01(local/data.animateFrames));
   const precision=Number.isInteger(item.value)?0:2;
-  const fit=fitToWidth(`${item.value.toFixed(precision)}${data.suffix}`,{fontFamily:theme.display,fontWeight:700,fontSize:168},860,{min:45,max:168});
+  const digits=useDigits();
+  const fit=fitToWidth(displayDigits(`${item.value.toFixed(precision)}${data.suffix}`,digits),{fontFamily:digits==='arabic-indic'?theme.ar:theme.display,fontWeight:700,fontSize:168},860,{min:45,max:168});
   if(!fit.fits)throw new Error('Authored metric does not fit its safe display width.');
   return <>
     <div style={{position:'absolute',left:INK_LEFT,top:525,width:860}}><FrameReveal frame={local} duration={data.animateFrames} distance={distance}>
-      <div style={{height:210,color:theme.accentInk??theme.accent,...fit.style,lineHeight:1.2,fontVariantNumeric:'tabular-nums'}}><AnimatedNumber from={0} to={item.value} progress={progress} toFixed={precision} postfix={data.suffix}/></div>
+      <div style={{height:210,color:theme.accentInk??theme.accent,...fit.style,lineHeight:1.2,fontVariantNumeric:'tabular-nums'}}><NumberText from={0} to={item.value} progress={progress} toFixed={precision} postfix={data.suffix}/></div>
       <DrawProgress progress={progress} color={theme.accentInk??theme.accent} width={INK_WIDTH} height={10}/>
     </FrameReveal></div>
     <div style={{position:'absolute',left:INK_LEFT,top:770,width:INK_WIDTH}}>
@@ -140,6 +152,7 @@ const Metric:React.FC<{data:Data<'data-story'>;theme:SceneTheme;frame:number;dis
 const DataStory:React.FC<{scene:Extract<LibraryScene,{family:'data-story'}>;theme:SceneTheme;seam:number}>=({scene,theme,seam})=>{
   const {frame}=useClock();
   const {data}=scene,takeover=scene.layout==='takeover',distance=scene.motion==='quiet'?10:28;
+  const digits=useDigits();
   const maximum=Math.max(1,...data.items.map(item=>item.value));
   const rowHeight=Math.min(164,660/data.items.length);
   return <><CanvasFill background={theme.background} style={takeover?undefined:{height:seam,bottom:'auto'}}/>
@@ -148,11 +161,11 @@ const DataStory:React.FC<{scene:Extract<LibraryScene,{family:'data-story'}>;them
       {data.items.map((item,i)=>{
         const local=frame-item.atFrame,progress=EASE.land(clamp01(local/data.animateFrames));
         const precision=Number.isInteger(item.value)?0:2;
-        const fit=fitToWidth(`${item.value.toFixed(precision)}${data.suffix}`,{fontFamily:theme.display,fontWeight:700,fontSize:40},245,{min:18,max:40});
+        const fit=fitToWidth(displayDigits(`${item.value.toFixed(precision)}${data.suffix}`,digits),{fontFamily:digits==='arabic-indic'?theme.ar:theme.display,fontWeight:700,fontSize:40},245,{min:18,max:40});
         if(!fit.fits)throw new Error('Authored chart value does not fit its safe label width.');
         return <div key={i} style={{position:'absolute',left:INK_LEFT,top:540+i*rowHeight,width:INK_WIDTH}}><FrameReveal frame={local} duration={Math.min(18,data.animateFrames)} distance={distance}>
           <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',height:66,gap:22}}>
-            <div style={{width:245,height:58,...fit.style,lineHeight:1.3,color:theme.accentInk??theme.accent,fontVariantNumeric:'tabular-nums'}}><AnimatedNumber from={0} to={item.value} progress={progress} toFixed={precision} postfix={data.suffix}/></div>
+            <div style={{width:245,height:58,...fit.style,lineHeight:1.3,color:theme.accentInk??theme.accent,fontVariantNumeric:'tabular-nums'}}><NumberText from={0} to={item.value} progress={progress} toFixed={precision} postfix={data.suffix}/></div>
             <FitText text={item.label} theme={theme} width={465} height={64} size={36} min={20} lines={2} role="title" align="right"/>
           </div>
           <div style={{position:'relative',height:23,marginTop:12,background:theme.card,border:`1px solid ${theme.border}`,borderRadius:isRound(theme)?12:0,overflow:'hidden'}}>

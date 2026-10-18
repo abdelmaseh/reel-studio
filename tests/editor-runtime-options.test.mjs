@@ -15,6 +15,8 @@ test('normal editor exports forward resumable-render controls and reviewed black
     assert.equal(command.args[command.args.indexOf(flag)+1],value);
   }
   assert.equal(command.args.includes('--preview'),true);
+  const under=editorRenderCommand(manifest,prepared,{sfxUnder:9});
+  assert.equal(under.args[under.args.indexOf('--sfx-under')+1],'9');
   assert.equal(command.output,'Projects/command-test/renders/edit-preview.mp4');
 });
 

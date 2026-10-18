@@ -15,7 +15,7 @@ Reel Studio's own code is released under the MIT License (see `LICENSE`). The to
 
 ## Fonts
 
-Downloaded from Google Fonts under the SIL Open Font License 1.1: Cairo, IBM Plex Mono, IBM Plex Sans Arabic, Inter, Noto Naskh Arabic, Source Serif 4, Tajawal.
+Downloaded from Google Fonts under the SIL Open Font License 1.1: Cairo, El Messiri, IBM Plex Mono, IBM Plex Sans Arabic, Inter, Noto Kufi Arabic, Noto Naskh Arabic, Readex Pro, Source Serif 4, Tajawal.
 
 ## Libraries and tools used by the engine
 

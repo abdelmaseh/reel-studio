@@ -4,6 +4,7 @@ import type { PanelProps } from "../panels.ts";
 import * as ops from "../ops/index.ts";
 import { GRAPHICS_ENTRANCE_KINDS, TRANSITION_DIRS, TRANSITION_KINDS, type TransitionDir, type TransitionKind } from "../../prepared-edit/graphics-transitions.ts";
 import { formatTimecode } from "../time.ts";
+import { PREVIEW_SFX_TEXT } from "../shell/preview-sounds.ts";
 import type { Selection } from "../types.ts";
 import { Badge, Empty, NoticeBar, NumInput, Section, hueOf, memoWithoutPlayhead, useNotice, usePlayheadGetter, useRunner } from "./kit.tsx";
 
@@ -64,7 +65,7 @@ const EffectsPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selecti
             }}>+ عند الـ playhead</button>
           </span>
         }>
-        {manifest.sounds.length === 0 ? <Empty>مفيش أصوات. اختار صوت من فوق واضغط «+ عند الـ playhead». الأصوات بتتسمع في التصدير النهائي مش في الـ preview.</Empty> : null}
+        {manifest.sounds.length === 0 ? <Empty>مفيش أصوات. اختار صوت من فوق واضغط «+ عند الـ playhead». {PREVIEW_SFX_TEXT.panelHint}</Empty> : null}
         {manifest.sounds.map((s, i) => (
           <div key={i} className={`fx-row${on(selection, "sound", i) ? " on" : ""}`} dir="ltr">
             <button type="button" className="fx-when" title="روح للحظة دي" onClick={() => go("sound", i, s.atFrame)}>{formatTimecode(s.atFrame, fps)}</button>

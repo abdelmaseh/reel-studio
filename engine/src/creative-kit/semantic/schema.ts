@@ -2,7 +2,7 @@ import {z} from 'zod';
 import {publicAssetSchema} from '../kinetic/schema.ts';
 import {CATALOG,catalogSchema,catalogDemo,getCatalogEntry} from '../../motion-concepts/catalog.ts';
 import {minFramesAtFps} from '../../motion-concepts/timeline.ts';
-import type {ConceptId} from '../../motion-concepts/types.ts';
+import type {MotionConceptData} from '../../motion-concepts/types.ts';
 
 const copy=(max:number)=>z.string().min(1).max(max).regex(/\S/,'Text cannot be blank');
 const frame=z.number().int().min(0).max(4320000);
@@ -12,7 +12,7 @@ const sourceIndex=z.number().int().min(0).max(19999);
 const evidenceImage=z.object({src:publicAssetSchema,width:z.number().int().min(1).max(16384),height:z.number().int().min(1).max(16384),label:copy(32)}).strict();
 // Use each original concept schema. The discriminated union also supplies editable nested forms.
 const conceptVariants=CATALOG.map(concept=>z.object({concept:z.literal(concept.id),config:catalogSchema(concept.id)}).strict());
-export const motionConceptDataSchema:z.ZodType<{concept:ConceptId;config:Record<string,unknown>}>=z.discriminatedUnion('concept',conceptVariants as any);
+export const motionConceptDataSchema:z.ZodType<MotionConceptData>=z.discriminatedUnion('concept',conceptVariants as any);
 
 // Opt-in only: the creator supplies a finished transparent PNG; the runtime never masks a subject.
 const magazineCoverSchema=z.object({

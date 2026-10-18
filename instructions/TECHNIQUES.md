@@ -5,7 +5,7 @@ Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a su
 - **Authored graphics** (`scripts/editor.mjs graphics`): a validated source-free specification creates a generated silent base and a normal editable manifest. No fabricated transcript; see `GRAPHICS.md`.
 - **Project-authored scenes** (`engine/src/project-scenes/`): project-local React visuals and declared editable fields use the same preview/render registry and dependency identity. See `PROJECT-SCENES.md`.
 - **Recorded-performance controls**: reviewed word/audio camera proposals, supported presenter PiP and optional post-review forced alignment. See `PERFORMANCE.md`; alignment timing remains a draft for listening review.
-- **Motion concepts** (`engine/src/motion-concepts/`): all fifteen are normal takeover `motion-concept` scenes with their existing typed config and duration floors.
+- **Motion concepts** (`engine/src/motion-concepts/`): every concept is a normal takeover `motion-concept` scene with their existing typed config and duration floors.
 - **Recorded kinetic text and evidence comparison** (`engine/src/creative-kit/semantic/`): literal recorded word indices for emphasis; supplied image assets for before/after wipes.
 
 - **Semantic scenes** (`engine/src/creative-kit/semantic/`): token lens, shared-scale meter, ticket offer, comment stack, chapter quote and route stops with local images. Authored reveals follow reviewed speech. Optional magazine covers use a supplied verified transparent PNG; no automatic masking.
@@ -22,10 +22,10 @@ Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a su
 - **Endings** (`scripts/lib/endings.mjs`): the profile's CTA, follow card and recorded sign-off, per video, in a fixed order.
 - **Source intake** (`scripts/intake.mjs`): HDR/HLG to BT.709 SDR, variable to constant frame rate, real motion rate by mpdecimate, delivery at 30 fps or more.
 - **Privacy blur** (`scripts/redact.mjs`): blur or pixelate confirmed private regions of a screen recording into a new plate before anything previews it. The assistant proposes the regions from stills; the creator confirms them.
-- **Cuts** (`scripts/auto-cut.mjs`): proposed silence, retake and filler cuts from reviewed words and audio; nothing at or after the recorded sign-off is cut. Proposals are reviewed, never applied blindly; approved `segments` go into the brief.
+- **Cuts** (`scripts/auto-cut.mjs`): silence cuts are applied automatically (`silenceSegments`, no word removed); retake and filler cuts are proposed and applied only after the creator approves them (`--from ... --approve`); nothing at or after the recorded sign-off is cut.
 - **Sound** (`scripts/sfx.mjs`): synthesised, licence-clean effects placed on scene cues; mixed under the voice at render.
 - **Voice clean-up** (`scripts/mix.mjs`): `node scripts/editor.mjs render ... --voice clean` (or `denoise`) cleans the dialogue inside the final mix.
-- **Captions** (`scripts/export-captions.mjs`): reviewed word timing to SRT/ASS.
+- **Subtitles file**: every prepare writes `Projects/<slug>/prepared/captions.srt` from the reviewed words on the edited timeline; delivery copies it to `Outputs/<slug>/<slug>.srt`.
 - **Face check** (`scripts/face-check.mjs`): MediaPipe BlazeFace short-range and full-range models, run locally; FAIL moves the video and checks again; frames without a face need the creator's review.
 - **Delivery checks** (`scripts/render.mjs --deliver`, `scripts/motion-plan.mjs`): safe zones, presenter motion, face check, plate cadence and the Instagram encode contract.
 - **Publish pack** (`scripts/caption-check.mjs`, `scripts/publish-pack.mjs`): TikTok and Instagram post descriptions checked against the profile, the video's keyword and the spoken words, so they tease the video instead of retelling it. How to write them: the `social-captions` skill.

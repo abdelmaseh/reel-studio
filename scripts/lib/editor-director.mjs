@@ -15,27 +15,38 @@ import {editManifestSchema, editSceneSchema} from '../../engine/src/prepared-edi
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {ROOT, atomicJson, checkedPath, ensureOutput, readJson, relativePath, slug, object, finite, digest, fileSnapshot, withFileLock} from './job-paths.mjs';
 import {inspectEditSource, importEditCaptions, loadEditProject, prepareEditProject} from './edit-project.mjs';
+import {attachPreparedMouth} from './mouth-table.mjs';
+import {CARTOON_FAMILIES, CARTOON_SOURCE_KIND} from '../../engine/src/styles/cartoon/scenes/math.ts';
+// A cartoon or a screen-recording source has no presenter on screen: the manifest says presenter false and delivery exempts the motion check.
+const SOURCE_KINDS=['presenter','screen',CARTOON_SOURCE_KIND];
+const noPresenter=kind=>kind==='screen' || kind===CARTOON_SOURCE_KIND;
 import {soundRecipe} from './job-sound.mjs';
 import {validateMotionPlan} from './motion-plan.mjs';
 import {SPEC} from './ig.mjs';
 import {spawn} from 'node:child_process';
 import {normalizeCreatorProfile,validateEditorSource} from './branding.mjs';
-import {endingIssues,resolveEnding} from './endings.mjs';
+import {endingIssues,resolveEnding,signoffCoverageIssues} from './endings.mjs';
 import {normalizeBrand} from './branding.mjs';
 import {normalizePreferences} from './branding.mjs';
 import {resolvePreferences, WRITING_GUIDES} from '../../engine/src/core/preference-options.ts';
 import {applyBrandToScenes} from '../../engine/src/core/brand.ts';
 import {editCues} from './scene-cues.mjs';
-import {loadStylePalette, planSfxEvents} from './sfx-events.mjs';
+import {SWEEP_RECIPES, loadStylePalette, planSfxEvents} from './sfx-events.mjs';
 import {loadProjectScenePack} from './project-scenes.mjs';
+import {captionOnlySincePlan,editHash,nonCaptionEditHash,readEditSnapshot,untouchedSincePlan} from './edit-safety.mjs';
+import {createManifestStore} from './review-editor-jobs.mjs';
 import {projectSceneDataSchema,projectScenesMetadataSchema} from '../../engine/src/project-scenes/schema.ts';
 
 const EMPHASIS_DEFAULTS = Object.freeze({holdSec: 1.5});
 import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} from '../../engine/src/core/camera.ts';
+import {SAMPLE_NUMBER, manifestSampleNumbers} from '../../engine/src/prepared-edit/sample-numbers.ts';
+import {sceneDemoFields} from '../../engine/src/review-editor/ops/demo.ts';
+import {isKitFamily} from '../../engine/src/review-editor/ops/templates.ts';
 
 export const EDITOR_PURPOSES = Object.freeze(['explainer','case-study','tutorial','comparison','opinion','story']);
 export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
-export const EDITOR_SOUND_MODES = Object.freeze(['recipes','auto']);
+export const EDITOR_SOUND_MODES = Object.freeze(['auto','recipes','none']);
+export const DEFAULT_SOUND_MODE='auto';
 const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...styleSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
   comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow','project-scene':'project-scene',
@@ -59,7 +70,7 @@ const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process
   'kinetic-text':'restrained-reveal','evidence-wipe':'paper-reveal','motion-concept':'restrained-reveal','message-board':'paper-reveal',
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
   statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent',
-  'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump'};
+  'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump',cartoon:'soft-pop','cartoon-ending':'cartoon-flip'};
 const text = (value,label,max=200) => {
   if(typeof value!=='string' || !value.trim() || value.length>max) throw new Error(`${label} must be nonblank text (maximum ${max} characters).`);
   return value;
@@ -80,7 +91,7 @@ async function preflightPreparation(manifestPath,manifest,additionalInputs=[]) {
   assertOutput(manifestPath,manifest.id);
   const inputs=[manifestPath,manifest.source.path,...additionalInputs];
   inputs.forEach(relativePath);
-  const outputs=['props.json','preparation.json','timeline.json','captions.srt','sounds.hits.json','sounds.wav']
+  const outputs=['props.json','preparation.json','timeline.json','captions.srt','sounds.hits.json','sounds.wav','mouth.json']
     .map(name=>`Projects/${manifest.id}/prepared/${name}`);
   outputs.forEach(output=>assertOutput(output,manifest.id,inputs));
   await Promise.all(outputs.map(output=>checkedPath(output,{write:true,project:manifest.id})));
@@ -91,7 +102,7 @@ export function listEditorStyles() {
 }
 
 export function validateEditorBrief(raw) {
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','digits','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','sweeps','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
   if(raw.projectScenePack!==undefined){relativePath(raw.projectScenePack);if(!raw.projectScenePack.startsWith(`Projects/${raw.id}/`))throw new Error('Project scene pack must belong to its project');}
@@ -101,6 +112,7 @@ export function validateEditorBrief(raw) {
   if(raw.style!==undefined) style(raw.style);
   if(raw.preferences!==undefined) normalizePreferences(raw.preferences);
   if(raw.fontFamily!==undefined) editManifestSchema.shape.fontFamily.parse(raw.fontFamily);
+  if(raw.digits!==undefined) editManifestSchema.shape.digits.parse(raw.digits);
   if(raw.writingStyle!==undefined) editManifestSchema.shape.writingStyle.parse(raw.writingStyle);
   if(raw.captionsGrouping!==undefined) editManifestSchema.shape.captions.shape.grouping.parse(raw.captionsGrouping);
   if(raw.captionsPresentation!==undefined) editManifestSchema.shape.captions.shape.presentation.parse(raw.captionsPresentation);
@@ -113,8 +125,9 @@ export function validateEditorBrief(raw) {
   if(raw.signoffFromSec!==undefined) finite(raw.signoffFromSec,0,600,'signoffFromSec');
   if(raw.endAtSec!==undefined) finite(raw.endAtSec,0.000001,600,'endAtSec');
   if(raw.sound!==undefined) choice(raw.sound,EDITOR_SOUND_MODES,'sound');
+  if(raw.sweeps!==undefined && typeof raw.sweeps!=='boolean') throw new Error('sweeps must be true or false; true places the earlier air sweeps only because the creator asked for them.');
   if(raw.watermark!==undefined && raw.watermark!==false) text(raw.watermark,'watermark',40);
-  if(raw.sourceKind!==undefined) choice(raw.sourceKind,['presenter','screen'],'sourceKind');
+  if(raw.sourceKind!==undefined) choice(raw.sourceKind,SOURCE_KINDS,'sourceKind');
   const brand=raw.brand===undefined||raw.brand===null?null:normalizeBrand(raw.brand);
   if(raw.emphasisFile!==undefined) {
     relativePath(raw.emphasisFile);
@@ -140,7 +153,9 @@ export function validateEditorBrief(raw) {
     if(beat.fromSec<last) throw new Error('Beats must be ordered without overlaps.');last=beat.toSec;
     choice(beat.intent,Object.keys(BEAT_FAMILIES),'beat intent');
     const family=BEAT_FAMILIES[beat.intent],schema=DATA_SCHEMAS[family];
-    const data=(typeof schema.strict==='function'?schema.strict():schema).parse(beat.data);
+    // A cartoon beat without its own character takes the narrator the creator saved in the profile (else the schema's generic default).
+    const authored=CARTOON_FAMILIES.includes(family) && beat.data?.character===undefined && raw.preferences?.character?.mode==='fixed'?{...beat.data,character:raw.preferences.character.value}:beat.data;
+    const data=(typeof schema.strict==='function'?schema.strict():schema).parse(authored);
     editSceneSchema.parse({id:beat.id,family,fromFrame:0,durationInFrames:4320000,
       layout:beat.layout??defaultLayout(family),motion:beat.motion??'land',data});
     return {...beat,data};
@@ -183,7 +198,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     if(owner!==undefined && owner!==selection.style) throw new Error(`Beat ${beat.id} uses ${beat.intent}, a scene that only exists in the ${owner} style, but this edit resolves to ${selection.style}. Pin style "${owner}" in the brief or in the saved style preference, or choose another beat intent.`);
   }
   const defaults=brief.preferences?resolvePreferences(brief.preferences,{purpose:brief.purpose,tone:brief.tone,style:selection.style}):{};
-  const preferences={...defaults,...Object.fromEntries(['fontFamily','writingStyle','captionsGrouping','captionsPresentation'].filter(key=>brief[key]!==undefined).map(key=>[key,brief[key]]))};
+  const preferences={...defaults,...Object.fromEntries(['fontFamily','writingStyle','captionsGrouping','captionsPresentation','digits'].filter(key=>brief[key]!==undefined).map(key=>[key,brief[key]]))};
   if(source.path!==brief.source) throw new Error('Inspected source path disagrees with the named brief source.');
   const duration=source.totalFrames/source.fps;
   if(brief.endAtSec!==undefined && brief.endAtSec>duration+1e-7) throw new Error('endAtSec exceeds the inspected source duration.');
@@ -220,9 +235,16 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
       motion:beat.motion??(brief.tone==='calm'?'quiet':brief.tone==='energetic'?'stagger':selection.profile.grammar.motion),data});
   });
   const glideNotices=watermarked?[`Watermark "${watermark}" was added to ${watermarked} Grid Glide scene(s) that did not set one. Set "watermark": false in the brief to leave it out.`]:[];
-  // The style that owns the glide ending scenes draws its own comment and follow cards; the shared ones show fixed English header lines there.
+  // The style that owns the glide ending scenes draws its own comment and follow cards; the shared ones draw their header lines in the shared card style there.
   if(selection.style===ownSceneStyle('glide-comment') && scenes.some(scene=>scene.family==='comment' || scene.family==='follow')) {
-    glideNotices.push('Grid Glide has its own ending scenes: use glide-comment and glide-follow; the shared comment and follow draw fixed English header lines.');
+    glideNotices.push('Grid Glide has its own ending scenes: use glide-comment and glide-follow; the shared comment and follow draw their header lines in the shared card style. Author glide-follow pill.label in Arabic for Arabic copy.');
+  }
+  if(brief.sourceKind===CARTOON_SOURCE_KIND){
+    // The recorded picture is never shown: cartoon scenes only, end to end, without gaps.
+    if(!scenes.every(scene=>CARTOON_FAMILIES.includes(scene.family))) throw new Error('A cartoon source allows only cartoon scenes (cartoon, cartoon-ending); other families would show the recorded picture.');
+    let cursor=0;
+    for(const scene of scenes){ if(scene.fromFrame!==cursor) break; cursor=scene.fromFrame+scene.durationInFrames; }
+    if(cursor!==editFrames) throw new Error('A cartoon source shows no recorded picture: cartoon scenes must cover the complete timeline without gaps.');
   }
   const ending=resolveEnding({creator:brief.creator,words,signoffFromSec:brief.signoffFromSec});
   const signoffFromFrame=ending.signoffFromSec===null?undefined:editFrame(ending.signoffFromSec,'start');
@@ -238,6 +260,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
   const manifest=editManifestSchema.parse({version:1,id:brief.id,purpose:delivery?'delivery':'test',style:selection.style,creator:ending.creator,...(branded.brand?{brand:branded.brand}:{}),source,
     ...(brief.projectScenes?{projectScenes:brief.projectScenes}:{}),
     ...(preferences.fontFamily===undefined?{}:{fontFamily:preferences.fontFamily}),
+    ...(preferences.digits===undefined?{}:{digits:preferences.digits}),
     ...(preferences.writingStyle===undefined?{}:{writingStyle:preferences.writingStyle}),
     segments,captions:{status:brief.captionsReviewedBy?'reviewed':'draft',
       ...(brief.captionsVisible===undefined?{}:{visible:brief.captionsVisible}),
@@ -245,7 +268,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
       ...(preferences.captionsPresentation===undefined?{}:{presentation:preferences.captionsPresentation}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
       ...(brief.captionsReviewedBy?{reviewer:brief.captionsReviewedBy}:{}),words},scenes:branded.scenes,sounds:[],camera,
-    ...(signoffFromFrame===undefined?{}:{signoffFromFrame}),...(brief.sourceKind==='screen'?{presenter:false}:{}),
+    ...(signoffFromFrame===undefined?{}:{signoffFromFrame}),...(noPresenter(brief.sourceKind)?{presenter:false}:{}),
     ...(brief.footage===undefined?{}:{footage:brief.footage}),...(brief.transitions===undefined?{}:{transitions:brief.transitions})});
   if(delivery) assertDeliveryReady(manifest);
   const decision={version:1,method:selection.method,contentPurpose:brief.purpose,tone:brief.tone,selection,
@@ -273,10 +296,27 @@ export function assertDeliveryReady(manifest) {
   if(!manifest.scenes?.length) throw new Error('Delivery requires authored scenes.');
   const m=editManifestSchema.parse(manifest),compiled=compileEdit(m),signoff=m.signoffFromFrame;
   if(compiled.issues.length) throw new Error('Delivery caption cuts need review before rendering.');
-  if(m.scenes.some(scene=>scene.fromFrame+scene.durationInFrames>signoff)) throw new Error('All visual scenes must finish before the recorded signoff.');
+  const coverage=signoffCoverageIssues(m);
+  if(coverage.length) throw new Error(`Delivery sign-off: ${coverage.join(' ')}`);
   const endingProblems=endingIssues(m);
   if(endingProblems.length) throw new Error(`Delivery ending: ${endingProblems.join(' ')}`);
+  assertNoSampleNumbers(m);
+  assertNoSampleText(m);
   return {ok:true,captionStatus:m.captions.status,reviewer:m.captions.reviewer,signoffFromFrame:signoff};
+}
+
+// A kit number template carries the figure 987654 until the creator writes a real one; that figure must never reach a delivered video.
+export function assertNoSampleNumbers(manifest) {
+  const hit=manifestSampleNumbers(manifest)[0];
+  if(hit) throw new Error(`Delivery sample number: scene ${hit.sceneId} still shows the template figure ${SAMPLE_NUMBER} at data.${hit.path}. Write the real figure with its source. If the real figure is exactly ${SAMPLE_NUMBER}, show it as two figures (for example 987 thousand and 654) or write it inside the title text.`);
+}
+
+// A kit template carries placeholder words (such as "write the title" in Arabic) until the creator writes the real ones; they must never reach a delivered video.
+// The editor flags the same fields (engine/src/review-editor/validate.ts) through the same detection, sceneDemoFields.
+export function assertNoSampleText(manifest) {
+  // Kit templates and cartoon templates carry placeholder copy that must never reach delivery unchanged.
+  const hits=manifest.scenes.filter(scene=>isKitFamily(scene.family) || CARTOON_FAMILIES.includes(scene.family)).map(scene=>({id:scene.id,fields:sceneDemoFields(scene)})).filter(hit=>hit.fields.length);
+  if(hits.length) throw new Error(`Delivery sample text: ${hits.map(hit=>`scene ${hit.id} still holds the template words at ${hit.fields.map(field=>`data.${field}`).join(', ')}`).join('; ')}. Write the real words in those fields before delivery.`);
 }
 
 
@@ -383,6 +423,12 @@ export function emphasisCameraKeys(proposals,{fps,limitFrame,anchored=false,segm
     : toManifestKeys(keys).map(k=>({atFrame:k.atFrame,scale:k.scale,focusX:k.focusX,focusY:k.focusY,ease:'bezierCam'}));
 }
 
+const soundRecordLine=sound=>{
+  const sweeps=sound.sweeps?"; sweeps on the creator's explicit request":'';
+  if(sound.mode==='none') return 'Sound: none (the creator asked for no effects).';
+  if(sound.mode==='recipes') return `Sound placement: one stock cue per scene start (recipes mode); ${sound.placed} placed${sweeps}.`;
+  return `Sound placement: automatic scene cues through the ${sound.style} palette; ${sound.placed} placed${sweeps}.`;
+};
 const decisionMarkdown=record=>[
   '# Editor decision record','',`Project: ${record.id}`,`Method: ${record.method}`,'',
   `Selected style: ${record.selection.style}`,`Content purpose: ${record.contentPurpose}; tone: ${record.tone}.`,'',
@@ -392,7 +438,7 @@ const decisionMarkdown=record=>[
   `Retained timeline: ${record.timeline.durationInFrames} frames; explicit endAtSec: ${record.timeline.endAtSec??'full source'}.`,
   `Transcript: ${record.transcript.path}; ${record.transcript.words} words; ${record.transcript.status}; reviewer: ${record.transcript.reviewer??'none'}.`,'',
   `Explicit footage geometry: ${record.authoredOverrides.footage?'preserved':'not supplied'}; authored transitions: ${record.authoredOverrides.transitions.length}.`,'',
-  ...(record.sound?[`Sound placement: automatic scene cues through the ${record.sound.style} palette; ${record.sound.placed} placed.`,'']:[]),
+  ...(record.sound?[soundRecordLine(record.sound),'']:[]),
   ...(record.emphasis?[`Emphasis camera: ${record.emphasis.keys} keys from ${record.emphasis.proposals} approved proposals in ${record.emphasis.file} (approved by ${record.emphasis.approvedBy}).`,'']:[]),
   '| Beat | Family | Start frame | Frames | Layout | Motion | Sound |','| --- | --- | ---: | ---: | --- | --- | --- |',
   ...record.beatDecisions.map(beat=>`| ${beat.id} | ${beat.family} | ${beat.fromFrame} | ${beat.durationInFrames} | ${beat.layout} | ${beat.motion} | ${beat.soundRecipe??'none'} |`),'',
@@ -400,18 +446,57 @@ const decisionMarkdown=record=>[
   'This record describes authored data and deterministic selection. It is not proof of a passed render, safe-zone, audio or motion check.','',
 ].join('\n');
 
-export async function planEditorBrief(briefPath,{out,delivery=false,replace=false}={}) {
+// Places the brief's sound: `auto` (the default) plans the style palette on the scenes' cues, `none` leaves the edit silent on
+// purpose and `recipes` keeps the old one-stock-cue-per-scene behaviour. `sweeps: true` swaps the landing recipes for their sweep
+// twins in both placing modes. Loaders are injectable for tests.
+export async function placeBriefSounds(plan,brief,{totalFrames,loadPalette=loadStylePalette,loadRecipe=soundRecipe}={}) {
+  const mode=brief.sound??DEFAULT_SOUND_MODE,sweeps=brief.sweeps===true;
+  if(mode==='none') {
+    plan.decision.sound={mode:'none',placed:0};
+    for(const beat of plan.decision.beatDecisions) beat.soundOmitted='Sound mode none: the creator asked for no effects.';
+    return plan;
+  }
+  if(mode==='auto') {
+    const palette=await loadPalette(plan.manifest.style,{sweeps});
+    const opening=await openingRecipe(plan.manifest,palette,loadRecipe);
+    const auto=autoSoundPlan(plan.manifest,palette,{opening});
+    plan.manifest.sounds.push(...auto.sounds);
+    plan.decision.sound={mode:'auto',sweeps,style:auto.style,maxPerSec:auto.maxPerSec,placed:auto.sounds.length,decisions:auto.decisions,droppedForSignoff:auto.dropped,...(auto.opening?{opening:auto.opening}:{})};
+    for(const beat of plan.decision.beatDecisions) {
+      const placed=auto.sounds.filter(s=>s.atFrame>=beat.fromFrame && s.atFrame<beat.fromFrame+beat.durationInFrames).map(s=>s.recipe);
+      if(placed.length) beat.soundRecipe=placed.join(' + ');
+      else beat.soundOmitted='No palette cue was placed inside this beat.';
+    }
+    return plan;
+  }
+  let placed=0;
+  for(const [i,scene] of plan.manifest.scenes.entries()) {
+    const candidate=SOUND_FOR_FAMILY[scene.family];
+    if(!candidate){plan.decision.beatDecisions[i].soundOmitted='Custom scene sound is authored explicitly; no unrelated cue is assumed.';continue;}
+    const recipe=await loadRecipe(sweeps?SWEEP_RECIPES[candidate]??candidate:candidate);
+    const soundEnd=scene.fromFrame+Math.ceil(recipe.duration*plan.manifest.source.fps);
+    if(soundEnd<=Math.min(scene.fromFrame+scene.durationInFrames,plan.manifest.signoffFromFrame??totalFrames)) {
+      plan.manifest.sounds.push({atFrame:scene.fromFrame,recipe:recipe.id,gain:brief.tone==='calm'?0.4:0.6});
+      plan.decision.beatDecisions[i].soundRecipe=recipe.id;placed++;
+    } else plan.decision.beatDecisions[i].soundOmitted='Recipe would cross the beat or recorded signoff.';
+  }
+  plan.decision.sound={mode:'recipes',sweeps,placed};
+  return plan;
+}
+
+export async function planEditorBrief(briefPath,{out,delivery=false,replace=false,discardEdits=false,keepCaptions=false}={}) {
+  if((discardEdits||keepCaptions) && !replace) throw new Error('--discard-edits and --keep-captions only work together with --replace.');
   const raw=await readJson(briefPath);
   if(raw.projectScenePack)raw.projectScenes=await loadProjectScenePack(raw.projectScenePack,{id:raw.id});
   const brief=validateEditorBrief(raw);
   const manifestPath=out??`Projects/${brief.id}/edit.json`;
-  if(replace && brief.captionsVisible===undefined){
-    const existing=await readJson(manifestPath,{optional:true});
-    if(typeof existing?.captions?.visible==='boolean')brief.captionsVisible=existing.captions.visible;
-  }
   const inputs=[briefPath,brief.source,brief.transcript,...(brief.emphasisFile===undefined?[]:[brief.emphasisFile])];
   assertOutput(manifestPath,brief.id,inputs);
   if(path.extname(manifestPath).toLowerCase()!=='.json') throw new Error('Edit manifest output must end in .json.');
+  const initialSnapshot=await readEditSnapshot(manifestPath);
+  if(replace && brief.captionsVisible===undefined && typeof initialSnapshot?.manifest?.captions?.visible==='boolean'){
+    brief.captionsVisible=initialSnapshot.manifest.captions.visible;
+  }
   const base=`Projects/${brief.id}/director/${digest(manifestPath).slice(0,12)}`;
   const outputs=[manifestPath,`${base}/import-edit.json`,`${base}/decision.json`,`${base}/decision.md`];
   outputs.forEach(output=>assertOutput(output,brief.id,inputs));
@@ -419,52 +504,54 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
   const before=await Promise.all([briefPath,brief.transcript,...(brief.emphasisFile===undefined?[]:[brief.emphasisFile])].map(p=>fileSnapshot(p)));
   const info=await inspectEditSource(brief.source);
   const emphasis=brief.emphasisFile===undefined?undefined:await readJson(brief.emphasisFile);
-  const plan=buildEditorPlan(brief,info.source,await readJson(brief.transcript),{delivery,emphasis});
+  // Kept captions are validated for delivery after merging the reviewed editor snapshot.
+  const plan=buildEditorPlan(brief,info.source,await readJson(brief.transcript),{delivery:delivery&&!keepCaptions,emphasis});
   const opts={project:brief.id};
   return withFileLock(`${base}/plan.lock`,opts,async()=>{
     if(!replace && await readJson(manifestPath,{optional:true})) throw new Error(`Edit output already exists: ${manifestPath}. Use --replace after reviewing the authored edits.`);
-    if(brief.sound==='auto') {
-      const palette=await loadStylePalette(plan.manifest.style);
-      const opening=await openingRecipe(plan.manifest,palette);
-      const auto=autoSoundPlan(plan.manifest,palette,{opening});
-      plan.manifest.sounds.push(...auto.sounds);
-      plan.decision.sound={mode:'auto',style:auto.style,maxPerSec:auto.maxPerSec,placed:auto.sounds.length,decisions:auto.decisions,droppedForSignoff:auto.dropped,...(auto.opening?{opening:auto.opening}:{})};
-      for(const beat of plan.decision.beatDecisions) {
-        const placed=auto.sounds.filter(s=>s.atFrame>=beat.fromFrame && s.atFrame<beat.fromFrame+beat.durationInFrames).map(s=>s.recipe);
-        if(placed.length) beat.soundRecipe=placed.join(' + ');
-        else beat.soundOmitted='No palette cue was placed inside this beat.';
-      }
-    } else for(const [i,scene] of plan.manifest.scenes.entries()) {
-      if(!SOUND_FOR_FAMILY[scene.family]){plan.decision.beatDecisions[i].soundOmitted='Custom scene sound is authored explicitly; no unrelated cue is assumed.';continue;}
-      const recipe=await soundRecipe(SOUND_FOR_FAMILY[scene.family]);
-      const soundEnd=scene.fromFrame+Math.ceil(recipe.duration*plan.manifest.source.fps);
-      if(soundEnd<=Math.min(scene.fromFrame+scene.durationInFrames,plan.manifest.signoffFromFrame??info.source.totalFrames)) {
-        plan.manifest.sounds.push({atFrame:scene.fromFrame,recipe:recipe.id,gain:brief.tone==='calm'?0.4:0.6});
-        plan.decision.beatDecisions[i].soundRecipe=recipe.id;
-      } else plan.decision.beatDecisions[i].soundOmitted='Recipe would cross the beat or recorded signoff.';
-    }
+    await placeBriefSounds(plan,brief,{totalFrames:info.source.totalFrames});
 
     const staging=`${base}/import-edit.json`;
-    await atomicJson(staging,{...plan.manifest,purpose:'test',captions:{status:'draft',words:[]}},opts);
+    // The staging copy only turns the transcript into captions. Cartoon scenes are word-anchored and cannot be checked before the
+    // words exist, so they stay out of it; the final manifest below is validated whole, with the imported words.
+    await atomicJson(staging,{...plan.manifest,purpose:'test',scenes:plan.manifest.scenes.filter(scene=>!CARTOON_FAMILIES.includes(scene.family)),captions:{status:'draft',words:[]}},opts);
     await importEditCaptions(staging,brief.transcript);
     const imported=await readJson(staging);
-    const manifest=editManifestSchema.parse({...plan.manifest,captions:{...imported.captions,
+    let manifest=editManifestSchema.parse({...plan.manifest,captions:{...imported.captions,
       ...(plan.manifest.captions.visible===undefined?{}:{visible:plan.manifest.captions.visible}),
       ...(plan.manifest.captions.grouping===undefined?{}:{grouping:plan.manifest.captions.grouping}),
       ...(plan.manifest.captions.presentation===undefined?{}:{presentation:plan.manifest.captions.presentation}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
       ...(brief.captionsReviewedBy?{status:'reviewed',reviewer:brief.captionsReviewedBy}:{})}});
-    if(delivery) assertDeliveryReady(manifest);
     const after=await Promise.all(before.map(snapshot=>fileSnapshot(snapshot.path)));
     if(digest(before)!==digest(after) || (await fileSnapshot(brief.source)).sha256!==info.source.sha256) throw new Error('Brief, transcript or source changed while planning; review the inputs before retrying.');
-    const record={...plan.decision,id:brief.id,manifest:manifestPath,manifestHash:digest(manifest),inputs:before};
+    let backup=null;
     await withFileLock(`Projects/${brief.id}/edit.lock`,opts,async()=>{
-      if(!replace && await readJson(manifestPath,{optional:true})) throw new Error(`Edit output already exists: ${manifestPath}.`);
-      await atomicJson(manifestPath,manifest,opts);
+      const current=await readEditSnapshot(manifestPath);
+      if((current?.revision??null)!==(initialSnapshot?.revision??null)) throw new Error(`${manifestPath} changed while planning; review the latest edit and retry. Nothing was replaced.`);
+      const existing=current?.manifest;
+      if(!replace && existing) throw new Error(`Edit output already exists: ${manifestPath}.`);
+      if(keepCaptions){
+        if(!Array.isArray(existing?.captions?.words) || !existing.captions.words.length) throw new Error(`--keep-captions needs caption words in ${manifestPath}.`);
+        if(existing.source?.sha256!==manifest.source.sha256) throw new Error('--keep-captions cannot transfer reviewed words to a different source.');
+        manifest=editManifestSchema.parse({...manifest,...(delivery?{purpose:'delivery'}:{}),captions:existing.captions});
+      }
+      if(delivery) assertDeliveryReady(manifest);
+      if(existing && editHash(existing)!==editHash(manifest)){
+        const previous=await readJson(`${base}/decision.json`,{optional:true}).catch(()=>null);
+        if(untouchedSincePlan(existing,previous)!==true){
+          if(!discardEdits && !(keepCaptions && captionOnlySincePlan(existing,previous))) throw new Error(`${manifestPath} has changes the last plan did not write (made in the editor or by hand); plan --replace would discard them. To deliver what was reviewed, run: node scripts/editor.mjs promote ${manifestPath} --reviewed-by "<name>". If only captions changed, add --keep-captions. Other edits, including framing, require --discard-edits after the creator agrees. A changed replacement is saved to History first.`);
+        }
+        const saved=await createManifestStore({manifestPath}).save({manifest,baseRevision:current.revision,label:'قبل إعادة التخطيط'});
+        backup=saved.backup;
+      } else if(!existing){
+        await atomicJson(manifestPath,manifest,opts);
+      }
     });
+    const record={...plan.decision,id:brief.id,manifest:manifestPath,manifestHash:digest(manifest),editHashVersion:2,editHash:editHash(manifest),nonCaptionHash:nonCaptionEditHash(manifest),inputs:before};
     await atomicJson(`${base}/decision.json`,record,opts);
     await fs.writeFile(await ensureOutput(`${base}/decision.md`,opts),decisionMarkdown(record),'utf8');
-    return {ok:true,id:brief.id,manifest:manifestPath,style:manifest.style,purpose:manifest.purpose,captionStatus:manifest.captions.status,
+    return {ok:true,id:brief.id,manifest:manifestPath,style:manifest.style,purpose:manifest.purpose,captionStatus:manifest.captions.status,backup,keptCaptions:keepCaptions,
       scenes:manifest.scenes.length,sounds:manifest.sounds.length,notices:plan.decision.notices,decisionJson:`${base}/decision.json`,decisionRecord:`${base}/decision.md`,
       next:'Review this authored plan, then run editor prepare or editor render. Rendering does not imply visual approval.'};
   });
@@ -474,7 +561,7 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
 
 
 
-export function editorRenderCommand(manifest,prepared,{delivery=false,review=false,out,frames,motionPlan,motionCrop,concurrency=4,noProxy=false,mediaEngine='offthread',png=false,crf,faceReviewedBy,voice='off',chunkFrames,chunkJobs,intentionalBlack}={}) {
+export function editorRenderCommand(manifest,prepared,{delivery=false,review=false,out,frames,motionPlan,motionCrop,concurrency=4,noProxy=false,mediaEngine='offthread',png=false,crf,faceReviewedBy,voice='off',sfxUnder,chunkFrames,chunkJobs,intentionalBlack}={}) {
   if(delivery && review) throw new Error('Choose one render mode.');
   if(delivery) assertDeliveryReady(manifest);
   if(motionPlan!==undefined && motionCrop!==undefined) throw new Error('Choose one motion mode: motionPlan or motionCrop.');
@@ -493,6 +580,7 @@ export function editorRenderCommand(manifest,prepared,{delivery=false,review=fal
   if(path.extname(output).toLowerCase()!=='.mp4') throw new Error('Editor render output must end in .mp4.');
   const args=['PreparedEdit','--out',output,'--props-file',prepared.propsFile,'--sfx',prepared.sfxFile,'--channel','organic','--concurrency',String(concurrency),'--media-engine',mediaEngine,...(choice(voice,['off','clean','denoise'],'voice')==='off'?[]:['--voice',voice])];
   if(manifest.contentMode==='graphics') args.push('--graphics-audio');
+  if(sfxUnder!==undefined){finite(sfxUnder,0,40,'sfxUnder');args.push('--sfx-under',String(sfxUnder));}
   if(chunkFrames!==undefined){
     if(!Number.isSafeInteger(chunkFrames)||chunkFrames<1)throw new Error('chunkFrames must be a positive integer.');
     args.push('--chunk-frames',String(chunkFrames));
@@ -574,7 +662,7 @@ export async function validateEditorInput(file,{delivery=false}={}) {
 export async function prepareEditorManifest(file,{noProxy=false,onProgress=()=>{}}={}) {
   const manifest=editManifestSchema.parse(await readJson(file));
   await preflightPreparation(file,manifest);
-  return prepareEditProject(file,{proxy:!noProxy,onProgress});
+  return attachPreparedMouth(await prepareEditProject(file,{proxy:!noProxy,onProgress}),{log:onProgress});
 }
 
 export async function renderEditorManifest(file,options={}) {
@@ -596,7 +684,7 @@ export async function renderEditorManifest(file,options={}) {
     validateMotionPlan(await readJson(options.motionPlan),{width:1080,height:1920,frames:compiled.durationInFrames,fps:manifest.source.fps});
   }
   if(options.delivery && manifest.source.fps<SPEC.video.fps.organicMin) throw new Error(`PreparedEdit delivery needs at least ${SPEC.video.fps.organicMin} fps; author an approved delivery-rate composition for lower-rate material.`);
-  const prepared=await prepareEditProject(file,{proxy:!options.delivery && !options.review && !options.noProxy,onProgress:options.onProgress});
+  const prepared=await attachPreparedMouth(await prepareEditProject(file,{proxy:!options.delivery && !options.review && !options.noProxy,onProgress:options.onProgress}),{log:options.onProgress});
   if(prepared.manifestHash!==digest(manifest)) throw new Error('Authored manifest changed during preparation. Review the edit before rendering.');
   const command=editorRenderCommand(manifest,prepared,options);
   const started=performance.now();

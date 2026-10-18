@@ -10,7 +10,7 @@ import {loadProjectScenePack,resolveProjectScenes} from './project-scenes.mjs';
 
 /** Approved graphic copy is authored data, never a fabricated speech transcript. */
 export function normalizeGraphicsSpec(raw,{delivery=false}={}) {
-  object(raw,['version','id','style','fps','durationInFrames','fontFamily','creator','reviewedBy','scenes','sounds','transitions','projectScenePack','projectScenes'],'graphics specification');
+  object(raw,['version','id','style','fps','durationInFrames','fontFamily','digits','creator','reviewedBy','scenes','sounds','sweeps','transitions','projectScenePack','projectScenes'],'graphics specification');
   if(raw.version!==1)throw new Error('Graphics specification version must be 1.');
   const id=slug(raw.id),fps=raw.fps??30;
   finite(fps,30,60,'graphics fps',{integer:true});
@@ -21,14 +21,18 @@ export function normalizeGraphicsSpec(raw,{delivery=false}={}) {
   if(raw.reviewedBy!==undefined&&(typeof raw.reviewedBy!=='string'||!raw.reviewedBy.trim()||raw.reviewedBy.length>200))throw new Error('reviewedBy must name the reviewer of the authored graphic copy.');
   const reviewed=raw.reviewedBy!==undefined;
   if(!reviewed)throw new Error('Graphics initialization requires reviewed authored copy and reviewedBy.');
+  if(raw.sounds!==undefined&&raw.sounds!=='auto'&&raw.sounds!=='none'&&!Array.isArray(raw.sounds))throw new Error('sounds must be "auto", "none" or a list of sound events.');
+  if(raw.sweeps!==undefined&&typeof raw.sweeps!=='boolean')throw new Error('sweeps must be true or false.');
+  if(raw.sweeps===true&&raw.sounds!=='auto')throw new Error('sweeps applies only beside "sounds": "auto": the palette then uses the earlier air sweeps because the creator asked for them.');
   const edit=editManifestSchema.parse({
     version:1,id,purpose:delivery?'delivery':'test',contentMode:'graphics',presenter:false,style:raw.style??'paper-collage',
     ...(raw.projectScenes?{projectScenes:raw.projectScenes}:{}),
     creator:raw.creator??{displayName:'Graphics',handle:null,ending:{cta:null,followCard:false,signOff:null}},
     ...(raw.fontFamily===undefined?{}:{fontFamily:raw.fontFamily}),
+    ...(raw.digits===undefined?{}:{digits:raw.digits}),
     source:{path:`Projects/${id}/graphics-source.mp4`,sha256:'0'.repeat(64),fps,width:1080,height:1920,totalFrames:frames},
     segments:[{fromFrame:0,toFrame:frames}],captions:{status:reviewed?'reviewed':'draft',...(reviewed?{reviewer:raw.reviewedBy.trim()}:{}),words:[]},
-    scenes:raw.scenes,sounds:raw.sounds??[],camera:[],...(raw.transitions===undefined?{}:{transitions:raw.transitions}),
+    scenes:raw.scenes,sounds:raw.sounds==='auto'||raw.sounds==='none'?[]:raw.sounds??[],camera:[],...(raw.transitions===undefined?{}:{transitions:raw.transitions}),
   });
   return edit;
 }
@@ -49,11 +53,18 @@ async function createJsonExclusive(relative,data,options) {
   }
 }
 
+/** "sounds": "auto" in a graphics specification places the style's own sound palette on the authored scenes, exactly as the director does for a recorded edit; "sweeps": true beside it uses the earlier air sweeps on the creator's explicit request. */
+async function planGraphicsSounds(edit,{sweeps=false}={}) {
+  const [{autoSoundPlan},{loadStylePalette}]=await Promise.all([import('./editor-director.mjs'),import('./sfx-events.mjs')]);
+  return autoSoundPlan(edit,await loadStylePalette(edit.style,{sweeps})).sounds;
+}
+
 /** Create only the explicit project; subsequent editing uses the ordinary manifest. */
 export async function initializeGraphicsProject(specFile,{check=false,delivery=false,onProgress=()=>{}}={}) {
   const raw=await readJson(specFile);
   if(raw.projectScenePack)raw.projectScenes=await loadProjectScenePack(raw.projectScenePack,{id:raw.id});
   const edit=normalizeGraphicsSpec(raw,{delivery});
+  if(raw.sounds==='auto'&&!check)edit.sounds=await planGraphicsSounds(edit,{sweeps:raw.sweeps===true});
   await resolveProjectScenes(edit);
   const summary={ok:true,id:edit.id,contentMode:'graphics',fps:edit.source.fps,durationInFrames:edit.source.totalFrames,copyStatus:edit.captions.status};
   if(check)return {...summary,stage:'schema-only'};

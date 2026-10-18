@@ -251,12 +251,12 @@ test('the largest legal ending stacks end above the action rail, and an overfull
 
 const CREATOR = {handle: HANDLE, ending: {cta: 'خطة', followCard: true, signOff: null}};
 const part = (family, data = {}, extra = {}) => ({id: family, family, fromFrame: 0, durationInFrames: 90, data, ...extra});
-const KEYWORD = {keyword: 'خطة'}, OWN_HANDLE = {handle: HANDLE};
+const KEYWORD = {keyword: 'خطة'}, OWN_HANDLE = {handle: HANDLE}, PROMPT = {prompt: 'اكتب {keyword} الآن'};
 const check = (scenes, creator = CREATOR, extra = {}) => endingIssues({creator, scenes, ...extra});
 const lonely = (cta, followCard) => ({handle: HANDLE, ending: {cta, followCard, signOff: null}});
 
 test('the ending checks accept the shared scenes, the Grid Glide scenes and the creator CTA, in any pairing', () => {
-  const click = part('creator-cta', {...KEYWORD, ...OWN_HANDLE, followFrame: 30, clickedFrame: 60});
+  const click = part('creator-cta', {...KEYWORD, ...OWN_HANDLE, ...PROMPT, followFrame: 30, clickedFrame: 60});
   assert.deepEqual(check([part('comment', KEYWORD), part('follow', OWN_HANDLE)]), []);
   assert.deepEqual(check([part('glide-comment', KEYWORD), part('glide-follow', OWN_HANDLE)]), []);
   assert.deepEqual(check([part('comment', KEYWORD), part('glide-follow', OWN_HANDLE)]), [], 'a shared CTA before a Grid Glide follow');
@@ -295,9 +295,11 @@ test('the ending checks refuse ending scenes the profile has switched off', () =
 });
 
 test('the ending checks keep the creator CTA click order and the sign-off rules', () => {
-  const click = (extra) => part('creator-cta', {...KEYWORD, ...OWN_HANDLE, followFrame: 30, clickedFrame: 60, ...extra});
+  const click = (extra) => part('creator-cta', {...KEYWORD, ...OWN_HANDLE, ...PROMPT, followFrame: 30, clickedFrame: 60, ...extra});
   assert.deepEqual(check([click({clickedFrame: 20})]), ['Creator CTA needs comment, follow and click in order.']);
   assert.deepEqual(check([click({clickedFrame: 90})]), ['Creator CTA needs comment, follow and click in order.']);
+  assert.deepEqual(check([click({prompt: 'اكتب خطة الآن'})]), [], 'a prompt that spells the keyword shows it');
+  assert.deepEqual(check([click({prompt: 'اكتب طلبك'})]), ['The creator CTA scene «creator-cta» never shows the comment keyword «خطة»: write {keyword} in its prompt, or the keyword itself.']);
   const signed = {handle: HANDLE, ending: {cta: 'خطة', followCard: true, signOff: 'Thank you'}};
   const ending = [part('glide-comment', KEYWORD, {fromFrame: 0}), part('glide-follow', OWN_HANDLE, {fromFrame: 90})];
   assert.deepEqual(check(ending, signed), ['The recorded sign-off is on, so the manifest needs signoffFromFrame.']);
@@ -372,7 +374,8 @@ test('a plan in Grid Glide that uses the shared comment or follow gets a notice 
   const shared = buildEditorPlan(brief([hookBeat, sharedComment, sharedFollow]), source, []);
   assert.equal(notice(shared).length, 1, shared.decision.notices.join('|'));
   assert.match(notice(shared)[0], /Grid Glide has its own ending scenes: use glide-comment and glide-follow/);
-  assert.match(notice(shared)[0], /fixed English header lines/);
+  assert.match(notice(shared)[0], /draw their header lines in the shared card style/);
+  assert.match(notice(shared)[0], /Author glide-follow pill\.label in Arabic for Arabic copy/);
   assert.equal(editManifestSchema.safeParse(shared.manifest).success, true, 'the notice does not block the plan');
   assert.equal(notice(buildEditorPlan(brief([hookBeat, sharedComment]), source, [])).length, 1, 'one is enough to notice');
   assert.equal(notice(buildEditorPlan(brief([hookBeat, sharedFollow]), source, [])).length, 1);

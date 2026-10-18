@@ -23,7 +23,7 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 - **Decision:** Choose it for a quote, interview chapter or attributed viewpoint. Identify whose words are being shown and which context makes them accurate.
 - **Composition/material:** Use a navy editorial page, gold rules, clear quote text and speaker identification. Keep the chapter marker secondary. An optional supplied transparent cover subject uses the exact asset contract in the Style-owned scenes section below.
 - **Timing/action:** Establish the chapter/speaker, reveal the exact quote at its real cue or authored reading moment, then hold attribution and words together. Give the voice room when the face carries the statement.
-- **Transition/sound:** Use a restrained chapter/rule change or a deliberate portrait-to-quote relationship. Avoid effects that obscure a speaker's face or imply an unspoken emphasis.
+- **Transition/sound:** Use a restrained chapter/rule change or a deliberate portrait-to-quote relationship. Avoid effects that obscure a speaker's face or imply an unspoken emphasis. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** `chapter-quote` carries title, quote, speaker and role; check all against the source. Review cover overlap and the quote transition if enabled. A shorter paraphrase belongs in a reviewed explanatory label, not quotation marks.
 
 ## Style-owned scenes

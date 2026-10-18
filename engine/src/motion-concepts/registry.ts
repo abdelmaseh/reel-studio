@@ -17,6 +17,8 @@ import { concept as systemLayers } from "./system-layers/index";
 import { concept as glassLens } from "./glass-lens/index";
 import { concept as automationFlow } from "./automation-flow/index";
 import { concept as chaosToBrand } from "./chaos-to-brand/index";
+import { concept as conditionalBranching } from './conditional-branching/index';
+import { concept as identityFiltering } from './identity-filtering/index';
 
 export { CONCEPT_IDS };
 
@@ -44,6 +46,8 @@ const RECORDS: readonly AnyConcept[] = [
   glassLens,
   automationFlow,
   chaosToBrand,
+  conditionalBranching,
+  identityFiltering,
 ];
 
 

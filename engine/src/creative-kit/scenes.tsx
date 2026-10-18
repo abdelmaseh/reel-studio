@@ -2,6 +2,8 @@ import React from "react";
 import { useVideoConfig } from "remotion";
 import { EASE, mix, px, useClock, useRamp } from "../core/motion";
 import { FRAME } from "../core/safe";
+import { cardLabel } from "./labels";
+import { useDigits } from "./digits";
 import {
   commentSchema,
   comparisonSchema,
@@ -122,7 +124,7 @@ export const IntroScene: React.FC<FamilyProps<IntroData>> = ({
               }}
             >
               <FitText
-                text="THE IDEA"
+                text={cardLabel("idea", copy)}
                 theme={theme}
                 role="label"
                 width={g.width - 94}
@@ -163,6 +165,7 @@ const ProofValue: React.FC<{
   geometry: SceneGeometry;
 }> = ({ data, theme, geometry: g }) => {
   const { fps } = useClock();
+  const digits = useDigits();
   const progress = useRamp(-2 / fps, Math.round(fps * 1.15), EASE.landQuad);
   const shown = mix(0, data.value, progress).toLocaleString("en-US", {
     maximumFractionDigits: 0,
@@ -173,7 +176,7 @@ const ProofValue: React.FC<{
     <>
       <div style={{ position: "absolute", left: 24, top: 18 }}>
         <FitText
-          text="SUPPLIED VALUE"
+          text={cardLabel("value", data)}
           theme={theme}
           role="label"
           width={g.width - 48}
@@ -196,7 +199,7 @@ const ProofValue: React.FC<{
           lines={1}
           align="center"
           color={theme.accentInk ?? theme.accent}
-          fitTo={data.valueFit === "final" ? finalValueTemplate(data.value, data.suffix) : undefined}
+          fitTo={data.valueFit === "final" ? finalValueTemplate(data.value, data.suffix, digits) : undefined}
         />
       </div>
       <div style={{ position: "absolute", left: 24, bottom: 21 }}>
@@ -228,7 +231,7 @@ export const ProofScene: React.FC<FamilyProps<ProofData>> = ({
       {({ theme, geometry: g, motion }) => (
         <>
           <SceneHeader
-            kicker="THE PROOF"
+            kicker={cardLabel("proof", copy)}
             title={copy.label}
             theme={theme}
             geometry={g}
@@ -267,7 +270,7 @@ export const ProcessScene: React.FC<FamilyProps<ProcessData>> = ({
         return (
           <>
             <SceneHeader
-              kicker="HOW IT WORKS"
+              kicker={cardLabel("how", copy)}
               title={copy.title}
               theme={theme}
               geometry={g}
@@ -386,10 +389,10 @@ export const ComparisonScene: React.FC<FamilyProps<ComparisonData>> = ({
             <SceneHeader
               kicker={
                 stacked
-                  ? "BEFORE / AFTER"
+                  ? cardLabel("beforeAfter", copy)
                   : board
-                    ? "THE COMPARISON BOARD"
-                    : "SIDE BY SIDE"
+                    ? cardLabel("board", copy)
+                    : cardLabel("sideBySide", copy)
               }
               title={copy.title}
               theme={theme}
@@ -498,7 +501,7 @@ const CommentInput: React.FC<{
     <>
       <div style={{ position: "absolute", left: 26, top: 19 }}>
         <FitText
-          text="ADD A COMMENT"
+          text={cardLabel("comment", data)}
           theme={theme}
           role="label"
           width={innerWidth}
@@ -533,6 +536,7 @@ const CommentInput: React.FC<{
           {                                                                                 }
           <FitText
             text={data.keyword}
+            keep={[data.keyword]}
             theme={theme}
             width={innerWidth - 44}
             height={inputHeight - 25}
@@ -547,6 +551,7 @@ const CommentInput: React.FC<{
       <div style={{ position: "absolute", left: 26, bottom: 20 }}>
         <FitText
           text={data.promise}
+          keep={[data.keyword]}
           theme={theme}
           role="label"
           width={innerWidth}
@@ -572,8 +577,8 @@ export const CommentGateScene: React.FC<FamilyProps<CommentData>> = ({
       {({ theme, geometry: g, motion }) => (
         <>
           <SceneHeader
-            kicker="WANT THE TEMPLATE?"
-            title="Leave the keyword below."
+            kicker={cardLabel("template", copy)}
+            title={cardLabel("templateLine", copy)}
             theme={theme}
             geometry={g}
             motion={motion}
@@ -606,8 +611,8 @@ export const FollowScene: React.FC<FamilyProps<FollowData>> = ({
         return (
           <>
             <SceneHeader
-              kicker="FOLLOW FOR MORE"
-              title="Keep the ideas coming."
+              kicker={cardLabel("follow", copy)}
+              title={cardLabel("followLine", copy)}
               theme={theme}
               geometry={g}
               motion={motion}
@@ -683,7 +688,7 @@ export const FollowScene: React.FC<FamilyProps<FollowData>> = ({
                   }}
                 >
                   <FitText
-                    text="Follow"
+                    text={cardLabel("followPill", copy)}
                     theme={theme}
                     width={132}
                     height={38}

@@ -7,7 +7,7 @@ Use reviewed recorded words and the named source. These controls preserve dialog
 Extract the full source to 16 kHz mono PCM with `node scripts/audio.mjs <source>`. Use the printed WAV path and the same source fps:
 
 ```text
-node scripts/emphasis.mjs --captions Projects/<slug>/transcript/captions.json --reviewed-by Creator --wav <full-source-wav> --fps <source-fps> --out Projects/<slug>/emphasis.json
+node scripts/emphasis.mjs --captions Projects/<slug>/transcript/captions.json --reviewed-by "<creator name>" --wav <full-source-wav> --fps <source-fps> --out Projects/<slug>/emphasis.json
 ```
 
 The offline scorer compares each reviewed word's volume with its neighbours and the speech median; recorded numbers, product names and a supplied `--cta <keyword>` can strengthen a proposal. It limits camera scale to 1.03–1.07 and leaves at least 3–5 seconds between punches (`--min-gap`, default 4). It never writes words, cuts or camera into the manifest automatically.

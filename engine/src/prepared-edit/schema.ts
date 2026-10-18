@@ -6,7 +6,7 @@ import {foregroundSourceFrame} from "./visibility.ts";
 import {librarySceneVariants,librarySceneSchema,validateLibraryTiming} from '../motion-library/schema.ts';
 import {screenRecordingVariants,screenRecordingSceneSchema,screenRecordingIssues} from '../screen-recording/schema.ts';
 import {semanticSceneVariants,semanticSceneSchema,validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
-import {styleSceneVariants,styleSceneSchema,validateStyleSceneTiming,styleSceneSequenceIssues} from '../styles/scenes.ts';
+import {styleSceneVariants,styleSceneSchema,validateStyleSceneTiming,validateStyleSceneWords,styleSceneSequenceIssues} from '../styles/scenes.ts';
 import {ownSceneStyle} from '../styles/registry.ts';
 import {validateChapter,describeIssues,contrastRatio,relativeLuminance,mixToHex,CHAPTER_MIN_CONTRAST} from '../core/chapters.ts';
 import {pipAllowed,PIP_REACH} from '../core/pip.ts';
@@ -84,13 +84,14 @@ export const captionEmphasisSchema = z.object({sourceIndex:z.number().int().min(
 
 
 const CAPTION_BAND_HALF=64;
-import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, WRITING_STYLES} from '../core/preference-options.ts';
+import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, WRITING_STYLES, DIGIT_CHOICES} from '../core/preference-options.ts';
 export const editManifestSchema = z.object({
   version:z.literal(1), id:slug, purpose:z.enum(["test","delivery"]),
   contentMode:z.literal('graphics').optional(),
   projectScenes:projectScenesMetadataSchema.optional(),
   style:styleSchema,
   fontFamily:z.enum(FONT_CHOICES).optional(),
+  digits:z.enum(DIGIT_CHOICES).optional(),
   writingStyle:z.enum(WRITING_STYLES).optional(),
   creator:creatorSchema.optional(),
   brand:chapterSchema.optional(),
@@ -169,6 +170,12 @@ export const editManifestSchema = z.object({
       for(const message of validateStyleSceneTiming(styled.data,m.source.fps))issue(message);
       const owner=ownSceneStyle(styled.data.family);
       if(owner!==undefined && owner!==m.style)issue(`${s.id}: ${styled.data.family} scenes are available only in ${owner}`);
+      if(styled.data.family==='cartoon' || styled.data.family==='cartoon-ending'){
+        // Cartoon times are word anchors: the scene's sentences, cards and counter must resolve on the compiled words.
+        let compiled:ReturnType<typeof compileEdit>|undefined;
+        try{compiled=compileEdit(m as EditManifest);}catch{compiled=undefined;}
+        if(compiled)for(const message of validateStyleSceneWords(styled.data,compiled.words,m.source.fps))issue(message);
+      }
     }
     const library=librarySceneSchema.safeParse(s);
     if(library.success)for(const message of validateLibraryTiming(library.data))issue(message);

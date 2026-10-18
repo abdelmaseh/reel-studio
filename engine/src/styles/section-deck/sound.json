@@ -4,10 +4,10 @@
     "transition": {
       "recipe": "chapter-shift",
       "gain": 0.5,
-      "leadSec": 0.1,
-      "confidence": "medium",
+      "leadSec": 0,
+      "confidence": "low",
       "basis": "inferred",
-      "evidence": "Style-specific sound palette; review each cue with the creator."
+      "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
     },
     "stamp": {
       "recipe": "restrained-reveal",
@@ -20,10 +20,10 @@
     "swap": {
       "recipe": "chapter-shift",
       "gain": 0.4,
-      "leadSec": 0.1,
-      "confidence": "medium",
+      "leadSec": 0,
+      "confidence": "low",
       "basis": "inferred",
-      "evidence": "Style-specific sound palette; review each cue with the creator."
+      "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
     },
     "click": {
       "recipe": "cursor-click",
@@ -45,9 +45,9 @@
       "recipe": "highlight-swipe",
       "gain": 0.4,
       "leadSec": 0,
-      "confidence": "medium",
+      "confidence": "low",
       "basis": "inferred",
-      "evidence": "Style-specific sound palette; review each cue with the creator."
+      "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
     },
     "type": {
       "recipe": "typing-burst",

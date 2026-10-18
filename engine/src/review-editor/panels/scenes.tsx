@@ -1,13 +1,17 @@
 import React, { memo, useCallback, useEffect, useState } from "react";
 import type { EditScene } from "../../prepared-edit/schema.ts";
+import { sampleNumberPaths } from "../../prepared-edit/sample-numbers.ts";
 import type { PanelProps } from "../panels.ts";
 import * as ops from "../ops/index.ts";
 import { formatTimecode } from "../time.ts";
 import { issuesAt } from "../validate.ts";
 import type { Issue, Selection } from "../types.ts";
 import { Badge, Empty, NoticeBar, NumInput, Section, hueOf, memoWithoutPlayhead, runOp, useNotice, usePlayheadGetter, useRunner } from "./kit.tsx";
+import { SCENES_TEXT, familyLabel } from "./family-labels.ts";
 import { SchemaForm } from "./schema-form.tsx";
 import type { ApplyFn } from "../store.ts";
+import {CATALOG} from '../../motion-concepts/catalog.ts';
+import type {ConceptId} from '../../motion-concepts/types.ts';
 
 type Runner = ReturnType<typeof useRunner>;
 const LAYOUT_AR: Record<string, string> = { presenter: "presenter (هو على الشاشة)", split: "split (نص ونص)", takeover: "takeover (جرافيك كامل)" };
@@ -33,6 +37,7 @@ const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, i
   const [armed, setArmed] = useState(false);
   const end = scene.fromFrame + scene.durationInFrames;
   const demo = ops.sceneDemoFields(scene);
+  const sample = sampleNumberPaths(scene);
   const errors = issues.filter((i) => i.severity === "error");
   const layouts = ops.allowedLayouts(scene);
   const id = scene.id;
@@ -48,6 +53,7 @@ const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, i
         <strong className="sp-id" dir="ltr">{id}</strong>
         <span className="sp-range" dir="ltr">{formatTimecode(scene.fromFrame, fps)} → {formatTimecode(end, fps)} · {scene.durationInFrames}f</span>
         {demo.length ? <Badge text="نص تجريبي" tone="warn" title={`${demo.length} حقل لسه بنص الـ kit التجريبي. بدّله قبل التصدير.`} /> : null}
+        {sample.length ? <Badge text={SCENES_TEXT.sampleNumberBadge} tone="warn" title={SCENES_TEXT.sampleNumberTitle} /> : null}
         {errors.length ? <Badge text={`${errors.length} مشكلة`} tone="bad" /> : null}
         <span className="sp-caret" aria-hidden>{open ? "▾" : "▸"}</span>
       </header>
@@ -106,9 +112,10 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
   const { notice, show, clear } = useNotice();
   const run = useRunner(apply, show);
   const [open, setOpen] = useState<string | null>(selection?.kind === "scene" ? selection.id : null);
-  const families = ops.templateFamiliesFor(manifest.style);
+  const families = ops.templateFamiliesFor(manifest.style, manifest);
   const [picked, setFamily] = useState<string>(ops.TEMPLATE_FAMILIES[0]);
   const family = families.includes(picked) ? picked : families[0];
+  const [concept, setConcept] = useState<ConceptId>('panel-reveal');
   const getPlayhead = usePlayheadGetter();
   const toggle = useCallback((id: string) => setOpen((cur) => (cur === id ? null : id)), []);
   const fps = manifest.source.fps;
@@ -122,7 +129,7 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
   }, [selectedId]);
 
   const add = () => {
-    const r = run(`إضافة مشهد ${family}`, (m) => ops.addSceneFromTemplate(m, family, { atFrame: getPlayhead() }), { coalesce: false });
+    const r = run(`إضافة مشهد ${family}`, (m) => ops.addSceneFromTemplate(m, family, { atFrame: getPlayhead(), ...(family === 'motion-concept' ? {concept} : {}) }), { coalesce: false });
     if (r.ok) {
       const scene = r.manifest.scenes[r.index];
       select({ kind: "scene", id: scene.id });
@@ -137,11 +144,14 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
       <Section title="مشهد جديد" actions={null}>
         <div className="sp-row">
           <select value={family} onChange={(e) => setFamily(e.target.value)} aria-label="نوع المشهد">
-            {families.map((f) => <option key={f} value={f}>{f}</option>)}
+            {families.map((f) => <option key={f} value={f}>{familyLabel(f)}</option>)}
           </select>
+          {family === 'motion-concept' ? <select aria-label="فكرة الحركة" value={concept} onChange={event => setConcept(event.target.value as ConceptId)}>
+            {CATALOG.map(item => <option key={item.id} value={item.id}>{item.title} · {item.defaultFrames / 30}ث</option>)}
+          </select> : null}
           <button type="button" className="primary" onClick={add}>أضف عند الـ playhead</button>
         </div>
-        <p className="pk-muted">المشهد الجديد بيتعمل بنص تجريبي من الـ kit وعليه علامة «نص تجريبي» لحد ما تبدّل الكلام بكلامك. للعائلات التانية (kinetic وغيرها) انسخ مشهد موجود.</p>
+        <p className="pk-muted">{SCENES_TEXT.helper}</p>
       </Section>
       <Section title="المشاهد" count={manifest.scenes.length}>
         {manifest.scenes.length === 0 ? <Empty>مفيش مشاهد لسه. ضيف مشهد من فوق. (التصدير النهائي محتاج مشاهد.)</Empty> : null}

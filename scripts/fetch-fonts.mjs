@@ -42,6 +42,8 @@ if (args.list) {
 
 const additive = Boolean(args.family);
 const declaredVariable = DECLARED_FONTS.find((spec) => spec.family === args.family && spec.axes);
+// A declared italic travels with an explicit --weights/--subsets request for the same family.
+const declaredItalic = DECLARED_FONTS.find((spec) => spec.family === args.family && spec.italic)?.italic;
 const requested = additive
   ? [declaredVariable && args.weights === undefined && args.subsets === undefined
       ? declaredVariable
@@ -49,6 +51,7 @@ const requested = additive
           family: String(args.family),
           weights: String(args.weights ?? '400,700').split(',').map(Number),
           subsets: String(args.subsets ?? 'arabic,latin').split(','),
+          ...(declaredItalic ? {italic: declaredItalic} : {}),
         }]
   : DECLARED_FONTS;
 
@@ -64,7 +67,9 @@ let fetched = 0, kept = 0;
 
 for (const spec of requested) {
   const { css, url: cssUrl } = await fetchCss(spec);
-  const faces = parseFaces(css).filter((f) => spec.subsets.includes(f.subset));
+  // Italic faces are kept only where the family declares them (subset and weight).
+  const faces = parseFaces(css).filter((f) => spec.subsets.includes(f.subset)
+    && (f.style !== 'italic' || (spec.italic?.subsets.includes(f.subset) && spec.italic.weights.includes(Number(f.weight)))));
   if (!faces.length) throw new Error(`${spec.family}: no face matched subsets ${spec.subsets.join(',')}`);
   for (const subset of spec.subsets) {
     for (const weight of spec.weights) {

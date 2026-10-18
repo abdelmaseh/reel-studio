@@ -23,7 +23,7 @@ When a mechanism looks too busy, simplify its dominant action before adding anot
 
 Review the arc from opening to resolution and the complete ending. Check that an explanation pays off, evidence arrives where required, density varies deliberately, and the invitation gets room. Keep the review editor open for small corrections; preserve manual drafts and conflicts. After cut changes, prepare again before describing its footage as current.
 
-The final review uses the exported MP4 and its actual sound. Probe/encode/decode, plate cadence, safe zones, presenter/head checks, motion and audio checks still run through the delivery pipeline. Fix a failed gate; do not bypass it because a still looked good.
+The final review uses the exported MP4. You cannot hear it: its sound is judged by the creator playing the passage you name. Probe/encode/decode, plate cadence, safe zones, presenter/head checks, motion and audio checks still run through the delivery pipeline. Fix a failed gate; do not bypass it because a still looked good.
 
 Record the practical scope honestly: schema-only, rendered stills, sampled video/audio review, uninterrupted playback, and creator acceptance are different evidence. If only samples were inspected, say so. A clean test suite, HTTP success or a generated demonstration is not creative acceptance. A request to produce the final authorizes production; the creator's acceptance belongs to the reviewed result.
 

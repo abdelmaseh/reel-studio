@@ -1,0 +1,2863 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "key": "camera:punch-step",
+      "role": "camera",
+      "labelAr": "تكبير بقطعة",
+      "explains": "An instantaneous framing step gives an existing recorded moment a distinct accent.",
+      "action": "Place a held key one frame before the cue and a larger-scale camera key on it, then hold or return.",
+      "useWhen": [
+        "A deliberate hard framing accent supports a supplied spoken point."
+      ],
+      "avoidWhen": [
+        "A smooth approach is required.",
+        "The cue has no preceding frame or repeated jumps would distract."
+      ],
+      "intents": [
+        "focus",
+        "word-emphasis"
+      ],
+      "moods": [
+        "energetic",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "punchStep is a camera-track helper, not a direct scene family or a source edit.",
+        "atFrame must be >= 1 and the target scale must exceed the starting scale.",
+        "Use the normal 1.03-1.07 range, preserve head and screen clearance, and retain source speed.",
+        "A framing jump is not proof, a before/after result or an explanatory mechanism."
+      ],
+      "display": {
+        "explains": "يأكد اللحظة بتكبير مفاجئ بسيط.",
+        "useWhen": "مع تأكيد يستحمل قطعة في الكادر.",
+        "avoidWhen": "لو المطلوب حركة ناعمة أو الكادر ضيق."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/footage.ts",
+          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+        }
+      ]
+    },
+    {
+      "key": "camera:slow-push",
+      "role": "camera",
+      "labelAr": "اقتراب بطيء",
+      "explains": "Gradual framing emphasis on an existing recorded subject, without explaining a new relationship.",
+      "action": "Author camera-track keys that ease from the existing scale to a slightly closer view, then hold or release.",
+      "useWhen": [
+        "A reflective spoken point benefits from sustained visual attention.",
+        "The source has a verified safe face or screen crop."
+      ],
+      "avoidWhen": [
+        "A diagram or evidence comparison must explain the claim.",
+        "The push would cross a cut or hide source details."
+      ],
+      "intents": [
+        "focus",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "reflective",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "This is a track-authoring helper, not a selectable scene family; convert its keys into the normal camera track.",
+        "slowPush requires toFrame > fromFrame; emphasisPunch needs earlier push frames and holdFrames > releaseFrames.",
+        "Normal punches are 1.03-1.07; the 1.10 hard ceiling requires the explicit allowHard helper option.",
+        "Use reviewed source cues for speech emphasis and inspect actual head/screen framing while preserving source speed."
+      ],
+      "display": {
+        "explains": "يقرب الكادر بهدوء على نفس الموضوع.",
+        "useWhen": "مع نقطة محتاجة تركيز مستمر.",
+        "avoidWhen": "لما المعنى محتاج رسم أو دليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/footage.ts",
+          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+        }
+      ]
+    },
+    {
+      "key": "camera:snap-in",
+      "role": "camera",
+      "labelAr": "اقتراب سريع",
+      "explains": "A short scale ramp accents a moment already present in the recording.",
+      "action": "End a small camera scale increase on the chosen cue; snapIn uses a four-frame ramp by default.",
+      "useWhen": [
+        "A concise recorded term or demonstrated detail needs one crisp accent."
+      ],
+      "avoidWhen": [
+        "The passage needs quiet sustained reading.",
+        "The ramp would crop the face or meaningful UI."
+      ],
+      "intents": [
+        "focus",
+        "word-emphasis"
+      ],
+      "moods": [
+        "energetic",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "snap-in authors camera-track keys; it is not a scene family.",
+        "snapIn requires integer rampFrames >= 2, enough frames before atFrame, and target scale above the starting scale.",
+        "Keep normal punches within 1.03-1.07 and verify the anchor against source framing.",
+        "The ramp does not alter speech speed or supply missing explanatory content."
+      ],
+      "display": {
+        "explains": "يقرب الكادر بسرعة خفيفة عند نقطة مهمة.",
+        "useWhen": "مع كلمة أو تفصيلة تستاهل تأكيد.",
+        "avoidWhen": "لو الكادر ضيق أو الشرح هادي جدًا."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/footage.ts",
+          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+        }
+      ]
+    },
+    {
+      "key": "caption-emphasis:accent",
+      "role": "emphasis",
+      "labelAr": "لون لكلمة في الكابشن",
+      "explains": "Colour identifies one word in the existing literal caption stream.",
+      "action": "Apply readable theme accent ink to the caption word selected by sourceIndex without changing its text or cue.",
+      "useWhen": [
+        "One reviewed recorded keyword should stand out in a stable caption."
+      ],
+      "avoidWhen": [
+        "The intended words were never recorded.",
+        "A highlighted subtitle would replace an explanation the viewer needs."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use captions.emphasis with an in-range recorded sourceIndex; entries must increase strictly and allow one kind per word.",
+        "Preserve reviewed caption words, timing and reviewer attribution; do not manufacture words in graphics mode.",
+        "The renderer shifts accent ink for contrast against the caption surface."
+      ],
+      "display": {
+        "explains": "يلون كلمة من الكابشن المراجع.",
+        "useWhen": "لكلمة أساسية من نفس التسجيل.",
+        "avoidWhen": "لو الكلمة مش موجودة في التسجيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/caption-emphasis.ts",
+          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        }
+      ]
+    },
+    {
+      "key": "caption-emphasis:pop",
+      "role": "emphasis",
+      "labelAr": "نبضة لكلمة في الكابشن",
+      "explains": "A brief scale pulse accents one existing recorded caption word.",
+      "action": "Start that word at scale 1.12 and settle to 1 over four frames using readable accent ink.",
+      "useWhen": [
+        "An energetic recorded keyword warrants a brief pulse and has room around it."
+      ],
+      "avoidWhen": [
+        "The style keeps caption pills static, including split-canvas and section-deck.",
+        "The point needs low-motion reading or the word is not recorded."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use one valid reviewed sourceIndex per caption emphasis entry in strictly increasing order.",
+        "captionEmphasisIssues rejects pop for every style with defaults.staticCaptions; consult current style metadata.",
+        "The pulse changes an existing recorded word only and does not add dialogue or a source-free transcript."
+      ],
+      "display": {
+        "explains": "يدي كلمة الكابشن نبضة سريعة.",
+        "useWhen": "مع كلمة قوية وستايل يسمح بالحركة.",
+        "avoidWhen": "مع captions ثابتة أو كلمة متخيلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/caption-emphasis.ts",
+          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        }
+      ]
+    },
+    {
+      "key": "caption-emphasis:underline",
+      "role": "emphasis",
+      "labelAr": "خط تحت كلمة في الكابشن",
+      "explains": "An underline marks a recorded caption word without moving the line.",
+      "action": "Draw a theme-coloured underline under the selected sourceIndex while retaining normal word colour.",
+      "useWhen": [
+        "A recorded qualification or condition needs calm typographic emphasis."
+      ],
+      "avoidWhen": [
+        "Unrecorded labels are being passed off as subtitles.",
+        "Underlining adjacent words would obscure the caption."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Select one in-range reviewed sourceIndex per emphasis entry in strictly increasing order.",
+        "Underline thickness and offset follow caption font size; inspect Arabic joins and neighbouring words.",
+        "This preserves the literal caption stream and cannot create a graphics-only transcript."
+      ],
+      "display": {
+        "explains": "يحط خط تحت كلمة مسجلة.",
+        "useWhen": "مع شرط أو مصطلح محتاج تأكيد هادي.",
+        "avoidWhen": "لو الخطوط هتزحم الكابشن."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/caption-emphasis.ts",
+          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:clip-wipe",
+      "role": "transition",
+      "labelAr": "كشف الجرافيك بمسحة",
+      "explains": "A directional mask introduces incoming graphics at a scene boundary.",
+      "action": "Reveal through ClipReveal inside the split graphics panel or full takeover canvas without moving the source.",
+      "useWhen": [
+        "A clean graphic entrance should preserve stable presenter framing and video decode."
+      ],
+      "avoidWhen": [
+        "The requested action is a before/after comparison of the same subject.",
+        "The style-owned scene forbids shared transitions."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Put kind: clip-wipe in transitions exactly on the incoming scene first frame and finish within it.",
+        "Use one graphics entrance per scene; dir accepts rtl/ltr/up/down and manifest duration is 1-120 frames.",
+        "This is an entrance mask, not evidence-wipe, an object morph or an explanatory comparison."
+      ],
+      "display": {
+        "explains": "يكشف الجرافيك الجديد في اتجاه واضح.",
+        "useWhen": "لدخول نظيف عند بداية المشهد.",
+        "avoidWhen": "لو المطلوب مقارنة نفس الشيء قبل وبعد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/mask.tsx",
+          "sha256": "c35fdf27c871d20c1a3ec3634397da45c66fc8651bc18f3df1a01c5e24e47e70"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:hue-crossfade",
+      "role": "transition",
+      "labelAr": "تدرج لون الفصل",
+      "explains": "A palette transition signals a chapter change between two supplied palettes.",
+      "action": "Interpolate the previous and incoming chapter grounds and theme colours behind the new graphics.",
+      "useWhen": [
+        "Adjacent scenes have deliberate validated chapter palettes."
+      ],
+      "avoidWhen": [
+        "Either scene lacks chapter data.",
+        "A fixed identity requires a stable ground or an image crossfade is expected."
+      ],
+      "intents": [
+        "chapter",
+        "cut"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "reflective"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Start on the incoming scene first frame and supply chapter on it and the immediately previous scene.",
+        "Fit the duration inside the incoming scene, allow one hue crossfade per scene, and omit dir.",
+        "Presenter-only scenes are rejected; split background is bounded to the graphics seam.",
+        "This interpolates palettes rather than footage or evidence; preserve style and brand policy."
+      ],
+      "display": {
+        "explains": "ينقل لون الخلفية بين فصلين.",
+        "useWhen": "مع فصلين ليهم palettes محددة.",
+        "avoidWhen": "لو مافيش chapter أو اللون لازم يثبت."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/creative-kit/chapter-theme.tsx",
+          "sha256": "77f1305058c915046bb3a420c06718eb08859a68e8616e0c4407de334115992e"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:light-scan",
+      "role": "transition",
+      "labelAr": "شريط نور على الجرافيك",
+      "explains": "A travelling light band accents arrival of a graphic state without proving any inspection.",
+      "action": "Keep the graphics visible and sweep a bounded light band across them in the selected direction.",
+      "useWhen": [
+        "A technical reveal needs a brief scan without moving its graphic layer.",
+        "A scene containing a capture needs an entrance without echo decoding."
+      ],
+      "avoidWhen": [
+        "The scan would imply a real detection or analysis result.",
+        "It would cross presenter-only content or obscure source details."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "technical",
+        "energetic"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Start on the scene first frame, finish within it, and use one graphics entrance.",
+        "dir accepts rtl/ltr/up/down; presenter-only scenes are rejected.",
+        "This is decorative illumination, not a semantic scanner, mask reveal or evidence of analysis."
+      ],
+      "display": {
+        "explains": "يمرر شريط نور على الجرافيك الجديد.",
+        "useWhen": "لكشف تقني خفيف من غير تحريك الكارت.",
+        "avoidWhen": "لو هيبان كأنه نتيجة فحص حقيقية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions-dir.tsx",
+          "sha256": "ab7f3177e92f211427fd0a851d2c72e1974c4e7f34d4f09f90f69186865b0300"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:whip-pan",
+      "role": "transition",
+      "labelAr": "سحبة سريعة للجرافيك",
+      "explains": "A brisk directional move announces a new graphic scene without moving the recording camera.",
+      "action": "Translate incoming graphics with a short fade and speed-dependent smear inside the active panel.",
+      "useWhen": [
+        "An energetic change benefits from direction and the incoming graphics tolerate echo rendering."
+      ],
+      "avoidWhen": [
+        "The scene mounts video or a foreground recording.",
+        "A split panel requests up/down travel or the explanation needs a quiet entrance."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Start on the incoming scene first frame and finish within it; use one graphics entrance.",
+        "Split permits rtl/ltr only because up/down can smear into the presenter window.",
+        "The contract rejects video in supported screens, screen-focus, kinetic-hook foreground, Glide media or cartoon monitor video to avoid repeated decode per echo.",
+        "Apply it to graphics; it is no process, comparison or camera-track mechanism."
+      ],
+      "display": {
+        "explains": "يسحب الجرافيك الجديد بسرعة.",
+        "useWhen": "لنقلة نشيطة بجرافيك مناسب.",
+        "avoidWhen": "مع فيديو جوه المشهد أو شرح هادي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions-dir.tsx",
+          "sha256": "ab7f3177e92f211427fd0a851d2c72e1974c4e7f34d4f09f90f69186865b0300"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:accent",
+      "role": "emphasis",
+      "labelAr": "لون لكلمة مسجلة",
+      "explains": "Theme accent singles out one recorded token within kinetic text.",
+      "action": "Apply accent colour to a supplied sourceIndex without changing token text, metrics or cue.",
+      "useWhen": [
+        "A literal term needs colour distinction within a reviewed spoken phrase."
+      ],
+      "avoidWhen": [
+        "Colour would imply unsupported classifications or results.",
+        "The text has no recorded counterpart."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use the emphasis array of scene:kinetic-text and select one of its literal sourceIndices.",
+        "The canonical scene derives words from cut recording and rejects removed/out-of-scene selections.",
+        "Accent changes token ink only; it is not a data classification or source-free text mechanism."
+      ],
+      "display": {
+        "explains": "يلون كلمة مسجلة جوه الجرافيك.",
+        "useWhen": "لكلمة مهمة من نفس الجملة.",
+        "avoidWhen": "لو اللون هيوحي بنتيجة مش مدعومة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:latin",
+      "role": "emphasis",
+      "labelAr": "خط مناسب للمصطلح الإنجليزي",
+      "explains": "A Latin font face keeps a recorded Latin-containing token legible in mixed-language kinetic text.",
+      "action": "Use the configured Latin face for the selected literal token while preserving its text and logical reading order.",
+      "useWhen": [
+        "A reviewed Arabic phrase includes an actual Latin product name or technical term."
+      ],
+      "avoidWhen": [
+        "The selected token has no Latin letter.",
+        "The intent is translation or inserting a term that was not recorded."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "tooling"
+      ],
+      "moods": [
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use kind: latin only for a selected literal sourceIndex inside scene:kinetic-text.",
+        "resolveEmphasis rejects a Latin mark on a token with no Latin letter.",
+        "It selects a font rather than translating speech or authorising branded copy.",
+        "Review Arabic/Latin/digit runs without splitting Arabic characters."
+      ],
+      "display": {
+        "explains": "يدي المصطلح الإنجليزي المسجل خطه المناسب.",
+        "useWhen": "مع اسم أداة أو مصطلح لاتيني مسجل.",
+        "avoidWhen": "لو الكلمة مافيهاش حروف لاتينية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:pop",
+      "role": "emphasis",
+      "labelAr": "نبضة لكلمة مسجلة",
+      "explains": "One literal token receives a stronger spring entrance than the line base.",
+      "action": "Override that token entrance to pop with the pop spring preset; other words retain the scene entrance.",
+      "useWhen": [
+        "One recorded keyword deserves an energetic accent."
+      ],
+      "avoidWhen": [
+        "All words would receive equal marks and lose hierarchy.",
+        "The phrase needs low-motion reading or the word was not recorded."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Mark an existing selected sourceIndex in scene:kinetic-text; use actual cut words and timing.",
+        "Pop emphasis overrides both enter and spring preset, including on a fade/rise line.",
+        "The token scale begins at 0.55; inspect its bounds and Arabic integrity.",
+        "It differs from a caption pulse and cannot create a silent-project transcript."
+      ],
+      "display": {
+        "explains": "يدي كلمة مسجلة نبضة أقوى من باقي الجملة.",
+        "useWhen": "لتأكيد كلمة واحدة بوضوح.",
+        "avoidWhen": "لو كل الكلام هيبقى بنفس القوة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:underline",
+      "role": "emphasis",
+      "labelAr": "خط مرسوم تحت كلمة مسجلة",
+      "explains": "A drawn underline marks a particular reviewed token.",
+      "action": "Draw a directional underline beneath its measured bounds after the recorded token entry.",
+      "useWhen": [
+        "A recorded condition should stay stable while a mark points to it."
+      ],
+      "avoidWhen": [
+        "The mark would collide with another line, captions or protected face.",
+        "The label is not one of the selected recorded words."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use kind: underline on a selected sourceIndex in scene:kinetic-text; do not substitute free-form text.",
+        "The renderer derives mark geometry from token layout and times it after token entry.",
+        "Review actual mark reach, adjacent text, face and safe zones; schema success does not prove clarity."
+      ],
+      "display": {
+        "explains": "يرسم خط تحت كلمة من التسجيل.",
+        "useWhen": "مع مصطلح أو شرط محتاج علامة.",
+        "avoidWhen": "لو العلامة هتزحم الكلام أو الوش."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:weight",
+      "role": "emphasis",
+      "labelAr": "وزن أتقل لكلمة مسجلة",
+      "explains": "Heavier font weight gives one literal token priority without an added animation.",
+      "action": "Use configured heavy weight for the selected token while retaining family, text and entry timing.",
+      "useWhen": [
+        "A serious or quiet recorded phrase needs restrained hierarchy."
+      ],
+      "avoidWhen": [
+        "The distinction needs a real relationship or measurement.",
+        "The word is invented or the heavier glyphs cannot fit."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "serious",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Select kind: weight for an existing literal sourceIndex in scene:kinetic-text.",
+        "tokenTypeStyle changes the measured token weight without an independent pulse.",
+        "Fit the actual heavier text and preserve reviewed words, timing and Arabic joins."
+      ],
+      "display": {
+        "explains": "يخلي كلمة التسجيل أتقل في الخط.",
+        "useWhen": "لتأكيد هادي من غير حركة زيادة.",
+        "avoidWhen": "لو المطلوب رسم علاقة أو الكلمة مش مسجلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "layout-transition:curtain",
+      "role": "transition",
+      "labelAr": "نزول مساحة الشرح",
+      "explains": "A presenter-to-split framing change creates graphic space while retaining the source subject.",
+      "action": "Lower the graphics seam and interpolate the presenter window toward the lower split window while caption positions fade.",
+      "useWhen": [
+        "A recorded presenter passage opens into a graphic explanation above the speaker.",
+        "Both supplied footage windows reach the bottom and split lies below full."
+      ],
+      "avoidWhen": [
+        "The move is split-to-presenter or between takeover scenes.",
+        "There is no recording or the descending seam would crop the measured head."
+      ],
+      "intents": [
+        "layout-change"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "Use layoutTransitions, not a family: kind curtain, from presenter, to split only.",
+        "Duration is 12-120 frames with an earlier from-layout frame; the interval and following frame must use to layout.",
+        "Order transitions without overlap and finish before signoff/edit end.",
+        "Explicit full/split windows must reach y=1920 with split.windowTop > full.windowTop; inspect head clearance throughout the descent."
+      ],
+      "display": {
+        "explains": "يفتح مساحة شرح فوق المتحدث.",
+        "useWhen": "للانتقال من ظهور كامل إلى split.",
+        "avoidWhen": "للرجوع من split أو من غير تسجيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/footage.ts",
+          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+        },
+        {
+          "path": "engine/src/core/window-geo.ts",
+          "sha256": "8106230679978d9881174a01bd05efb953a80c2025b35928446f64672bf12c9f"
+        }
+      ]
+    },
+    {
+      "key": "layout-transition:window-morph",
+      "role": "transition",
+      "labelAr": "تغيير مساحة المتحدث",
+      "explains": "A continuous source-window change moves between presenter and split presentation.",
+      "action": "Interpolate the recorded window and crop between the presenter and split geometries while fading caption positions.",
+      "useWhen": [
+        "A recording alternates between personal delivery and graphic explanation.",
+        "The subject remains safely framed throughout the geometry path."
+      ],
+      "avoidWhen": [
+        "A takeover graphic needs an explanatory object morph.",
+        "There is no earlier from-layout frame or an intermediate crop would hide the face."
+      ],
+      "intents": [
+        "layout-change"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "reflective",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "Use kind window-morph in layoutTransitions with different from/to values drawn from presenter and split.",
+        "Duration is 12-120 frames; the prior frame is from and the interval plus following frame are to.",
+        "Transitions must be ordered, non-overlapping and finish before signoff/edit end.",
+        "It changes source window geometry, not an object identity; review source aspect, framing and measured head clearance."
+      ],
+      "display": {
+        "explains": "يغير مساحة المتحدث بين كامل وsplit.",
+        "useWhen": "للشرح والرجوع للمتحدث بسلاسة.",
+        "avoidWhen": "لو المقصود تحول عنصر جرافيك."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/footage.ts",
+          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+        },
+        {
+          "path": "engine/src/core/window-geo.ts",
+          "sha256": "8106230679978d9881174a01bd05efb953a80c2025b35928446f64672bf12c9f"
+        }
+      ]
+    },
+    {
+      "key": "overlay:bloom",
+      "role": "transition",
+      "labelAr": "ومضة بيضا بتختفي",
+      "explains": "A decaying white bloom marks a graphic arrival or cut.",
+      "action": "Start a full-canvas white overlay at its peak on atFrame, then decay it over the supplied duration.",
+      "useWhen": [
+        "A rare graphic reveal needs a crisp peak followed by immediate decay."
+      ],
+      "avoidWhen": [
+        "The presenter is visible and speaking.",
+        "The scene needs a retained hold or its style forbids flashes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "energetic"
+      ],
+      "energy": [
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use transitions kind: bloom with no dir; duration maps to FlashBloom decaySec rather than a centred bell.",
+        "The default renderer peak is 0.8; the normal transition entry does not expose peak control.",
+        "Keep it off speaking footage and finish before signoff/edit end.",
+        "A bloom cannot explain a process or validate a result."
+      ],
+      "display": {
+        "explains": "يدي النقلة ومضة بيضا وتختفي.",
+        "useWhen": "مع كشف جرافيك محتاج ضربة سريعة.",
+        "avoidWhen": "فوق الكلام أو في ستايل يمنع الفلاش."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions.tsx",
+          "sha256": "fab27385e7a95d1ad42a7c0ef7038cddf93ba859b56202590fa03bbd89c99faf"
+        }
+      ]
+    },
+    {
+      "key": "overlay:burn",
+      "role": "transition",
+      "labelAr": "حرق فيلم دافي",
+      "explains": "A radial film-burn overlay gives a graphic cut a warm material accent.",
+      "action": "Expand an amber-orange screen-blended radial glow while its opacity rises and falls.",
+      "useWhen": [
+        "An approved analogue or warm editorial identity calls for a rare burn accent."
+      ],
+      "avoidWhen": [
+        "A technical demonstration needs stable evidence colour.",
+        "The speaking presenter or caption reading would be washed out."
+      ],
+      "intents": [
+        "cut"
+      ],
+      "moods": [
+        "warm",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use transitions kind: burn without dir; FilmBurn starts at atFrame for the supplied duration.",
+        "It is a whole-canvas screen-blended effect, not literal fire or a transformation of one object.",
+        "Keep it off the speaking presenter, preserve evidence colour, and finish before signoff/edit end."
+      ],
+      "display": {
+        "explains": "يضيف وهج حرق فيلم دافي للنقلة.",
+        "useWhen": "مع طابع دافي متفق عليه.",
+        "avoidWhen": "لو الألوان أو الكلام محتاجين ثبات."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions.tsx",
+          "sha256": "fab27385e7a95d1ad42a7c0ef7038cddf93ba859b56202590fa03bbd89c99faf"
+        }
+      ]
+    },
+    {
+      "key": "overlay:leak",
+      "role": "transition",
+      "labelAr": "تسريب ضوء دافي",
+      "explains": "A warm light streak gives a graphic cut a photographic accent.",
+      "action": "Sweep a screen-blended warm streak across the canvas from the cue and fade it in a bell curve.",
+      "useWhen": [
+        "A photographic or paper identity permits a restrained warm leak at a deliberate cut."
+      ],
+      "avoidWhen": [
+        "Source skin or evidence colour must remain untouched.",
+        "Decorative light would interrupt a calm technical passage."
+      ],
+      "intents": [
+        "cut"
+      ],
+      "moods": [
+        "warm",
+        "energetic",
+        "reflective"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use transitions kind: leak without dir; the normal renderer uses the streak LightLeak variant starting at atFrame.",
+        "Keep duration within 1-120 frames and finish before signoff and edit end.",
+        "The overlay covers the whole canvas with screen blending; keep it off the speaking presenter and important source detail.",
+        "It supplies atmosphere, not a semantic connection or verified change."
+      ],
+      "display": {
+        "explains": "يعدي تسريب ضوء دافي على النقلة.",
+        "useWhen": "مع طابع تصويري أو ورقي يسمح بيه.",
+        "avoidWhen": "لو هيغير الوش أو ألوان الدليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions.tsx",
+          "sha256": "fab27385e7a95d1ad42a7c0ef7038cddf93ba859b56202590fa03bbd89c99faf"
+        }
+      ]
+    },
+    {
+      "key": "overlay:whiteout",
+      "role": "transition",
+      "labelAr": "فلاش أبيض",
+      "explains": "A centred white flash accents a cut without conveying an explanation.",
+      "action": "Raise a full-canvas white overlay in a bell curve centred on atFrame, then clear it.",
+      "useWhen": [
+        "A rare deliberate graphic cut needs a strong flash allowed by its visual grammar."
+      ],
+      "avoidWhen": [
+        "The presenter is speaking on screen.",
+        "A calm tutorial or readable proof needs uninterrupted legibility."
+      ],
+      "intents": [
+        "cut"
+      ],
+      "moods": [
+        "energetic"
+      ],
+      "energy": [
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use transitions kind: whiteout without dir; manifest duration is 1-120 frames.",
+        "The bell begins half its duration before atFrame; allow time on both sides and finish before signoff.",
+        "It overlays the whole canvas after captions and graphics; do not flash over a speaking presenter or important evidence.",
+        "A flash is dressing, not a claim, result or explanatory scene."
+      ],
+      "display": {
+        "explains": "يفلش الشاشة بالأبيض عند القطعة.",
+        "useWhen": "لنقلة نادرة محتاجة تأكيد قوي.",
+        "avoidWhen": "فوق المتحدث أو دليل محتاج يتقري."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "4066f09a3724df8dff6f293b69e526ca9d8629078250f4ee429d1da9dbf5e3af"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/transitions.tsx",
+          "sha256": "fab27385e7a95d1ad42a7c0ef7038cddf93ba859b56202590fa03bbd89c99faf"
+        }
+      ]
+    },
+    {
+      "key": "scene-entrance:land",
+      "role": "entrance",
+      "labelAr": "نزول العناصر لمكانها",
+      "explains": "Shared element arrival establishes a graphic composition, without explaining its relationship.",
+      "action": "Shared Reveal elements rise about 28 pixels and scale from 0.985 to 1 with a card landing curve and short fade.",
+      "useWhen": [
+        "A card should arrive decisively before its content is read.",
+        "The renderer actually consumes the shared motion variant."
+      ],
+      "avoidWhen": [
+        "An input-to-output transformation or causal link must be shown.",
+        "A style-owned renderer uses its own entrance grammar."
+      ],
+      "intents": [
+        "reveal",
+        "focus"
+      ],
+      "moods": [
+        "editorial",
+        "energetic",
+        "warm"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Select motion: land on a compatible scene; this is an element entrance, not a scene family.",
+        "Shared Reveal starts at frame -2 without the per-order delay of stagger; exact use depends on the renderer.",
+        "Allow a readable settled hold; the entrance does not author the explanation."
+      ],
+      "display": {
+        "explains": "يدخل العناصر ويثبتها في مكانها.",
+        "useWhen": "لبداية كارت واضح قبل الشرح.",
+        "avoidWhen": "لو محتاج تحول يشرح علاقة بين حاجتين."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        }
+      ]
+    },
+    {
+      "key": "scene-entrance:quiet",
+      "role": "entrance",
+      "labelAr": "دخول هادي",
+      "explains": "Restrained shared arrival keeps attention on the content and delivery.",
+      "action": "Use a 14-frame calm ramp with roughly 10 pixels of rise, a small 0.985-to-1 scale change and short opacity ramp.",
+      "useWhen": [
+        "A calm teaching passage needs an unobtrusive card arrival."
+      ],
+      "avoidWhen": [
+        "The requested state change still needs an explanatory scene.",
+        "The style-owned scene has its own explicit entrance contract."
+      ],
+      "intents": [
+        "reveal",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "serious",
+        "reflective",
+        "technical"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use motion: quiet on a compatible scene; quiet is restrained motion, not a static guarantee.",
+        "Shared Reveal still moves and scales elements; inspect the particular renderer before promising timing.",
+        "Keep a readable final hold and use an explanatory family for the actual meaning."
+      ],
+      "display": {
+        "explains": "يدخل الكارت بحركة بسيطة وهادية.",
+        "useWhen": "للشرح الهادي والقراءة المريحة.",
+        "avoidWhen": "لو الاسم الهادي هيخبي شرح ناقص."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        }
+      ]
+    },
+    {
+      "key": "scene-entrance:stagger",
+      "role": "entrance",
+      "labelAr": "دخول العناصر بالتتابع",
+      "explains": "Ordered arrivals guide reading inside an existing composition.",
+      "action": "Delay each shared Reveal by order times four frames, then use the card landing motion and fade.",
+      "useWhen": [
+        "Existing cards have a meaningful reading order and sufficient hold time."
+      ],
+      "avoidWhen": [
+        "A branch, queue or continuously moving payload must be shown.",
+        "The last delayed item would not have time to be read."
+      ],
+      "intents": [
+        "reveal",
+        "grouping"
+      ],
+      "moods": [
+        "editorial",
+        "technical",
+        "energetic"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use motion: stagger where the scene consumes it; shared start is -2 + order * 4.",
+        "It staggers arrivals only and does not make static process cards a stateful workflow.",
+        "Inspect the final delayed element and resolved hold at the actual fps."
+      ],
+      "display": {
+        "explains": "يدخل العناصر واحدة ورا التانية.",
+        "useWhen": "لترتيب القراءة جوه تكوين موجود.",
+        "avoidWhen": "لو آخر عنصر مش هيلحق يتقري."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        }
+      ]
+    },
+    {
+      "key": "style:calligraphic-receipts",
+      "role": "style",
+      "labelAr": "خط عربي وأوراق دليل",
+      "explains": "Supplies a Naskh claim-and-receipt grammar separating a statement from its supplied support.",
+      "action": "Pair a strong Arabic claim with readable receipt sheets, brush rules and quiet composition; evidence comes from actual scene data or named assets.",
+      "useWhen": [
+        "A case study needs to separate a claim from its sourced detail.",
+        "Considered Arabic reading and restrained evidence cards fit the delivery."
+      ],
+      "avoidWhen": [
+        "The receipt appearance would make unsupported claims seem factual.",
+        "The demo needs dense moving controls or another fixed identity."
+      ],
+      "intents": [
+        "claim",
+        "evidence",
+        "scale",
+        "comparison"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Noto Naskh Arabic is the declared default; profile brand colours are not automatic.",
+        "The style supplies no proof or data and owns no family.",
+        "Shared scene layout rules and evidence provenance still apply; inferred PiP needs review."
+      ],
+      "display": {
+        "explains": "هوية خط عربي تفصل الادعاء عن دليله.",
+        "useWhen": "لدليل واضح وقراءة هادية.",
+        "avoidWhen": "لو شكل الإيصال هيغطي ادعاء من غير سند."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/calligraphic-receipts/meta.ts",
+          "sha256": "c45e7491bf604a0cfdcc511f9d109953d3ace231e41295a2316f8317832e849f"
+        },
+        {
+          "path": "engine/src/styles/calligraphic-receipts/theme.ts",
+          "sha256": "8427125ffdc0e5e17cb573038ef6ac3dcdebfa8c3f316f634017dd8c9da91b5d"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "style:campaign-tickets",
+      "role": "style",
+      "labelAr": "تذاكر وأسئلة الجمهور",
+      "explains": "Supplies warm ticket-and-comment grammar for reviewed offers and audience interaction.",
+      "action": "Combine perforated tickets, coral stubs, gold highlights and comment cards; scene data supplies the actual offer and conditions.",
+      "useWhen": [
+        "A real offer or supplied audience question needs a clear invitation.",
+        "Warm campaign material fits the approved identity."
+      ],
+      "avoidWhen": [
+        "The design would imply invented scarcity, comments or customer interest.",
+        "The layout needs presenter PiP inside a takeover."
+      ],
+      "intents": [
+        "cta",
+        "question",
+        "claim",
+        "grouping"
+      ],
+      "moods": [
+        "warm",
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "It owns no family; ticket-offer/comment-stack have separate contracts and factual copy needs support.",
+        "Use its own warm gold palette and Cairo default; profile colours are not automatic.",
+        "PiP is not allowed; retain normal split where the scene permits it.",
+        "A visual ticket does not establish an entitlement, price, scarcity claim or testimonial."
+      ],
+      "display": {
+        "explains": "هوية تذاكر دافية وكروت أسئلة وتعليقات.",
+        "useWhen": "لعرض حقيقي أو سؤال جمهور موثق.",
+        "avoidWhen": "لو هتوحي بندرة أو تعليقات متخيلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/campaign-tickets/meta.ts",
+          "sha256": "b42e02bd2e2a9de94cfc59bb7b54d6fa42ea0f025ab0415d6b1e39d845fd748b"
+        },
+        {
+          "path": "engine/src/styles/campaign-tickets/theme.ts",
+          "sha256": "ee91a4fe07bc0d0da47794dd7176ffe15fe576d7f553fc8ea68464d9378bff62"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "style:grid-glide",
+      "role": "style",
+      "labelAr": "كلمات منزلقة وكروت ثابتة",
+      "explains": "Supplies monochrome word-and-card grammar with fixed layouts and metronomic timing.",
+      "action": "Use whole-word vertical slides, fixed bevel cards, one inverted box and owned push/cut/dip transitions; scene data supplies the actual content.",
+      "useWhen": [
+        "A reviewed tutorial can use chapters, real captures and concise text.",
+        "The identity accepts full-frame owned scenes with presenter shots between them."
+      ],
+      "avoidWhen": [
+        "The presenter must stay visible inside every owned scene.",
+        "The design needs coloured collage, springing words, floating cards or shared flashes/wipes."
+      ],
+      "intents": [
+        "chapter",
+        "tooling",
+        "evidence",
+        "text",
+        "cta"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned glide-chapter/card/lines/comment/follow families require style grid-glide and takeover layout.",
+        "Use the own monochrome palette, Grid Sans default and minimal captions; no automatic profile palette or PiP.",
+        "Owned word timing uses line anchors and metronome rather than canonical source-word entrances; use reviewed recorded or reviewed authored copy according to source mode.",
+        "Use owned push/cut/dip grammar and local hashed captures for glide-card; do not add shared transitions or word blur/scale.",
+        "Only author the actual applicable CTA and complete handle; a style does not invent the ending."
+      ],
+      "display": {
+        "explains": "هوية كلمات بتنزل لمكانها وكروت ثابتة.",
+        "useWhen": "لشرح منظم بلقطات حقيقية ونص مختصر.",
+        "avoidWhen": "لو المتحدث لازم يفضل ظاهر طول المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/theme.ts",
+          "sha256": "f47a6988c8ff755311a02728ef1727ddf3625cd222c0011d32dd54d6f9df3be8"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/styles/scene-renderers.tsx",
+          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/kit.tsx",
+          "sha256": "b1c0607eff678edf7780fb3c0a69819261fce277e723c67a7bde768ca92f08a7"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/card.tsx",
+          "sha256": "c97a3ced02a3f6350ce34a8d37b46668544fdc0881895b2f53cd9add275188af"
+        },
+        {
+          "path": "instructions/styles/grid-glide.md",
+          "sha256": "46ca03764bd484b4d8bc01fcf1d48bae4387b164b3ca9478917671a974e6ca0f"
+        }
+      ]
+    },
+    {
+      "key": "style:judgment-board",
+      "role": "style",
+      "labelAr": "لوحة مقارنة وحكم",
+      "explains": "Supplies a two-column verdict grammar with a clear divider and restrained hierarchy.",
+      "action": "Organise supplied alternatives on serif-led verdict cards; the selected scene authors the supported comparison and conclusion.",
+      "useWhen": [
+        "An opinion or comparison has explicit criteria and supplied alternatives.",
+        "Both sides should remain readable before the conclusion."
+      ],
+      "avoidWhen": [
+        "Red/green styling would falsely settle an unsupported claim.",
+        "The explanation needs a continuously moving input rather than a held board."
+      ],
+      "intents": [
+        "comparison",
+        "claim",
+        "evidence"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "The style owns no family and creates no factual verdict; author supported titles, details and evidence.",
+        "Use its own palette and Plex Display default; profile brand colours are not automatic.",
+        "Shared family layouts apply; inferred PiP still requires source/head review."
+      ],
+      "display": {
+        "explains": "هوية لوحة تخلي البدائل والحكم واضحين.",
+        "useWhen": "لمقارنة بمعايير ونتيجة مدعومة.",
+        "avoidWhen": "لو الألوان هتحكم من غير دليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/judgment-board/meta.ts",
+          "sha256": "89a1e7cd74684fc45521bf99ad9646364f57f2293d96615870d859f27f772892"
+        },
+        {
+          "path": "engine/src/styles/judgment-board/theme.ts",
+          "sha256": "fed3bb5d71db198a279b45f19b6c34cf613f2f60166567e93c2fc78f78b732bf"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "style:kinetic-paper",
+      "role": "style",
+      "labelAr": "ورق وكلمات قوية",
+      "explains": "Supplies poster-like ink-and-paper grammar for emphatic explanations.",
+      "action": "Use heavy poster type, ink frames, signal strips and deliberate staggered reveals; a supported scene authors the actual explanation.",
+      "useWhen": [
+        "A strong spoken idea benefits from bold typographic hierarchy.",
+        "A tutorial or comparison stays readable in an emphatic paper composition."
+      ],
+      "avoidWhen": [
+        "The identity requires quiet receipts or understated photographic material.",
+        "Large type would replace evidence or cover the source face."
+      ],
+      "intents": [
+        "text",
+        "claim",
+        "comparison",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "It owns no family; kinetic-text remains a separate literal-recorded-word mechanism.",
+        "The default font is Plex Display; the style uses its own palette rather than automatic profile colours.",
+        "PiP policy is inferred, so verify real geometry and creator fit rather than treating it as approval."
+      ],
+      "display": {
+        "explains": "هوية ورق وخط قوي وكشف مقصود.",
+        "useWhen": "لفكرة محتاجة حضور واضح للكلام.",
+        "avoidWhen": "لو القوة هتغطي الدليل أو هدوء الفيديو."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/kinetic-paper/meta.ts",
+          "sha256": "927ff46319e59656581a9b917b6a98c618b28bf70497cc9c0fd17001a0f32586"
+        },
+        {
+          "path": "engine/src/styles/kinetic-paper/theme.ts",
+          "sha256": "e26eabb6d4638fe35b6daa832d8a8606e3a549c5c4e5c43c38a8c7e8fbe0aa09"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "style:liquid-glass",
+      "role": "style",
+      "labelAr": "زجاج مضيء وعدسة",
+      "explains": "Supplies dark aurora and translucent-panel grammar for grouped details.",
+      "action": "Use glass panels, product sans type and lens rims; token-lens or another family supplies actual grouping and focus.",
+      "useWhen": [
+        "A technical explanation groups ideas or focuses on supplied details.",
+        "A dark luminous UI treatment fits the approved identity."
+      ],
+      "avoidWhen": [
+        "Glow would reduce Arabic or source-detail contrast.",
+        "A takeover needs presenter PiP or the lens look would imply real optical analysis."
+      ],
+      "intents": [
+        "grouping",
+        "focus",
+        "scale",
+        "comparison"
+      ],
+      "moods": [
+        "technical",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Grammar is not an inspection engine; lens scenes must point to supplied content.",
+        "Use the style own dark palette and Cairo default, not automatic profile colours.",
+        "PiP is not allowed; use split only where the selected family supports it.",
+        "Review actual glass-panel contrast and do not imply verified analysis from decorative magnification."
+      ],
+      "display": {
+        "explains": "هوية زجاج وعدسة لتفاصيل متجمعة.",
+        "useWhen": "لشرح تقني فيه تركيز على تفصيلة.",
+        "avoidWhen": "لو الوهج هيضعف قراءة الدليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/liquid-glass/meta.ts",
+          "sha256": "f7348e12887042979dfedebcc2852637b91b1417a3c295b53296dd59f55ca595"
+        },
+        {
+          "path": "engine/src/styles/liquid-glass/theme.ts",
+          "sha256": "95029ff8f86898d6a193a625e94e7e5773f63e8000ee45201021dbab5cdd6b9b"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "style:magazine-interview",
+      "role": "style",
+      "labelAr": "حوار بفصول واقتباسات",
+      "explains": "Supplies magazine-column grammar with chapters, quote rules and speaker attribution.",
+      "action": "Use editorial headings and chapter rules with a legible speaker name/role; reviewed scene data supplies quotes.",
+      "useWhen": [
+        "An interview or spoken opinion needs chapter structure and correctly attributed quotations.",
+        "Restrained editorial composition supports the speaker."
+      ],
+      "avoidWhen": [
+        "The quote, speaker identity or role would be fabricated.",
+        "The takeover needs PiP or assumes an unsupplied cover foreground."
+      ],
+      "intents": [
+        "chapter",
+        "claim",
+        "evidence",
+        "text"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "reflective"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Grammar supplies no quote or identity; chapter-quote needs reviewed wording and supported attribution.",
+        "Use its own palette, Cairo default and minimal captions; profile colours are not automatic.",
+        "PiP is not allowed; use split with clear attribution where the selected family permits it.",
+        "Optional cover foreground requires the separate supplied transparent PNG contract; style selection does not mask a subject."
+      ],
+      "display": {
+        "explains": "هوية مجلة بفصول واقتباس وصاحبه واضح.",
+        "useWhen": "لحوار محتاج تنظيم ونسبة صحيحة.",
+        "avoidWhen": "لو الاقتباس أو هوية صاحبه مش موثقين."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/magazine-interview/meta.ts",
+          "sha256": "b3dc040546e68adf6015a9181ec8b529ed3043bdc10929e80e3006f387e6b17d"
+        },
+        {
+          "path": "engine/src/styles/magazine-interview/theme.ts",
+          "sha256": "026ac1473c8156015be2e4a5a47b1fdcdbfea847f122bad1006bb9ff37b5e2e0"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "style:one-shot",
+      "role": "style",
+      "labelAr": "شرح متصل في لقطة واحدة",
+      "explains": "Supplies a continuous tutorial grammar of full-frame UI worlds and shaped bridges, not literal footage or product proof.",
+      "action": "Use cream, ink and one accent, numbered steps and continuous world bridges; the owned one-shot scene supplies the validated chain and pull-back finale.",
+      "useWhen": [
+        "A supported authored tutorial chain should feel visually uninterrupted.",
+        "The actual workflow fits current drop/field/toggle/stat/work contracts truthfully."
+      ],
+      "avoidWhen": [
+        "Standalone four-second beats or a permanently visible presenter are required.",
+        "Synthetic UI worlds would imply verified captures or unimplemented product capabilities."
+      ],
+      "intents": [
+        "process",
+        "transform",
+        "result",
+        "tooling"
+      ],
+      "moods": [
+        "technical",
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "The owned one-shot family requires style one-shot and takeover; PiP is not allowed, so use presenter shots between scenes.",
+        "Use its own palette, Noto Kufi Arabic default and minimal captions; profile colours are not automatic.",
+        "Follow the step-chain schema and chainIssues with duration >= oneShotMinFrames(data,fps), rather than arbitrary short beats.",
+        "UI worlds and result words are authored illustrations; use reviewed copy and supported numbers without claiming live captures or measured results.",
+        "Returning to the home view is a playback loop, not a semantic feedback mechanism."
+      ],
+      "display": {
+        "explains": "هوية شرح متصل كل خطوة تفتح اللي بعدها.",
+        "useWhen": "لسلسلة تعليمية عقودها ومحتواها مدعومين.",
+        "avoidWhen": "لو محتاج ٤ ثواني أو متحدث ظاهر طول الوقت."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/one-shot/meta.ts",
+          "sha256": "b237bf17a2bee56ba7590b988b41e1d1e555d0f6ed7ca650f1b5cb3e62432e51"
+        },
+        {
+          "path": "engine/src/styles/one-shot/theme.ts",
+          "sha256": "96c6215e97184b882133ac1fc69721d8a0c1634ae4277ced7f6df29fcd91c917"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/styles/scene-renderers.tsx",
+          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/schema.ts",
+          "sha256": "8c27293a35fde2c64d43578cb93253c18e01056a01713b21d4560e7873628c79"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/math.ts",
+        "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/scene.tsx",
+          "sha256": "496d83b06167b506e039133d6884c752b0daaf71dabab4523d3a1b9446d1dc36"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/worlds.tsx",
+        "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
+        }
+      ]
+    },
+    {
+      "key": "style:cartoon",
+      "role": "style",
+      "labelAr": "شخصية كارتون تشرح بدالك",
+      "explains": "Supplies an illustrated-narrator explainer grammar: alternating paper and night acts, a word-built headline, a top band with an honest counter and generic cards, with the creator never on screen.",
+      "action": "Use the act palettes, the Plex display face with a serif italic for Latin words and minimal captions; the owned cartoon and cartoon-ending scenes carry the whole edit.",
+      "useWhen": [
+        "A recorded explainer or tutorial should be told by an illustrated narrator instead of the creator’s face.",
+        "The ideas fit the generic card vocabulary and the recording states every number it shows."
+      ],
+      "avoidWhen": [
+        "The presenter must stay visible, or the passage needs real footage beyond a monitor card.",
+        "There is no recording to drive the words, the mouth and the timing."
+      ],
+      "intents": [
+        "process",
+        "tooling",
+        "comparison",
+        "code",
+        "reveal",
+        "chapter"
+      ],
+      "moods": [
+        "calm",
+        "playful",
+        "technical",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "cartoon"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "The owned families require style cartoon, takeover and sourceKind \"cartoon\"; PiP is not allowed and brand colours are not applied.",
+        "The character comes from preferences.character or the generic default; it is never a photo.",
+        "Follow the word-anchor contracts in instructions/styles/cartoon.md; the timeline validator names any sentence, act or card to fix."
+      ],
+      "display": {
+        "explains": "هوية شرح بشخصية مرسومة وخلفيات بتتقلب.",
+        "useWhen": "لشرح من غير ما تظهر بصوتك المسجل.",
+        "avoidWhen": "لو لازم تظهر أو مفيش تسجيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/cartoon/meta.ts",
+          "sha256": "6e1a94a0452f3c061a4b10dc7719a5935ce97d6959b216b659c64f0e01851554"
+        },
+        {
+          "path": "engine/src/styles/cartoon/theme.ts",
+          "sha256": "cb826a89ddfe65b5a71f8885ccb264c420708243990e81193149e8cc49d60210"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/styles/scene-renderers.tsx",
+          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/schema.ts",
+          "sha256": "503d1e499bfc8a1e6beadf972ff086bad81441f87e321e59719872d82a39f2df"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/math.ts",
+          "sha256": "dfd84d882ad5163a224fe61f93706c4ebaaec3befcb0e2c6ed12c62673acddff"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/scene.tsx",
+          "sha256": "7b438b33cd254c8ae5a5bf006b88121d17811fbf13e021fe88defe560dccf6c5"
+        }
+      ]
+    },
+    {
+      "key": "style:paper-collage",
+      "role": "style",
+      "labelAr": "كولاج ورقي مترابط",
+      "explains": "Supplies layered taped-paper grammar whose meaningful pieces form a coherent whole.",
+      "action": "Use taped cards, tabs, readable overlap and restrained depth; a suitable scene preserves object identity through assembly or comparison.",
+      "useWhen": [
+        "A story or comparison has pieces with distinct explanatory roles.",
+        "The video already has a fixed paper-collage identity."
+      ],
+      "avoidWhen": [
+        "Extra scraps add no relationship or hide labels.",
+        "Paper texture would alter the presenter or a profile palette is being forced onto the style."
+      ],
+      "intents": [
+        "grouping",
+        "comparison",
+        "evidence",
+        "result"
+      ],
+      "moods": [
+        "warm",
+        "editorial",
+        "calm",
+        "energetic"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "This is grammar, not an assembly mechanism; message-board or a suitable authored scene supplies actual continuity.",
+        "brand:false and the Tajawal default preserve the style own palette/material rather than automatic profile colours.",
+        "Split/takeover support depends on the chosen family; inferred PiP needs real face/layout review.",
+        "Keep paper texture on graphics and tie sparse paper sounds to visible action."
+      ],
+      "display": {
+        "explains": "هوية قصاصات بتوضح صلة الأجزاء.",
+        "useWhen": "للتجميع أو مقارنة نفس الموضوع.",
+        "avoidWhen": "لو القصاصات هتزود زحمة من غير معنى."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/paper-collage/meta.ts",
+          "sha256": "0f220d13c98a7a47db6c44c7a943ac6bd1c8b2292e746f4e63422ba0566ac94b"
+        },
+        {
+          "path": "engine/src/styles/paper-collage/theme.ts",
+          "sha256": "baf48ce5fe4b4e1a6bd861e3d88bde209135d5cdae0c8ce0b1b8b5550311c821"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        },
+        {
+          "path": "instructions/styles/paper-collage.md",
+          "sha256": "729133e30cb5ff960661785275f4efd2a091d24581492bb7c2ce97ceb1f07a06"
+        }
+      ]
+    },
+    {
+      "key": "style:scrapbook-route",
+      "role": "style",
+      "labelAr": "رحلة ورقية بمحطات",
+      "explains": "Supplies paper-route grammar with station markers and optional taped photos.",
+      "action": "Arrange route-paper cards and numbered markers as a journey; route-stops supplies ordered cues and optional images.",
+      "useWhen": [
+        "A tutorial or story follows supplied ordered milestones.",
+        "Optional photos have clear roles and provenance."
+      ],
+      "avoidWhen": [
+        "A decorative route would be presented as a real geographic map.",
+        "The plan needs branching, feedback or a moving payload absent from the selected family."
+      ],
+      "intents": [
+        "chronology",
+        "process",
+        "grouping"
+      ],
+      "moods": [
+        "warm",
+        "editorial",
+        "reflective"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "The style is grammar, not map geometry or a conditional workflow; use an actual scene contract.",
+        "Its paper palette and Tajawal default do not automatically inherit profile colours.",
+        "PiP is not allowed; shared scene layout limits still apply.",
+        "Named sources are required for optional photos; geography needs verified geometry and labels."
+      ],
+      "display": {
+        "explains": "هوية رحلة على ورق بمحطات واضحة.",
+        "useWhen": "لخطوات أو محطات مرتبة وليها مصدر.",
+        "avoidWhen": "لو الزخرفة هتتقدم كخريطة حقيقية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/scrapbook-route/meta.ts",
+          "sha256": "f8c58007c494d33683e0b6c2072d8668ffbe3a86f801115a9720c27852ef831c"
+        },
+        {
+          "path": "engine/src/styles/scrapbook-route/theme.ts",
+          "sha256": "4d3abf271d9fd095aa2d0e5d7befb113cc6c680f01886b9141c02fb82a555f39"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "style:section-deck",
+      "role": "style",
+      "labelAr": "فصول وخطوات منظمة",
+      "explains": "Supplies a dark section grammar with strong headings and held clause captions.",
+      "action": "Compose kicker, accent answer, semantic chips and ordered held sections; a process/comparison scene supplies the relationship.",
+      "useWhen": [
+        "The explanation divides naturally into stages, chapters or comparison criteria.",
+        "Calm reading and supported palette cycling serve the material."
+      ],
+      "avoidWhen": [
+        "Each sentence would become an unrelated slide.",
+        "The layout needs presenter PiP inside a takeover."
+      ],
+      "intents": [
+        "chapter",
+        "process",
+        "comparison",
+        "grouping"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "The style owns no scene family; use shared split/takeover contracts.",
+        "Brand colours follow the supported three-ground deck policy rather than one colour per sentence.",
+        "Clause captions and static pills are defaults; caption pop and presenter PiP are not allowed."
+      ],
+      "display": {
+        "explains": "هوية فصول بعناوين وإجابات واضحة.",
+        "useWhen": "لشرح متقسم مراحل أو معايير مقارنة.",
+        "avoidWhen": "لو هنحول كل جملة لسلايد منفصلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/section-deck/meta.ts",
+          "sha256": "caeb66fc1dc8b3be3f934b2f5119a1e90b4a19c25b7455ee5c70992ccc63c6a9"
+        },
+        {
+          "path": "engine/src/styles/section-deck/theme.ts",
+          "sha256": "f4ffd8b3d8091342b7a17f78e11f08c806be952172c01da8f3523eda411e1984"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        },
+        {
+          "path": "instructions/styles/section-deck.md",
+          "sha256": "46e5955e14b84116c09b72cfd9384e0614dc65ade8fb83c81c584141a045fb21"
+        }
+      ]
+    },
+    {
+      "key": "style:split-canvas",
+      "role": "style",
+      "labelAr": "شرح بصري مع المتحدث",
+      "explains": "Supplies warm product-UI grammar for simultaneous presenter delivery and visual explanation.",
+      "action": "Use a product canvas above a continuous presenter window, rounded cards, accent rules and stable caption pills; the selected scene supplies the explanatory action.",
+      "useWhen": [
+        "A presenter and one demonstrated graphic idea should remain visible together.",
+        "Supported profile brand colours belong to the approved identity."
+      ],
+      "avoidWhen": [
+        "The upper graphic only repeats captions.",
+        "Evidence would be unreadable above the presenter or a different style is fixed."
+      ],
+      "intents": [
+        "process",
+        "evidence",
+        "focus",
+        "tooling",
+        "comparison"
+      ],
+      "moods": [
+        "technical",
+        "warm",
+        "energetic"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Grammar alone does not supply a process or screen scene; inspect each selected family layout.",
+        "Brand support uses one ground with primary/accent highlights alternating under the supported profile policy.",
+        "Caption pills are static and reject caption-emphasis:pop; declared PiP still needs real source/head review."
+      ],
+      "display": {
+        "explains": "هوية UI دافية والشرح فوق المتحدث.",
+        "useWhen": "لشرح فيه متحدث وديمو واضح معاه.",
+        "avoidWhen": "لو الديمو هيصغر ومش هيتقري."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/split-canvas/meta.ts",
+          "sha256": "a159deac3f5fe5a14bb606e8c7ba2d1b4bfae08a9abd4b8720931265a4eabb0f"
+        },
+        {
+          "path": "engine/src/styles/split-canvas/theme.ts",
+          "sha256": "8df7ee508d2b0aba014fa95f92cfe0d809686a8624535f6b832da64ecf2683aa"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        },
+        {
+          "path": "instructions/styles/split-canvas.md",
+          "sha256": "01755839282688a378d4cff6f34221870e474b97cf5d3865f3a7d5de95ebcbee"
+        }
+      ]
+    },
+    {
+      "key": "style:stepped-editorial",
+      "role": "style",
+      "labelAr": "تكوين تحريري متدرج",
+      "explains": "Supplies an editorial-spread grammar with offset plates and marked supporting detail.",
+      "action": "Use serif-led headings, offset plates and yellow-marker annotations while the scene carries the actual argument.",
+      "useWhen": [
+        "An opinion or case study moves from a claim to marked support.",
+        "Editorial hierarchy connects successive thoughts without replacing their source."
+      ],
+      "avoidWhen": [
+        "Offsets or marker strokes make evidence harder to read.",
+        "A fixed UI or collage identity would change merely for variety."
+      ],
+      "intents": [
+        "claim",
+        "evidence",
+        "focus",
+        "chapter"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "reflective"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "This style supplies composition and annotations, not argument truth or object continuity.",
+        "Its own palette and Plex Display default do not automatically inherit profile colours.",
+        "Shared layouts and head clearance remain required; PiP support is inferred."
+      ],
+      "display": {
+        "explains": "هوية تحريرية تبرز الكلام والدليل بعلامات.",
+        "useWhen": "لرأي أو دراسة حالة ليها سند واضح.",
+        "avoidWhen": "لو العلامات هتصعب القراءة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/stepped-editorial/meta.ts",
+          "sha256": "088b476514424caf3d09d9172cb32485eb5d80b2737fc6069488fc8d82917852"
+        },
+        {
+          "path": "engine/src/styles/stepped-editorial/theme.ts",
+          "sha256": "4201d72e1ac01c3e41ded0502dc48044ce7e1e7d866f8d3f45eb26748fe0b696"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+        },
+        {
+          "path": "engine/src/creative-kit/primitives.tsx",
+          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "word-entrance:fade",
+      "role": "entrance",
+      "labelAr": "ظهور الكلمات المسجلة بهدوء",
+      "explains": "A short opacity fade introduces recorded tokens without translation or scaling.",
+      "action": "Fade each literal word to opaque over four frames at its recorded entry cue.",
+      "useWhen": [
+        "A quiet phrase needs kinetic emphasis with stable token positions."
+      ],
+      "avoidWhen": [
+        "The words or timing are not reviewed against the recording.",
+        "A silent authored scene needs free text instead of source-word selection."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "reveal"
+      ],
+      "moods": [
+        "calm",
+        "serious",
+        "reflective"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use enter: fade in scene:kinetic-text with actual reviewed sourceIndices, language and scene headings.",
+        "Selected words remain inside the scene and outside cut boundaries; captions remain a separate existing stream.",
+        "The normal fade has no rise/scale, but individual pop emphasis overrides it.",
+        "Source-free graphics cannot supply a fabricated transcript for this effect."
+      ],
+      "display": {
+        "explains": "يظهر كلمات التسجيل بهدوء من غير طلوع.",
+        "useWhen": "لجملة هادية عايزة تأكيد مقروء.",
+        "avoidWhen": "لو مافيش كلمات تسجيل مراجعة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "word-entrance:pop",
+      "role": "entrance",
+      "labelAr": "دخول نابض للكلمات المسجلة",
+      "explains": "A spring scale entrance gives literal spoken words an energetic arrival.",
+      "action": "Start each selected token at scale 0.55 and spring to full size with a two-frame opacity entrance.",
+      "useWhen": [
+        "An energetic recorded phrase supports strong word arrivals with space around tokens."
+      ],
+      "avoidWhen": [
+        "Calm sustained reading is the priority.",
+        "The words are invented, reordered or absent from the recording."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use scene:kinetic-text enter: pop with 1-32 valid literal sourceIndices and reviewed timing.",
+        "Scale whole measured tokens, not Arabic characters; keep source wording and order.",
+        "Check spring bounds and distinguish this from caption-emphasis:pop.",
+        "It cannot create literal words for a source-free graphics project."
+      ],
+      "display": {
+        "explains": "يدخل كلمات التسجيل بنبضة واضحة.",
+        "useWhen": "لكلام نشيط يستحمل حركة.",
+        "avoidWhen": "لشرح هادي أو كلام مش مسجل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "word-entrance:rise",
+      "role": "entrance",
+      "labelAr": "طلوع الكلمات المسجلة",
+      "explains": "A short rise introduces selected literal recorded words in kinetic text.",
+      "action": "Bring each token upward from 0.42 of its measured height with a short opacity ramp on the recorded entry frame.",
+      "useWhen": [
+        "A reviewed spoken phrase benefits from readable restrained word-led emphasis."
+      ],
+      "avoidWhen": [
+        "The copy is unrecorded authored text for silent graphics.",
+        "Another word layer would replace the needed diagram."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "reveal"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Set enter: rise in scene:kinetic-text with 1-32 strictly ordered literal sourceIndices and lang ar/en.",
+        "Words must survive cuts and lie inside the scene; preserve reviewed content and timing.",
+        "The rise uses six frames and opacity uses three; individual pop emphasis overrides the base entrance.",
+        "This is not unrestricted TypeOn and cannot manufacture a graphics transcript."
+      ],
+      "display": {
+        "explains": "يطلع كلمات التسجيل لفوق وقت نطقها.",
+        "useWhen": "لتأكيد جملة مسجلة بحركة بسيطة.",
+        "avoidWhen": "لكلام مؤلف من غير تسجيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    }
+  ]
+}

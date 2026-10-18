@@ -10,7 +10,7 @@ try {
     ${STYLE_IDS.join('|')}
     Legacy section-deck/split-canvas full DNA slugs also remain accepted.
     Only those two measured audio profiles have an LRA reference upper bound.
-  --under 5 --lufs -14 --tp -1      Measured SFX placement and unchanged delivery targets.
+  --under 7 --lufs -14 --tp -1      Effects peak 7 dB under the voice peak (9 to 10 for dense effects or music); delivery targets unchanged.
   --ceilPad 0.8                    Sample-peak headroom below the true-peak target.
   --tighten 1                      Existing optional gentle glue compressor; default off.
   --voice off|clean|denoise        Dialogue cleanup before ducking; default off (unchanged graph).

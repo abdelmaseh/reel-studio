@@ -51,7 +51,7 @@ test('evidence wipe bounds authored timing and media references',()=>{
 });
 test('every registered style can compete automatically and explicit/profile choices win',()=>{
   const candidates=recommendEditorStyle(brief()).candidates.map(candidate=>candidate.style);
-  assert.equal(new Set(candidates).size,12);
+  assert.equal(new Set(candidates).size,14);
   assert.equal(recommendEditorStyle(brief('story','calm')).style,'paper-collage');
   assert.equal(recommendEditorStyle(brief('opinion','editorial')).style,'judgment-board');
   const fixed=brief();fixed.preferences.style={mode:'fixed',value:'liquid-glass'};
@@ -80,7 +80,7 @@ test('reusable motion components and normal PreparedEdit entry bundle without pr
   const output=buildSync({entryPoints:[fileURLToPath(new URL('../engine/src/prepared-edit/PreparedEdit.tsx',import.meta.url))],bundle:true,write:false,platform:'browser',format:'esm',logLevel:'silent'});
   assert.ok(output.outputFiles[0].contents.length>0);
 });
-test('all fifteen concepts reach validated takeover scenes and editable discriminated configurations',()=>{
+test('all concepts reach validated takeover scenes and editable discriminated configurations',()=>{
   for(const concept of CATALOG){
     const input=scene('motion-concept',{concept:concept.id,config:catalogDemo(concept.id)});
     input.durationInFrames=concept.defaultFrames;
@@ -92,7 +92,7 @@ test('all fifteen concepts reach validated takeover scenes and editable discrimi
   }
   const data=fieldsForFamily('motion-concept');
   assert.equal(data[0].kind,'union');
-  assert.equal(data[0].variants.length,15,'Every concept config must remain editable without raw JSON');
+  assert.equal(data[0].variants.length,CATALOG.length,'Every concept config must remain editable without raw JSON');
 });
 test('source-free graphics accept reviewed copy only with explicit mode and complete takeover coverage',()=>{
   const input=scene('motion-concept',{concept:'panel-reveal',config:catalogDemo('panel-reveal')});input.durationInFrames=240;

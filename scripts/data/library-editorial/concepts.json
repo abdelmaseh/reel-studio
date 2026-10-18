@@ -1,0 +1,1491 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "key": "concept:button-to-window",
+      "role": "explanation",
+      "labelAr": "من زرار لواجهة منتج",
+      "explains": "A single product action opens into an illustrative interface and its three preview operations.",
+      "action": "A cursor presses a CTA pill; that same pill expands into a window, three checked rows arrive, and a progress track fills to 100 percent.",
+      "useWhen": [
+        "Connect a named CTA to the interface a viewer should expect next.",
+        "Show an illustrative three-part product operation with a clear resolved state."
+      ],
+      "avoidWhen": [
+        "The claim needs a real product recording or a verified completion time.",
+        "A button should lead to several alternative routes or a complex branching workflow."
+      ],
+      "intents": [
+        "cta",
+        "transform",
+        "reveal"
+      ],
+      "moods": [
+        "technical",
+        "energetic"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide ctaLabel up to 24 characters, productName up to 30, and exactly three previewLines up to 52 each; productIcon, progressLabel and badge are optional.",
+        "The window is authored UI, not an embedded live application or screen recording; its checks and 0-to-100 progress are animation states.",
+        "Use takeover layout; the source floor is 150 frames at 30 fps, and the once-mode resolved hold starts at 72 percent of the scene."
+      ],
+      "display": {
+        "explains": "زرار بيتحوّل لواجهة فيها ٣ خطوات واضحة.",
+        "useWhen": "لما عايز تربط الضغط على الزرار باللي هيظهر بعده.",
+        "avoidWhen": "لو محتاج تثبت تشغيل المنتج الحقيقي أو سرعة إنجازه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/button-to-window/schema.ts",
+          "sha256": "bd550b1aa5b75d13a603e9923bd4db982b182ae94feba1dbbdadaa80cb047ed7"
+        },
+        {
+          "path": "engine/src/motion-concepts/button-to-window/math.ts",
+          "sha256": "6cc2167948914565bd4276fb6fca0512300f07bb37eb76b8218cc53d470087e2"
+        },
+        {
+          "path": "engine/src/motion-concepts/button-to-window/scene.tsx",
+          "sha256": "3f35037b920c3dab3303f60740ea6863edc62dd3e078516af7f38a1b6a034758"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:prompt-to-results",
+      "role": "explanation",
+      "labelAr": "طلب واحد و٣ نتايج",
+      "explains": "One written instruction is presented as the origin of three related outputs.",
+      "action": "The prompt types into an input field, its send control presses, and three numbered result cards arrive in a stagger with connecting trunk and stubs.",
+      "useWhen": [
+        "Explain how one authored prompt can lead to three distinct deliverables.",
+        "Keep the original instruction visible while viewers read its output categories."
+      ],
+      "avoidWhen": [
+        "The story is a sequence in which result one becomes the input to result two.",
+        "The viewer needs evidence that an AI actually generated these outputs or needs conditional branches."
+      ],
+      "intents": [
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply one prompt up to 90 characters and exactly three results, each with title up to 32 and detail up to 76 characters.",
+        "Outputs are supplied copy; the scene does not run an AI model. Its one-to-many connectors do not encode yes/no decisions.",
+        "Keep enough time to read the typed prompt and all result details; the source floor is 90 frames at 30 fps and the once hold starts at 70 percent."
+      ],
+      "display": {
+        "explains": "طلب بيتكتب وبعده تظهر ٣ نتايج مرتبطة بيه.",
+        "useWhen": "لما أمر واحد بيطلع كذا مخرج مختلف.",
+        "avoidWhen": "لو بتشرح خطوات متتابعة أو محتاج إثبات لنتيجة AI حقيقية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/prompt-to-results/schema.ts",
+          "sha256": "204ed0b0cd22ad7c569284b1dca027d367de1adc65d7ae5c7a2d01aaaa7876e1"
+        },
+        {
+          "path": "engine/src/motion-concepts/prompt-to-results/math.ts",
+          "sha256": "c72d838c4a4b9802586e7e2a3c47a96c514b491e46c23cce74a4444101bf5021"
+        },
+        {
+          "path": "engine/src/motion-concepts/prompt-to-results/scene.tsx",
+          "sha256": "95766770f6b95c4ffb4c823c2d7f21c185fddf89674c0c58f116e476b404a9c3"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:brief-to-workspace",
+      "role": "explanation",
+      "labelAr": "بريف بيفتح مساحة شغل",
+      "explains": "A short brief expands into an organized workspace with five named parts.",
+      "action": "A compact brief card lifts and expands; its title travels into the window header while five numbered panels grow into one wide panel and a two-by-two group.",
+      "useWhen": [
+        "Unpack a concise project brief into five coordinated planning areas.",
+        "Make the change from a compact input to a structured workspace visible while preserving its title."
+      ],
+      "avoidWhen": [
+        "Five panels would invent planning areas the source does not support.",
+        "The explanation needs a time sequence, ownership handoffs, or five full application screenshots."
+      ],
+      "intents": [
+        "transform",
+        "grouping"
+      ],
+      "moods": [
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide briefTitle up to 48 characters and exactly five panels with label up to 18 and detail up to 40 each.",
+        "The first panel spans the workspace width; four smaller panels share the lower grid. There is no image or live workspace slot.",
+        "Allow a readable five-panel resolution: the source floor is 90 frames at 30 fps and the once hold starts at 66 percent."
+      ],
+      "display": {
+        "explains": "بريف صغير بيتوسع لمساحة شغل من ٥ أجزاء.",
+        "useWhen": "لما عايز تفكّ بريف لخطة مترتبة قدام المشاهد.",
+        "avoidWhen": "لو الفكرة خطوات زمنية أو محتاجة شاشات برنامج حقيقية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/brief-to-workspace/schema.ts",
+          "sha256": "8a300c7b7cf8e49bc1f6db2cb98e6ce1f5beb4d0f8ded93808c2ec362405f569"
+        },
+        {
+          "path": "engine/src/motion-concepts/brief-to-workspace/math.ts",
+          "sha256": "187329c9eef79c1636db30893aeb33f9cc991f10231a68e10ed42bb88938e5ad"
+        },
+        {
+          "path": "engine/src/motion-concepts/brief-to-workspace/scene.tsx",
+          "sha256": "a8a6002832c879e5b8b70a6ff716389c46bfadd4e2ed262cf44e7708e59400bd"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:department-tabs",
+      "role": "explanation",
+      "labelAr": "نفس الفكرة بين الأقسام",
+      "explains": "Several departments each have their own examples within one shared interface.",
+      "action": "A sliding active pill visits the department tabs in order; the example rows swap underneath, their checks draw, and visited tabs gain check marks.",
+      "useWhen": [
+        "Show how one system or automation theme applies differently across three to five departments.",
+        "Organize department-specific examples without drawing a workflow between departments."
+      ],
+      "avoidWhen": [
+        "The departments are routing alternatives selected by a condition.",
+        "Check marks would misleadingly imply completed or verified operational work."
+      ],
+      "intents": [
+        "grouping"
+      ],
+      "moods": [
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply three to five tabs, each with a label up to 13 characters and two or three examples up to 56 each; tab labels have an additional two-line fit rule and example words are at most 24 characters.",
+        "One department body is visible at a time. The tab sweep is a presentation order, not an automated decision or handoff.",
+        "The catalog floor is 180 frames at 30 fps; scene math also defines 30*n+30 frames for n tabs. The normal concept path should retain its catalog floor, with a final once hold of 24 percent."
+      ],
+      "display": {
+        "explains": "تبويبات بتتنقل بين الأقسام وكل قسم له أمثلته.",
+        "useWhen": "لما نفس النظام بيفيد كذا قسم بطرق مختلفة.",
+        "avoidWhen": "لو عايز مسارات شرطية أو إثبات إن الشغل اتنفّذ."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/department-tabs/schema.ts",
+          "sha256": "b76ffd2664fb754e7a9cffd320618b398446a426e9649f5842a6b446a52ad4d0"
+        },
+        {
+          "path": "engine/src/motion-concepts/department-tabs/math.ts",
+          "sha256": "d226d134c22fc023a48ac1e4448f16f7866856d8551c5ec1ff30c2735352f74e"
+        },
+        {
+          "path": "engine/src/motion-concepts/department-tabs/scene.tsx",
+          "sha256": "d9d02301de33826f037a3572ef54341f5c831e8e3717bf5f3aba99573aa06bbd"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:data-morph",
+      "role": "explanation",
+      "labelAr": "نفس البيانات من أعمدة لخط",
+      "explains": "The same six data values change from individual bars into a connected trend, with the final point emphasized.",
+      "action": "Six bars grow, shrink into markers at the same value heights, and connect as a line; the last point gains a halo, a leader and supplied result copy.",
+      "useWhen": [
+        "Turn six verified ordered observations from a magnitude view into a trend view.",
+        "Focus a data explanation on its last observation while preserving the earlier values."
+      ],
+      "avoidWhen": [
+        "The six values are unrelated categories whose connection would imply a false time trend.",
+        "Negative values, explicit tick labels or a numerically derived finalKpi are necessary."
+      ],
+      "intents": [
+        "evidence",
+        "scale",
+        "transform",
+        "result"
+      ],
+      "moods": [
+        "serious",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Provide exactly six values from 0 to 1e12, metricLabel up to 30, finalKpi up to 14 and resultLabel up to 28 characters; unit is optional up to 12.",
+        "Heights normalize to the largest supplied value and chart order stays left to right even with Arabic copy. There are no supplied x-axis category or date labels.",
+        "finalKpi and resultLabel are independent caller text, not computed from values. The trend glyph uses first versus last value; verify that the supplied wording agrees.",
+        "Use at least the 90-frame source floor at 30 fps, then judge reading time for the real values and the once hold beginning at 74 percent."
+      ],
+      "display": {
+        "explains": "٦ قيم بتتحوّل من أعمدة لخط يوضّح اتجاهها.",
+        "useWhen": "لما عندك بيانات موثوقة ومرتبة وعايز تبرز آخر نقطة.",
+        "avoidWhen": "لو وصل الفئات ببعض هيخترع ترند أو الأرقام فيها سالب."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/data-morph/schema.ts",
+          "sha256": "3683e9199ff8021e234adb5c613775df3e07418c54df5330da875fcd2e8a2abc"
+        },
+        {
+          "path": "engine/src/motion-concepts/data-morph/math.ts",
+          "sha256": "15fca76a2763044e2eb433fe31c7f00876516304ff13237558562b48c7b5332c"
+        },
+        {
+          "path": "engine/src/motion-concepts/data-morph/scene.tsx",
+          "sha256": "d3d37709efc51ee8ab712a7ddb0f289bce9e02b505d2502bb865a71fbec1acd0"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:kpi-zoom",
+      "role": "explanation",
+      "labelAr": "المؤشر الأهم يطلع لقدام",
+      "explains": "One chosen metric becomes the visual priority within a five-metric dashboard.",
+      "action": "Five metric tiles appear and count toward their supplied values; the chosen tile expands into a hero card while the other four dim and recede.",
+      "useWhen": [
+        "Move from a dashboard overview to one specifically chosen result.",
+        "Emphasize a metric value and its separately supplied percentage change."
+      ],
+      "avoidWhen": [
+        "All five metrics must remain equally readable for a fair comparison.",
+        "Lower is better and the built-in negative-change bad color would reverse the intended meaning."
+      ],
+      "intents": [
+        "focus",
+        "evidence",
+        "result"
+      ],
+      "moods": [
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Supply exactly five tiles: name up to 24 characters, value from -9999999 to 9999999 with at most two decimals, and change from -999.9 to 999.9; choose focusIndex 0 through 4.",
+        "The optional unit, up to four characters, is applied to the focus tile only. Change is displayed as a percentage and is not calculated from a baseline.",
+        "Positive change uses good color and negative change uses bad color. Counting from zero is presentational animation, not a measured historical trajectory.",
+        "The source floor is 90 frames at 30 fps; the once hold starts at 64 percent after the hero transition and count finish."
+      ],
+      "display": {
+        "explains": "من ٥ مؤشرات، واحد بيكبر والباقي بيرجع للخلف.",
+        "useWhen": "لما عايز تقول: الرقم ده هو اللي نركز عليه.",
+        "avoidWhen": "لو لازم نقارن الكل بالتساوي أو نزول الرقم معناه تحسّن."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/kpi-zoom/schema.ts",
+          "sha256": "bec0cfcf7c10cec6af61f95ed9833ce483e0c428e143c3e729e54430762e189b"
+        },
+        {
+          "path": "engine/src/motion-concepts/kpi-zoom/math.ts",
+          "sha256": "9146078f0aedaac20ce651c854aad5aab74026a327bd4810b5b0f2797d075fc1"
+        },
+        {
+          "path": "engine/src/motion-concepts/kpi-zoom/scene.tsx",
+          "sha256": "8ceab79de9bbab8a09c1b594085e4b504a19d1d1e1bc9b47d79182d8ade42d61"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:tool-stack-spread",
+      "role": "explanation",
+      "labelAr": "ستاك بيتفرد لـ٥ أدوات",
+      "explains": "A compact tool collection opens into five separately readable tools and their functions.",
+      "action": "Five overlapping cards spread into a vertical list; each retains its name, function and optional icon while short icon pulses guide reading order.",
+      "useWhen": [
+        "Introduce a five-tool stack and give one concise job for each tool.",
+        "Resolve an initially compact collection into an overview viewers can scan."
+      ],
+      "avoidWhen": [
+        "The tools have dependencies or handoffs that require connectors.",
+        "The list needs more or fewer than five entries, detailed feature comparisons, or real application captures."
+      ],
+      "intents": [
+        "tooling",
+        "grouping"
+      ],
+      "moods": [
+        "editorial",
+        "playful"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide exactly five tools with name up to 30 and function up to 44 characters; each icon is optional and must be a permitted relative image path.",
+        "All five cards remain in the final vertical layout. Their order is an introduction, not a claim of compatibility or execution order.",
+        "The source floor is 90 frames at 30 fps; the once hold starts at 62 percent, so longer copy may need a longer authored scene."
+      ],
+      "display": {
+        "explains": "كروت فوق بعض بتتفرد لـ٥ أدوات ووظيفة كل واحدة.",
+        "useWhen": "لما عايز نظرة سريعة على ستاك الأدوات.",
+        "avoidWhen": "لو محتاج تشرح اعتماد الأدوات على بعض أو تقارن تفاصيلها."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/tool-stack-spread/schema.ts",
+          "sha256": "2d0f2bc94faa58a474d7abf044bc1576c9d32fac5a47c5fc3cb6c985788a7abc"
+        },
+        {
+          "path": "engine/src/motion-concepts/tool-stack-spread/math.ts",
+          "sha256": "dd544a6eb0a2a7de5e311668caff24461bd5f456cd2bb942ab776c611e95640d"
+        },
+        {
+          "path": "engine/src/motion-concepts/tool-stack-spread/scene.tsx",
+          "sha256": "21ae047b7278687ac32ac2223925031ad55daaf2605270660f4fc30141919fce"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:magnetic-dock",
+      "role": "explanation",
+      "labelAr": "٦ أدوات تحت المؤشر",
+      "explains": "Six tools receive successive attention through a dock-style magnification gesture.",
+      "action": "A cursor enters the six-icon dock and dwells over each position; nearby icons magnify, the current tool name appears above, and visited dots light.",
+      "useWhen": [
+        "Introduce six recognizable tools one at a time with short names.",
+        "Use a playful interface gesture to guide attention along a fixed tool collection."
+      ],
+      "avoidWhen": [
+        "Each tool needs a function description or evidence of a launched action.",
+        "Hovering or the visited dots would imply tool execution, a ranking, or a conditional choice."
+      ],
+      "intents": [
+        "tooling",
+        "focus"
+      ],
+      "moods": [
+        "playful",
+        "technical"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide exactly six tool names up to 18 characters; optional icons use validated relative image paths.",
+        "The schema has names and icons only, with no function or output field; the cursor sweep does not open the tools.",
+        "The source floor is 210 frames at 30 fps for the six stops; the once hold begins at 78 percent with the final tool in focus."
+      ],
+      "display": {
+        "explains": "المؤشر بيعدّي على ٦ أدوات ويكبر كل واحدة باسمها.",
+        "useWhen": "لما عايز تعرّف الأدوات واحدة واحدة بشكل خفيف.",
+        "avoidWhen": "لو محتاج تشرح وظيفة كل أداة أو تورّيها وهي بتشتغل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/magnetic-dock/schema.ts",
+          "sha256": "226a4327447ba82a80b23985badac4f7e6b2ee01fe9c1254240581cbe100bf1a"
+        },
+        {
+          "path": "engine/src/motion-concepts/magnetic-dock/math.ts",
+          "sha256": "abffa56c4a7a979ccf38d2c3d0cde48a3f4f33659437a3e46c2b448ad4f3c7e7"
+        },
+        {
+          "path": "engine/src/motion-concepts/magnetic-dock/scene.tsx",
+          "sha256": "ccdb80e68616c55ad0b25d106e5888eabab3a095c64aaff22a226c803288bc63"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:keyword-reveal",
+      "role": "explanation",
+      "labelAr": "كلمة بارزة بتتملي",
+      "explains": "A short keyword gains visual emphasis before its supporting subheadline is read.",
+      "action": "The large outlined keyword fills upward with generated waves and rings inside its letter shapes; a supporting subheadline rises into view below it.",
+      "useWhen": [
+        "Let one short launch word, theme or chapter keyword carry a reveal beat.",
+        "Give a supplied subheadline a strong typographic lead without adding external imagery."
+      ],
+      "avoidWhen": [
+        "The text itself must demonstrate a process, measured result or factual proof.",
+        "The scene must emphasize literal recorded words in exact transcript sync."
+      ],
+      "intents": [
+        "text",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide keyword up to 14 characters and subheadline up to 80; font fitting also checks the keyword ink bounds and permits one or two lines.",
+        "The interior artwork is seeded decorative geometry, not an image of the subject; supporting copy must carry any actual explanation.",
+        "The source floor is 150 frames at 30 fps; filling and subheadline arrival precede the once hold beginning at 56 percent."
+      ],
+      "display": {
+        "explains": "كلمة كبيرة بتتملي بحركة ورسمة، وبعدها يظهر شرح قصير.",
+        "useWhen": "لما كلمة واحدة شايلة لحظة الإعلان أو عنوان الفكرة.",
+        "avoidWhen": "لو عايز شرح خطوات أو تأكيد كلمات اتقالت حرفيًا."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/keyword-reveal/schema.ts",
+          "sha256": "b576fe83fb1ba9e552721c5b4dae3a1e83b22e86ac3c6d179e140259e325ae18"
+        },
+        {
+          "path": "engine/src/motion-concepts/keyword-reveal/math.ts",
+          "sha256": "580abbc0963aa6d564b4b94dab658848b777d71cfb048630d0c5d0cb9700f0f9"
+        },
+        {
+          "path": "engine/src/motion-concepts/keyword-reveal/scene.tsx",
+          "sha256": "6e5a04fbc26f51867cc80e57d259126192e6b6f279722ec0df5cea217041ab4f"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:headline-to-system",
+      "role": "explanation",
+      "labelAr": "فكرة واحدة و٤ صيغ محتوى",
+      "explains": "One core idea serves as a shared source for four labeled content formats.",
+      "action": "An opening headline contracts into a central hub; four small asset cards expand around it and connecting lines draw from the hub to each card.",
+      "useWhen": [
+        "Explain repurposing one reviewed idea into four content formats.",
+        "Keep a common origin visible while introducing the related asset labels."
+      ],
+      "avoidWhen": [
+        "The four outputs depend on one another in sequence or are conditional alternatives.",
+        "The viewer needs real content previews, full copy, or proof of generated assets."
+      ],
+      "intents": [
+        "grouping",
+        "transform"
+      ],
+      "moods": [
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply coreIdea up to 48 characters with each word at most 22, plus exactly four asset labels up to 22 characters each.",
+        "The four cards carry labels and drawn content bars; the schema has no image, video or full-content asset slot.",
+        "The source floor is 90 frames at 30 fps; the once hold starts at 72 percent after all four cards and connectors are built."
+      ],
+      "display": {
+        "explains": "فكرة في النص بتتصل بـ٤ صيغ محتوى حواليها.",
+        "useWhen": "لما عايز توضّح إعادة استخدام نفس الفكرة في كذا صيغة.",
+        "avoidWhen": "لو المخرجات خطوات متتابعة أو محتاجة نماذج محتوى حقيقية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/headline-to-system/schema.ts",
+          "sha256": "be9fdd374a166ead0640f820f39a1e3c29b68486d912649dc4e1b24336fb3dd4"
+        },
+        {
+          "path": "engine/src/motion-concepts/headline-to-system/math.ts",
+          "sha256": "de586643c9d5da0947a8bbe835e1d9594f244f7ad9d63eff22275c4f7de20382"
+        },
+        {
+          "path": "engine/src/motion-concepts/headline-to-system/scene.tsx",
+          "sha256": "67874686c578c36457020cc79213e4214d73c00120b6b063ea98ca964068b1fe"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:panel-reveal",
+      "role": "explanation",
+      "labelAr": "ستارة بتكشف الإعلان",
+      "explains": "A concealed visual resolves into a named offer, event or product with a call to action.",
+      "action": "Five vertical masking slats retract in a stagger, uncovering a visual plate above the title and CTA; the image settles from a small zoom and the CTA arrow nudges.",
+      "useWhen": [
+        "Stage the reveal of a supplied product image, course artwork or event visual.",
+        "Give one reviewed title and a clear CTA a dedicated launch card."
+      ],
+      "avoidWhen": [
+        "The reveal needs to demonstrate a product transformation, compare before and after, or prove a result.",
+        "A tightly cropped visual would hide important details, or a generated fallback would be mistaken for the real product."
+      ],
+      "intents": [
+        "reveal",
+        "cta"
+      ],
+      "moods": [
+        "energetic",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply title up to 56 characters with no word longer than 32, plus cta up to 40; visualSrc is an optional validated relative image path.",
+        "The image uses a cover crop in the upper 60 percent of the card; absent visualSrc, the renderer supplies abstract seeded plate art. Use reviewed imagery when recognizability matters.",
+        "The source floor is 90 frames at 30 fps; the once hold starts at 55 percent after the slats, title, CTA and arrow settle."
+      ],
+      "display": {
+        "explains": "ستارة من ٥ شرائح بتكشف صورة وعنوان ودعوة واضحة.",
+        "useWhen": "لما عندك إعلان منتج أو كورس أو فعالية عايز تكشفه.",
+        "avoidWhen": "لو الكشف لازم يثبت تحوّل أو الصورة فيها تفاصيل ماينفعش تتقص."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/panel-reveal/schema.ts",
+          "sha256": "dcad9ecd50e5d1ffc4c10ce001f43e8a331185ae29dd356e0ad14998613e6815"
+        },
+        {
+          "path": "engine/src/motion-concepts/panel-reveal/math.ts",
+          "sha256": "769cadb6557cf374b260a962e79689fc9ba5b65013501dd327c6966139486b0b"
+        },
+        {
+          "path": "engine/src/motion-concepts/panel-reveal/scene.tsx",
+          "sha256": "58359c29b6cefc770aba668cf08ea281df78ee0978ea0cd2ea4e21c250cc2752"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:system-layers",
+      "role": "explanation",
+      "labelAr": "النظام طبقة طبقة",
+      "explains": "Five named architectural layers form one stacked system while remaining separately identifiable.",
+      "action": "A perspective stack opens gaps between its five slabs; numbered labels and optional details appear, and a short reading pulse visits each layer.",
+      "useWhen": [
+        "Describe five layers of a business or technical architecture.",
+        "Show how named levels belong to one system without inventing data routes."
+      ],
+      "avoidWhen": [
+        "The story concerns chronological steps or parallel conditional branches.",
+        "The stack would imply an unsupported dependency, hierarchy or physical scale."
+      ],
+      "intents": [
+        "grouping"
+      ],
+      "moods": [
+        "technical",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide exactly five layers, each with label up to 28 characters and optional detail up to 38.",
+        "Review the top-to-bottom order as an architectural statement; the rails and reading pulses do not show packet flow or execution.",
+        "The source floor is 90 frames at 30 fps; the once hold starts at 70 percent with all layer labels resolved."
+      ],
+      "display": {
+        "explains": "٥ طبقات بتتفتح من بعض وكل طبقة يظهر اسمها.",
+        "useWhen": "لما عايز تشرح بنية نظام وأجزاءه فوق بعض.",
+        "avoidWhen": "لو الفكرة خطوات زمنية أو ترتيب الطبقات هيقول علاقة غلط."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/system-layers/schema.ts",
+          "sha256": "d92db82e92551a59ade70878d0884f550c9bb8be2ebd6706ddcc8ac2ffe713bd"
+        },
+        {
+          "path": "engine/src/motion-concepts/system-layers/math.ts",
+          "sha256": "8b75150f49124fbf0ac4a7991c6cfd76679f4dda62bb4ff2884d8d8977aa0eb5"
+        },
+        {
+          "path": "engine/src/motion-concepts/system-layers/scene.tsx",
+          "sha256": "7650ebce655fc2ae083482211a5ddccdbae856fae59fe01377333196b8723349"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:glass-lens",
+      "role": "explanation",
+      "labelAr": "عدسة بتختار مؤشر",
+      "explains": "One chosen report row becomes the focal point within a five-row metric list.",
+      "action": "A glass-like lens enters and scans from the first row toward the chosen row, magnifying nearby text; it locks on the selected metric as the other rows blur and recede.",
+      "useWhen": [
+        "Guide attention through a short metric report to one deliberately chosen row.",
+        "Highlight supplied formatted values such as currency or percentages without animating a new value."
+      ],
+      "avoidWhen": [
+        "The viewer must inspect all rows equally or read a real report capture.",
+        "The focus movement would be mistaken for a search, filter, anomaly detector or calculated recommendation."
+      ],
+      "intents": [
+        "focus",
+        "evidence"
+      ],
+      "moods": [
+        "calm",
+        "reflective",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Provide exactly five rows with label up to 28 and preformatted value up to 14 characters; select keyIndex from 0 through 4.",
+        "The lens follows row positions through keyIndex and performs no search or calculation. With keyIndex zero there is no multi-row scan.",
+        "The source floor is 150 frames at 30 fps; the once hold starts at 78 percent, so give the focused label and value enough reading time."
+      ],
+      "display": {
+        "explains": "عدسة بتمشي على تقرير صغير وتثبت على مؤشر مختار.",
+        "useWhen": "لما عايز توجّه العين لرقم بعينه وسط ٥ صفوف.",
+        "avoidWhen": "لو محتاج فلترة فعلية أو قراءة التقرير كله بنفس الوضوح."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/glass-lens/schema.ts",
+          "sha256": "f52bacd3858ae67a8ac423b4bf452768c95e12a4e441683fd23e70442d27a38f"
+        },
+        {
+          "path": "engine/src/motion-concepts/glass-lens/math.ts",
+          "sha256": "7addbcdcfb78a1fe4aee08fce7d422b57826767e96a9c538e18c99b54bf04746"
+        },
+        {
+          "path": "engine/src/motion-concepts/glass-lens/scene.tsx",
+          "sha256": "d13b15d4eacc3a8065bc1c2a6960cdf8fe516d685f389b801f977b6a47aefbd8"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:automation-flow",
+      "role": "explanation",
+      "labelAr": "مدخل و٤ خطوات ونتيجة",
+      "explains": "One input passes through four ordered operations to one output.",
+      "action": "An input card, four numbered step cards and an output card build a single connected path; a bright pulse traverses its five links and lights each successive node.",
+      "useWhen": [
+        "Explain a fixed trigger-to-output automation with four real intermediate operations.",
+        "Make the order of a process visible while retaining distinct input and result labels."
+      ],
+      "avoidWhen": [
+        "The process contains yes/no decisions, parallel branches, retries, a feedback loop or a bottleneck comparison.",
+        "A moving pulse would imply that the automation has actually run successfully."
+      ],
+      "intents": [
+        "process",
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "serious"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Provide input and output up to 36 characters each, plus exactly four steps up to 28 each; every step word is at most 13 characters.",
+        "The layout uses full-width input/output and two rows of step cards on one ordered path; it has no conditional node schema or return connector.",
+        "The source floor is 150 frames at 30 fps; the once hold begins at 78 percent after the traversal. Loop mode clears the highlights for playback repetition, not semantic feedback."
+      ],
+      "display": {
+        "explains": "مدخل بيعدّي على ٤ خطوات بالترتيب لحد النتيجة.",
+        "useWhen": "لما عندك أتمتة بمسار واحد واضح من البداية للنهاية.",
+        "avoidWhen": "لو محتاج شروط أو فروع أو رجوع خطوة لتصحيح النتيجة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/automation-flow/schema.ts",
+          "sha256": "3d3ccb0b3b0a8954fab70770ca496cd300a6abcb4c66aeefec299a975f0b671d"
+        },
+        {
+          "path": "engine/src/motion-concepts/automation-flow/math.ts",
+          "sha256": "2e1e253dfb28b58667e3a4f8700ad28448ae2ae9ada47ab429135f46cc857851"
+        },
+        {
+          "path": "engine/src/motion-concepts/automation-flow/scene.tsx",
+          "sha256": "6d10b3d998adbc9753073edff157f54cc25a6cc325f2d3cc431de98e87a84684"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:chaos-to-brand",
+      "role": "explanation",
+      "labelAr": "من فوضى لهوية",
+      "explains": "Scattered particles resolve into one supplied brand mark and its name and tagline.",
+      "action": "Seeded drifting particles gather onto the supplied mark shape, resolve into its solid path or short text, and reveal the brand name and tagline underneath.",
+      "useWhen": [
+        "Introduce a reviewed brand identity through a disorder-to-order metaphor.",
+        "End a brand story with one specific mark, name and short promise."
+      ],
+      "avoidWhen": [
+        "The story needs identifiable messages, files or tools to retain their identities while organizing.",
+        "The mark is unavailable, the required logo cannot fit the supported SVG/text contract, or the reveal would imply proof of business improvement."
+      ],
+      "intents": [
+        "transform",
+        "brand",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "reflective"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply a reviewed mark, brandName up to 24 and tagline up to 64 characters. The mark is either text up to six characters or SVG path data up to 1200 characters with a valid viewBox and optional filled flag.",
+        "SVG marks must have positive path length, at most 32 subpaths and viewBox aspect ratio 0.1 through 12; the schema rejects paths that leave the viewBox. There is no arbitrary raster-logo input.",
+        "Particles are decorative, not labeled source objects. The source floor is 90 frames at 30 fps and the once hold starts at 74 percent after mark, name and tagline resolve."
+      ],
+      "display": {
+        "explains": "جزيئات متفرقة بتتجمع في الشعار وبعده الاسم والجملة.",
+        "useWhen": "لما عندك هوية معتمدة وعايز تكشفها من الفوضى للنظام.",
+        "avoidWhen": "لو محتاج تحافظ على هوية رسائل أو ملفات حقيقية وهي بتترتب."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "instructions/MOTION-CHOICES.md",
+          "sha256": "10e20ca29c74842a8591d126b8613a471bb8263f67274c157c383325cb494de2"
+        },
+        {
+          "path": "engine/src/motion-concepts/chaos-to-brand/schema.ts",
+          "sha256": "90a9b72e374f1bb8fb253d05091825b31ce19e8a52fac613427b8c433cd8b780"
+        },
+        {
+          "path": "engine/src/motion-concepts/chaos-to-brand/math.ts",
+          "sha256": "c5bbc547938879dc07c60a6f9c3d408b5e18899a59c78e7011f3b46b1fb5aace"
+        },
+        {
+          "path": "engine/src/motion-concepts/chaos-to-brand/scene.tsx",
+          "sha256": "e1aac62c1e605bb886dc418de5bfb41011179da2c60ea87b198b6e1388e2c247"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        }
+      ]
+    },
+    {
+      "key": "concept:conditional-branching",
+      "role": "explanation",
+      "labelAr": "نفس الطلب يختار مسار بشرط",
+      "explains": "One supplied typed value decides which of two authored outcomes receives the same identifiable input.",
+      "action": "The original labeled token approaches a visible condition, pauses while its supplied value is compared, and travels along exactly one highlighted route into its outcome; the unused route stays visible and the result holds.",
+      "useWhen": [
+        "Explain one yes/no routing decision from a known numeric threshold or an explicit boolean match.",
+        "Make the reason for a selected outcome visible while preserving the original input label, value and ID."
+      ],
+      "avoidWhen": [
+        "The decision needs several levels, more than two outcomes, text matching, feedback or a queue.",
+        "An authored diagram would be mistaken for evidence that a real product executed the routing or that a supplied business claim is verified."
+      ],
+      "intents": [
+        "branching"
+      ],
+      "moods": [
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "intentLayouts": {
+        "branching": [
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Supply exactly one input with a stable id up to 24 characters, label up to 28 and value as a boolean or finite number within -1e9 to 1e9; use reviewed source data or explicitly labeled illustrative SAMPLE data.",
+        "Supply exactly one typed condition: boolean-equals with a boolean equals value, or number-at-least with a finite threshold within -1e9 to 1e9. Its label is at most 24 characters, and the input type must match the condition type; strings, coercion, caller code and a selected/result override are unsupported.",
+        "Provide exactly the two branches whenTrue and whenFalse, with outcome copy up to 30 characters each. The numeric comparison includes equality and uses the full supplied value without rounding; display preserves supplied precision, including scientific notation when needed.",
+        "The same input ID, label and value persist through the chosen route; the alternative remains inspectable. This is an authored explanatory scene, not live business execution or a multi-level graph.",
+        "Use family motion-concept with data {concept,config}, takeover layout and the native 1080x1920 canvas. Once mode only: minimum 210 frames / 7 seconds and default 270 frames / 9 seconds at 30 fps, with the minimum scaled by composition fps; condition evaluation occupies 16 percent and the frozen final hold starts at 74 percent."
+      ],
+      "display": {
+        "explains": "نفس الطلب بيعدّي على شرط ويمشي في مسار واحد.",
+        "useWhen": "لما بتشرح قرار نعم أو لا من قيمة معروفة.",
+        "avoidWhen": "لو القرار فيه كذا مستوى أو محتاج إثبات تشغيل حقيقي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/geometry.ts",
+          "sha256": "9db221825ccd968467453097a8634eee54f10252ac80edfa73703a5e2cf85bbe"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/motion-concepts/conditional-branching/index.ts",
+          "sha256": "7e2fac1c2e28a02e60dee579b045da76cbba76b03e978f0ae44079e43c30e3ac"
+        },
+        {
+          "path": "engine/src/motion-concepts/conditional-branching/schema.ts",
+          "sha256": "bb9b8b7c6c5d2016289e8ed55c40d94e9017a03a623e9e01694e76612667aa56"
+        },
+        {
+          "path": "engine/src/motion-concepts/conditional-branching/math.ts",
+          "sha256": "3b84350abf44c22dbebda53ac460fe79023f04f968f9b6cb24e8a299fb82d71d"
+        },
+        {
+          "path": "engine/src/motion-concepts/conditional-branching/scene.tsx",
+          "sha256": "1de830b0c682ef5bec1f6ec6beb93c4a3bdd6a0a862a64a5fe16127ed4a0f2df"
+        }
+      ]
+    },
+    {
+      "key": "concept:identity-filtering",
+      "role": "explanation",
+      "labelAr": "نفس الكروت تتصفّى بمعايير",
+      "explains": "A supplied set is reduced by sequential typed predicates while each original card keeps its identity and rejected cards remain visible.",
+      "action": "Three to six original cards visit the inspection lane, move into retained or rejected lanes after each criterion, and only the survivors return for the next check; rejected cards stay in their own rows with the failing stage while the final count and shortlist hold.",
+      "useWhen": [
+        "Explain how one to three explicit numeric or boolean criteria reduce a known set into a shortlist.",
+        "Show which original items remain or leave at each criterion, including an empty result or an all-pass result, without replacing their identities."
+      ],
+      "avoidWhen": [
+        "Selection depends on strings, search, fuzzy relevance, ranking, resampling or more than six cards or three criteria.",
+        "The story needs branching outcomes, a waiting queue, feedback, or proof of live screening against an external product or database."
+      ],
+      "intents": [
+        "filtering"
+      ],
+      "moods": [
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "intentLayouts": {
+        "filtering": [
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Supply three to six cards, each with a unique stable Latin id up to 16 characters, label up to 22 and one to six typed attributes. IDs and attribute keys start with a letter and use letters, digits, underscore or hyphen; attribute keys are at most 24 characters and reserved object keys are rejected. Use reviewed source data or explicitly labeled illustrative SAMPLE data.",
+        "Supply one to three criteria with unique Latin ids up to 20 characters, label up to 24 with each word at most 20, an attribute field key up to 24 and op eq, gte or lte. Every referenced field must exist on every card and have the same type as the criterion value.",
+        "Attribute and criterion values are booleans or finite numbers within -1e6 to 1e6 with at most six decimal places, so displayed predicate evidence stays exact. eq compares matching numeric or boolean types; gte/lte require numbers. Strings, coercion, expressions and hand-selected retained IDs are unsupported.",
+        "Provide title up to 40 characters and sourceLabel, retainedLabel and rejectedLabel up to 20 each. Original IDs and row order remain stable; each rejection stays visible with its first failing criterion, and stage input/retained counts and the final remaining count derive from the supplied predicates.",
+        "Use family motion-concept with data {concept,config}, takeover layout and the native 1080x1920 canvas. Once mode only: minimum 270 frames / 9 seconds and default 330 frames / 11 seconds at 30 fps, with the minimum scaled by composition fps; the frozen final hold starts at 78 percent. This is an authored explanation, not live database filtering or a queue."
+      ],
+      "display": {
+        "explains": "نفس الكروت بتتصفّى بمعايير، والمستبعد يفضل باين.",
+        "useWhen": "لما عايز تبيّن مين اتبقى وليه من نفس القائمة.",
+        "avoidWhen": "لو محتاج بحث بالنص أو ترتيب أولوية أو طابور تنفيذ."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/types.ts",
+          "sha256": "7f372744e8b5e4765f5c03ddd1ebc46f1041bc8f6fce97e510983ac9f3a96057"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        },
+        {
+          "path": "engine/src/motion-concepts/shared.tsx",
+          "sha256": "204a0e9f17034aa33767c5529b2ed6520bb1c92180efd6cd12ed7b2797e4ebb1"
+        },
+        {
+          "path": "engine/src/motion-concepts/fields.ts",
+          "sha256": "29120911c68024e2c11a0ff5355e2294f211e33f7ddf40c78c18472514b1255f"
+        },
+        {
+          "path": "engine/src/motion-concepts/geometry.ts",
+          "sha256": "9db221825ccd968467453097a8634eee54f10252ac80edfa73703a5e2cf85bbe"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        },
+        {
+          "path": "engine/src/motion-concepts/identity-filtering/index.ts",
+          "sha256": "0dab67b7894f29d6a96bbe3e893ee31dce94a83d110a6b56c068dbbb0587f023"
+        },
+        {
+          "path": "engine/src/motion-concepts/identity-filtering/schema.ts",
+          "sha256": "f05aac0a5289cd3a51403c13681432b150994919700c2157068e31dcbf2e79a2"
+        },
+        {
+          "path": "engine/src/motion-concepts/identity-filtering/math.ts",
+          "sha256": "8963c86454a0e719f51f1fc143c87c1cccd60adf74262054473edda8314e9734"
+        },
+        {
+          "path": "engine/src/motion-concepts/identity-filtering/scene.tsx",
+          "sha256": "7ddfad3497c5b5df30af420a8aa09ccb656a5abdbcf3b6825c4577d6265188c1"
+        }
+      ]
+    }
+  ]
+}

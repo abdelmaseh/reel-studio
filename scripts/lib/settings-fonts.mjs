@@ -13,6 +13,9 @@ export const PREVIEW_FAMILIES = Object.freeze([
     {source: 'Inter', subsets: ['latin'], weights: [400], cssWeights: [400, 500, 600, 700]},
     {source: 'IBM Plex Sans Arabic', subsets: ['arabic'], weights: [400, 500, 600, 700]},
   ]},
+  {alias: 'Noto Kufi Arabic', parts: [{source: 'Noto Kufi Arabic', weights: [400], css: '100 900'}]},
+  {alias: 'Readex Pro', parts: [{source: 'Readex Pro', weights: [400], css: '160 700'}]},
+  {alias: 'El Messiri', parts: [{source: 'El Messiri', weights: [400], css: '400 700'}]},
 ]);
 
 /** `{alias, face, css}` for every lock font a preview family needs; `css` is its font-weight. */

@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "id": "one-shot-demo",
+  "style": "one-shot",
+  "fps": 30,
+  "durationInFrames": 600,
+  "reviewedBy": "Illustrative example review",
+  "sounds": "auto",
+  "scenes": [
+    {
+      "id": "chain",
+      "family": "one-shot",
+      "fromFrame": 0,
+      "durationInFrames": 600,
+      "layout": "takeover",
+      "motion": "quiet",
+      "data": {
+        "brand": "اسم الأداة",
+        "intro": {"top": "نتيجة جاهزة", "bottom": "في ٣ خطوات", "sub": "اكتب هنا الفايدة في سطر واحد", "start": "يلا نبدأ"},
+        "steps": [
+          {"kind": "drop", "title": {"top": "حطّ الملف", "bottom": "في المكان ده"}, "item": "file.mp4", "target": "Inbox"},
+          {"kind": "field", "title": {"top": "اكتب الطلب", "bottom": "بكلام بسيط"}, "text": "حوّل الملف لنتيجة", "placeholder": "اكتب رسالتك…"},
+          {"kind": "work", "title": {"top": "استنى النتيجة", "bottom": "جاهزة للنشر"}, "jobs": ["الخطوة الأولى", "الخطوة التانية", "الخطوة التالتة"]}
+        ],
+        "result": {"words": ["نتيجة", "جاهزة", "في", "دقايق", "مش", "ساعات"]},
+        "closing": {"top": "٣ خطوات بس", "sub": "اكتب هنا جملة الختام", "platforms": ["Instagram", "TikTok", "Shorts"]}
+      }
+    }
+  ]
+}

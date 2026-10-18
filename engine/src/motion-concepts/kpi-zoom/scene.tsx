@@ -7,7 +7,7 @@ import {
   ConceptStage,
   ConceptText,
   alpha,
-  digitsFor,
+  useConceptDigits,
   dirOf,
   numberFont,
   styleShape,
@@ -185,7 +185,7 @@ const Scene: React.FC<{ data: KpiZoomData }> = ({ data }) => {
 
   const names = data.tiles.map((t) => t.name).join(" ");
   const rtl = dirOf(names) === "rtl";
-  const digits = digitsFor(names);
+  const digits = useConceptDigits(names);
   const params: KpiZoomParams = {
     mode,
     box,

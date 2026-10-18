@@ -153,3 +153,11 @@ test('the pinned Inter file keeps its optical-size and weight axes', {skip: !exi
   assert.ok(opsz && opsz.min <= 14 && opsz.max >= 32, 'opsz must cover 14..32');
   assert.ok(wght && wght.min <= 100 && wght.max >= 900, 'wght must cover 100..900');
 });
+
+test('a declared italic adds ital tuples to the CSS2 request', () => {
+  const spec = {family: 'Source Serif 4', weights: [400, 700], subsets: ['latin'], italic: {weights: [400], subsets: ['latin']}};
+  assert.equal(cssRequestUrl(spec), 'https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,700;1,400&display=swap');
+  assert.equal(cssRequestUrl({family: 'Cairo', weights: [400, 700], subsets: ['arabic']}), 'https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+  assert.deepEqual(DECLARED_FONTS.find((s) => s.family === 'Source Serif 4').italic, {weights: [400], subsets: ['latin']}, 'the cartoon headline needs the real latin italic');
+  assert.equal(fontFileName(spec, {subset: 'latin', weight: '400', style: 'italic'}), 'SourceSerif4-latin-400-italic.woff2');
+});

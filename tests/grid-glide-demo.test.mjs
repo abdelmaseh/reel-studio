@@ -27,7 +27,7 @@ test('the Grid Glide demo is a valid source-free graphics specification of 15 to
   const families = edit.scenes.map(scene => scene.family);
   for (const family of GRID_GLIDE_FAMILIES) assert.ok(families.includes(family), `${family} is in the demo`);
   assert.deepEqual(families.slice(-2), ['glide-comment', 'glide-follow'], 'the style draws its own comment then follow endings');
-  assert.equal(families.includes('comment') || families.includes('follow'), false, 'the shared endings show fixed English header lines');
+  assert.equal(families.includes('comment') || families.includes('follow'), false, 'the style draws its own endings; the shared ones draw their header lines in the shared card style');
   const card = edit.scenes.find(scene => scene.family === 'glide-card');
   assert.equal(card.data.bullets.length, 3);
   assert.equal(card.data.media.clips.length, 2);

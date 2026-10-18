@@ -14,9 +14,10 @@ const source={path:'Raw/example.mp4',sha256:'a'.repeat(64),fps:30,width:1080,hei
 const brief=(data,intent='motion-concept')=>({version:1,id:'concept-recording',source:source.path,transcript:'Projects/concept-recording/words.json',...profileToBrief(profile),purpose:'explainer',tone:'calm',
   beats:[{id:'example',fromSec:0,toSec:8,intent,data}]});
 
-test('all fifteen original concept configurations reach normal recording plans through the discriminated union',()=>{
+test('all concept configurations reach normal recording plans through the discriminated union at their own default length',()=>{
   for(const concept of CATALOG){
-    let plan;assert.doesNotThrow(()=>{plan=buildEditorPlan(brief({concept:concept.id,config:catalogDemo(concept.id)}),source,[]);},concept.id);
+    const authored=brief({concept:concept.id,config:catalogDemo(concept.id)});authored.beats[0].toSec=concept.defaultFrames/30;
+    let plan;assert.doesNotThrow(()=>{plan=buildEditorPlan(authored,{...source,totalFrames:Math.max(source.totalFrames,concept.defaultFrames)},[]);},concept.id);
     assert.equal(plan.manifest.scenes[0].family,'motion-concept');
     assert.deepEqual(plan.manifest.scenes[0].data,{concept:concept.id,config:catalogDemo(concept.id)});
   }

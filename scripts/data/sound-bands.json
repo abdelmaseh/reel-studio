@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "unit": "sound events per minute of edited time",
+  "note": "Defaults from measured delivered reels; the creator's explicit request wins. Keys: a style id, else the brief tone, else podcast for clip batches.",
+  "bands": {
+    "grid-glide": [13, 22],
+    "calm": [30, 53],
+    "editorial": [30, 53],
+    "energetic": [57, 79],
+    "podcast": [2, 5]
+  },
+  "minGapSec": 0.4,
+  "gain": [0.35, 0.55]
+}

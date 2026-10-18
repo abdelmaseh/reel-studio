@@ -3,10 +3,12 @@ import { promises as fs } from 'node:fs';
 import os from 'node:os';
 import './lib/project-tmp.mjs';
 import { run, parseArgs, cacheDirFor, writeJson, ffprobeJson, summarizeProbe, hms } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const args = parseArgs(process.argv.slice(2), { cols: '6', rows: '5', height: '240' });
 const file = args._[0];
 if (!file) { console.error('Usage: node scripts/contact-sheet.mjs <file>'); process.exit(1); }
+if (args.out) assertProjectOutput(path.resolve(args.out));
 
 const cols = Number(args.cols), rows = Number(args.rows), H = Number(args.height);
 const N = cols * rows;

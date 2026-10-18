@@ -7,7 +7,7 @@ import {parseArgs} from 'node:util';
 import {readProfile} from './lib/branding.mjs';
 import {ROOT} from './lib/project-paths.mjs';
 import {DOCTOR_DIR, describeFailures, doctorProps, quickChecks, renderDoctor} from './lib/studio-doctor.mjs';
-import {checkForUpdate, pullUpdate, resolveGit} from './lib/studio-git.mjs';
+import {checkForUpdate, pullUpdate, resolveGit, STORE_FAREWELL} from './lib/studio-git.mjs';
 import {readLock} from './lib/studio-lock.mjs';
 import {runSetup, setupSteps} from './lib/studio-setup.mjs';
 import {LOG_FILE, STEP_IDS, describeSetup, readSetupState, workerAlive, workerSteps, writeSetupState} from './lib/studio-state.mjs';
@@ -21,7 +21,10 @@ const CHECK_LINES = {
 const UPDATE_LINES = {
   'no-git': 'مش لاقي git على الجهاز — شوف خطوة Git في AGENTS.md.',
   'local-changes': 'فيه ملفات من الاستوديو نفسه اتعدّلت هنا، فمش هحدّث عشان ما يضيعش حاجة. قولّي وأنا أراجعها معاك.',
+  'diverged': 'وقفت التحديث بأمان لأن النسخة دي فيها تغييرات خاصة بيها، ومفيش حاجة ضاعت. قول «افحص النظام» أو اطلب مساعدة وأنا أراجعها معاك.',
+  'offline': 'مش قادر أوصل لـ GitHub دلوقتي، فمفيش حاجة اتغيّرت عندك. اتأكد إن النت شغال وجرّب تاني بعد شوية.',
   'pull-failed': 'التحديث ما نزلش — غالبًا مشكلة نت. جرّب تاني بعد شوية.',
+  'no-release': 'مفيش إصدار رسمي منشور للتحديث، فهنفضل على نسختك الحالية.',
 };
 const USAGE = 'Usage: node scripts/studio.mjs setup [--foreground] [--steps folders,packages,browser,ffmpeg,fonts,models,transcription] | status | settings [--port <port>] | check | update | doctor [--quick]';
 
@@ -97,7 +100,7 @@ const commands = {
   async check() {
     const result = await checkForUpdate(ROOT, {gitExe: resolveGit(ROOT)});
     await flushStudioEvents(ROOT);
-    if (result.channel === 'store') return report(`إنت على نسخة المتجر ${result.current ?? '—'} ✓ — أي نسخة جديدة بتنزل كملف ZIP من حسابك في المتجر.`, result, 0);
+    if (result.channel === 'store') return report(STORE_FAREWELL, result, 0);
     if (!result.ok) return report(CHECK_LINES[result.reason], result, 0);
     if (result.updateAvailable === null) return report('مش قادر أوصل لـ GitHub دلوقتي — هنكمل بالنسخة الحالية.', result, 0);
     if (result.updateAvailable) return report(`فيه نسخة جديدة من الاستوديو (${result.latest}) — قول «حدّث الاستوديو» عشان أنزّلها.`, result, 0);
@@ -106,7 +109,7 @@ const commands = {
   async update() {
     const gitExe = resolveGit(ROOT);
     const result = pullUpdate(ROOT, {gitExe});
-    if (result.channel === 'store') return report('التحديث في نسخة المتجر = ملف ZIP جديد: نزّله من صفحة «التنزيلات» في حسابك، وفكّه في فولدر جديد جنب القديم، وافتحه في المساعد وقول «انقل بروفايلي». مشاريعك القديمة بتفضل في فولدرها.', {...result, next: null});
+    if (result.channel === 'store') return report(STORE_FAREWELL, {...result, next: null});
     if (!result.ok) return report(UPDATE_LINES[result.reason] ?? 'التحديث ما نجحش.', result);
     if (!result.updated) return report('انت على آخر نسخة ✓', {...result, next: null});
     if (result.changed.packages || result.changed.tools) {

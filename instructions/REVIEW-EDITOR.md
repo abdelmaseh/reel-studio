@@ -1,6 +1,6 @@
 # Review Editor
 
-A local editor that opens **as soon as the first draft and its footage are ready**, before proposed cuts and the first full rendered preview. Keep it open while the assistant works: completed changes appear in the preview and timeline without reloading the page. You can also fix captions, scenes, cuts, sounds and camera by hand; Export runs the same delivery pipeline.
+A local editor that opens **as soon as the first draft and its footage are ready**, before proposed cuts and the first full rendered preview. Keep it open while the assistant works: completed changes appear in the preview and timeline without reloading the page. You can also fix captions, scenes, cuts, sounds and camera by hand, and change this video's font, caption grouping and shape, and digits; Export runs the same delivery pipeline.
 
 ## Open it
 
@@ -26,9 +26,10 @@ Works on projects that go through the reusable editor (`Projects/<slug>/edit.jso
 |---|---|
 | **ملخص** | See project, style, duration, counts and the list of problems |
 | **الكابشن** | Search phrases, edit the text of a word, move a word's start/end by frames or ms, split, merge, delete, colour/weight/pulse emphasis, shift all captions, mark the captions reviewed or draft. Clicking a phrase jumps the preview to it |
-| **المشاهد** | Change a scene's timing and layout/motion, and edit its own text fields (a form generated from the scene's schema: length limits are enforced as you type; a value the schema rejects is never applied) |
+| **المشاهد** | Change a scene's timing and layout/motion, and edit its own text fields (a form generated from the scene's schema: length limits are enforced as you type; a value the schema rejects is never applied). **مشهد جديد** adds a ready template at the playhead: its text fields say what to write («اكتب العنوان») and its number fields show the sample figure 987654. Replace both with the real words and figures; delivery refuses a video that still shows the sample figure or a template's placeholder words, and a comment-and-follow scene whose prompt never shows the comment keyword (write `{keyword}` where it should appear) |
 | **القص** | Trim or split a cut and delete a segment. Later scenes, sounds, camera keys and transitions move by the same number of frames (captions stay on their source moment); anything that would fall inside a removed range is listed before you confirm |
 | **المؤثرات** | Add, move and delete sound effects (recipe and gain), camera keys and transitions at the playhead |
+| **المظهر** | Change this video's font, caption word grouping, caption shape and digits (`1 2 3`, `١ ٢ ٣`, or «كما هو» to leave every number as written). These choices apply to this video only, never change the saved preferences, show in the preview at once and can be undone. The style itself is shown here but changed by asking the assistant |
 
 The timeline along the bottom has lanes for cuts, scenes, captions, sounds, camera and transitions; click to seek, drag scene blocks and markers, wheel to zoom. Toolbar: undo / redo, History, Notes (problems), Guides (Instagram safe zones), Save, Export.
 
@@ -53,7 +54,7 @@ Binds to 127.0.0.1 only; every request needs the run's token; requests with a fo
 
 ## Limits
 
-- The preview has no sound effects (they are mixed at export); the timeline shows where they are.
+- The preview plays the planned sound effects at their places and levels; the chip «مؤثرات المعاينة» turns them off and the mute button silences them. At most nine sounds play at the same moment (the chip counts the rest). The export mixes every sound again from the plan, so a crowded moment can end slightly quieter there.
 - The first playback after opening the page shows the video about 0.44 s ahead of the captions and graphics (the Player buffers at first play); pause, scrub and frame-step are exact, and later plays are within a few frames. Judge caption timing on a paused frame.
 - Drafts are kept per port in the browser: use the default port (4177) if you want a reload to bring unsaved edits back.
 - A split inside continuous speech adds a tiny (12 ms) audio fade at the joint when the plate is re-prepared.

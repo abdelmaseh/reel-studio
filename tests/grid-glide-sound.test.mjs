@@ -39,7 +39,8 @@ const GOLDEN = {
 };
 const REGRESSION = {
   'paper-reveal': '6838deeccac3a3695ec3c876e29201e85eb02901b67b1f903b28e282d30b5cd7',
-  'chapter-shift': '29a1e20fcc28beb3cb82730ee896e386abbccf93e134b27dfa02b6db99748fe2',
+  'chapter-shift': '070e0f0a0fd3146768aa4d7c19ec7dbd59e09f60e65afaa3157f9e59c9dd2de2',
+  'chapter-shift-sweep': '29a1e20fcc28beb3cb82730ee896e386abbccf93e134b27dfa02b6db99748fe2',
   'typing-burst': 'c221769422cf503a6d3219bbbb15c262bb2118642f0436817a3e3b4beabd671a',
 };
 
@@ -198,8 +199,8 @@ test('the catalog carries the five recipes with their durations and valid hits',
   }
   assert.equal((await soundRecipe('sub-boom')).hits[0].gain, 0.5);
   assert.deepEqual(catalog.sounds.map((sound) => sound.id).filter((id) => NEW_VOICES.includes(id)), NEW_VOICES);
-  assert.equal(catalog.sounds.length, 18);
-  assert.equal(catalog.recipes.length, 16);
+  assert.equal(catalog.sounds.length, 20);
+  assert.equal(catalog.recipes.length, 25);
 });
 
 test('the Grid Glide palette validates and maps the contract kinds', async () => {

@@ -11,9 +11,11 @@ Run `node --version`. v22.20.0 or newer: use `node`. Missing or older: run
 
 1. Run `node scripts/studio.mjs check` once. If it says a new version exists, tell the user that one line and carry on. Never update unasked.
 2. If `node scripts/studio.mjs status` does not report `done`, finish **First run** before editing.
-3. «حدّث الاستوديو» → `node scripts/studio.mjs update`, relay its line, then run the command in its `next` field if there is one. After an update, ask the user to open a new session (افتح جلسة جديدة) so the new instructions load.
+3. «حدّث الاستوديو» → `node scripts/studio.mjs update`, relay its line, then run the command in its `next` field if there is one. Updates install the newest official release (a `vX.Y.Z` tag), never unreleased work. When the update starts setup in the background, poll `node scripts/studio.mjs status` every minute or two until it says `done`, then run `node scripts/studio.mjs doctor --quick`. Only then ask the user to open a new session (افتح جلسة جديدة) so the new instructions load.
+   - A folder from the old paid store edition (it has `STORE-EDITION.json`) is never turned into a git clone. The store edition is discontinued and Reel Studio is free: relay the line `check`/`update` print. On «انقل بروفايلي» in a new GitHub install: copy only `PROFILE.json` from the old folder the user names, run `node scripts/profile.mjs check`, then `node scripts/studio.mjs setup`. Old projects stay in the old folder.
+   - The studio ships `.claude/settings.json`, so its everyday commands run without a permission prompt. Those commands write only inside this folder and never into `Raw/`; an exported subtitle file is replaced only with `--force`. Deleting files, installing, updating and every other command still ask; that is expected. These rules are a convenience that spares prompts for the studio's own commands, not a sandbox or a security boundary.
 4. «افحص النظام» → `node scripts/studio.mjs doctor` (allow 10 minutes). Relay its line and the video path.
-5. «افتح إعداداتي», «غيّر الستايل», fonts, default on-screen caption or post-description preferences → `node scripts/studio.mjs settings` as a long-running command. Open the printed local `url` in the user's browser/panel. Keep that process running while the screen is open. The user saves on the screen; verify with `node scripts/profile.mjs check`. Do not open settings for a one-video override.
+5. «افتح إعداداتي», «غيّر الستايل», fonts, default on-screen caption or post-description preferences → `node scripts/studio.mjs settings` as a long-running command. Open the printed local `url` in the user's browser/panel. Keep that process running while the screen is open. The user saves on the screen; verify with `node scripts/profile.mjs check`. Do not open settings for a one-video override; when «غيّر الستايل» could mean either, ask once «للفيديو ده بس ولا لكل الفيديوهات؟».
 
 ## First run (install)
 
@@ -44,7 +46,7 @@ The user pasted: «نزّل Reel Studio في الفولدر ده من https://gi
 6. **Test reel.** When status says `done`, run `node scripts/studio.mjs doctor` (allow 10 minutes). It renders `Projects/_doctor/doctor.mp4` with the user's name, colours and ending through the full delivery checks. Give the user the path.
 7. End with this thank-you line and support line from the studio's maker (relay both as the maker's message without the outer «» marks, with the link as written), then the ready line, exactly:
    «شكرًا إنك نزّلت Reel Studio 🙏 الاستوديو بيبلّغني بإشارة صغيرة إن التثبيت نجح وإنك بتستخدمه، ومعاها رقم الإصدار. مفيش اسمك ولا فيديوهاتك ولا أي ملف من جهازك. الإشارة دي بتفرّحني وبتساعدني أعرف إن التحديثات بتوصلكم وشغالة.»
-   «ولو حابب تدعم المشروع أو محتاج مساعدة مباشرة على جهازك في جلسة خاصة مدفوعة واختيارية، ادعمنا واحجز جلستك: https://store.pyraai.cloud/product/reel-studio/»
+   «ولو محتاج مساعدة مباشرة على جهازك في جلسة خاصة مدفوعة واختيارية، احجز جلستك الاستشارية اليوم: https://store.pyraai.cloud/product/reel-studio/»
    «كده الاستوديو جاهز. افتح جلسة جديدة وقول «افحص النظام» عشان نتأكد إن كل حاجة شغالة.»
 
 ## Troubleshooting

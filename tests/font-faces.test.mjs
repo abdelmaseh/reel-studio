@@ -43,6 +43,14 @@ test('the families that already existed keep their faces', () => {
     ['latin', 'IBMPlexSansArabic-latin-700.woff2', '1 1000'],
     ['arabic', 'IBMPlexSansArabic-arabic-700.woff2', '1 1000'],
   ]);
-  assert.deepEqual(['Cairo', 'Tajawal', 'IBM Plex Mono', 'Noto Naskh Arabic', 'Source Serif 4'].map((family) => facesOf(family).length), [2, 6, 2, 6, 6]);
-  assert.equal(fonts.REGISTERED.length, 32, 'twenty-four earlier faces plus eight for Grid Sans');
+  assert.deepEqual(['Cairo', 'Tajawal', 'IBM Plex Mono', 'Noto Naskh Arabic', 'Source Serif 4'].map((family) => facesOf(family).length), [2, 6, 2, 6, 7]);
+  assert.equal(fonts.REGISTERED.length, 39, 'twenty-four earlier faces, eight for Grid Sans, six for the three Arabic display families and the Source Serif italic');
+  assert.deepEqual(['Noto Kufi Arabic', 'Readex Pro', 'El Messiri'].map((family) => facesOf(family).length), [2, 2, 2]);
+});
+
+test('Source Serif 4 carries one real italic face (latin 400), so Latin words in a cartoon headline are never slanted by the browser', () => {
+  const italic = facesOf('Source Serif 4').filter((face) => face.style === 'italic');
+  assert.deepEqual(italic.map((face) => [face.subset, face.file, face.weight]), [['latin', 'SourceSerif4-latin-400-italic.woff2', '400']]);
+  assert.equal(italic[0].bytes, pinned(italic[0].file).bytes, 'the pinned byte count');
+  assert.ok(facesOf('Source Serif 4').filter((face) => face.style !== 'italic').every((face) => face.style === 'normal'), 'the upright faces say so');
 });

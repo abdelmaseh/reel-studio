@@ -9,6 +9,8 @@ import {PipPlate} from "../core/device";
 import {fitToWidth, safeWidthFor} from "../core/type";
 import {EDITOR_FONT_ROLE} from "../core/editor-font-roles";
 import {CreativeFonts, getSceneGeometry} from "../creative-kit/primitives";
+import {DigitsProvider} from "../creative-kit/digits";
+import {displayDigitList, displayDigits} from "../core/digits.ts";
 import {ChapterCrossfade, ChapterThemeProvider, TypographyProvider, useSceneTheme} from "../creative-kit/chapter-theme";
 import {useBrandTheme} from "../creative-kit/brand-theme";
 import {IntroScene, ProofScene, ProcessScene, ComparisonScene, CommentGateScene, FollowScene} from "../creative-kit/scenes";
@@ -37,6 +39,8 @@ import {SemanticSceneRenderer} from '../creative-kit/semantic/scenes';
 import {ProjectScene} from '../project-scenes/ProjectScene';
 import {styleSceneSchema} from '../styles/scenes.ts';
 import {StyleSceneRenderer} from '../styles/scene-renderers';
+import type {MouthTable} from '../styles/cartoon/scenes/math.ts';
+export type {MouthTable};
 
 export type PreparedEditProps = SafeProps & {
   edit:EditManifest|null;
@@ -47,6 +51,8 @@ export type PreparedEditProps = SafeProps & {
   __editorMediaSelection?:{source:string;selected:string;proxyRequested:boolean};
 
   headGuide?:HeadGuide;
+  /** The cartoon mouth table (prepared/mouth.json); without it a cartoon mouth stays closed. */
+  mouth?:MouthTable;
 };
 export const preparedEditDefaults:PreparedEditProps = {edit:null,plate:null,guides:false,plates:[]};
 
@@ -66,10 +72,10 @@ export const calculatePreparedMetadata:CalculateMetadataFunction<PreparedEditPro
     props:{...props,edit,plates:preparedPlateList(edit,props.plate.src),__editorMediaSelection:mediaSelection}};
 };
 
-export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null;words?:ReturnType<typeof compileEdit>['words']}> = ({scene,style,geometry,aspect,seam,headBox=null,words=[]})=>{
+export const SceneLayer:React.FC<{scene:EditScene;style:EditManifest["style"];geometry:WindowGeo;aspect:number;seam:number;headBox?:HeadBoxPx|null;words?:ReturnType<typeof compileEdit>['words'];mouth?:MouthTable}> = ({scene,style,geometry,aspect,seam,headBox=null,words=[],mouth})=>{
   if(scene.family==='project-scene')return <ProjectScene component={scene.data.component} values={scene.data.values} style={style} layout={scene.layout} motion={scene.motion} durationInFrames={scene.durationInFrames} seam={seam} headBox={headBox}/>;
   const styled=styleSceneSchema.safeParse(scene);
-  if(styled.success)return <StyleSceneRenderer scene={styled.data} style={style}/>;
+  if(styled.success)return <StyleSceneRenderer scene={styled.data} style={style} words={words} mouth={mouth}/>;
   const semantic=semanticSceneSchema.safeParse(scene);
   if(semantic.success)return <SemanticSceneRenderer scene={semantic.data} style={style} words={words}/>;
   const screen=screenRecordingSceneSchema.safeParse(scene);
@@ -93,6 +99,7 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
   const frame=useCurrentFrame();
   const probe=useProbe();
   const theme=useSceneTheme(edit.style);
+  const digits=edit.digits??null;
   const emphasis=React.useMemo(()=>emphasisBySource(edit.captions.emphasis),[edit.captions.emphasis]);
   if(!captionOverlayVisible(edit))return null;
   let cue=compiled.captionGroups.find(c=>frame>=c.fromFrame && frame<c.toFrame);
@@ -103,9 +110,11 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
   const modern=!isLegacyStyle(edit.style);
   const role=edit.fontFamily?{...EDITOR_FONT_ROLE.caption,fontFamily:edit.fontFamily,fontWeight:700}
     :modern?{...EDITOR_FONT_ROLE.caption,fontFamily:theme.ar,fontWeight:800}:EDITOR_FONT_ROLE.caption;
-  if(edit.fontFamily)cue=fittingCaptionCue(cue,frame,text=>fitToWidth(text,{fontFamily:role.fontFamily,fontWeight:role.fontWeight,fontSize:30},band.width-60,{min:30,max:30}).fits);
+  if(edit.fontFamily)cue=fittingCaptionCue(cue,frame,text=>fitToWidth(displayDigits(text,digits),{fontFamily:role.fontFamily,fontWeight:role.fontWeight,fontSize:30},band.width-60,{min:30,max:30}).fits);
   const text=cue.words.map(w=>w.text.trim()).join(" ");
-  const fit=fitToWidth(text,{fontFamily:role.fontFamily,fontWeight:role.fontWeight,fontSize:50},band.width-60,{min:30,max:50});
+  // What is drawn: the same words with the chosen digits. The reading side below still follows the recorded words.
+  const shown=displayDigitList(cue.words.map(w=>w.text.trim()),digits);
+  const fit=fitToWidth(shown.join(" "),{fontFamily:role.fontFamily,fontWeight:role.fontWeight,fontSize:50},band.width-60,{min:30,max:50});
   if(!fit.fits) throw new Error(`Caption does not fit safely: ${text}`);
   const height=Math.ceil(fit.fontSize*role.lineHeight)+22;
   const width=Math.min(band.width,Math.ceil(fit.width)+60);
@@ -130,7 +139,7 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
           :kind==='underline'?{color:wordColor,textDecorationLine:'underline',textDecorationColor:ink,textDecorationThickness:underline.thickness,textUnderlineOffset:underline.offset,textDecorationSkipInk:'none'}
           :kind==='pop'?{color:ink,display:'inline-block',transform:`scale(${popScale(frame,word.fromFrame,probe!==null)})`,transformOrigin:'50% 60%'}
           :{color:ink};
-        return <React.Fragment key={word.sourceIndex}>{index>0?" ":null}<span style={style}>{word.text.trim()}</span></React.Fragment>;
+        return <React.Fragment key={word.sourceIndex}>{index>0?" ":null}<span style={style}>{shown[index]}</span></React.Fragment>;
       })}
     </div>
   </div>;
@@ -143,11 +152,11 @@ export const CaptionTrack:React.FC<{edit:EditManifest;compiled:ReturnType<typeof
 
 
 const ScenePresentation:React.FC<{edit:EditManifest;index:number;geometry:WindowGeo;aspect:number;seam:number;
-  transition:LayoutTransition|null;clipTop:number|null;contentShift:number;headBox:HeadBoxPx|null;words:ReturnType<typeof compileEdit>['words']}> = ({edit,index,geometry,aspect,seam,transition,clipTop,contentShift,headBox,words})=>{
+  transition:LayoutTransition|null;clipTop:number|null;contentShift:number;headBox:HeadBoxPx|null;words:ReturnType<typeof compileEdit>['words'];mouth?:MouthTable}> = ({edit,index,geometry,aspect,seam,transition,clipTop,contentShift,headBox,words,mouth})=>{
   const scene=edit.scenes[index];
   const entrance=sceneEntrance(edit.transitions,scene);
   const hue=hueCrossfadeFor(edit.transitions,edit.scenes,index);
-  let layer:React.ReactNode=<SceneLayer scene={scene} style={edit.style} geometry={geometry} aspect={aspect} seam={seam} headBox={headBox} words={words}/>;
+  let layer:React.ReactNode=<SceneLayer scene={scene} style={edit.style} geometry={geometry} aspect={aspect} seam={seam} headBox={headBox} words={words} mouth={mouth}/>;
   if(entrance){
     const box=entranceBox(scene.layout,seam),dir=entrance.dir??'rtl';
     if(entrance.kind==='whip-pan')layer=<WhipPan dir={dir} at={0} durF={entrance.durationInFrames} mode="in" box={box}>{layer}</WhipPan>;
@@ -184,13 +193,13 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
   const captionCenterFor=(layout:SceneLayoutName)=>layout==='presenter'?PRESENTER_CAPTION_CENTER:edit.footage?(layout==='split'?seam:PRESENTER_CAPTION_CENTER):getSceneGeometry(edit.style,layout).captionCenter;
   const pip=edit.footage?.pip;
   const active=edit.scenes.find(s=>frame>=s.fromFrame&&frame<s.fromFrame+s.durationInFrames);
-  return <SafeRoot {...props}><ChapterThemeProvider chapter={edit.brand??null}><TypographyProvider fontFamily={edit.fontFamily??null}><PreparedPlateProvider plate={plate}><CreativeFonts>
+  return <SafeRoot {...props}><ChapterThemeProvider chapter={edit.brand??null}><TypographyProvider fontFamily={edit.fontFamily??null}><DigitsProvider digits={edit.digits??null}><PreparedPlateProvider plate={plate}><CreativeFonts>
     <CanvasFill background={theme.background}/>
     {                                                                                  }
     <ContinuousWindowPlate src={plate.src} geo={state.geo} sourceAspect={aspect} visible={footageVisibility(edit,frame,props.__editorSkipHiddenVideo!==false)}/>
     {edit.scenes.map((scene,index)=><Sequence key={scene.id} from={scene.fromFrame} durationInFrames={scene.durationInFrames}>
       <ScenePresentation edit={edit} index={index} geometry={state.geo} aspect={aspect} seam={seam} transition={state.transition} words={compiled.words}
-        clipTop={state.clipTop} contentShift={state.contentShift} headBox={headBoxForScene(props.headGuide,scene.id)}/>
+        clipTop={state.clipTop} contentShift={state.contentShift} headBox={headBoxForScene(props.headGuide,scene.id)} mouth={props.mouth}/>
     </Sequence>)}
     {
 
@@ -214,5 +223,5 @@ export const PreparedEdit:React.FC<PreparedEditProps> = (props)=>{
         default:return <Whiteout key={index} at={at} dur={dur}/>;
       }
     })}
-  </CreativeFonts></PreparedPlateProvider></TypographyProvider></ChapterThemeProvider></SafeRoot>;
+  </CreativeFonts></PreparedPlateProvider></DigitsProvider></TypographyProvider></ChapterThemeProvider></SafeRoot>;
 };

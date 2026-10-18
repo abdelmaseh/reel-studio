@@ -7,11 +7,12 @@ import {assertGlideFits} from './fit-guard';
 import {glideChapterPillAt, type GridGlideScene} from './schema';
 import {glideWords} from './text';
 import {useSceneTheme} from '../../../creative-kit/chapter-theme';
+import {useGlideData} from './use-glide-data';
 
 type ChapterScene = Extract<GridGlideScene, {family: 'glide-chapter'}>;
 
 export const GlideChapterScene: React.FC<{scene: ChapterScene}> = ({scene}) => {
-  const {data} = scene, layout = layoutGlideChapter(data);
+  const data = useGlideData(scene.data), layout = layoutGlideChapter(data);
   const fontFamily = useSceneTheme('grid-glide').display;
   const {fps} = useVideoConfig();
   if (layout.issues.length) throw new Error(`${scene.id}: ${layout.issues.join('; ')}`);

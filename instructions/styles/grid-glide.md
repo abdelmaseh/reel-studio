@@ -6,7 +6,7 @@ Words glide into an already finished layout on one curve. Real screen captures s
 
 **The sentence that generates the style:** the world is flat and still; words glide into an already finished layout on one curve, and scenes leave as rigid slabs that end in a hard cut. If you are adding blur to a word, fading a scene, reflowing a line, tilting a card or putting a whoosh on anything, you have stopped applying this style.
 
-This is a newer style, so always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer another style. Never deliver a style whose preview failed.
+This is a newer style, so always show the fast preview (`EDITING.md` step 5) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer another style. Never deliver a style whose preview failed.
 
 Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, brand colours, endings) live in [STYLES.md](../STYLES.md), family contracts in [MOTION-CHOICES.md](../MOTION-CHOICES.md) and source-free authoring in [GRAPHICS.md](../GRAPHICS.md).
 
@@ -23,13 +23,13 @@ Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, bran
 
 - Enumerable explainers ("five tools", "three steps", "four modes") where each item has something real to show in a card. Tutorials and comparisons fit when each step or side has its own capture.
 - Faceless videos: the voice, or the reviewed authored copy, is the performer.
-- Not for a script with no screen material per item. Say so at the plan gate and propose fewer, bigger hero scenes with bullets, or another style.
+- Not for a script with no screen material per item. Say so when you choose the style, before writing the beats, and propose fewer, bigger hero scenes with bullets, or another style.
 
 ## Layouts and footage
 
 - The five style-owned families (`glide-chapter`, `glide-card`, `glide-lines`, `glide-comment`, `glide-follow`) are `takeover` scenes and exist only in this style; the manifest refuses them in any other style. Captions are hidden while one of them is on screen, because the scene draws its own words.
 - Picture-in-picture is not part of this style. A presenter scene may sit between Grid Glide scenes; join it by hard cuts.
-- Shared families (`screens` and the others that support `takeover`) keep their own layout support, are drawn in this style's register (flat canvas, bevelled card) and change by hard cuts. The shared `comment` and `follow` are the exception: they draw fixed English header lines, so this style ends with `glide-comment` and `glide-follow` instead. The delivery check accepts either pair, and a plan that uses the shared pair here carries a notice.
+- Shared families (`screens` and the others that support `takeover`) keep their own layout support, are drawn in this style's register (flat canvas, bevelled card) and change by hard cuts. The shared `comment` and `follow` are the exception: they draw their header lines in the shared card style, so this style ends with `glide-comment` and `glide-follow` instead. The delivery check accepts either pair, and a plan that uses the shared pair here carries a notice.
 - Real captures live inside cards only: a public-local file under `engine/public/` with its exact `sha256`, `width` and `height`, checked at preparation. Never use a floating, tilted or full-bleed recording in this style.
 - Author at 30, 50 or 60 fps. Frame counts in this guide are at 30 fps. Scale every start frame and scene length you write (`at`, `heroAt`, `pillAt`, `fromFrame`, `durationInFrames`) by fps / 30. Do not scale `cadence`: it is a rhythm in 30 fps frames, and the engine stretches it together with the whole motion law (entrance, slide, push, pill, sparkle, box wipe, dip and the default pill delay), so a scene lasts the same time in seconds at every frame rate.
 - A line, box or bullet that contains any Arabic letter is laid out right to left, and Latin tool names inside it stay joined in reading order; a text with no Arabic letter reads left to right.
@@ -39,12 +39,12 @@ Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, bran
 - Canvas `#F2F2F2`, card face `#F9F9F7`, ink `#242424`, inverted box `#262626` with text `#F4F4F4`, pill face `#E5E5E5`, logo tile `#191919` (drawn only when a pill carries a logo). There is one ink colour; emphasis is size, weight and position only.
 - Brand colours are not applied: the style keeps its monochrome identity. Relay the plan notice in one line (for example: "الستايل ده بيفضل بألوانه هو").
 - Font: `Grid Sans`, an alias that combines Inter (Latin and digits) with IBM Plex Sans Arabic (400 to 700), so a mixed Arabic and Latin line is measured and drawn with one family. It is this style's default and appears in the font choices.
-- Arabic has no italic and no case: the accent role uses weight (700 inside a 500 line) or the box, never slant. Latin tokens, digits and tool names stay Latin inside Arabic lines.
+- Arabic has no italic and no case: the accent role uses weight (700 inside a 500 line) or the box, never slant. Latin tokens and tool names stay Latin inside Arabic lines; digits stay as written unless the video's digits choice is `arabic-indic` or `latin`.
 
 ## Recipe
 
 - **Decision:** Choose it when the message is a countable list and every item can show something real.
-  - **Fit check.** Each chapter needs at least one real capture or still to put in a card. If the script has no screen material per item, say so at the plan gate. The style supplies the look, not the wording: on-screen lines may drop words (verbs-only bullets) but never reorder or rewrite recorded or reviewed words, and they are explanatory labels, not literal subtitles.
+  - **Fit check.** Each chapter needs at least one real capture or still to put in a card. If the script has no screen material per item, say so when you choose the style, before writing the beats. The style supplies the look, not the wording: on-screen lines may drop words (verbs-only bullets) but never reorder or rewrite recorded or reviewed words, and they are explanatory labels, not literal subtitles.
   - **Segment the script into scenes at sentence gaps.** A scene is one clause or one sentence group. Nothing is cleared inside a scene; the whole scene leaves at once. With a recorded voice the next scene starts one to five frames before its first audible word and is never held more than about six frames past its sentence end; with authored copy it starts at the reviewed reading moment.
 
     | Scene | Family | Use it for | Enter | Exit | Sound |
@@ -63,7 +63,7 @@ Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, bran
   - **Ordinals and tools.** Ordinals ("first", "second") are the chapter hero. Tool names go in the pill, in uppercase Latin spelling, never as plain text.
   - **Box.** At most one per scene: the stake or qualifier of the beat, three to five words, an inverted box revealed by one continuous wipe. It is fixed width with the text fitted, never overflowing.
   - **Bullets.** The result phrases of the item's second sentence, verbs first, three to five words, fillers dropped but order kept. Zero to four per card scene; zero is fine when the card carries the scene.
-  - **Text normalisation.** Latin tokens and digits stay Latin; a spoken "and" may be shown as "&"; drop terminal full stops on hero lines.
+  - **Text normalisation.** Latin tokens stay Latin and digits follow the video's digits choice (as written when none is set); a spoken "and" may be shown as "&"; drop terminal full stops on hero lines.
   - **Layout budget (Instagram band).** The band is y 250 to 1470 with sides x 65 to 1015, and the action rail occupies x 853 and beyond for y 1150 and below. Budget per scene: caption block + gap (38 to 80) + card + gap (about 65) + lower block must not exceed 1220 px. One example fits exactly: three lines at 70, 100 and 70 px with line height 1.3 (312 px, y 250 to 562), a gap of 38, a 16:9 card (y 600 to 1065), a gap of 65 and three bullets at a 120 px pitch (rows at y 1130, 1250 and 1370; the last ends at 1453). A 4:3 card (591 px high) or a 1.3 card (638 px) costs a bullet or a line. Remedies in order: drop or merge a line or bullet; crop the capture wider so the card is shorter; scale type uniformly down to 0.85 (lead-in 60 px, bullets 56 px). Never shrink the card width below about 827 px.
   - **Rail.** A card's bottom stays at or above y 1150, or its right edge at or left of x 853. Below y 1150 centred lines stay within 626 px, and in Arabic the bullet star sits near x 790 with the text column at x 65 to 702. Text that does not fit fails the render instead of clipping.
   - **Card material.** Width 827, outer radius 24, a 9 px inset screen with radius 15, a stacked 1 px bevel and a two-layer shadow on the right and bottom only. The card never moves, tilts or scales. Its media change only by hard cuts on a reviewed beat or on the text cadence; a tall still may scroll inside the card (`scroll`).
@@ -76,14 +76,14 @@ Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, bran
   - **Pill.** It slides in from the left over 21.75 frames by 660.6 px, with opacity rising linearly from 2.5 frames after its start over 10.8 frames. The label is fitted between 50 and 72 px.
   - **Sparkle.** It scales up over 8.5 frames while unwinding 16 degrees, and starts 2 frames before its row's first word.
   - **Cues before leaving.** Every cue begins at least 4 frames (scaled by fps / 30) before the exit begins: the start of the last word of each line and bullet, of the last ordinal word, of the box and of the pill. A push exit begins 15 frames (scaled) before the scene ends, a dip exit 5 frames (scaled) and a cut exit at the end of the scene. A word may still be settling when the exit begins; the manifest refuses a scene only when a cue starts too late.
-- **Transition/sound:** Only these moves exist, all inside the style-owned scenes; the shared transition system is not used.
+- **Transition/sound:** Only these moves exist, all inside the style-owned scenes; the shared transition system is not used. Effects follow [SOUND.md](../SOUND.md).
   - **Slide-in.** `slide` from the side opposite the previous push, 400 px (500 for a bigger arrival) over 30 frames on the entrance curve. The scene is opaque from its first frame.
   - **Push out.** `push` over the last 15 frames on the mirrored curve, cubic-bezier(1, 0, 1, 1). The 15th frame is the next scene, so the cut lands at peak speed. Use 400 px left or right for chapters and hooks and 200 px up or down for content scenes. Chapter pushes alternate right and left, and the next content scene slides in from the opposite side. A vertical push leaves one blank frame (the next hero's first frame); a horizontal push leaves none. The canvas, grid and watermark do not move.
   - **Hard cut.** `cut` for a static hold followed by a cut (a hook into the first chapter) and for every change into or out of a shared family.
   - **Dip.** `dip` for recaps only: a whole-frame blur peaking near 15 px (watermark included) and a dark vignette bump around the boundary, split over the outgoing scene's last five frames and the incoming scene's first five. The old scene disappears in one frame at the peak. An exit `dip` must be followed immediately by a scene whose enter is `dip`.
   - **Never** crossfade or fade a scene, flash white, wipe, zoom between scenes or add a whoosh. Chapters and content change by pushes and cuts, recaps by dips; do not invent a third family.
   - **Sound.** Five deterministic low voices: a boom (`sub-boom`) once at frame 0 when the edit opens on a Grid Glide scene (a normal `sounds[]` entry); a thump (`sub-thump`) on every scene cut, leading it by 0.27 s so the pre-swell plays during the push and the hit lands just after the cut; a click (`ui-click`) 5 frames after each pill starts (a chapter's tool pill and the follow pill); a swell (`sub-swell-hit`) on each dip, leading it by 0.2 s; a thud (`sub-thud`) for the `swap` cue, leading it by 0.13 s. Nothing on words, bullets, sparkles, box wipes, slides or in-card cuts, and nothing after a recorded sign-off starts.
-  - **Level.** The mix places the sound stem relative to the voice. Confirm the balance by listening; adjust the palette gains or the stem level in an audio revision ([PRODUCTION.md](../PRODUCTION.md)).
+  - **Level.** The mix places the sound stem relative to the voice. Ask the creator to play a passage with sound to confirm the balance; adjust the palette gains or the stem level in an audio revision ([PRODUCTION.md](../PRODUCTION.md)).
 - **Application/review:** Build and check in this order.
   1. Run the fast preview on a 10 to 20 second passage with one chapter, one card with three bullets, one box line and one dip. In Arabic it must prove the right-to-left box wipe, the mirrored bullets and the line-anchor timing.
   2. Write a per-scene timing table before laying anything out: scene cut frames, line anchors, cadence per block, pill starts and push starts.
@@ -91,7 +91,14 @@ Read [EDITORIAL.md](../EDITORIAL.md) first. Shared rules (choosing a style, bran
   4. Check against the style: no easing other than the three curves; no blur or scale on words; frame `s` of each entrance invisible; the blank frame exactly where expected; no frame between the last pushed frame and the cut; card offsets 0 during holds; a hit on every scene cut and none elsewhere.
   5. Right to left: lines read right to left with the hero last in reading order; the box wipes right to left; bullets are mirrored (star on the right, words sliding in from the left); no letter-spacing on Arabic and no per-character animation; Latin runs and digits stay joined.
   6. Inspect the safe zones with the guides (nothing in the top 250 px, below y 1470 or in the rail except the dressings), each card against the rail, and the complete handle on a follow card.
-  7. Review the actual MP4 and listen to it, following [VISUAL-REVIEW.md](../VISUAL-REVIEW.md). Technical checks are not creative acceptance.
+  7. Review the actual MP4 with stills and checks and ask the creator to play it with sound, following [VISUAL-REVIEW.md](../VISUAL-REVIEW.md). Technical checks are not creative acceptance.
+
+### Decision order
+
+1. Scene boundaries sit in voice gaps: a scene starts one to five frames before its first audible word and never holds more than about six frames past its sentence end. A scene is one clause or one sentence group; nothing is cleared inside a scene; the whole scene leaves at once.
+2. Lead-in → hero: every clause splits into small connective words and one hero keyword group at the end of the clause on its own line (the object, the quantity with its nouns, the benefit, the payoff). At most three style steps per block; lines follow the four-words-by-default rule under Composition/material.
+3. Every item that glides in needs its real capture; without one the style does not fit the video.
+4. Sound: a low landing per slab, inside the `grid-glide` band of `scripts/data/sound-bands.json`; no sweeps.
 
 ## Style-owned scenes
 
@@ -157,7 +164,7 @@ Stop and reconsider if any of these is true.
 - A card tilts, floats, scales or animates its own content, or a floating or full-bleed recording replaces the card.
 - A second text colour, a shadow on text, a rounded box corner, or more than one box in a scene.
 - Anything sits above y 250, below y 1470 or inside the rail (dressings excepted), or a card crosses y 1150 at x beyond 853.
-- A follow card shows a clipped handle or lacks the Follow pill, or an ending uses the shared `comment` or `follow`, which draw fixed English header lines.
+- A follow card shows a clipped handle or lacks the Follow pill, or an ending uses the shared `comment` or `follow`, which draw their header lines in the shared card style.
 - A face is recoloured, screened or textured.
 - Word timing is tied to recognised word starts instead of the metronome plus line anchors.
 - Coordinates were copied from an earlier video instead of composing inside the budget.

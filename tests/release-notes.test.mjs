@@ -35,10 +35,10 @@ const gridGlideCard = () => {
   return text.slice(text.lastIndexOf('<td', at), text.indexOf('</td>', at));
 };
 
-test('the release lock is at least 2.5.0 with engine 1.3.0 and every version file agrees', () => {
+test('the release lock is at least 3.0.0 with engine 1.4.0 and every version file agrees', () => {
   const {edition, engine} = lock();
-  assert.ok(atLeast(edition, '2.5.0'), `edition ${edition}`);
-  assert.ok(atLeast(engine, '1.3.0'), `engine ${engine}`);
+  assert.ok(atLeast(edition, '3.0.0'), `edition ${edition}`);
+  assert.ok(atLeast(engine, '1.4.0'), `engine ${engine}`);
   assert.equal(JSON.parse(read('engine/package.json')).version, engine);
   const packageLock = JSON.parse(read('engine/package-lock.json'));
   assert.equal(packageLock.version, engine);
@@ -67,6 +67,17 @@ test('README header, navigation and new-section heading follow the locked editio
   assert.equal((readme.match(/<a id="whats-new"><\/a>/g) ?? []).length, 1, 'one current anchor');
 });
 
+// Reads the version printed in each place, so a stale header cannot hide behind a correct mention elsewhere.
+test('the README header, navigation link and current heading all carry the locked major.minor', () => {
+  const [major, minor] = parts(lock().edition), expected = `${major}.${minor}`, readme = read('README.md');
+  const header = /<h1 align="center">Reel Studio (\d+\.\d+) 🎬<\/h1>/.exec(readme)?.[1];
+  const navigation = /<a href="#whats-new">الجديد في (\d+\.\d+)<\/a>/.exec(readme)?.[1];
+  const heading = /^## الجديد في (\d+\.\d+)(?::|$)/m.exec(currentSection())?.[1];
+  assert.equal(header, expected, `header says ${header}`);
+  assert.equal(navigation, expected, `navigation says ${navigation}`);
+  assert.equal(heading, expected, `current heading says ${heading}`);
+});
+
 test('the public wording rule asks for White Arabic', () => {
   const claude = read('CLAUDE.md');
   assert.ok(claude.includes('simple White Arabic'));
@@ -78,7 +89,7 @@ test('NOTICE lists the Inter font', () => {
 });
 
 test('the Sound-Kits README counts and recipe table match the catalog', () => {
-  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
+  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four', 'twenty-five'];
   const catalog = JSON.parse(read('Sound-Kits/catalog.json')), text = read('Sound-Kits/README.md');
   assert.match(text, new RegExp(`${words[catalog.sounds.length]} deterministic sounds`));
   assert.match(text, new RegExp(`${words[catalog.recipes.length]} reusable (?:multi-hit )?recipes`));
@@ -101,14 +112,14 @@ test('first-run setup ends with the thank-you line before the ready line', () =>
 });
 
 const SUPPORT_URL = 'https://store.pyraai.cloud/product/reel-studio/';
-const SUPPORT_LABEL = 'ادعمنا واحجز جلستك';
+const SUPPORT_LABEL = 'احجز جلستك الاستشارية اليوم';
 // Every placement says the session is optional and paid, so it never reads as free support.
 const OPTIONAL_PAID = /اختيارية[^\n]{0,20}(?:مدفوعة|تُدفع)|مدفوعة[^\n]{0,5}واختيارية/;
 
 test('README links to support sessions at the start, in the FAQ, when setup stops and in the footer', () => {
   const readme = read('README.md'), link = `[${SUPPORT_LABEL}](${SUPPORT_URL})`;
   const hero = readme.slice(0, readme.indexOf('<a id="start"></a>'));
-  assert.ok(hero.includes(`<a href="${SUPPORT_URL}"><b>${SUPPORT_LABEL}</b></a>`), 'start of the page');
+  assert.ok(hero.includes(`<a href="${SUPPORT_URL}">`) && hero.includes(SUPPORT_LABEL), 'start of the page');
   assert.match(hero, OPTIONAL_PAID);
   const faq = readme.slice(readme.indexOf('## أسئلة سريعة'), readme.indexOf('## أدلة للمساعد'));
   const entries = faq.split('<details>').slice(1);

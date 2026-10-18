@@ -1,8 +1,8 @@
 import React, { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { getIn, removeIn, setIn, type Path } from "../ops/paths.ts";
 import {
-  blankValue, blankVariant, defaultItem, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex,
-  type ArrayField, type Field, type JsonField, type NumberField, type ObjectField, type StringField, type UnionField,
+  blankValue, blankVariant, defaultItem, fieldHint, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex, scalarVariantIndex, recordKeyIssue,
+  type ArrayField, type Field, type JsonField, type NumberField, type ObjectField, type StringField, type UnionField, type ScalarUnionField, type RecordField,
 } from "./form-schema.ts";
 
 export type SchemaFormProps = {
@@ -19,6 +19,7 @@ export type SchemaFormProps = {
 };
 
 type Ctx = {
+  family: string;
   fps: number;
   assets: readonly string[];
   demo: ReadonlySet<string>;
@@ -61,7 +62,7 @@ export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, 
   };
 
   if (!fields.length) return <div className="sf-empty">مفيش حقول قابلة للتعديل للـ family دي.</div>;
-  const ctx: Ctx = { fps, assets, demo, issues, change, uid };
+  const ctx: Ctx = { family, fps, assets, demo, issues, change, uid };
   const pending = validation.ok && refusal !== null;
   return (
     <div className="sf" dir="rtl">
@@ -144,6 +145,8 @@ const FieldView: React.FC<FieldProps> = ({ field, path, draft, ctx }) => {
     case "object": return <ObjectView field={field} path={path} draft={draft} ctx={ctx} removable={removable} />;
     case "array": return <ArrayView field={field} path={path} draft={draft} ctx={ctx} removable={removable} />;
     case "union": return <UnionView field={field} path={path} draft={draft} ctx={ctx} removable={removable} />;
+    case 'scalar-union': return <ScalarUnionView field={field} path={path} draft={draft} ctx={ctx} removable={removable}/>;
+    case 'record': return <RecordView field={field} path={path} draft={draft} ctx={ctx} removable={removable}/>;
     case "json": return <JsonView field={field} path={path} draft={draft} ctx={ctx} removable={removable} />;
   }
 };
@@ -157,6 +160,7 @@ const StringView: React.FC<WithRemove<StringField>> = ({ field, path, draft, ctx
   const value = String((getIn(draft, path) as string | undefined) ?? field.default ?? "");
   const listId = `${ctx.uid}-${key}`;
   const over = field.maxLength !== undefined && [...value].length > field.maxLength;
+  const hint = fieldHint(ctx.family, key);
   const suggestions = useMemo(() => (field.asset ? ctx.assets.filter((a) => MEDIA.test(a) && !a.startsWith("_")).slice(0, 400) : []), [field.asset, ctx.assets]);
   const common = {
     value, dir: "auto" as const, spellCheck: false, "aria-invalid": (ctx.issues.get(key)?.length ?? 0) > 0,
@@ -168,6 +172,7 @@ const StringView: React.FC<WithRemove<StringField>> = ({ field, path, draft, ctx
         <Label field={field} path={path} ctx={ctx} extra={field.maxLength !== undefined ? <span className={`sf-count${over ? " bad" : ""}`} dir="ltr">{[...value].length}/{field.maxLength}</span> : null} />
         {field.multiline ? <textarea rows={2} {...common} /> : <input type="text" {...common} list={suggestions.length ? listId : undefined} />}
       </label>
+      {hint ? <span className="sf-hint">{hint}</span> : null}
       {suggestions.length ? <datalist id={listId}>{suggestions.map((a) => <option key={a} value={a} />)}</datalist> : null}
       {removable}
       <Msgs list={ctx.issues.get(key)} />
@@ -314,4 +319,37 @@ const JsonView: React.FC<WithRemove<JsonField>> = ({ field, path, draft, ctx, re
       {local ? <div className="sf-msg bad">{local}</div> : <Msgs list={ctx.issues.get(key)} />}
     </div>
   );
+};
+
+const scalarLabel = (field: Field): string => field.kind === 'boolean' ? 'صح أو غلط' : field.kind === 'number' ? 'رقم' : 'نص';
+const ScalarUnionView: React.FC<WithRemove<ScalarUnionField>> = ({field, path, draft, ctx, removable}) => {
+  const key = pathKey(path), index = scalarVariantIndex(field, getIn(draft, path));
+  return <fieldset className="sf-object">
+    <legend><Label field={field} path={path} ctx={ctx}/> <select aria-label={`نوع ${field.label}`} value={index}
+      onChange={event => ctx.change(path, blankValue(field.variants[Number(event.target.value)]), key)}>
+      {field.variants.map((variant, option) => <option key={option} value={option}>{scalarLabel(variant)}</option>)}
+    </select>{removable}</legend>
+    <FieldView key={index} field={{...field.variants[index], required: true}} path={path} draft={draft} ctx={ctx}/>
+  </fieldset>;
+};
+
+const RecordView: React.FC<WithRemove<RecordField>> = ({field, path, draft, ctx, removable}) => {
+  const key = pathKey(path), value = (getIn(draft, path) ?? {}) as Record<string, unknown>;
+  const [name, setName] = useState(''), [local, setLocal] = useState<string | null>(null);
+  const add = () => {
+    const nextName = name.trim(), issue = recordKeyIssue(field, nextName, value);
+    if (issue) {setLocal(issue); return;}
+    ctx.change(path, {...value, [nextName]: blankValue(field.item)}, key); setName(''); setLocal(null);
+  };
+  return <fieldset className="sf-object">
+    <legend><Label field={field} path={path} ctx={ctx}/>{removable}</legend>
+    {Object.keys(value).map(name => <div className="sf-item" key={name}>
+      <div className="sf-item-head"><code dir="ltr">{name}</code><button type="button" className="sf-del"
+        onClick={() => ctx.change(path, Object.fromEntries(Object.entries(value).filter(([entry]) => entry !== name)), key)}>حذف الخاصية</button></div>
+      <FieldView field={{...field.item, key: name, label: name, required: true}} path={[...path, name]} draft={draft} ctx={ctx}/>
+    </div>)}
+    <div className="sp-row"><input value={name} dir="ltr" aria-label="اسم خاصية جديدة" onChange={event => setName(event.target.value)}/>
+      <button type="button" className="sf-add" onClick={add}>+ إضافة خاصية</button></div>
+    {local ? <div className="sf-msg bad" role="alert">{local}</div> : null}<Msgs list={ctx.issues.get(key)}/>
+  </fieldset>;
 };

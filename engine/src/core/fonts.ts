@@ -57,6 +57,12 @@ export const FAMILY = {
   latinSerif: "Source Serif 4",
 
   gridSans: "Grid Sans",
+
+  kufi: "Noto Kufi Arabic",
+
+  readex: "Readex Pro",
+
+  messiri: "El Messiri",
 } as const;
 
 export type FamilyName = (typeof FAMILY)[keyof typeof FAMILY];
@@ -75,6 +81,8 @@ type Face = {
   file: number;
 
   css: string;
+  /** Only the one real italic face sets this; every other face is upright ("normal"). */
+  style?: "italic";
 };
 
 
@@ -155,6 +163,15 @@ const FACES: Face[] = [
     { family: FAMILY.latinSerif, source: "Source Serif 4", subset: "latin-ext", file, css: String(file) },
     { family: FAMILY.latinSerif, source: "Source Serif 4", subset: "latin", file, css: String(file) },
   ]),
+  // The real Source Serif italic (latin 400) for Latin words inside cartoon headlines; without it the browser would slant the upright face.
+  { family: FAMILY.latinSerif, source: "Source Serif 4", subset: "latin", file: 400, css: "400", style: "italic" },
+
+  // Variable Arabic display families: one file per subset covers their whole weight range.
+  ...(["arabic", "latin"] as const).flatMap<Face>((subset) => [
+    { family: FAMILY.kufi, source: "Noto Kufi Arabic", subset, file: 400, css: "100 900" },
+    { family: FAMILY.readex, source: "Readex Pro", subset, file: 400, css: "160 700" },
+    { family: FAMILY.messiri, source: "El Messiri", subset, file: 400, css: "400 700" },
+  ]),
 ];
 
 
@@ -179,11 +196,11 @@ const ENTRIES = manifest as ManifestEntry[];
 
 const fileFor = (f: Face): ManifestEntry => {
   const hit = ENTRIES.find(
-    (e) => e.family === f.source && e.subset === f.subset && e.weight === f.file && e.style === "normal",
+    (e) => e.family === f.source && e.subset === f.subset && e.weight === f.file && e.style === (f.style ?? "normal"),
   );
   if (!hit) {
     throw new Error(
-      `core/fonts: engine/public/fonts/manifest.json has no ${f.source} ${f.subset} ${f.file}. ` +
+      `core/fonts: engine/public/fonts/manifest.json has no ${f.source} ${f.subset} ${f.file}${f.style ? ` ${f.style}` : ""}. ` +
         `Run \`node scripts/studio.mjs setup --steps fonts\` (it downloads the pinned fonts and checks their sha256).`,
     );
   }
@@ -202,7 +219,7 @@ const rangeFor = (f: Face, entry: ManifestEntry): string => {
 export const REGISTERED = FACES.map((f) => {
   const entry = fileFor(f);
   return {
-    family: f.family, subset: f.subset, weight: f.css, file: entry.file,
+    family: f.family, subset: f.subset, weight: f.css, style: f.style ?? "normal", file: entry.file,
     bytes: entry.bytes, unicodeRange: rangeFor(f, entry),
   };
 });
@@ -236,7 +253,7 @@ if (typeof document !== "undefined") {
         family: f.family,
         url: staticFile(`fonts/${entry.file}`),
         weight: f.css,
-        style: "normal",
+        style: f.style ?? "normal",
         unicodeRange: rangeFor(f, entry),
         format: "woff2",
 

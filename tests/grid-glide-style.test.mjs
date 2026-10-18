@@ -21,9 +21,9 @@ const EARLIER = ['split-canvas', 'section-deck', 'kinetic-paper', 'calligraphic-
   'liquid-glass', 'campaign-tickets', 'magazine-interview', 'scrapbook-route'];
 const profile = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
 
-test('Grid Glide is registered last, so every earlier tie-break keeps its order', () => {
-  assert.deepEqual([...STYLE_IDS], [...EARLIER, 'grid-glide']);
-  assert.equal(STYLE_METAS.at(-1), gridGlide);
+test('Grid Glide follows the earlier eleven and One Shot follows it, so every earlier tie-break keeps its order', () => {
+  assert.deepEqual([...STYLE_IDS], [...EARLIER, 'grid-glide', 'one-shot', 'cartoon']);
+  assert.equal(STYLE_METAS.at(-3), gridGlide);
   assert.deepEqual([...EDITION_STYLE_IDS], [...STYLE_IDS]);
   assert.ok(isStyleId('grid-glide'));
 });
@@ -69,7 +69,7 @@ test('every list derived from the registry sees Grid Glide', () => {
 });
 
 test('Grid Sans is the default font and the creative-kit profile is built from the same card', () => {
-  assert.equal(FONT_CHOICES.at(-1), 'Grid Sans');
+  assert.ok(FONT_CHOICES.includes('Grid Sans'));
   const resolved = resolvePreferences(defaultPreferences(), {purpose: 'explainer', tone: 'calm', style: 'grid-glide'});
   assert.equal(resolved.fontFamily, 'Grid Sans');
   assert.equal(resolved.captionsPresentation, 'minimal');

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "recording": "synthetic graphics sample (no recording)",
+  "reviewedBy": "fixture",
+  "style": {"id": "split-canvas", "reasonContains": ["demo"]},
+  "hook": {"maxStartSec": 4, "visualOnFrame0": true},
+  "beats": {"min": 3, "max": 12},
+  "clauses": [
+    {"phrase": "قبل ما تبدأ خطة جديدة", "visualKind": "contrast", "note": "the old plan crossed out, then one clear line"}
+  ],
+  "cuts": {"retakeIds": [3]},
+  "sound": {"band": "calm", "noWhoosh": true},
+  "ending": {"comment": true, "follow": true, "holdSec": 1},
+  "passBar": {"softRatio": 0.8}
+}

@@ -1,5 +1,6 @@
 import type { EditManifest } from "../prepared-edit/schema.ts";
 import type { HeadGuide } from "../prepared-edit/head-guide.ts";
+import type { MouthTable } from "../styles/cartoon/scenes/math.ts";
 
 export type { EditManifest };
 
@@ -117,6 +118,8 @@ export type ProjectResponse = {
   recipeInfo: RecipeInfo[];
 
   headGuide?: HeadGuide;
+  /** The cartoon mouth table from prepared props; absent before prepare, so the preview draws the mouth closed. */
+  mouth?: MouthTable;
 
   warnings: string[];
 

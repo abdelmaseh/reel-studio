@@ -1,0 +1,2474 @@
+{
+  "version": 1,
+  "items": [
+    {
+      "key": "recipe-variant:data-bars",
+      "role": "explanation",
+      "labelAr": "وصفة أعمدة مقارنة موثّقة",
+      "explains": "Uses data-story bar mode to compare a few supplied values on one zero-based scale.",
+      "action": "Timed labels and values appear as proportional horizontal bars grow from zero.",
+      "useWhen": [
+        "Two to five sourced measurements share one meaningful unit and comparable basis."
+      ],
+      "avoidWhen": [
+        "The measurements have different units, missing values or require a logarithmic or negative scale.",
+        "The data is a continuous trend that needs time-axis interpretation."
+      ],
+      "intents": [
+        "comparison",
+        "scale",
+        "evidence"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "This is data-story with display:bars and two to five items; takeover is required.",
+        "Provide non-negative values with at most two decimals, labels, one unit, source note and ordered cues; all bars settle before scene end.",
+        "Catalog provenance points to Motion-Kits/github-curated/manifest.json and needs verification before intake or promotion."
+      ],
+      "display": {
+        "explains": "وصفة أعمدة بتقارن أرقام على نفس المقياس.",
+        "useWhen": "لقيم موثّقة بوحدة وأساس واحد.",
+        "avoidWhen": "لو الوحدات مختلفة أو القيم سالبة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-library/catalog.ts",
+          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+        },
+        {
+          "path": "engine/src/motion-library/schema.ts",
+          "sha256": "2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf"
+        },
+        {
+          "path": "engine/src/motion-library/scenes.tsx",
+          "sha256": "a1c1bf17c17bd23714754334e956f4c89e8aa1c177a9b1ce136659eea3a1fa42"
+        }
+      ]
+    },
+    {
+      "key": "recipe-variant:metric-count",
+      "role": "explanation",
+      "labelAr": "وصفة رقم واحد بمصدره",
+      "explains": "Uses data-story metric mode to give one supplied value, its unit and source a clear reveal.",
+      "action": "The metric block reveals as its number counts upward and settles at the supplied value.",
+      "useWhen": [
+        "One sourced metric should dominate the explanation without a chart."
+      ],
+      "avoidWhen": [
+        "More than one value needs comparison.",
+        "The quantity is negative or its source and unit are unknown."
+      ],
+      "intents": [
+        "scale",
+        "evidence",
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "This is data-story with display:metric and exactly one item, using split or takeover; graphics use takeover.",
+        "Provide a non-negative value with at most two decimals, label, unit, source note and reveal frame; finish its animation before scene end.",
+        "Catalog provenance points to Motion-Kits/github-curated/manifest.json and needs verification before intake or promotion."
+      ],
+      "display": {
+        "explains": "وصفة بتبرز رقم واحد ووحدته ومصدره.",
+        "useWhen": "لما رقم واحد كفاية يشرح النقطة.",
+        "avoidWhen": "لو محتاج نقارن أكتر من قيمة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-library/catalog.ts",
+          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+        },
+        {
+          "path": "engine/src/motion-library/schema.ts",
+          "sha256": "2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf"
+        },
+        {
+          "path": "engine/src/motion-library/scenes.tsx",
+          "sha256": "a1c1bf17c17bd23714754334e956f4c89e8aa1c177a9b1ce136659eea3a1fa42"
+        }
+      ]
+    },
+    {
+      "key": "recipe-variant:source-focus",
+      "role": "explanation",
+      "labelAr": "وصفة التركيز على المصدر",
+      "explains": "Uses screen-focus to explain an authored region of an actual screenshot or separate capture.",
+      "action": "Reveals real media and moves focus to source-aligned regions, with optional video cursor, click and callouts.",
+      "useWhen": [
+        "A real source detail should substantiate a tutorial step or visual claim."
+      ],
+      "avoidWhen": [
+        "The source is absent or only a fabricated UI could support the explanation.",
+        "The main recording is already the continuous screen source and needs screen-recording instead."
+      ],
+      "intents": [
+        "focus",
+        "evidence",
+        "tooling",
+        "process"
+      ],
+      "moods": [
+        "technical",
+        "calm",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "screen-capture"
+      ],
+      "requirements": [
+        "This is a recipe variant of screen-focus, not an additional scene family; use its takeover schema and source geometry contract.",
+        "Supply an actual still or local MP4/WebM capture with accurate dimensions and authored focus timing.",
+        "Catalog provenance points to Motion-Kits/github-curated/manifest.json and needs verification before intake or promotion."
+      ],
+      "display": {
+        "explains": "وصفة لتوضيح جزء محدد من المصدر الحقيقي.",
+        "useWhen": "لشرح تفصيلة على الشاشة بدليلها.",
+        "avoidWhen": "لو المصدر مش موجود أو الشاشة هي التسجيل الأساسي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-library/catalog.ts",
+          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+        },
+        {
+          "path": "engine/src/motion-library/schema.ts",
+          "sha256": "2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf"
+        },
+        {
+          "path": "engine/src/motion-library/scenes.tsx",
+          "sha256": "a1c1bf17c17bd23714754334e956f4c89e8aa1c177a9b1ce136659eea3a1fa42"
+        }
+      ]
+    },
+    {
+      "key": "scene:chapter-quote",
+      "role": "explanation",
+      "labelAr": "فصل واقتباس منسوب",
+      "explains": "Introduces a chapter and gives a supplied quotation clear speaker attribution.",
+      "action": "The chapter heading holds, then the quotation reveals; an optional approved magazine foreground appears before the quote.",
+      "useWhen": [
+        "A real quotation or interview statement anchors a new section.",
+        "A reflective passage needs space for the speaker's exact attributed words."
+      ],
+      "avoidWhen": [
+        "The quote or speaker identity is uncertain.",
+        "The passage needs automatic word-by-word synchronization or an unapproved generated likeness."
+      ],
+      "intents": [
+        "chapter",
+        "claim",
+        "text"
+      ],
+      "moods": [
+        "reflective",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply chapter, title, quote, speaker, role and a quoteFrame inside the scene; quote copy is independently authored and must be verified.",
+        "Optional cover foreground requires a supplied transparent PNG, hash, dimensions and safe placement; it is available only in magazine-interview with takeover and a positive quoteFrame.",
+        "Without a cover, split or takeover is available; no automatic source word-index dependency exists."
+      ],
+      "display": {
+        "explains": "بيفتح فصل باقتباس واضح وصاحبه معروف.",
+        "useWhen": "لجملة منسوبة بتقود الفكرة.",
+        "avoidWhen": "لو النص أو هوية صاحبه مش مؤكّدين."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:checklist",
+      "role": "explanation",
+      "labelAr": "قائمة بتتفعّل",
+      "explains": "Shows a small set of missing or planned items and activates each at its authored cue.",
+      "action": "Numbered rows become highlighted; missing-state details resolve or blueprint ticks become visible.",
+      "useWhen": [
+        "Checking up to five requirements or practical actions.",
+        "Contrasting what is missing with what the supplied plan includes."
+      ],
+      "avoidWhen": [
+        "The viewer must see causal flow, branches or a detailed tutorial.",
+        "The check marks would imply real completion that has not occurred."
+      ],
+      "intents": [
+        "process",
+        "reveal",
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Choose missing or blueprint; supply one to five rows with label, detail and ordered activation frames.",
+        "An optional local image supports the checklist; it is not mandatory.",
+        "Takeover only; labels should describe the intended explanation rather than invent completed work."
+      ],
+      "display": {
+        "explains": "بيفعّل بنود قائمة واحدة واحدة.",
+        "useWhen": "للشروط أو الخطوات العملية القصيرة.",
+        "avoidWhen": "لو علامة الصح هتدّعي إن حاجة اتنفذت."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        }
+      ]
+    },
+    {
+      "key": "scene:comment",
+      "role": "explanation",
+      "labelAr": "كلمة في الكومنت",
+      "explains": "Shows the exact approved keyword a viewer can comment and the promised response.",
+      "action": "A comment input reveals the keyword with a reading-direction wipe, with the promise beneath it.",
+      "useWhen": [
+        "An approved call to action asks viewers to comment one keyword for a real resource."
+      ],
+      "avoidWhen": [
+        "No keyword or resource promise has been approved.",
+        "The intended action is following, buying or visiting a link rather than commenting."
+      ],
+      "intents": [
+        "cta",
+        "text"
+      ],
+      "moods": [
+        "warm",
+        "calm",
+        "playful"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Use the creator's actual CTA keyword, up to 20 characters, and truthful promise up to 52.",
+        "This illustrates a comment action; it does not submit a comment or deliver the resource."
+      ],
+      "display": {
+        "explains": "بيوضح كلمة الكومنت والوعد المرتبط بيها.",
+        "useWhen": "لما طلب الكومنت متفق عليه.",
+        "avoidWhen": "لو مفيش كلمة أو هدية معتمدة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "scene:comment-stack",
+      "role": "explanation",
+      "labelAr": "أسئلة وتعليقات متجمعة",
+      "explains": "Collects a few supplied audience comments or questions and connects them to an approved response prompt.",
+      "action": "One to three author-labelled comment cards reveal in order above the keyword and prompt.",
+      "useWhen": [
+        "Answering real audience questions or grouping a small discussion.",
+        "An approved comment request follows the displayed context."
+      ],
+      "avoidWhen": [
+        "Invented authors or comments would look like real testimonials.",
+        "The viewer needs a full conversation or more than three comments."
+      ],
+      "intents": [
+        "question",
+        "grouping",
+        "cta"
+      ],
+      "moods": [
+        "warm",
+        "editorial",
+        "reflective"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply one to three short comments, their actual attribution and strictly ordered cues.",
+        "Use the approved keyword and prompt; clearly identify illustrative comments when they are not real audience evidence.",
+        "This is a visual discussion summary, without live social-network access."
+      ],
+      "display": {
+        "explains": "بيجمع شوية أسئلة أو تعليقات مع طلب الرد.",
+        "useWhen": "للرد على أسئلة جمهور حقيقية.",
+        "avoidWhen": "لو التعليقات مؤلّفة وهتبان كشهادات."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "scene:comparison",
+      "role": "explanation",
+      "labelAr": "مقارنة بالكلام",
+      "explains": "Contrasts two short descriptions of the same subject, such as before and after.",
+      "action": "Two labelled cards enter side by side or stack according to the selected style grammar.",
+      "useWhen": [
+        "Contrasting two approaches using concise labels and descriptions.",
+        "Explaining what changes between two states without image evidence."
+      ],
+      "avoidWhen": [
+        "The viewer needs to inspect actual before/after images.",
+        "Unequal metrics or unrelated subjects would create a misleading comparison."
+      ],
+      "intents": [
+        "comparison",
+        "transform"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply both labels and details under one title; descriptions are explanatory copy, not measured evidence.",
+        "The selected style chooses side-by-side or stacked composition; use evidence-wipe for aligned real-image comparison."
+      ],
+      "display": {
+        "explains": "بيقارن حالتين بوصف مختصر.",
+        "useWhen": "لما الفرق يتفهم بالكلام.",
+        "avoidWhen": "لو لازم نشوف صور الدليل نفسها."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "scene:count",
+      "role": "explanation",
+      "labelAr": "عدّاد فوق المتحدث",
+      "explains": "Emphasizes one supplied whole-number quantity while preserving a presenter window below.",
+      "action": "The number rolls at an authored cue, then its unit and optional badge appear.",
+      "useWhen": [
+        "A spoken count needs a clear number and a separately timed unit.",
+        "The presenter should remain visible during the metric."
+      ],
+      "avoidWhen": [
+        "There is no presenter recording or the scene needs a full-frame graphic.",
+        "The quantity needs decimals, negative values or a multi-value comparison."
+      ],
+      "intents": [
+        "scale",
+        "result",
+        "evidence"
+      ],
+      "moods": [
+        "energetic",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Split layout only; supply an integer from 0 to 999999 and its unit. The suffix is optional and blank by default; add one such as + only when the source says it.",
+        "The roll must finish inside the scene; time the unit and optional badge deliberately.",
+        "The family has no source-note field, so keep the quantity supported by the recording or reviewed evidence."
+      ],
+      "display": {
+        "explains": "رقم بيعدّ ومعاه وحدته فوق المتحدث.",
+        "useWhen": "لما العدد جزء مهم من الكلام.",
+        "avoidWhen": "للجرافيكس الصامتة أو الأرقام العشرية."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:creator-cta",
+      "role": "explanation",
+      "labelAr": "طلب التفاعل مع المتحدث",
+      "explains": "Stages an approved comment request and follow identity around the presenter.",
+      "action": "A title and keyword prompt land, followed by the handle and an illustrative follow-button state change.",
+      "useWhen": [
+        "A presenter-led ending explicitly includes both a keyword request and a follow card."
+      ],
+      "avoidWhen": [
+        "Only a follow or only a comment request is approved.",
+        "The simulated button change could be mistaken for an actual account action."
+      ],
+      "intents": [
+        "cta",
+        "brand"
+      ],
+      "moods": [
+        "warm",
+        "playful",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [],
+      "requirements": [
+        "Presenter layout only; use the actual keyword, prompt and complete @handle. Write {keyword} in the prompt where the keyword appears; delivery refuses a prompt that never shows it.",
+        "Author followFrame then clickedFrame in order inside the scene.",
+        "The button animation is illustrative; preserve the approved ending order and recorded sign-off."
+      ],
+      "display": {
+        "explains": "بيجمع كلمة الكومنت والمتابعة مع المتحدث.",
+        "useWhen": "لخاتمة الاتنين متفق عليهم فيها.",
+        "avoidWhen": "لو المطلوب متابعة بس أو كومنت بس."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        }
+      ]
+    },
+    {
+      "key": "scene:data-story",
+      "role": "explanation",
+      "labelAr": "رقم أو مقارنة بيانات",
+      "explains": "Presents supplied quantitative evidence as one metric or a small shared-scale bar comparison.",
+      "action": "Authored values reveal and count upward; metric mode emphasizes one value, while bars grow from zero on one scale.",
+      "useWhen": [
+        "One sourced metric needs its unit, label and source note.",
+        "Two to five comparable values should be read on a common zero-based scale."
+      ],
+      "avoidWhen": [
+        "Values are negative, exceed two decimal places or lack a common comparable unit.",
+        "A causal change or trend over continuous time is being inferred from unrelated numbers."
+      ],
+      "intents": [
+        "evidence",
+        "scale",
+        "comparison",
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Supply non-negative values up to 999999999 with at most two decimals, labels, unit and sourceNote.",
+        "Metric display requires exactly one value and allows split or takeover; bars require two to five values and takeover.",
+        "Order reveal frames and finish every animateFrames interval before scene end; graphics always use takeover."
+      ],
+      "display": {
+        "explains": "بيحوّل البيانات لرقم واضح أو أعمدة مقارنة.",
+        "useWhen": "لما فيه أرقام موثّقة بوحدة واحدة.",
+        "avoidWhen": "للأرقام السالبة أو مقارنة وحدات مختلفة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-library/schema.ts",
+          "sha256": "2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf"
+        },
+        {
+          "path": "engine/src/motion-library/scenes.tsx",
+          "sha256": "a1c1bf17c17bd23714754334e956f4c89e8aa1c177a9b1ce136659eea3a1fa42"
+        }
+      ],
+      "intentLayouts": {
+        "comparison": [
+          "takeover"
+        ]
+      }
+    },
+    {
+      "key": "scene:evidence-wipe",
+      "role": "explanation",
+      "labelAr": "قبل وبعد بمسح الصورة",
+      "explains": "Reveals the visible difference between two supplied before/after images in one comparison window.",
+      "action": "A reading-direction wipe replaces the before image with the after image while labels and an explanatory footer stay available.",
+      "useWhen": [
+        "The same subject has comparable before and after views.",
+        "The viewer should inspect evidence rather than read a verbal claim."
+      ],
+      "avoidWhen": [
+        "The images show unrelated subjects or incompatible framing that hides what changed.",
+        "A moving-video comparison or unverified result is needed."
+      ],
+      "intents": [
+        "comparison",
+        "evidence",
+        "reveal",
+        "transform"
+      ],
+      "moods": [
+        "serious",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "image-pair"
+      ],
+      "requirements": [
+        "Supply two local images, their actual dimensions, labels and a truthful footer; the renderer uses contain fitting.",
+        "Author revealFrame, duration and rtl/ltr direction so the wipe finishes inside the scene and the final image can be read.",
+        "Both split and takeover are available; graphics use takeover."
+      ],
+      "display": {
+        "explains": "بيكشف الفرق بين قبل وبعد في نفس النافذة.",
+        "useWhen": "لما عندك صورتين دليل لنفس الحاجة.",
+        "avoidWhen": "لو الزوايا أو المحتوى مش قابلين للمقارنة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/creative-kit/compare.tsx",
+          "sha256": "edd2a9bf3780bae8022728ba040104519755daa7ce9b9c247a17f8fb8728d589"
+        }
+      ]
+    },
+    {
+      "key": "scene:follow",
+      "role": "explanation",
+      "labelAr": "كارت المتابعة",
+      "explains": "Identifies the creator account and gives one reason to follow it.",
+      "action": "A large complete handle and short follow message appear as a final card.",
+      "useWhen": [
+        "An approved ending needs the creator's complete account handle.",
+        "The viewer should know where to find more of the same material."
+      ],
+      "avoidWhen": [
+        "The account identity is unknown or the ending has no approved follow request.",
+        "The card would interrupt the recorded goodbye."
+      ],
+      "intents": [
+        "cta",
+        "brand"
+      ],
+      "moods": [
+        "warm",
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply a complete @handle using 1 to 30 allowed handle characters after @ and a message up to 72 characters.",
+        "Place the card in the approved ending order with time to read the full identity."
+      ],
+      "display": {
+        "explains": "بيعرّف الحساب وسبب المتابعة.",
+        "useWhen": "لخاتمة فيها متابعة متفق عليها.",
+        "avoidWhen": "لو هيقطع الوداع أو الحساب مش معروف."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "scene:glide-card",
+      "role": "explanation",
+      "labelAr": "كارت ثابت بلقطات حقيقية",
+      "explains": "Connects short gliding text and optional bullets to actual supplied media inside one stable card.",
+      "action": "The bevelled card stays still while image/video clips cut within it and timed words, box text and bullets arrive around it.",
+      "useWhen": [
+        "A Grid Glide tutorial or result needs real media as its anchor.",
+        "Short claims or feature bullets can be supported by visible source clips."
+      ],
+      "avoidWhen": [
+        "The selected style is not grid-glide or media is missing.",
+        "The important detail cannot survive cover cropping, or a camera zoom inside the source is needed."
+      ],
+      "intents": [
+        "evidence",
+        "tooling",
+        "result",
+        "text"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "Owned by grid-glide and takeover only; supply one to six local image/video clips with hash and actual dimensions.",
+        "First clip starts at zero and clips are strictly ordered; media uses cover fitting, videos play muted, and only stills may use scroll.",
+        "At most four lines with six words each, four short bullets and one optional box; text must pass the style's layout and fit checks.",
+        "Scene enter/exit timing and adjacent dip pairing follow Grid Glide's fixed motion law."
+      ],
+      "display": {
+        "explains": "كارت ثابت بيعرض لقطات حقيقية وكلام قصير حواليه.",
+        "useWhen": "لشرح أداة أو نتيجة معاها دليل بصري.",
+        "avoidWhen": "من غير ميديا أو لو القصّ هيخفي التفصيلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/card.tsx",
+          "sha256": "c97a3ced02a3f6350ce34a8d37b46668544fdc0881895b2f53cd9add275188af"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/kit.tsx",
+          "sha256": "b1c0607eff678edf7780fb3c0a69819261fce277e723c67a7bde768ca92f08a7"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        }
+      ]
+    },
+    {
+      "key": "scene:glide-chapter",
+      "role": "explanation",
+      "labelAr": "فاصل فصل كلمات وكروت",
+      "explains": "Marks one short chapter or ordinal and optionally names the tool used in that section.",
+      "action": "One or two ordinal words glide upward; an optional tool pill slides in afterward.",
+      "useWhen": [
+        "A Grid Glide sequence needs a brief chapter boundary.",
+        "A tool or section label should follow one dominant ordinal."
+      ],
+      "avoidWhen": [
+        "The selected style is not grid-glide.",
+        "The chapter needs a paragraph, split presenter layout or an immediate cut before the title can be read."
+      ],
+      "intents": [
+        "chapter",
+        "tooling"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by grid-glide and takeover only; ordinal is at most two words and 30 characters.",
+        "Minimum duration is 60 frames at 30 fps, scaled to the edit fps; the pill cannot precede the ordinal.",
+        "A logo is optional but needs its actual hash and dimensions; motion uses the style's fixed law rather than the common motion enum.",
+        "Dip exits and entries must pair across immediately adjacent Grid Glide scenes."
+      ],
+      "display": {
+        "explains": "فاصل قصير لفصل أو أداة في ستايل كلمات وكروت.",
+        "useWhen": "لترتيب الشرح لفصول واضحة.",
+        "avoidWhen": "مع ستايل تاني أو عنوان طويل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/chapter.tsx",
+          "sha256": "2505c71df97f6f612a199cf853326fc7bc0684e1ed8bd4fcaa72fe45b5301f16"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        },
+        {
+          "path": "engine/src/styles/scene-renderers.tsx",
+          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+        }
+      ]
+    },
+    {
+      "key": "scene:glide-comment",
+      "role": "explanation",
+      "labelAr": "كلمة الكومنت الكبيرة",
+      "explains": "Makes the approved comment keyword the dominant final instruction in a Grid Glide ending.",
+      "action": "Lead-in lines glide up, the keyword becomes the hero and an optional promise box wipes in afterward.",
+      "useWhen": [
+        "An approved Grid Glide ending asks for one specific comment keyword."
+      ],
+      "avoidWhen": [
+        "The selected style is not grid-glide or no CTA keyword is approved.",
+        "The ending has too little room for the final instruction to settle and hold."
+      ],
+      "intents": [
+        "cta",
+        "text"
+      ],
+      "moods": [
+        "calm",
+        "warm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by grid-glide and takeover only; the actual CTA keyword is at most 20 characters and three words.",
+        "Supply one to three lead-in lines; keyword cannot precede the final lead-in and a box cannot precede the keyword.",
+        "The last ending element must settle and hold at least 24 frames at 30 fps, scaled to fps, before the exit.",
+        "Keep any promised resource truthful and preserve the approved sign-off order."
+      ],
+      "display": {
+        "explains": "بيخلي كلمة الكومنت هي أهم حاجة في الخاتمة.",
+        "useWhen": "لطلب كومنت معتمد بستيل كلمات وكروت.",
+        "avoidWhen": "لو الكلمة مش معتمدة أو الخاتمة مستعجلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/ending.tsx",
+          "sha256": "d73a0b4580b607f999a44c242531e4384acccadc505174bc1c3c50b29755de82"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        }
+      ]
+    },
+    {
+      "key": "scene:glide-follow",
+      "role": "explanation",
+      "labelAr": "متابعة بستيل كلمات وكروت",
+      "explains": "Makes the creator's complete account handle the final visual identity in a Grid Glide ending.",
+      "action": "Optional lead-in lines precede the large handle, then a follow pill slides in and the ending holds.",
+      "useWhen": [
+        "An approved Grid Glide ending needs a clear follow destination."
+      ],
+      "avoidWhen": [
+        "The selected style is not grid-glide or the actual handle is unknown.",
+        "The identity would be clipped, rushed or placed over the recorded goodbye."
+      ],
+      "intents": [
+        "cta",
+        "brand"
+      ],
+      "moods": [
+        "calm",
+        "warm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by grid-glide and takeover only; use the complete validated @handle and an approved follow pill label.",
+        "At most two lead-in lines; the handle follows their cues and the pill cannot precede the handle.",
+        "The last element must settle and hold at least 24 frames at 30 fps, scaled to fps, before the exit; fit checks protect the complete handle.",
+        "The follow pill is text only and has no logo tile."
+      ],
+      "display": {
+        "explains": "بيختم بالحساب كامل وزر متابعة بصري.",
+        "useWhen": "لخاتمة متابعة بستيل كلمات وكروت.",
+        "avoidWhen": "لو الحساب مجهول أو مفيش وقت لقراءته."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/ending.tsx",
+          "sha256": "d73a0b4580b607f999a44c242531e4384acccadc505174bc1c3c50b29755de82"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        }
+      ]
+    },
+    {
+      "key": "scene:glide-lines",
+      "role": "emphasis",
+      "labelAr": "كلمات بتنزل مكانها",
+      "explains": "Builds a concise authored statement from timed lines without needing an image or literal recorded-word indices.",
+      "action": "Short lead and hero lines glide into their final positions with an optional wipe-revealed box and background grid.",
+      "useWhen": [
+        "A Grid Glide hook or statement should be understood through a few short text lines.",
+        "The message can be authored as visual copy rather than a literal subtitle."
+      ],
+      "avoidWhen": [
+        "The selected style is not grid-glide.",
+        "Long prose, exact word timestamps or a relational diagram is needed."
+      ],
+      "intents": [
+        "claim",
+        "question",
+        "text",
+        "reveal"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by grid-glide and takeover only; provide one to five lines with one to six words each.",
+        "Author line start cues and a 4 to 9 frame base cadence; rows must fit the safe width at the style's actual font size.",
+        "No reviewed-words dependency exists; timing is authored and follows Grid Glide's fixed motion law.",
+        "Pair any dip boundary with an immediately adjacent Grid Glide scene."
+      ],
+      "display": {
+        "explains": "بيبني جملة قصيرة من سطور بتتحرك لمكانها.",
+        "useWhen": "لهوك أو فكرة مختصرة بستيل كلمات وكروت.",
+        "avoidWhen": "للنص الطويل أو توقيت الكلام كلمة بكلمة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/grid-glide/scenes/schema.ts",
+          "sha256": "14cbf5d01a22e4a057d18cb9bcc15fd143e403fe9e5596201fabe3d9ec2df8b9"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/lines.tsx",
+          "sha256": "1bc05c5e7ff63cc4aa6ae9ac51619683331e6a3701315c55816b8b766d2333ab"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/scenes/kit.tsx",
+          "sha256": "b1c0607eff678edf7780fb3c0a69819261fce277e723c67a7bde768ca92f08a7"
+        },
+        {
+          "path": "engine/src/styles/grid-glide/meta.ts",
+          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+        }
+      ]
+    },
+    {
+      "key": "scene:image-compare",
+      "role": "explanation",
+      "labelAr": "صورتين للمقارنة",
+      "explains": "Places two supplied images together so the viewer can compare their visible differences.",
+      "action": "Two labelled image cards land at opposite angles and a short concluding stamp follows.",
+      "useWhen": [
+        "Two distinct examples or alternatives should remain visible together.",
+        "A visual difference is readable even in a cropped portrait card."
+      ],
+      "avoidWhen": [
+        "The comparison needs aligned geometry, a wipe or uncropped interface details.",
+        "The images do not show comparable subjects or the stamp overstates what they prove."
+      ],
+      "intents": [
+        "comparison",
+        "evidence"
+      ],
+      "moods": [
+        "playful",
+        "energetic",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "image-pair"
+      ],
+      "requirements": [
+        "Exactly two local images with labels are required; they render with cover cropping into fixed card windows.",
+        "Takeover only; keep important details inside each image's visible crop.",
+        "Use evidence-wipe when the same subject must align before and after."
+      ],
+      "display": {
+        "explains": "بيحط صورتين جنب بعض عشان الفرق يبان.",
+        "useWhen": "لمثالين ينفع يتشافوا مع بعض.",
+        "avoidWhen": "لو لازم نحافظ على كل تفاصيل الصورة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        }
+      ]
+    },
+    {
+      "key": "scene:intro",
+      "role": "explanation",
+      "labelAr": "تقديم الفكرة",
+      "explains": "Names one topic and gives the viewer its central idea before the explanation develops.",
+      "action": "A heading introduces the topic and a single card reveals its short supporting statement.",
+      "useWhen": [
+        "Opening a topic or a new section with one clear premise.",
+        "Giving a short question its context before showing an answer."
+      ],
+      "avoidWhen": [
+        "The message needs a changing object, a measurable comparison or several steps.",
+        "The subtitle is too long to read as one card."
+      ],
+      "intents": [
+        "question",
+        "claim",
+        "chapter"
+      ],
+      "moods": [
+        "calm",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply kicker, title, subtitle and explanatory caption; this family does not select recorded words.",
+        "Uses split or takeover; source-free graphics require takeover."
+      ],
+      "display": {
+        "explains": "بيقدّم فكرة واحدة ومعاها توضيح قصير.",
+        "useWhen": "لما تبدأ موضوع أو فصل جديد.",
+        "avoidWhen": "لو محتاج تشرح حركة أو خطوات."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:kinetic-hook",
+      "role": "emphasis",
+      "labelAr": "عنوان بيتبدّل مع المتحدث",
+      "explains": "Turns a short first statement into a second one while the presenter remains the anchor.",
+      "action": "A large title swaps at an authored cue; an underline changes colour and a later stamp lands.",
+      "useWhen": [
+        "Opening a presenter-led passage with a short reversal or corrected expectation.",
+        "The two titles and final stamp form one clear thought."
+      ],
+      "avoidWhen": [
+        "There is no presenter recording.",
+        "The explanation needs a literal word-by-word transcript or a long title."
+      ],
+      "intents": [
+        "claim",
+        "reveal",
+        "transform"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [],
+      "requirements": [
+        "Presenter layout only; each swapped title has at most 36 characters.",
+        "Author swapFrame and stampFrame inside the scene.",
+        "An optional transparent foreground must match the same source hash and uninterrupted source frames; never substitute an unrelated cutout."
+      ],
+      "display": {
+        "explains": "عنوان قصير بيتحوّل لفكرة تانية قدام المتحدث.",
+        "useWhen": "للهوك اللي فيه مفاجأة أو تصحيح.",
+        "avoidWhen": "من غير تسجيل متحدث أو مع عنوان طويل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:kinetic-text",
+      "role": "emphasis",
+      "labelAr": "الكلام المسجّل كلمة بكلمة",
+      "explains": "Makes selected literal recorded words visually prominent at their actual source timing.",
+      "action": "Mapped words enter at their surviving recording cues, with optional per-word accent, weight, underline or pop emphasis.",
+      "useWhen": [
+        "The exact words and timing of a short recorded phrase matter.",
+        "Emphasizing a key term without replacing the speaker's language."
+      ],
+      "avoidWhen": [
+        "There is no recording or the text is newly authored explanatory copy.",
+        "Selected words cross cuts, fall outside the scene or have unreviewed timing."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "claim"
+      ],
+      "moods": [
+        "energetic",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Select one to 32 strictly ordered source word indices in Arabic or English; every word must survive cuts and remain wholly inside the scene.",
+        "Emphasis marks can reference only selected source indices; rise, pop and fade are the supported word entrances.",
+        "Split or takeover is supported; this family cannot be used for source-free graphics or invented transcripts."
+      ],
+      "display": {
+        "explains": "بيحرّك نفس الكلمات المسجّلة على توقيتها.",
+        "useWhen": "لما اللفظ نفسه مهم في الجملة.",
+        "avoidWhen": "للجرافيكس من غير تسجيل أو كلام مؤلّف."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:message-board",
+      "role": "explanation",
+      "labelAr": "من رسايل كتير لنتيجة واحدة",
+      "explains": "Organizes the same supplied message cards into a board, then focuses one useful result.",
+      "action": "Three to six identified cards start scattered, gather into order and resolve into a focused card, with optional closing state.",
+      "useWhen": [
+        "Showing how several inputs become organized and one result is chosen.",
+        "The identity of the same messages must remain visible through the explanation."
+      ],
+      "avoidWhen": [
+        "There are fewer than three inputs or no defensible focused result.",
+        "The passage is too short for initial reading, organization and final focus holds."
+      ],
+      "intents": [
+        "grouping",
+        "focus",
+        "result",
+        "transform"
+      ],
+      "moods": [
+        "editorial",
+        "technical",
+        "calm"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Takeover only; supply three to six unique card IDs and a focusIndex that selects an existing card.",
+        "Hold initial cards at least 0.6 seconds, the organized board at least 0.75 seconds, and the focused result at least one second.",
+        "If using closingFrame, leave at least one second before closing and one second for the closing state."
+      ],
+      "display": {
+        "explains": "بينظّم نفس الرسايل وبيركّز على نتيجة منها.",
+        "useWhen": "لما المدخلات الكتير توصل لنتيجة واضحة.",
+        "avoidWhen": "لو الوقت مش مكفّي مراحل الفهم."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/MessageBoard.tsx",
+          "sha256": "e4df8b039ae5c75bd1887e1a4e2fb56bc7069b47879549468552eb02bd825d34"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/message-board.ts",
+          "sha256": "ad093a0ec1e005f909dd0fa9af8cdab2e6867e871a89c85dc3519d4fd2a0d803"
+        }
+      ]
+    },
+    {
+      "key": "scene:meter-receipt",
+      "role": "explanation",
+      "labelAr": "مقياسين بنفس الوحدة",
+      "explains": "Compares exactly two supplied quantities against one declared maximum and common unit.",
+      "action": "Two labelled receipt rows appear in order and their meters fill proportionally to the shared maximum.",
+      "useWhen": [
+        "A two-option numeric difference should be understood at a glance.",
+        "The scale ceiling itself is meaningful and can be stated honestly."
+      ],
+      "avoidWhen": [
+        "The two rows use different units or no shared maximum is defensible.",
+        "More than two measurements or negative values are needed."
+      ],
+      "intents": [
+        "comparison",
+        "scale",
+        "evidence"
+      ],
+      "moods": [
+        "serious",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Exactly two non-negative values with up to two decimals, one positive maximum, one unit and source text are required.",
+        "Neither value may exceed the maximum; reveal rows in strictly increasing order.",
+        "Leave time for each meter's 18-frame fill and final comparison hold."
+      ],
+      "display": {
+        "explains": "بيقارن قيمتين على نفس السقف والوحدة.",
+        "useWhen": "لفرق رقمي واضح بين اختيارين.",
+        "avoidWhen": "لو الوحدات مختلفة أو السقف مضلّل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "scene:motion-concept",
+      "role": "wrapper",
+      "labelAr": "حاوية مشهد شرح جاهز",
+      "explains": "Hosts one registered motion concept with that concept's own explanatory action and editable data.",
+      "action": "The selected catalog component runs once on the takeover canvas using its original config schema.",
+      "useWhen": [
+        "A specific catalog concept matches the intended change, grouping, flow or reveal.",
+        "The concept's own timeline and data contract can express the explanation."
+      ],
+      "avoidWhen": [
+        "Treating this wrapper as one additional explanatory concept.",
+        "Choosing by motion alone without checking the child concept's meaning, assets and minimum duration."
+      ],
+      "intents": [
+        "process",
+        "comparison",
+        "reveal",
+        "grouping",
+        "transform"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial",
+        "playful"
+      ],
+      "energy": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Takeover only; select a registered concept and validate config against its own schema.",
+        "Use the child's semantic metadata, asset requirements and minimum duration scaled to the edit frame rate.",
+        "The wrapper itself does not imply that every concept suits every intent or mood."
+      ],
+      "display": {
+        "explains": "بيشغّل واحد من مشاهد الشرح الجاهزة.",
+        "useWhen": "لما مشهد بعينه يخدم معنى الفكرة.",
+        "avoidWhen": "لو الاختيار لمجرد إن الحركة شكلها حلو."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/motion-concepts/catalog.ts",
+          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+        },
+        {
+          "path": "engine/src/motion-concepts/timeline.ts",
+          "sha256": "ea094ce4bd338564d5e40f6dfa83ca57ec84e0ffaafce40ceedba8035c0961ab"
+        }
+      ]
+    },
+    {
+      "key": "scene:one-shot",
+      "role": "explanation",
+      "labelAr": "خطوات متصلة في لقطة واحدة",
+      "explains": "Connects a short authored product workflow from input and choices to a textual reel result in one continuous visual take.",
+      "action": "The start button expands into a UI world; file/input, toggle or metric worlds open from each other, the result becomes a reel, and the camera returns to the starting page.",
+      "useWhen": [
+        "A one-shot product explanation needs one to four compatible authored steps.",
+        "The input, configuration and result can be represented honestly as an illustrated interface journey."
+      ],
+      "avoidWhen": [
+        "The selected style is not one-shot or the passage needs split presenter footage.",
+        "The viewer needs actual software captures, arbitrary branching or proof that the illustrated jobs ran.",
+        "The available duration cannot fit the data-dependent authored chain."
+      ],
+      "intents": [
+        "process",
+        "transform",
+        "result",
+        "tooling"
+      ],
+      "moods": [
+        "energetic",
+        "technical",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by one-shot and takeover only; provide brand, intro, one to four steps, four to six short result words and closing copy whose headline, sub and platforms fit one column: the validator refuses a closing that would end below y 1458 and says what to shorten.",
+        "Supported steps are drop, field, toggle, stat and work; begin with drop/field/stat, follow a drop with field, alternate dark/accent worlds otherwise, keep work last and never finish on toggle.",
+        "Field copy is at most six words and 34 characters, or 22 beside a dropped file; toggles need at least one on option and work has two to four job labels.",
+        "Use oneShotMinFrames for the actual data and fps; the authored timing includes the result, pullback and return hold rather than arbitrary per-step cues. Extra scene duration holds the initial home view after the chain; it does not extend the illustrated processing.",
+        "No actual file import, typing, processing or platform posting occurs; substantiate any supplied statistic and label the journey as an illustration when needed."
+      ],
+      "display": {
+        "explains": "بيوصل المدخلات والاختيارات بالنتيجة في لقطة متصلة.",
+        "useWhen": "لشرح منتج بخطوات قصيرة وواجهة توضيحية.",
+        "avoidWhen": "لو محتاج تسجيل حقيقي أو الوقت مش مكفّي السلسلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/one-shot/scenes/schema.ts",
+          "sha256": "8c27293a35fde2c64d43578cb93253c18e01056a01713b21d4560e7873628c79"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/scene.tsx",
+          "sha256": "496d83b06167b506e039133d6884c752b0daaf71dabab4523d3a1b9446d1dc36"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/math.ts",
+        "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
+        },
+        {
+          "path": "engine/src/styles/one-shot/scenes/worlds.tsx",
+        "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
+        },
+        {
+          "path": "engine/src/styles/one-shot/meta.ts",
+          "sha256": "b237bf17a2bee56ba7590b988b41e1d1e555d0f6ed7ca650f1b5cb3e62432e51"
+        },
+        {
+          "path": "engine/src/styles/scenes.ts",
+          "sha256": "6894ae3a6e1b23e4f569e4e5783b8764567842ae336ca50175c1dfc180277bb0"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        }
+      ]
+    },
+    {
+      "key": "scene:cartoon",
+      "role": "explanation",
+      "labelAr": "شخصية مرسومة تشرح على كلامك",
+      "explains": "Turns a whole recording into an illustrated explainer: a drawn narrator points at simple cards while the headline builds on the recorded words and the grounds flip between acts.",
+      "action": "Paper and night grounds alternate through a circle opening from the narrator’s head; each act’s cards land on word anchors, the narrator points, opens its hands or rests its chin on a fist, and its mouth follows the recording’s loudness.",
+      "useWhen": [
+        "The creator wants a faceless explainer: the recording is the voice and an illustrated narrator stands in on screen.",
+        "Each sentence carries one idea that a generic card (term, windows, fan, code, link, grid, crossed, stack, nodes, morph, monitor, timer) can show honestly."
+      ],
+      "avoidWhen": [
+        "The creator’s face, a presenter window or real footage is the point of the video.",
+        "There is no recording (graphics mode) or the transcript is not reviewed: every time is a word anchor.",
+        "A passage needs a claim, number or keyword that the recording does not say."
+      ],
+      "intents": [
+        "process",
+        "tooling",
+        "comparison",
+        "code",
+        "reveal",
+        "chapter"
+      ],
+      "moods": [
+        "calm",
+        "playful",
+        "technical",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "cartoon"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Owned by the cartoon style and takeover only; the brief sets sourceKind \"cartoon\" and the cartoon scenes must cover the whole edit.",
+        "Sentences tile the reviewed words in order (1 to 12 words, at most three headline lines, two over a monitor card); acts alternate paper and night, last at least 3 s and flip 0.2 to 0.5 s before their first word.",
+        "Cards hold creator copy and icons from the fixed list; a seconds counter or a timer card needs the number spoken at its saidAt word.",
+        "Prepare builds prepared/mouth.json from the recording; authored places stay inside the narrator safe box measured for the chosen character.",
+        "It is a newer style: show the fast preview first and have the creator play the delivered video with sound."
+      ],
+      "display": {
+        "explains": "شخصية مرسومة بتشرح بدالك على صوتك وبتشاور على الكروت.",
+        "useWhen": "لفيديو شرح من غير ما تظهر، وكل جملة فيها فكرة واحدة.",
+        "avoidWhen": "لو وشك هو المهم أو مفيش تسجيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/cartoon/meta.ts",
+          "sha256": "6e1a94a0452f3c061a4b10dc7719a5935ce97d6959b216b659c64f0e01851554"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/schema.ts",
+          "sha256": "503d1e499bfc8a1e6beadf972ff086bad81441f87e321e59719872d82a39f2df"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/math.ts",
+          "sha256": "dfd84d882ad5163a224fe61f93706c4ebaaec3befcb0e2c6ed12c62673acddff"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/scene.tsx",
+          "sha256": "7b438b33cd254c8ae5a5bf006b88121d17811fbf13e021fe88defe560dccf6c5"
+        },
+        {
+          "path": "engine/src/styles/scenes.ts",
+          "sha256": "6894ae3a6e1b23e4f569e4e5783b8764567842ae336ca50175c1dfc180277bb0"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+        }
+      ]
+    },
+    {
+      "key": "scene:cartoon-ending",
+      "role": "explanation",
+      "labelAr": "نهاية كارتون بالمتابعة",
+      "explains": "Closes a cartoon video: the comment keyword and/or a follow card with the character’s own head as the avatar, then a quiet tail in which the narrator waves over the recorded sign-off.",
+      "action": "The last act opens with the reveal, the comment card shows this video’s keyword, the follow card is tapped and reads Following, and from the sign-off’s first word the band, headline and cards are gone while the narrator waves in the centre.",
+      "useWhen": [
+        "A cartoon body is the edit and the profile has a CTA keyword, the follow card, or both on for this video.",
+        "The recorded sign-off should stay audible under a waving narrator with no text or sound over it."
+      ],
+      "avoidWhen": [
+        "The style is not cartoon, or no cartoon body ends exactly where this scene starts.",
+        "Neither the comment CTA nor the follow card is on for this video."
+      ],
+      "intents": [
+        "cta",
+        "brand"
+      ],
+      "moods": [
+        "calm",
+        "warm",
+        "playful"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "cartoon"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Owned by the cartoon style; it starts where the body ends, fromTheme equals the body’s last act theme and differs in ground from theme.",
+        "The keyword equals this video’s CTA keyword and the handle the complete profile handle; comment comes before follow and the tap after the follow card.",
+        "With the recorded sign-off on, tail.at sits on its first word, the scene runs to the edit end and nothing sounds at or after the tail."
+      ],
+      "display": {
+        "explains": "نهاية فيها الكومنت والمتابعة والشخصية بتعمل باي على السلام.",
+        "useWhen": "لآخر فيديو كارتون فيه دعوة تعليق أو متابعة.",
+        "avoidWhen": "لو الستايل مش كارتون أو مفيش دعوة للفيديو ده."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/cartoon/scenes/schema.ts",
+          "sha256": "503d1e499bfc8a1e6beadf972ff086bad81441f87e321e59719872d82a39f2df"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/ending.tsx",
+          "sha256": "d11fbdedd9e8809b3f0d1af5d5a286aca83efa8e01f3090e7cd52ddf7102b619"
+        },
+        {
+          "path": "engine/src/styles/cartoon/scenes/math.ts",
+          "sha256": "dfd84d882ad5163a224fe61f93706c4ebaaec3befcb0e2c6ed12c62673acddff"
+        },
+        {
+          "path": "instructions/styles/cartoon.md",
+          "sha256": "9031d17afe2ede89406c8d6cbf9866d10454134d319a109d6e6252347c57c9e1"
+        }
+      ]
+    },
+    {
+      "key": "scene:outcome",
+      "role": "explanation",
+      "labelAr": "خلاصة فوق المتحدث",
+      "explains": "Summarizes a small set of outcomes or benefits while retaining the presenter below.",
+      "action": "A heading lands, then short result tags appear together and a concluding footer follows.",
+      "useWhen": [
+        "Closing a presenter-led explanation with concise supported takeaways.",
+        "Several short result labels share one conclusion."
+      ],
+      "avoidWhen": [
+        "There is no presenter recording or a takeover is needed.",
+        "Each item requires its own activation timing or evidence."
+      ],
+      "intents": [
+        "result",
+        "grouping",
+        "claim"
+      ],
+      "moods": [
+        "warm",
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [],
+      "requirements": [
+        "Split layout only; provide one to six short items plus kicker, title and footer.",
+        "The tags enter at local frame 25 and footer at 50; leave room afterward for a readable conclusion.",
+        "Do not promote a promised benefit into a verified result without support."
+      ],
+      "display": {
+        "explains": "بيجمع الخلاصة في كلمات قصيرة فوق المتحدث.",
+        "useWhen": "لنتايج أو فوائد واضحة في آخر الشرح.",
+        "avoidWhen": "من غير متحدث أو لو كل نتيجة محتاجة دليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:process",
+      "role": "explanation",
+      "labelAr": "٣ خطوات",
+      "explains": "Breaks a procedure into exactly three named steps with short details.",
+      "action": "Three numbered cards enter in order and remain available to read together.",
+      "useWhen": [
+        "Explaining a compact three-step workflow.",
+        "Showing the viewer a short sequence they can follow."
+      ],
+      "avoidWhen": [
+        "The process needs branches, feedback or objects visibly transforming between stages.",
+        "There are fewer or more than three meaningful steps."
+      ],
+      "intents": [
+        "process",
+        "chronology"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Exactly three steps are required; each has a title up to 26 characters and detail up to 44.",
+        "The family provides ordered cards, not a semantic input-to-output flow; use a suitable concept or project scene when identity must move through the process."
+      ],
+      "display": {
+        "explains": "بيبسّط طريقة الشغل في ٣ خطوات.",
+        "useWhen": "لما التسلسل قصير وواضح.",
+        "avoidWhen": "لو فيه تفرعات أو أكتر من ٣ خطوات."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "scene:project-scene",
+      "role": "extension",
+      "labelAr": "مشهد مخصوص للمشروع",
+      "explains": "Provides a project-local component route when shipped families cannot express the required explanatory action.",
+      "action": "A declared TSX/JSX component receives validated editable values and the current scene's style, layout and duration.",
+      "useWhen": [
+        "A custom diagram, state change or visual metaphor needs authored object behavior.",
+        "The project's declared component and reviewed copy already define a concrete explanation."
+      ],
+      "avoidWhen": [
+        "A shipped family already serves the meaning adequately.",
+        "There is no inspectable project-local component and editable field contract."
+      ],
+      "intents": [
+        "process",
+        "transform",
+        "branching",
+        "grouping",
+        "focus"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial",
+        "playful",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "project-pack"
+      ],
+      "requirements": [
+        "Declare a scene pack in this same project with a local TSX/JSX entry and bounded editable fields; scene values must match that component's contract.",
+        "Split or takeover is available; source-free graphics require takeover, and custom split code must respect seam, head geometry and safe zones.",
+        "Assets depend on declared asset fields and must be local and verified; use the explicit capture families for moving screen media.",
+        "Code or contract changes require preparation and editor reload; this extension is not one universal ready-made visual."
+      ],
+      "display": {
+        "explains": "بيسمح بمشهد مكتوب مخصوص لمعنى المشروع.",
+        "useWhen": "لما الجاهز مش قادر يشرح الفكرة صح.",
+        "avoidWhen": "لو مفيش كود وعقد حقول واضح للمشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/project-scenes/schema.ts",
+          "sha256": "34f9b491c00fc93445b1d5e0c2ed4ef88d74e9154f72c24925bc660d1b058bd9"
+        },
+        {
+          "path": "engine/src/project-scenes/ProjectScene.tsx",
+          "sha256": "82fadb40c49fe1915423e0fb48c895ca3755ebf966ee3b0a0f2f78b11f6858d3"
+        },
+        {
+          "path": "engine/src/project-scenes/registry.ts",
+          "sha256": "258717455559b916b6486bb2081c4babd3d45deb2e12482703689c93d075c56b"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        }
+      ]
+    },
+    {
+      "key": "scene:proof",
+      "role": "explanation",
+      "labelAr": "رقم بدليله",
+      "explains": "Makes one supplied whole-number quantity prominent while keeping its source visible.",
+      "action": "A value rolls from zero into a large final number above a source line.",
+      "useWhen": [
+        "Supporting a statement with one sourced count.",
+        "Giving a single result or inventory quantity visual weight."
+      ],
+      "avoidWhen": [
+        "The number has decimals, is negative or must be compared on a shared scale.",
+        "No evidence supports the quantity or its meaning."
+      ],
+      "intents": [
+        "evidence",
+        "scale",
+        "result"
+      ],
+      "moods": [
+        "serious",
+        "editorial",
+        "technical"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Supply an integer from 0 to 999999, label, suffix and source; the renderer does not verify the claim.",
+        "Allow the roughly 1.15-second number roll to settle and leave a readable final hold.",
+        "Use data-story metric for supported decimals or data-story bars for a shared-scale comparison."
+      ],
+      "display": {
+        "explains": "بيبرز رقم واحد ومصدره.",
+        "useWhen": "لما رقم موثّق يثبت النقطة.",
+        "avoidWhen": "لو الرقم بلا مصدر أو محتاج مقارنة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/schema.ts",
+          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+        },
+        {
+          "path": "engine/src/creative-kit/scenes.tsx",
+          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        }
+      ]
+    },
+    {
+      "key": "scene:route-stops",
+      "role": "explanation",
+      "labelAr": "محطات في طريق",
+      "explains": "Shows a short ordered journey as two to four labelled stops on one continuing route.",
+      "action": "Numbered stops reveal in order and the connecting path fills as the journey advances.",
+      "useWhen": [
+        "A progression or learning path has two to four meaningful milestones.",
+        "The viewer should keep the overall route visible while each stop arrives."
+      ],
+      "avoidWhen": [
+        "Geographic accuracy, real map geometry or branching routes are required.",
+        "The stops are unrelated points rather than an ordered journey."
+      ],
+      "intents": [
+        "chronology",
+        "process"
+      ],
+      "moods": [
+        "warm",
+        "editorial",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply two to four stops with short labels, details and strictly ordered reveal frames.",
+        "Each stop may include a supplied local image; the route itself is schematic and does not represent measured geography.",
+        "Use the footer for the journey's conclusion rather than adding an unrelated new step."
+      ],
+      "display": {
+        "explains": "بيمشي في رحلة قصيرة من محطة للتانية.",
+        "useWhen": "للمراحل أو محطات التعلّم المتتابعة.",
+        "avoidWhen": "للخرايط الدقيقة أو الطرق المتفرعة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "scene:screen-focus",
+      "role": "explanation",
+      "labelAr": "تكبير جزء من شاشة حقيقية",
+      "explains": "Directs attention to a specific authored region of supplied screenshots or a separate screen capture.",
+      "action": "A real source fills a framed viewport; the camera moves to a chosen region with aligned focus marks, optional cursor and callouts.",
+      "useWhen": [
+        "A tutorial depends on a real control, detail or visible result.",
+        "A separate capture should support a presenter-led recording or source-free explanation."
+      ],
+      "avoidWhen": [
+        "No real source media or accurate source dimensions exist.",
+        "The main recording itself is the continuous screen source; prefer screen-recording for that case."
+      ],
+      "intents": [
+        "focus",
+        "evidence",
+        "tooling",
+        "process"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "screen-capture"
+      ],
+      "requirements": [
+        "Takeover only; supply one to six local still or MP4/WebM capture steps with real dimensions and normalized focus rectangles.",
+        "First step starts at zero; focus moves must settle before the next step or scene end.",
+        "Video uses explicit camera keys, optional cursor waypoints and source-pinned callouts; playback is muted."
+      ],
+      "display": {
+        "explains": "بيقرّب على تفصيلة محددة في شاشة حقيقية.",
+        "useWhen": "لزرار أو نتيجة محتاجة تتشاف بوضوح.",
+        "avoidWhen": "لو مفيش لقطة حقيقية أو أبعاد دقيقة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/motion-library/schema.ts",
+          "sha256": "2ea24013fd590c3755d0f0281b97260ba743e0f2ca98e5659e43d1e9b4f8baaf"
+        },
+        {
+          "path": "engine/src/motion-library/scenes.tsx",
+          "sha256": "a1c1bf17c17bd23714754334e956f4c89e8aa1c177a9b1ce136659eea3a1fa42"
+        },
+        {
+          "path": "engine/src/motion-library/capture.ts",
+          "sha256": "1463436f8ee1f3368f7b60164bad156cf0a4e82d9f55ca3ef0f67c471f71691b"
+        }
+      ]
+    },
+    {
+      "key": "scene:screen-recording",
+      "role": "explanation",
+      "labelAr": "شرح تسجيل الشاشة الأساسي",
+      "explains": "Follows important regions of the edit's actual continuous screen recording.",
+      "action": "The prepared source plate plays continuously under camera keys, source-aligned click ripples and timed rectangle or circle marks.",
+      "useWhen": [
+        "The main named recording is a screen capture and the presenter is absent.",
+        "A tutorial needs camera focus while preserving the recorded screen action."
+      ],
+      "avoidWhen": [
+        "The main recording is a presenter or the screen clip is a separate supporting asset.",
+        "There is no real screen recording, or the planned zoom destroys source legibility."
+      ],
+      "intents": [
+        "tooling",
+        "focus",
+        "process",
+        "evidence"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "screen"
+      ],
+      "requires": [
+        "screen-recording"
+      ],
+      "requirements": [
+        "Takeover only with presenter:false and a prepared screen-only main source; no per-scene src is supplied.",
+        "First camera key starts at zero; keys are strictly ordered and moves finish inside the scene.",
+        "Respect the source upscale limit and keep marked regions inside the safe zone; use screen-focus for separate capture assets."
+      ],
+      "display": {
+        "explains": "بيتابع التفاصيل جوّه تسجيل الشاشة الأساسي.",
+        "useWhen": "لشرح شاشة مسجلة من غير متحدث ظاهر.",
+        "avoidWhen": "لو الشاشة ملف مساعد لفيديو متحدث."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/screen-recording/schema.ts",
+          "sha256": "fc69d4f739ae20aefb09a26db5e754b8bb77a52b7cba92b536020cfe195776c3"
+        },
+        {
+          "path": "engine/src/screen-recording/ScreenRecordingScene.tsx",
+          "sha256": "a9c679bc19965ea65ed52fed165584072e50ca74de9ab6a728927a5075b2295e"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+        }
+      ]
+    },
+    {
+      "key": "scene:screens",
+      "role": "explanation",
+      "labelAr": "شاشات متتابعة",
+      "explains": "Walks through a short sequence of supplied screens or visual results with one title per step.",
+      "action": "A framed viewport switches between authored image or muted-video steps and updates its progress markers.",
+      "useWhen": [
+        "Showing a screen sequence where whole-step context matters more than precise focus tracking.",
+        "Revealing supplied interface states or outputs in order."
+      ],
+      "avoidWhen": [
+        "A small control needs a source-aligned zoom, cursor or pinned callout.",
+        "The supplied video needs its audio or the result is not available as real media."
+      ],
+      "intents": [
+        "process",
+        "chronology",
+        "tooling",
+        "result"
+      ],
+      "moods": [
+        "technical",
+        "editorial",
+        "calm"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "media"
+      ],
+      "requirements": [
+        "Supply one to six local image/video steps; first atFrame is zero and later cues are strictly ordered.",
+        "Each step chooses contain or cover; video is muted and uses its authored trimBeforeFrame.",
+        "Takeover only; use screen-focus for explicit region focus and pinned annotations."
+      ],
+      "display": {
+        "explains": "بيمشي على شاشات أو نتايج حقيقية بالترتيب.",
+        "useWhen": "لشرح مراحل كل واحدة ليها شاشة.",
+        "avoidWhen": "لو محتاج تكبير زرار أو مؤشر دقيق."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        }
+      ]
+    },
+    {
+      "key": "scene:statement",
+      "role": "emphasis",
+      "labelAr": "جملة مع المتحدث",
+      "explains": "Gives one short spoken idea a persistent visual label while the presenter remains visible.",
+      "action": "A coloured title strip lifts into place and adapts its vertical position to the prepared head guide.",
+      "useWhen": [
+        "A presenter-led point needs one concise headline.",
+        "The face should remain the main visual while a claim is reinforced."
+      ],
+      "avoidWhen": [
+        "The text needs word-by-word timing.",
+        "The statement needs evidence, a diagram or several supporting lines to make sense."
+      ],
+      "intents": [
+        "claim",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "editorial",
+        "energetic",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [],
+      "requirements": [
+        "Presenter layout only; supply kicker and title, keeping the title short enough for two lines.",
+        "Use prepared head geometry to protect the presenter; this title is explanatory copy, not a literal transcript."
+      ],
+      "display": {
+        "explains": "بيبرز جملة قصيرة جنب حضور المتحدث.",
+        "useWhen": "لتأكيد نقطة واحدة في الكلام.",
+        "avoidWhen": "لو محتاج مزامنة كل كلمة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic/schema.ts",
+          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/scenes.tsx",
+          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+        }
+      ]
+    },
+    {
+      "key": "scene:ticket-offer",
+      "role": "explanation",
+      "labelAr": "عرض في شكل تذكرة",
+      "explains": "Makes one real invitation or offer concrete through its label, value and short conditions.",
+      "action": "A ticket-shaped card reveals its offer while a footer carries the actual conditions.",
+      "useWhen": [
+        "An approved session, resource or invitation benefits from one tangible offer card."
+      ],
+      "avoidWhen": [
+        "The price, entitlement or conditions are unknown.",
+        "The ticket styling could imply a booking, scarcity or purchase that did not happen."
+      ],
+      "intents": [
+        "cta",
+        "reveal",
+        "claim"
+      ],
+      "moods": [
+        "warm",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply the actual ticket label, value, detail and footer; the value is text rather than a computed price.",
+        "Place the ticket activation inside the scene and hold its conditions long enough to read.",
+        "No booking or commerce action occurs in this renderer."
+      ],
+      "display": {
+        "explains": "بيقدّم عرض حقيقي في شكل تذكرة.",
+        "useWhen": "لدعوة أو عرض شروطه واضحة.",
+        "avoidWhen": "لو السعر أو الاستحقاق لسه مش محدد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    },
+    {
+      "key": "scene:token-lens",
+      "role": "explanation",
+      "labelAr": "مجموعات وعدسة على جزء",
+      "explains": "Divides an idea into labelled token groups and magnifies one chosen piece.",
+      "action": "Token groups reveal in order, then one real token is highlighted and repeated inside a lens.",
+      "useWhen": [
+        "Explaining parts of a short phrase, category or structured input.",
+        "One element deserves attention within a visible group."
+      ],
+      "avoidWhen": [
+        "The tokens are too long to fit compact chips.",
+        "The explanation needs actual code execution or literal recorded-word timing."
+      ],
+      "intents": [
+        "grouping",
+        "focus",
+        "text"
+      ],
+      "moods": [
+        "technical",
+        "calm",
+        "playful"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Supply one to three groups with one to six short tokens per group; lens indices must point to a supplied token.",
+        "The lens cue cannot precede its group's reveal; group cues are strictly ordered.",
+        "These are authored explanatory tokens, without a recording-word dependency."
+      ],
+      "display": {
+        "explains": "بيقسّم الفكرة لأجزاء ويكبّر جزء محدد.",
+        "useWhen": "لتوضيح كلمة أو عنصر جوّه مجموعة.",
+        "avoidWhen": "لو الأجزاء طويلة أو محتاجة توقيت الكلام."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        }
+      ]
+    }
+  ]
+}

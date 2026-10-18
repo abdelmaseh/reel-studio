@@ -8,7 +8,7 @@ import {
   ConceptStage,
   ConceptText,
   alpha,
-  digitsFor,
+  useConceptDigits,
   dirOf,
   numberFont,
   rectStyle,
@@ -102,7 +102,7 @@ const Scene: React.FC<{ data: PromptToResultsData }> = ({ data }) => {
   const S = stateAt(frame, duration, params);
   const W = L.window.width;
   const H = L.window.height;
-  const digits = digitsFor(data.prompt);
+  const digits = useConceptDigits(data.prompt);
   const numFont = numberFont(theme, digits);
   const line = theme.dim;
   const T = L.trunk;

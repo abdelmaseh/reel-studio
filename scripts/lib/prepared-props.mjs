@@ -5,11 +5,12 @@ import {kineticSceneSchema,kineticAssets} from '../../engine/src/creative-kit/ki
 import {librarySceneSchema,libraryAssets} from '../../engine/src/motion-library/schema.ts';
 import {semanticSceneSchema,semanticAssets} from '../../engine/src/creative-kit/semantic/schema.ts';
 import {styleSceneSchema,styleSceneAssets,styleSceneAssetClaims} from '../../engine/src/styles/scenes.ts';
-import {glideVideoSources} from '../../engine/src/styles/grid-glide/scenes/media.ts';
+import {styleSceneVideoSources} from '../../engine/src/styles/media.ts';
 import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
 import {verifyPreparedHeadGuide} from './head-guide.mjs';
+import {verifyPreparedMouth} from './mouth-table.mjs';
 import {readFile} from 'node:fs/promises';
 import {projectSceneBuild} from './project-scenes.mjs';
 import {projectSceneAssets} from '../../engine/src/project-scenes/schema.ts';
@@ -52,7 +53,7 @@ export async function verifyKineticAssets(edit){
         if(!video?.width || !video.height)throw new Error(`Scene asset is not a decodable image/video: ${src}`);
         assets.set(src,{...identity,src,absolute,video});
       }
-      const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video')) || glideVideoSources(scene).includes(src);
+      const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video')) || styleSceneVideoSources(scene).includes(src);
       if(!isMoving && !['png','mjpeg','webp','gif','bmp','tiff','svg'].includes(assets.get(src).video.codec_name))throw new Error(`Static scene asset must contain an image: ${src}`);
     }
     if(scene.family==='evidence-wipe')for(const image of [scene.data.before,scene.data.after]){
@@ -153,5 +154,6 @@ export async function verifyPreparedProps(props){
   const assets=await verifyKineticAssets(edit);
   if(assets.length && digest(assets)!==digest(props.assets))throw new Error('Scene assets changed or were not verified. Run edit-project prepare again.');
   await verifyPreparedHeadGuide({...props,edit});
+  await verifyPreparedMouth({...props,edit});
   return props;
 }

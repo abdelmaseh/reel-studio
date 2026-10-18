@@ -32,6 +32,11 @@ export async function api<T>(path: string, options: { body?: unknown; signal?: A
 export const jobEventsUrl = (jobId: string) => `/api/jobs/${encodeURIComponent(jobId)}/events?token=${encodeURIComponent(token)}`;
 
 
+/** The preview WAV of one sound recipe. The audio element cannot send the token header, so it travels in the query like the job stream's. */
+export const sfxUrl = (recipe: string, gain: number): string =>
+  `/api/sfx/${encodeURIComponent(recipe)}?gain=${encodeURIComponent(String(Math.round(gain * 10) / 10))}&token=${encodeURIComponent(token)}`;
+
+
 export const remember = {
   get(key: string): string | null {
     try { return globalThis.localStorage?.getItem(`review-editor:${key}`) ?? null; } catch { return null; }

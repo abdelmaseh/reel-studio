@@ -16,7 +16,7 @@ function changesBetween(before: ProjectResponse, next: ProjectResponse): ChangeK
   if (changed(a.scenes, b.scenes)) changes.push("scenes");
   if (changed([a.camera, a.transitions], [b.camera, b.transitions])) changes.push("motion");
   if (changed(a.sounds, b.sounds)) changes.push("sound");
-  if (changed([a.style, a.brand, a.fontFamily, a.footage], [b.style, b.brand, b.fontFamily, b.footage])) changes.push("style");
+  if (changed([a.style, a.brand, a.fontFamily, a.digits, a.footage], [b.style, b.brand, b.fontFamily, b.digits, b.footage])) changes.push("style");
   if (!next.needsPrepare && changed(before.plate, next.plate)) changes.push("preview");
   return changes;
 }

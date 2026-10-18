@@ -5,10 +5,24 @@ import {BASELINE_FILE, BASELINE_SECTIONS, captureStyleBaselines} from '../script
 
 // The fixture was captured from the hand-written style lists before they moved into
 // engine/src/styles/. Everything below recomputes it from the code as it is now.
+// One deliberate exception (2026-10-18): the palettes, resolvedPalettes and soundPlans sections were
+// re-recorded when the sound policy replaced the sweep recipes with soft landings (instructions/SOUND.md).
+// Every other section is still the original capture.
 const fixture = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
 // The recorded example files are passed back, so an example added to instructions/examples later changes nothing.
 const recordedExamples = Object.keys(fixture.parses).filter((key) => key.startsWith('example:')).map((key) => key.slice('example:'.length));
-const actual = await captureStyleBaselines({styles: fixture.styles, examples: recordedExamples});
+const actual = historicalSnapshot(await captureStyleBaselines({styles: fixture.styles, examples: recordedExamples}), fixture);
+
+// This is a migration record of its original cases. Later concepts have their own integration
+// tests; adding one must not expand the frozen historical snapshot. Keep whole recorded values
+// and every recorded key so changed or missing originals still fail the comparison below.
+function historicalSnapshot(snapshot, recorded) {
+  const recordedEntries = (values, entries) => Object.fromEntries(Object.keys(entries).map(key => [key, values?.[key]]));
+  return {...snapshot,
+    markup: Object.fromEntries(Object.entries(recorded.markup).map(([style, entries]) => [style, recordedEntries(snapshot.markup?.[style], entries)])),
+    parses: recordedEntries(snapshot.parses, recorded.parses),
+  };
+}
 
 const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 // Lists the paths whose values differ, so a failure names the style and the scene instead of printing a wall of JSON.
@@ -19,6 +33,23 @@ function differences(now, then, at = '') {
   }
   return same(now, then) ? [] : [at || '/'];
 }
+
+test('historical comparison allows added concept cases without rewriting the recorded snapshot', () => {
+  const recorded = {markup: {original: {'concept:existing': 'original-hash'}}, parses: {'scene:concept:existing': {ok: true, sha256: 'original-parse'}}};
+  const expanded = {markup: {original: {...recorded.markup.original, 'concept:added': 'new-hash'}}, parses: {...recorded.parses, 'scene:concept:added': {ok: true, sha256: 'new-parse'}}};
+  assert.deepEqual(historicalSnapshot(expanded, recorded), recorded);
+  assert.ok(Object.hasOwn(expanded.markup.original, 'concept:added'), 'Projection must leave the current capture intact');
+});
+
+test('historical comparison still detects changed or missing original markup and parses', () => {
+  const recorded = {markup: {original: {'concept:existing': 'original-hash'}}, parses: {'scene:concept:existing': {ok: true, sha256: 'original-parse'}}};
+  for (const changed of [
+    {...recorded, markup: {original: {'concept:existing': 'changed-hash'}}},
+    {...recorded, markup: {original: {}}},
+    {...recorded, parses: {'scene:concept:existing': {ok: false, sha256: 'changed-parse'}}},
+    {...recorded, parses: {}},
+  ]) assert.ok(differences(historicalSnapshot(changed, recorded), recorded).length > 0);
+});
 
 test('the fixture records the eleven styles and every section', () => {
   assert.equal(fixture.version, 1);

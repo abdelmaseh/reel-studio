@@ -18,6 +18,10 @@ export function mixOutputPath(value) {
   return file;
 }
 
+// Effects peak this many dB under the voice peak unless --under says otherwise: 7 suits sparse effects, 9 to 10 dense effects or a
+// stem that carries music, and "too loud" from the creator means two more (instructions/SOUND.md).
+export const MIX_UNDER_DEFAULT_DB = 7;
+
 export function normalizeMixOptions(args) {
   const allowed = new Set(['_', 'video', 'sfx', 'out', 'under', 'lufs', 'tp', 'ceilPad', 'tighten', 'style', 'report', 'voice', 'graphics-audio', 'help']);
   for (const key of Object.keys(args)) if (!allowed.has(key)) throw new Error(`Unknown mix option --${key}.`);
@@ -43,7 +47,7 @@ export function normalizeMixOptions(args) {
   };
   const lufs = numeric('lufs', specification.video.loudness.integratedLUFS, -36, -5);
   const tp = numeric('tp', specification.video.loudness.truePeakDBTP, -9, 0);
-  const under = numeric('under', 5, 0, 40), ceilPad = numeric('ceilPad', 0.8, 0, 6);
+  const under = numeric('under', MIX_UNDER_DEFAULT_DB, 0, 40), ceilPad = numeric('ceilPad', 0.8, 0, 6);
   let style = null;
   if (args.style !== undefined) {
     style = STYLE_IDS.includes(args.style) ? args.style : Object.keys(profiles).find(key => args.style === profiles[key].slug);

@@ -1300,10 +1300,10 @@
           "transition": {
             "recipe": "directional-whoosh",
             "gain": 0.5,
-            "leadSec": 0.07,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "restrained-reveal",
@@ -1316,10 +1316,10 @@
           "swap": {
             "recipe": "directional-whoosh",
             "gain": 0.35,
-            "leadSec": 0.07,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "cursor-click",
@@ -1343,7 +1343,7 @@
             "leadSec": 0,
             "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "type": {
             "recipe": "typing-burst",
@@ -1361,10 +1361,10 @@
           "transition": {
             "recipe": "chapter-shift",
             "gain": 0.5,
-            "leadSec": 0.1,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "restrained-reveal",
@@ -1377,10 +1377,10 @@
           "swap": {
             "recipe": "chapter-shift",
             "gain": 0.4,
-            "leadSec": 0.1,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "cursor-click",
@@ -1402,9 +1402,9 @@
             "recipe": "highlight-swipe",
             "gain": 0.4,
             "leadSec": 0,
-            "confidence": "medium",
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "type": {
             "recipe": "typing-burst",
@@ -1422,10 +1422,10 @@
           "transition": {
             "recipe": "soft-transition",
             "gain": 0.5,
-            "leadSec": 0.11,
-            "confidence": "medium",
-            "basis": "observed",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "leadSec": 0,
+            "confidence": "low",
+            "basis": "inferred",
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "restrained-reveal",
@@ -1439,9 +1439,9 @@
             "recipe": "highlight-swipe",
             "gain": 0.4,
             "leadSec": 0,
-            "confidence": "medium",
-            "basis": "observed",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "confidence": "low",
+            "basis": "inferred",
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "ui-confirmation",
@@ -1483,10 +1483,10 @@
           "transition": {
             "recipe": "directional-whoosh",
             "gain": 0.45,
-            "leadSec": 0.07,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "restrained-reveal",
@@ -1499,10 +1499,10 @@
           "swap": {
             "recipe": "directional-whoosh",
             "gain": 0.35,
-            "leadSec": 0.07,
+            "leadSec": 0,
             "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "cursor-click",
@@ -1544,10 +1544,10 @@
           "transition": {
             "recipe": "directional-whoosh",
             "gain": 0.45,
-            "leadSec": 0.07,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "paper-reveal",
@@ -1560,10 +1560,10 @@
           "swap": {
             "recipe": "soft-transition",
             "gain": 0.4,
-            "leadSec": 0.11,
-            "confidence": "medium",
+            "leadSec": 0,
+            "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "cursor-click",
@@ -1666,10 +1666,10 @@
           "transition": {
             "recipe": "directional-whoosh",
             "gain": 0.4,
-            "leadSec": 0.07,
+            "leadSec": 0,
             "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "stamp": {
             "recipe": "restrained-reveal",
@@ -1682,10 +1682,10 @@
           "swap": {
             "recipe": "soft-transition",
             "gain": 0.35,
-            "leadSec": 0.11,
+            "leadSec": 0,
             "confidence": "low",
             "basis": "inferred",
-            "evidence": "Style-specific sound palette; review each cue with the creator."
+            "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
           },
           "click": {
             "recipe": "cursor-click",
@@ -1968,17 +1968,17 @@
     }
   },
   "resolvedPalettes": {
-    "split-canvas": "2b0c6fe67f02fd34ba2f6beb037fd2ec491dc7917eed9572f53e4945de83c283",
-    "section-deck": "7d3e947cc0f819bb35e1a86e9f4cd2552805dfc99624a7ffe94b39b73cb05485",
-    "kinetic-paper": "946b359987614954144f7283c8232b61ad076d367fb93a67e7afd3b09cf2e082",
-    "calligraphic-receipts": "edf505ea9f287e7b0a254593c2353eb2061127fdb7851c0cf85628db7ddf7277",
-    "paper-collage": "83f327c3cb16fed9d91660b9051fc46beb7bbcaeb083b3e0ec35b8505ec70a6b",
-    "judgment-board": "9314ddba58112c561a4ae94092412623abec8c195ae91cde0cda3f8eaf1d627c",
-    "stepped-editorial": "dc8df12a0bdc8ae388d42300a59f182cffbc17238f42c622a7c4e5d193b9dc70",
-    "liquid-glass": "6d94618f689eaa88abb312df63b99e655550b7aec6cf316ec50cc3ae587244fc",
-    "campaign-tickets": "44d62481d1c0b435f77c4c71aed6e05210da67bf9ed4d596ad10c80014960362",
-    "magazine-interview": "af76e622fb5fe5148f1a51a2be0a5e6f2f779562811685f0ef917d4ae428cba9",
-    "scrapbook-route": "c9d2782c3e4361b8e0ba15bca7d88f7ae571eb8f2eb767027b2f270dbf158254"
+    "split-canvas": "80573225776be8145c6e7689ff0a63e02c2433939fc403580892a20a91c1726a",
+    "section-deck": "64b566c57eac002c10c5de6cb1ff825e54a7413024c6670275234765c51f5425",
+    "kinetic-paper": "14488696646346b06cfcfefd00391b4bbfbcd95e3593cf0fcfdf431c993a0bb3",
+    "calligraphic-receipts": "e76d7a53a79e7bca5466a325d1026ce6c6f4bff81304a1466ac03f5be1725045",
+    "paper-collage": "4e25a25ba7fb98e6ac25071d818ef9e4eeb72cf814c612775576d34ccaddf237",
+    "judgment-board": "3525cd418a3dc42ff361f738d7ba052eccfb0b03cb964d3447458d36cbc52d72",
+    "stepped-editorial": "ee75df769cb9cccbbedafbc941e96d8bc37dd470d0a8086956b41beaec131477",
+    "liquid-glass": "117a6d47d08471d8f35bd381411986e20abc92f88fe5121c7a2d150093423aa4",
+    "campaign-tickets": "5201a765f0d86dc0893fc1b30d93b0101484c0c25d283d738f0b809da31a1dc0",
+    "magazine-interview": "3ed665481415041cb1001d1a281e56c4b2d37860a04d0128c345d9cde374ac86",
+    "scrapbook-route": "cd896702dad373adaa984ca05f50900622d06c9d3974d36e1b018c6e2d5c7c38"
   },
   "recommendations": {
     "combo:explainer/energetic": {
@@ -6107,12 +6107,17 @@
       "split-canvas": {
         "events": [
           {
-            "atFrame": 58,
+            "atFrame": 0,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
           {
-            "atFrame": 78,
+            "atFrame": 60,
+            "recipe": "directional-whoosh",
+            "gain": 0.5
+          },
+          {
+            "atFrame": 80,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
@@ -6122,7 +6127,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 148,
+            "atFrame": 150,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6137,7 +6142,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 238,
+            "atFrame": 240,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6147,12 +6152,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 298,
+            "atFrame": 300,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
           {
-            "atFrame": 328,
+            "atFrame": 330,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6162,12 +6167,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 380,
+            "atFrame": 382,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
           {
-            "atFrame": 418,
+            "atFrame": 420,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6177,7 +6182,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 478,
+            "atFrame": 480,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6187,22 +6192,22 @@
             "gain": 0.45
           },
           {
-            "atFrame": 538,
+            "atFrame": 540,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
           {
-            "atFrame": 558,
+            "atFrame": 560,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
           {
-            "atFrame": 598,
+            "atFrame": 600,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
           {
-            "atFrame": 638,
+            "atFrame": 640,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6217,7 +6222,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 698,
+            "atFrame": 700,
             "recipe": "directional-whoosh",
             "gain": 0.5
           },
@@ -6238,18 +6243,18 @@
             "kind": "transition",
             "sceneId": "open",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "confidence": "low",
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
             "kind": "transition",
             "sceneId": "hook",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 58,
+            "confidence": "low",
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -6258,8 +6263,8 @@
             "kind": "swap",
             "sceneId": "hook",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 78,
+            "confidence": "low",
+            "atFrame": 80,
             "status": "placed",
             "reason": null
           },
@@ -6278,8 +6283,8 @@
             "kind": "transition",
             "sceneId": "steps",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 148,
+            "confidence": "low",
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -6318,8 +6323,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 238,
+            "confidence": "low",
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -6358,8 +6363,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 298,
+            "confidence": "low",
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -6368,8 +6373,8 @@
             "kind": "transition",
             "sceneId": "lens",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 328,
+            "confidence": "low",
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -6398,8 +6403,8 @@
             "kind": "swap",
             "sceneId": "lens",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 380,
+            "confidence": "low",
+            "atFrame": 382,
             "status": "placed",
             "reason": null
           },
@@ -6408,8 +6413,8 @@
             "kind": "transition",
             "sceneId": "meter",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 418,
+            "confidence": "low",
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -6438,8 +6443,8 @@
             "kind": "transition",
             "sceneId": "offer",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 478,
+            "confidence": "low",
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -6458,8 +6463,8 @@
             "kind": "transition",
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 538,
+            "confidence": "low",
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -6468,8 +6473,8 @@
             "kind": "swap",
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 558,
+            "confidence": "low",
+            "atFrame": 560,
             "status": "placed",
             "reason": null
           },
@@ -6478,8 +6483,8 @@
             "kind": "transition",
             "sceneId": "typed",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 598,
+            "confidence": "low",
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -6498,8 +6503,8 @@
             "kind": "transition",
             "sceneId": "invite",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 638,
+            "confidence": "low",
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -6528,8 +6533,8 @@
             "kind": "transition",
             "sceneId": "screen",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 698,
+            "confidence": "low",
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -6558,12 +6563,17 @@
       "section-deck": {
         "events": [
           {
-            "atFrame": 57,
+            "atFrame": 0,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
           {
-            "atFrame": 77,
+            "atFrame": 60,
+            "recipe": "chapter-shift",
+            "gain": 0.5
+          },
+          {
+            "atFrame": 80,
             "recipe": "chapter-shift",
             "gain": 0.4
           },
@@ -6573,7 +6583,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 147,
+            "atFrame": 150,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6588,7 +6598,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 237,
+            "atFrame": 240,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6598,12 +6608,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 297,
+            "atFrame": 300,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
           {
-            "atFrame": 327,
+            "atFrame": 330,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6613,12 +6623,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 379,
+            "atFrame": 382,
             "recipe": "chapter-shift",
             "gain": 0.4
           },
           {
-            "atFrame": 417,
+            "atFrame": 420,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6628,7 +6638,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 477,
+            "atFrame": 480,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6638,22 +6648,22 @@
             "gain": 0.4
           },
           {
-            "atFrame": 537,
+            "atFrame": 540,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
           {
-            "atFrame": 557,
+            "atFrame": 560,
             "recipe": "chapter-shift",
             "gain": 0.4
           },
           {
-            "atFrame": 597,
+            "atFrame": 600,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
           {
-            "atFrame": 637,
+            "atFrame": 640,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6668,7 +6678,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 697,
+            "atFrame": 700,
             "recipe": "chapter-shift",
             "gain": 0.5
           },
@@ -6689,18 +6699,18 @@
             "kind": "transition",
             "sceneId": "open",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "confidence": "low",
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
             "kind": "transition",
             "sceneId": "hook",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 57,
+            "confidence": "low",
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -6709,8 +6719,8 @@
             "kind": "swap",
             "sceneId": "hook",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 77,
+            "confidence": "low",
+            "atFrame": 80,
             "status": "placed",
             "reason": null
           },
@@ -6729,8 +6739,8 @@
             "kind": "transition",
             "sceneId": "steps",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 147,
+            "confidence": "low",
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -6739,7 +6749,7 @@
             "kind": "reveal",
             "sceneId": "steps",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": null,
             "status": "dropped",
             "reason": "density"
@@ -6749,7 +6759,7 @@
             "kind": "reveal",
             "sceneId": "steps",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 184,
             "status": "placed",
             "reason": null
@@ -6759,7 +6769,7 @@
             "kind": "reveal",
             "sceneId": "steps",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 210,
             "status": "placed",
             "reason": null
@@ -6769,8 +6779,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 237,
+            "confidence": "low",
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -6789,7 +6799,7 @@
             "kind": "reveal",
             "sceneId": "figure",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 280,
             "status": "placed",
             "reason": null
@@ -6809,8 +6819,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 297,
+            "confidence": "low",
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -6819,8 +6829,8 @@
             "kind": "transition",
             "sceneId": "lens",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 327,
+            "confidence": "low",
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -6829,7 +6839,7 @@
             "kind": "reveal",
             "sceneId": "lens",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": null,
             "status": "dropped",
             "reason": "density"
@@ -6839,7 +6849,7 @@
             "kind": "reveal",
             "sceneId": "lens",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 360,
             "status": "placed",
             "reason": null
@@ -6849,8 +6859,8 @@
             "kind": "swap",
             "sceneId": "lens",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 379,
+            "confidence": "low",
+            "atFrame": 382,
             "status": "placed",
             "reason": null
           },
@@ -6859,8 +6869,8 @@
             "kind": "transition",
             "sceneId": "meter",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 417,
+            "confidence": "low",
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -6889,8 +6899,8 @@
             "kind": "transition",
             "sceneId": "offer",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 477,
+            "confidence": "low",
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -6909,8 +6919,8 @@
             "kind": "transition",
             "sceneId": "evidence",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 537,
+            "confidence": "low",
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -6919,8 +6929,8 @@
             "kind": "swap",
             "sceneId": "evidence",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 557,
+            "confidence": "low",
+            "atFrame": 560,
             "status": "placed",
             "reason": null
           },
@@ -6929,8 +6939,8 @@
             "kind": "transition",
             "sceneId": "typed",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 597,
+            "confidence": "low",
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -6949,8 +6959,8 @@
             "kind": "transition",
             "sceneId": "invite",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 637,
+            "confidence": "low",
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -6959,7 +6969,7 @@
             "kind": "reveal",
             "sceneId": "invite",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 660,
             "status": "placed",
             "reason": null
@@ -6979,8 +6989,8 @@
             "kind": "transition",
             "sceneId": "screen",
             "recipe": "chapter-shift",
-            "confidence": "medium",
-            "atFrame": 697,
+            "confidence": "low",
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -6999,7 +7009,7 @@
             "kind": "reveal",
             "sceneId": "screen",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 740,
             "status": "placed",
             "reason": null
@@ -7009,7 +7019,12 @@
       "kinetic-paper": {
         "events": [
           {
-            "atFrame": 57,
+            "atFrame": 0,
+            "recipe": "soft-transition",
+            "gain": 0.5
+          },
+          {
+            "atFrame": 60,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7024,7 +7039,7 @@
             "gain": 0.5
           },
           {
-            "atFrame": 147,
+            "atFrame": 150,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7039,7 +7054,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 237,
+            "atFrame": 240,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7049,12 +7064,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 297,
+            "atFrame": 300,
             "recipe": "soft-transition",
             "gain": 0.5
           },
           {
-            "atFrame": 327,
+            "atFrame": 330,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7069,7 +7084,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 417,
+            "atFrame": 420,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7079,7 +7094,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 477,
+            "atFrame": 480,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7089,7 +7104,7 @@
             "gain": 0.5
           },
           {
-            "atFrame": 537,
+            "atFrame": 540,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7099,12 +7114,12 @@
             "gain": 0.4
           },
           {
-            "atFrame": 597,
+            "atFrame": 600,
             "recipe": "soft-transition",
             "gain": 0.5
           },
           {
-            "atFrame": 637,
+            "atFrame": 640,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7119,7 +7134,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 697,
+            "atFrame": 700,
             "recipe": "soft-transition",
             "gain": 0.5
           },
@@ -7140,18 +7155,18 @@
             "kind": "transition",
             "sceneId": "open",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "confidence": "low",
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
             "kind": "transition",
             "sceneId": "hook",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 57,
+            "confidence": "low",
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -7160,7 +7175,7 @@
             "kind": "swap",
             "sceneId": "hook",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 80,
             "status": "placed",
             "reason": null
@@ -7180,8 +7195,8 @@
             "kind": "transition",
             "sceneId": "steps",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 147,
+            "confidence": "low",
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -7220,8 +7235,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 237,
+            "confidence": "low",
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -7260,8 +7275,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 297,
+            "confidence": "low",
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -7270,8 +7285,8 @@
             "kind": "transition",
             "sceneId": "lens",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 327,
+            "confidence": "low",
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -7300,7 +7315,7 @@
             "kind": "swap",
             "sceneId": "lens",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 382,
             "status": "placed",
             "reason": null
@@ -7310,8 +7325,8 @@
             "kind": "transition",
             "sceneId": "meter",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 417,
+            "confidence": "low",
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -7340,8 +7355,8 @@
             "kind": "transition",
             "sceneId": "offer",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 477,
+            "confidence": "low",
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -7360,8 +7375,8 @@
             "kind": "transition",
             "sceneId": "evidence",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 537,
+            "confidence": "low",
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -7370,7 +7385,7 @@
             "kind": "swap",
             "sceneId": "evidence",
             "recipe": "highlight-swipe",
-            "confidence": "medium",
+            "confidence": "low",
             "atFrame": 560,
             "status": "placed",
             "reason": null
@@ -7380,8 +7395,8 @@
             "kind": "transition",
             "sceneId": "typed",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 597,
+            "confidence": "low",
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -7400,8 +7415,8 @@
             "kind": "transition",
             "sceneId": "invite",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 637,
+            "confidence": "low",
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -7430,8 +7445,8 @@
             "kind": "transition",
             "sceneId": "screen",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 697,
+            "confidence": "low",
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -7460,12 +7475,17 @@
       "calligraphic-receipts": {
         "events": [
           {
-            "atFrame": 58,
+            "atFrame": 0,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 78,
+            "atFrame": 60,
+            "recipe": "directional-whoosh",
+            "gain": 0.45
+          },
+          {
+            "atFrame": 80,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
@@ -7475,7 +7495,7 @@
             "gain": 0.5
           },
           {
-            "atFrame": 148,
+            "atFrame": 150,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7490,7 +7510,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 238,
+            "atFrame": 240,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7500,12 +7520,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 298,
+            "atFrame": 300,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 328,
+            "atFrame": 330,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7515,12 +7535,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 380,
+            "atFrame": 382,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
           {
-            "atFrame": 418,
+            "atFrame": 420,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7530,7 +7550,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 478,
+            "atFrame": 480,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7540,22 +7560,22 @@
             "gain": 0.5
           },
           {
-            "atFrame": 538,
+            "atFrame": 540,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 558,
+            "atFrame": 560,
             "recipe": "directional-whoosh",
             "gain": 0.35
           },
           {
-            "atFrame": 598,
+            "atFrame": 600,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 638,
+            "atFrame": 640,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7570,7 +7590,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 698,
+            "atFrame": 700,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7591,18 +7611,18 @@
             "kind": "transition",
             "sceneId": "open",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "confidence": "low",
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
             "kind": "transition",
             "sceneId": "hook",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 58,
+            "confidence": "low",
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -7612,7 +7632,7 @@
             "sceneId": "hook",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 78,
+            "atFrame": 80,
             "status": "placed",
             "reason": null
           },
@@ -7631,8 +7651,8 @@
             "kind": "transition",
             "sceneId": "steps",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 148,
+            "confidence": "low",
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -7671,8 +7691,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 238,
+            "confidence": "low",
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -7711,8 +7731,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 298,
+            "confidence": "low",
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -7721,8 +7741,8 @@
             "kind": "transition",
             "sceneId": "lens",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 328,
+            "confidence": "low",
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -7752,7 +7772,7 @@
             "sceneId": "lens",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 380,
+            "atFrame": 382,
             "status": "placed",
             "reason": null
           },
@@ -7761,8 +7781,8 @@
             "kind": "transition",
             "sceneId": "meter",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 418,
+            "confidence": "low",
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -7791,8 +7811,8 @@
             "kind": "transition",
             "sceneId": "offer",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 478,
+            "confidence": "low",
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -7811,8 +7831,8 @@
             "kind": "transition",
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 538,
+            "confidence": "low",
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -7822,7 +7842,7 @@
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 558,
+            "atFrame": 560,
             "status": "placed",
             "reason": null
           },
@@ -7831,8 +7851,8 @@
             "kind": "transition",
             "sceneId": "typed",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 598,
+            "confidence": "low",
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -7851,8 +7871,8 @@
             "kind": "transition",
             "sceneId": "invite",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 638,
+            "confidence": "low",
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -7881,8 +7901,8 @@
             "kind": "transition",
             "sceneId": "screen",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 698,
+            "confidence": "low",
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -7911,12 +7931,17 @@
       "paper-collage": {
         "events": [
           {
-            "atFrame": 58,
+            "atFrame": 0,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 77,
+            "atFrame": 60,
+            "recipe": "directional-whoosh",
+            "gain": 0.45
+          },
+          {
+            "atFrame": 80,
             "recipe": "soft-transition",
             "gain": 0.4
           },
@@ -7926,7 +7951,7 @@
             "gain": 0.45
           },
           {
-            "atFrame": 148,
+            "atFrame": 150,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7941,7 +7966,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 238,
+            "atFrame": 240,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7951,12 +7976,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 298,
+            "atFrame": 300,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 328,
+            "atFrame": 330,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7966,12 +7991,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 379,
+            "atFrame": 382,
             "recipe": "soft-transition",
             "gain": 0.4
           },
           {
-            "atFrame": 418,
+            "atFrame": 420,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7981,7 +8006,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 478,
+            "atFrame": 480,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -7991,22 +8016,22 @@
             "gain": 0.45
           },
           {
-            "atFrame": 538,
+            "atFrame": 540,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 557,
+            "atFrame": 560,
             "recipe": "soft-transition",
             "gain": 0.4
           },
           {
-            "atFrame": 598,
+            "atFrame": 600,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
           {
-            "atFrame": 638,
+            "atFrame": 640,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -8021,7 +8046,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 698,
+            "atFrame": 700,
             "recipe": "directional-whoosh",
             "gain": 0.45
           },
@@ -8042,18 +8067,18 @@
             "kind": "transition",
             "sceneId": "open",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "confidence": "low",
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
             "kind": "transition",
             "sceneId": "hook",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 58,
+            "confidence": "low",
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -8062,8 +8087,8 @@
             "kind": "swap",
             "sceneId": "hook",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 77,
+            "confidence": "low",
+            "atFrame": 80,
             "status": "placed",
             "reason": null
           },
@@ -8082,8 +8107,8 @@
             "kind": "transition",
             "sceneId": "steps",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 148,
+            "confidence": "low",
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -8122,8 +8147,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 238,
+            "confidence": "low",
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -8162,8 +8187,8 @@
             "kind": "transition",
             "sceneId": "figure",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 298,
+            "confidence": "low",
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -8172,8 +8197,8 @@
             "kind": "transition",
             "sceneId": "lens",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 328,
+            "confidence": "low",
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -8202,8 +8227,8 @@
             "kind": "swap",
             "sceneId": "lens",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 379,
+            "confidence": "low",
+            "atFrame": 382,
             "status": "placed",
             "reason": null
           },
@@ -8212,8 +8237,8 @@
             "kind": "transition",
             "sceneId": "meter",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 418,
+            "confidence": "low",
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -8242,8 +8267,8 @@
             "kind": "transition",
             "sceneId": "offer",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 478,
+            "confidence": "low",
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -8262,8 +8287,8 @@
             "kind": "transition",
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 538,
+            "confidence": "low",
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -8272,8 +8297,8 @@
             "kind": "swap",
             "sceneId": "evidence",
             "recipe": "soft-transition",
-            "confidence": "medium",
-            "atFrame": 557,
+            "confidence": "low",
+            "atFrame": 560,
             "status": "placed",
             "reason": null
           },
@@ -8282,8 +8307,8 @@
             "kind": "transition",
             "sceneId": "typed",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 598,
+            "confidence": "low",
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -8302,8 +8327,8 @@
             "kind": "transition",
             "sceneId": "invite",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 638,
+            "confidence": "low",
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -8332,8 +8357,8 @@
             "kind": "transition",
             "sceneId": "screen",
             "recipe": "directional-whoosh",
-            "confidence": "medium",
-            "atFrame": 698,
+            "confidence": "low",
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -8698,12 +8723,17 @@
       "stepped-editorial": {
         "events": [
           {
-            "atFrame": 58,
+            "atFrame": 0,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
           {
-            "atFrame": 77,
+            "atFrame": 60,
+            "recipe": "directional-whoosh",
+            "gain": 0.4
+          },
+          {
+            "atFrame": 80,
             "recipe": "soft-transition",
             "gain": 0.35
           },
@@ -8713,7 +8743,7 @@
             "gain": 0.4
           },
           {
-            "atFrame": 148,
+            "atFrame": 150,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8728,7 +8758,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 238,
+            "atFrame": 240,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8738,12 +8768,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 298,
+            "atFrame": 300,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
           {
-            "atFrame": 328,
+            "atFrame": 330,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8753,12 +8783,12 @@
             "gain": 0.35
           },
           {
-            "atFrame": 379,
+            "atFrame": 382,
             "recipe": "soft-transition",
             "gain": 0.35
           },
           {
-            "atFrame": 418,
+            "atFrame": 420,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8768,7 +8798,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 478,
+            "atFrame": 480,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8778,22 +8808,22 @@
             "gain": 0.4
           },
           {
-            "atFrame": 538,
+            "atFrame": 540,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
           {
-            "atFrame": 557,
+            "atFrame": 560,
             "recipe": "soft-transition",
             "gain": 0.35
           },
           {
-            "atFrame": 598,
+            "atFrame": 600,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
           {
-            "atFrame": 638,
+            "atFrame": 640,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8808,7 +8838,7 @@
             "gain": 0.35
           },
           {
-            "atFrame": 698,
+            "atFrame": 700,
             "recipe": "directional-whoosh",
             "gain": 0.4
           },
@@ -8830,9 +8860,9 @@
             "sceneId": "open",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": null,
-            "status": "dropped",
-            "reason": "before-start"
+            "atFrame": 0,
+            "status": "placed",
+            "reason": null
           },
           {
             "frame": 60,
@@ -8840,7 +8870,7 @@
             "sceneId": "hook",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 58,
+            "atFrame": 60,
             "status": "placed",
             "reason": null
           },
@@ -8850,7 +8880,7 @@
             "sceneId": "hook",
             "recipe": "soft-transition",
             "confidence": "low",
-            "atFrame": 77,
+            "atFrame": 80,
             "status": "placed",
             "reason": null
           },
@@ -8870,7 +8900,7 @@
             "sceneId": "steps",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 148,
+            "atFrame": 150,
             "status": "placed",
             "reason": null
           },
@@ -8910,7 +8940,7 @@
             "sceneId": "figure",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 238,
+            "atFrame": 240,
             "status": "placed",
             "reason": null
           },
@@ -8950,7 +8980,7 @@
             "sceneId": "figure",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 298,
+            "atFrame": 300,
             "status": "placed",
             "reason": null
           },
@@ -8960,7 +8990,7 @@
             "sceneId": "lens",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 328,
+            "atFrame": 330,
             "status": "placed",
             "reason": null
           },
@@ -8990,7 +9020,7 @@
             "sceneId": "lens",
             "recipe": "soft-transition",
             "confidence": "low",
-            "atFrame": 379,
+            "atFrame": 382,
             "status": "placed",
             "reason": null
           },
@@ -9000,7 +9030,7 @@
             "sceneId": "meter",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 418,
+            "atFrame": 420,
             "status": "placed",
             "reason": null
           },
@@ -9030,7 +9060,7 @@
             "sceneId": "offer",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 478,
+            "atFrame": 480,
             "status": "placed",
             "reason": null
           },
@@ -9050,7 +9080,7 @@
             "sceneId": "evidence",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 538,
+            "atFrame": 540,
             "status": "placed",
             "reason": null
           },
@@ -9060,7 +9090,7 @@
             "sceneId": "evidence",
             "recipe": "soft-transition",
             "confidence": "low",
-            "atFrame": 557,
+            "atFrame": 560,
             "status": "placed",
             "reason": null
           },
@@ -9070,7 +9100,7 @@
             "sceneId": "typed",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 598,
+            "atFrame": 600,
             "status": "placed",
             "reason": null
           },
@@ -9090,7 +9120,7 @@
             "sceneId": "invite",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 638,
+            "atFrame": 640,
             "status": "placed",
             "reason": null
           },
@@ -9120,7 +9150,7 @@
             "sceneId": "screen",
             "recipe": "directional-whoosh",
             "confidence": "low",
-            "atFrame": 698,
+            "atFrame": 700,
             "status": "placed",
             "reason": null
           },
@@ -10944,24 +10974,24 @@
   },
   "markup": {
     "split-canvas": {
-      "classic:intro:takeover@12": "d308157a71cf71a6b3787b6391718bee92ea1d6e933af80af93552edef18522c",
-      "classic:intro:takeover": "911d6c955f5d0e6fa822714dc2df1f28ba66ecd88546d5176b87f216765b89bf",
-      "classic:intro:split": "4d4af64596bd4e07ace3d3f70218113aadcec35806baa65a3c73832d2e658087",
-      "classic:proof:takeover@12": "e8f25dd0d41083e0b4f0d9975d1e05f0b4088929fe57af59719f2c13e5cb4b92",
-      "classic:proof:takeover": "56f508087d2bd4b50fad369d2b98bc633e921c946ec1f6875c050ae7924272b2",
-      "classic:proof:split": "349875aca13292c2fd1be2ec18417d60196754f97973af61b1c7612bea734c5d",
-      "classic:process:takeover@12": "357cc1613ba5638dc222f8fb8cd28cedfe4e26ae35825933a3c27dcdd4c7fe9f",
-      "classic:process:takeover": "d0975619dde6ec9ddbc73ef69103bba9beb710dd383ab74debd19f1d0b65b014",
-      "classic:process:split": "505d961771ccf2456f2e2d59be77601f619e35b7b28978accf81063d91849360",
-      "classic:comparison:takeover@12": "19fb4b73935f075d60b04394e3527909ba7f355693530a0d10311556bca354af",
-      "classic:comparison:takeover": "b2a0ea0e2b90815e70683e8a1036dff210f9506bc9891c8d1a9968a78fb53cce",
-      "classic:comparison:split": "b49903bdcbbda1f5c8e4f03000b355943abbae132c4ff24ac2c4dd0ecf8c4488",
-      "classic:comment:takeover@12": "c29288173ebaad9d24218813485fe6c3dd98b7fbd772917bff369d4e9b8c07cf",
-      "classic:comment:takeover": "c15effa2393e884d75cd6a0907e022828ed59a3f954d3f4e1ac7e2bf1e5eb64d",
-      "classic:comment:split": "6531162b370d28b7bc15ed63fd0e46c1ad21e99abb2d9c10a0962f8765f3a8b5",
-      "classic:follow:takeover@12": "d8dcde592365fe84a71f9152cfb7bc53b999a2e9405ad7fa8f3a75a6f4fb8b78",
-      "classic:follow:takeover": "6fbd74b378903f00a1044efde01436a86420a25eb9029f02d19b21c77e0fae42",
-      "classic:follow:split": "c6aa5f1bc2cdc34a2e25c5257b37aaf537eb95ec11eca8b8b0ec7466cd95616c",
+      "classic:intro:takeover@12": "894890de4eac4afd96ad7338f24326855a8eae0eea48901f80385e7361031d22",
+      "classic:intro:takeover": "0466dc5cb44bce2265b8194dfeb3f6c2aaf8d61825342da1839bc8b80f5a3b0a",
+      "classic:intro:split": "c8832e7d41bb6ff4275780bddd8cc40a1b4cf1e4d2bf9b7e9b9cf1fa47c6e108",
+      "classic:proof:takeover@12": "9141b7942a610c83a30ca5d484f7cdeac0fcfe0de572749e24fc4734b54c9192",
+      "classic:proof:takeover": "219d7d75341610b06b664da0c9b4ea771e32956d6fba6e42bf40f1075170135c",
+      "classic:proof:split": "70ff8e547f8d3eebf901739566f121a0062dc163de7634784cee901ce7785d67",
+      "classic:process:takeover@12": "43ef50cbfe313920bb3a2cf6478ccd3ede2c569c22b920ec2f7231ad3b6cd2f6",
+      "classic:process:takeover": "58c947c057ca50643619fcf1247c5565b382f9c78c81f5d6bd23c2fec8089b79",
+      "classic:process:split": "e913a51833d8fa5dbb0c31560e976bd674f4d58630276cb6b4f477e7f9ca10ea",
+      "classic:comparison:takeover@12": "422c159ced36b48514b95bf579bf5687a3babd0c1ddb6a4e5d0a01e4031b5d76",
+      "classic:comparison:takeover": "0169280c608ab585a9360ace66c64c7badc6f3c60dd781ea134026580bf4d6fd",
+      "classic:comparison:split": "79fe33d8c008cc5c616f5fd317bd614ffbb36d9f82045bcde4dd182f773e74fc",
+      "classic:comment:takeover@12": "a43ede26a926d2023abd078a32f9cd7fbaffc06f99d446d400cc62549c8719d7",
+      "classic:comment:takeover": "a491c69009916315ae0260d10844a374a9243fe1b356150f50f21633883730fd",
+      "classic:comment:split": "c1fffd86fa6f4a9c12ea248a29e443bd12ab984cc5f8f354828c38990a74a139",
+      "classic:follow:takeover@12": "8d3d782fbe9d762a86306748539d4895df67533872f5cf2c3f8d9ae37e66c569",
+      "classic:follow:takeover": "18f0c647fb7d3a2c1732588fe2e5f7208a2584a1a9afc3aac1d945d3e75a7242",
+      "classic:follow:split": "33b3b774c57e7597c84aebea77ce4ff86f89f745645e9c06b10ab079db889464",
       "semantic:message-board": "fa02dc37d4f179c75ca9986fe6d1cbf8d6ac7668d1aed7be33b310d7f92e7476",
       "semantic:kinetic-text": "57dbc5b1f5ee9fc823bf2b8c7922370d687a9de27b9ebb15573438e09b572fa0",
       "semantic:evidence-wipe": "59f1aa879ee0f82e9460e1af26844cb8fa01b2f6ae3bf7b1d9fa85354b9af6f2",
@@ -10994,28 +11024,28 @@
       "concept:glass-lens": "7a8457f02e400cd44663ca033a063ac805712b2e445fbdddde86d3204adaf574",
       "concept:automation-flow": "794073d8dbf56693187caffdbccde8caaa2cc3742c8c4dab95ac2f4795cf00ba",
       "concept:chaos-to-brand": "4b7357a497f5d53c335902465e0f5c03584bd28020222f627933fa4f61fc357e",
-      "gallery:122": "24ca5ff1b8888d1f29a719009c36da4f038fff4e31923808c5f29cbb9e5b532e",
-      "gallery:242": "5f5f39d45069d711d7086f847026981edddff21d09b00f099625d1ec7c3b99a1"
+      "gallery:122": "a04b2395995eec254bcd827b935ced2cb0b243946645201b7fb0f56798cb2498",
+      "gallery:242": "eda627fcdf0d8acad9c99dc51b220388ff9357438ef6a6683e47fc84cc1084d0"
     },
     "section-deck": {
-      "classic:intro:takeover@12": "58d840bbbbd1a54cb319ce9c58266ec7ebaea1b405cd927a91aaae943fe8cf41",
-      "classic:intro:takeover": "e327f84130719e384b052c1c9683cbef21adf38806cf054fae5ef3bbfef85acd",
-      "classic:intro:split": "28034c13535c77939317151a1561473327c6e099ab372e6dbac1e2d3e4594675",
-      "classic:proof:takeover@12": "6c73dd93f06957bc588e194e1d1624bc96625c4feebf9beb1135dcf50689e6fe",
-      "classic:proof:takeover": "260939bf6e4128a8c854fe5d7caa59f5e78e9f6b3cf5d6b93ebc28da67c3a66e",
-      "classic:proof:split": "7aa0de9e91abe042edf1cdf7f3e99aecc97bb48445ca95073e659957f98796cf",
-      "classic:process:takeover@12": "2de8cbd6dd13a3ad619242e7b348e9b6e95910f29ba4898e71140ee77fabee82",
-      "classic:process:takeover": "85bbedac7405f41dbc42bc41e7ebcf6bd17023506bc324a348e74885014d846c",
-      "classic:process:split": "711f42b8341a268c04c97ecaa8ab8598657d2b16a234f23d27962d8a68169489",
-      "classic:comparison:takeover@12": "97ba8db056b2a3a5a17ad734727cdf38d2b1f41c62d233cd2da18e87b062368d",
-      "classic:comparison:takeover": "ee5f0450f39a7c37e10424e9fea7556a361409cd02430af255f6cbde3df421f3",
-      "classic:comparison:split": "a3a70082d598086ec6a1a86f704f25e350e4f1d3c43c1e02e30b7edf912acc1f",
-      "classic:comment:takeover@12": "42e4e45a6e9a7a4215f12c46342ec2737f2996f8a18ea835a3dcb340c000fbe3",
-      "classic:comment:takeover": "d6db7a31f40b7584119d590d08e754fa5cca8102624a718f0a3e549f31520f67",
-      "classic:comment:split": "e472d3c01e8ea32d71097bfd378e51aa2e13d083f60b64afd2ca7711df505eca",
-      "classic:follow:takeover@12": "c1d1db04d3559e40ab1b35c2a3f11124b3b241b9a5116d597865c2e927d5d526",
-      "classic:follow:takeover": "0c7b9072bfdd3b1860d8a25df162fb190a9f01c4ea1cf099b022a837a1bcaa6c",
-      "classic:follow:split": "da7623141aabe6013788d6ddbff5d192398a94cd0d1e8d5b30f8f1ee9a83c0fb",
+      "classic:intro:takeover@12": "a6f13ff6348195c521c4feec44b30f950f0da5de8449e2a2c41b07394a916662",
+      "classic:intro:takeover": "fd80da19ab1a16db7580cc1a4c5df01c803687029c97f6b69f434dea91c03c8e",
+      "classic:intro:split": "d44013a96cea0ac93c989544ad3547311e7ab5c05644378180d71c32bf60a02f",
+      "classic:proof:takeover@12": "3081829d5bc374e5c21d4b18688e9bfe0ae26cb5f442f8a18be1868cb2c5d48f",
+      "classic:proof:takeover": "0c7494a2a32c53eaa654a570f4049b1607edb1f96e54a09df0aad30089b7e411",
+      "classic:proof:split": "ba46bd8ed2a70357bee1fca99a94a342ca2e7b49b71c12173614264c50cdc941",
+      "classic:process:takeover@12": "31a20b4b34c78f376013ec14aee483706f8b4b7f623990caeb9f11ef89d1f15c",
+      "classic:process:takeover": "193f8d58f85aeb4c819ed03cb3128730c97c061c25a15463178bcb448aec56bf",
+      "classic:process:split": "f2dce2a4b354cb5b2f65f6216cf7ced1fe83d65e0ddfe5b3a097e295ec8f2eaa",
+      "classic:comparison:takeover@12": "30de0cbb5db7823761c566f09cceb399d584ca236dfdbbb39fb7e1957a7b9f64",
+      "classic:comparison:takeover": "c40bc083d05b4a4f194275418adcd5832a97118ea176a1b5d9bd759978a28122",
+      "classic:comparison:split": "f21396d7a8b7eefe147231efa718ee42a116f197e8c90a5adf47d4351108307a",
+      "classic:comment:takeover@12": "b85a90fccd37aa24fa2972f3d78a8190f053153ca1a850f5aa5b473dfea3b185",
+      "classic:comment:takeover": "0f07f15e545e6bea1b2c0f686e603f7baeb8732c815875b7a7e6837af92e0183",
+      "classic:comment:split": "ee30f526daa6733d94a94650d16d8324766b234414f23a8a04ac2ae39e4554f3",
+      "classic:follow:takeover@12": "d3b587c9a5bca1798fbdaa61c7b3443e057fb4b2b8a92b03c34a38a022d1ba51",
+      "classic:follow:takeover": "2dcab8c5fbd178437e64be9288e4cfffa42cca6f06a17f4c2cbd3fab58059396",
+      "classic:follow:split": "c3d175850ebf39454607d7dd21cd0fbf926818b762632d18d7ad87059051a043",
       "semantic:message-board": "b734d7767d586c18250b2d290584bf8a2e68071d2588d5388fc166acd74cb5d9",
       "semantic:kinetic-text": "9bf662461000d2bae4d10d2e8459f52b2c1425ffa15926cfe42a778c68abc2d4",
       "semantic:evidence-wipe": "a5c34f9b708b29549cbf5e87b945fdb201f02cf5c7a74564892bd91bd1a10d15",
@@ -11048,28 +11078,28 @@
       "concept:glass-lens": "b932708c7f1f18d8bd41790e556a5ea5185cea584b490f451ed1b103e593bc8f",
       "concept:automation-flow": "8e14901463232d3e8b562f456055ac03fae254964b9c98380d15d87cd641998f",
       "concept:chaos-to-brand": "59421e8297899fd0aa299c923ad22e0cf124f135aca14ae8dd0c062e0be5f519",
-      "gallery:122": "bbbe4e657d84fe9788ca7195b556ddb6532ec3a16502371bd675a0bdaf8fce80",
-      "gallery:242": "907f2b3006526938953037e03ba078150a946333195c133de468420749d262af"
+      "gallery:122": "aae19cf25ab8b2f2643d8d0762f35713a34762c0e661b308fa7f0098d47527e9",
+      "gallery:242": "3d62e78b77225b0b2f5ed1753269f977a04a2db1e7d1223bd850a3338c5d541c"
     },
     "kinetic-paper": {
-      "classic:intro:takeover@12": "5cfd09f659c1c0f7554dc8b64cf1847dc36be47ed1e6a39d7adb2841b90c7380",
-      "classic:intro:takeover": "30f3784ca96353db62f88858625ab7fd655189636b2ce094b5fd351be0667d88",
-      "classic:intro:split": "67e131dde415e005e65276de0a695447f7f29eb89966bff678f3d2f79e910cfe",
-      "classic:proof:takeover@12": "65e22d9f35b14f1be55bd3735eaa513fd7f91e077cfccedea394ef517c11a873",
-      "classic:proof:takeover": "2071ca8358dd88dcaab133f19f35b31760841ea10d6916e8e3ba97aa2541640a",
-      "classic:proof:split": "9407c025368ec715137743b5e5dc801572eda38c164333af4a036f5bd98d244a",
-      "classic:process:takeover@12": "49ea8d4bd23a1d944fb319ff1e5cdf0a3a057aa8eae93e1a22bc50ffbbf3b536",
-      "classic:process:takeover": "a61f6ec6a77b58950266ba466c2ee610eb89353bdc9b9ff94ad9df9cbdefb27b",
-      "classic:process:split": "7902c2b9e3aa5fc12193dc7c5ea467911583511a49d6fef546ea596aceae3225",
-      "classic:comparison:takeover@12": "a0e460154bab1fd23e1a7e1591dad51b6afbd56c6bb811f07c714cba12143823",
-      "classic:comparison:takeover": "8a5cfa03940062b97a8c64749e7ced9852626ec33037178af8e9fb48af2008ef",
-      "classic:comparison:split": "c814d5f7bdc0b256e3b5453811774e31d95dcb4695537e8357cf10fe5717549a",
-      "classic:comment:takeover@12": "dba978ba4a24ef567db39fa253b12d592b9699884042c863a5f1d66530cea1a9",
-      "classic:comment:takeover": "4a2223ede57eb9cdc8a2dc4fd4e95db2ee8f5c07aff401a46797719f731e84c4",
-      "classic:comment:split": "aa96a2eb53d491d0bc04ccae7306f6b7790c6a47220f24dcc260f20d2ebea072",
-      "classic:follow:takeover@12": "3392f4fcda0416aba3909976770e42422c9ffb6107dcf5ba27d9aee402aeaaa4",
-      "classic:follow:takeover": "dee13e717a6d6ff779100efc05ba6d67f178a663baca0538418be4fcb759d9ed",
-      "classic:follow:split": "c587f836fbaa0fa0cad7297f7ed88a03af1b4da05673056e3a02a79ad62b48cf",
+      "classic:intro:takeover@12": "5f28cc7dc0c07f8118f6e46f798b955e9bb0fad34033bc08327333c981ce193e",
+      "classic:intro:takeover": "1bd3642c1935d435fdf20e6f8b33c0d7d8e35e1104a804d958c69c569a8d40ab",
+      "classic:intro:split": "5b762daf6279af9564cd16bb64082175f7afed164d2ba30aded73b3aa4273758",
+      "classic:proof:takeover@12": "abad24607b6c97009121674289a896e9587b2c237031adb6b7b95f53d9a783b6",
+      "classic:proof:takeover": "d27d38b342ceeaa0eaf65bdce6a0eabf1f9cffc78da9d32360fcae56a180cd1d",
+      "classic:proof:split": "6632d0fbe759208513c37cff0e1a24c3764da1a18c2af856ea727ac12b69c29f",
+      "classic:process:takeover@12": "e616205e01f85f6b5412d16301081f78fc7177037758773738c8c815447d13bd",
+      "classic:process:takeover": "50c43dd925baff800ec6969abb7f463e31a548797eb6153ac92b8f75a31dfa99",
+      "classic:process:split": "320e699f030af67960cc8b6ec80c33387c998d134cbc5bc41125c8a515491d5f",
+      "classic:comparison:takeover@12": "90c8e971ddee320fa1610f1eecf7a59cc961c142bec59f163235b0a7539e694c",
+      "classic:comparison:takeover": "b006f735226bfee976abd0289676704722e7a583cf8cc8878a6bf2819967aab6",
+      "classic:comparison:split": "e71609a63f82999cad96031052729971725aa3c6af8c8f632d81c021033d4c22",
+      "classic:comment:takeover@12": "5849e0b43521feb483e0cec75614e88b0b6b52a60b2f405062ebc8af46b794b7",
+      "classic:comment:takeover": "02cc765b4c0b3cf5372a6722d50387a499c544d688a26ae1ecca1702a21e584b",
+      "classic:comment:split": "097e2ba59c662612a8165babd6a363e56f4abf4949bca58b5ef893ee945f2009",
+      "classic:follow:takeover@12": "f54992cd9994fc0c49bd53b733cb915d8869cd32c60eca241fc826d51eb50268",
+      "classic:follow:takeover": "2c04b5d085cd67886f3d4491ada5b8eb1017e17313320ef7dc0932d6d1f2ef31",
+      "classic:follow:split": "b5eabce84c42c088beab1c9bc05f5e88a5cf1afa2d1473cba5f8f78ac8e57eeb",
       "semantic:message-board": "05a667162ec265c63d9bb1df7a5af15758522033da20400f20c3e584bc5d3b80",
       "semantic:kinetic-text": "24b42d26a6c73e342a34388760946bf227211cbfb4b15169b745f3bddd2828e1",
       "semantic:evidence-wipe": "3e8a0397995ccb5132bc65822b578c0fdb05a5e1824589d98294790b650d5116",
@@ -11102,28 +11132,28 @@
       "concept:glass-lens": "227739da2f720801594dec4ecaf123f70d18803cb6657b0be0948d57b12a39fd",
       "concept:automation-flow": "70391f0681101852374e6a3f628231cde871db209cf59bc65ee06899b77224e2",
       "concept:chaos-to-brand": "ac38a3e88c452c7b934a2ef379456c8dc358b22103e239884d2b1dce2d4e90b6",
-      "gallery:122": "4f981578735226e8b242e353b8a19cd6fa25f9feb669160647c77297619e903b",
-      "gallery:242": "9d906f02d93281f6643dfa8aa8017c061129ee7d3707ca4ed46d1bad444f6af2"
+      "gallery:122": "4584535f208e05d4b83729eae24946f42e563737143a7669ee81b88fe90c414c",
+      "gallery:242": "0c3cfd7305b6e9cb1758322c9aea0913fe32381b9c23b1a76a1810ca718a615b"
     },
     "calligraphic-receipts": {
-      "classic:intro:takeover@12": "470c2c06ba4d6b3922a000f2e4e2d9b691e63c3b064fe34ad3139313b7c5c6f7",
-      "classic:intro:takeover": "c3da5f2a4672987b790766783ac72347460126cb20a494dd5c26653f652b0c02",
-      "classic:intro:split": "600d9b4208534b338222d181ff5533cc75e30e6c4b5c20f9343ad8c293970993",
-      "classic:proof:takeover@12": "d477c4023e660a6f790ee6e8d36f29f663ad958c539e21f3e14a333fb14b0ea1",
-      "classic:proof:takeover": "e6e4c204fc7f8a2594d928231259ae31377cf2c8a2defb1390878e94b929b9a8",
-      "classic:proof:split": "11f00bd5fdbb3b270f588c8c9ad0ce98be9f4f56ac63717695d1df274b0f2393",
-      "classic:process:takeover@12": "1a5eb8a350135410220c29640f8e7b957911eaea7753a86de3220dc8b02a4154",
-      "classic:process:takeover": "22b55a9e91865f0e896cfc8795deb40494ed76e6eb4e06f660501b0e5b80fe0d",
-      "classic:process:split": "da5de4a3a62c961a64cc3ce48113f20a6f6d9b64840298feabf989a45fb9534f",
-      "classic:comparison:takeover@12": "dc4b2ee694824cd437e6bb5ead2bcc6319320cd1e67236c69628982fe10f2c5e",
-      "classic:comparison:takeover": "296d2cca220b4a0376a5e61b1495523018a458a0b7fd3ead01a6b0fb30c21287",
-      "classic:comparison:split": "4bbc900da96dca0c55d3e2f34309082aa2fb40e3aea0efc8bfaf87b7dbedf1da",
-      "classic:comment:takeover@12": "412ceb42d8b85e27b78a81f5ece37e07fc8e9a2a2ee614bb0acb720864988efc",
-      "classic:comment:takeover": "82b8817a5016a7f6453ad5ddc89133ccdd04d0499aaaabd84f5c5cf115d4a038",
-      "classic:comment:split": "442bb3f86631b9b2d9fff240a0f6dc213ddf81b1614124762fa38d27951d0f1a",
-      "classic:follow:takeover@12": "9d5101b56225555349d329416284fdefcb3d5488122b7c0f5a7fed851cad8396",
-      "classic:follow:takeover": "9805d6e148393ca63dc4746d5618735aa7cbca992c3bb569f75a61e2de4a643e",
-      "classic:follow:split": "55fd21a0f26b05a8473dd1d3feeef2cb8eb011599e4ee80262365eafcf0f209b",
+      "classic:intro:takeover@12": "25989c91950468aa665fb94c8de8de3d9baf985a888f28432c6f57c4d4fc92fe",
+      "classic:intro:takeover": "74e35982a7ef07f171b04e9cce399b1fe353a810cb8f94d4c17e52cba0631da4",
+      "classic:intro:split": "09fa2ed78e69d1db71ad548368f9e3d85dd77e6cb51631463d370fc77cf4fafc",
+      "classic:proof:takeover@12": "3e68e2c30f8a955a6ed01a30719cba51f8a598886b8fbd47f5a617fcdccf74a3",
+      "classic:proof:takeover": "19ae20ff1201ed332a01995809ad853e927cfbc54c0ca998ac7dbf4bfe4657fb",
+      "classic:proof:split": "68322a4a67421e3b4e8994485737935a2dd99d775e7508dbd3158344ca1c8f17",
+      "classic:process:takeover@12": "072dbcdd9e821706d7f9ed69388761f58b6024e8ba5dc4b1391ad56799ca5c56",
+      "classic:process:takeover": "5a2cb42407893a6823ecfc10d58dd78ac384e4483062cbe235fcaa2aa4823f0d",
+      "classic:process:split": "38b127df22ae5ba7bbbf053d376954994f882501725f723d808a18351dfc1460",
+      "classic:comparison:takeover@12": "5dc1c9d0d41addc187d084b52d75420d8e5012dc89097ebc53e4653ebec708ee",
+      "classic:comparison:takeover": "b1097d8dd8f35d130d3021c262cc1e8cda2c572397df7e2337730b6e294d8828",
+      "classic:comparison:split": "4f4558d7b68f30baa42ac444b30e4a6090420ab29a786105e51d3f36ce800bd9",
+      "classic:comment:takeover@12": "ef8d4ea28a676f58e701a568775096523b6c51f25d2817de54ef95b09e5177a5",
+      "classic:comment:takeover": "d6385d9decf561e337d6a7daebe1f63965f8e4af70d89c23a56812248a928690",
+      "classic:comment:split": "dd4dd7c78668a28bc57bc8fa9019025b4dbd1a971888e88a6c76860ee61794c5",
+      "classic:follow:takeover@12": "8a9039601821640b9784d48a950c46735468456b0f81c176482ff90c70f289be",
+      "classic:follow:takeover": "999c6c7202a8dff165e5000bf32bb782463ef6165487092d04b636ee59a39076",
+      "classic:follow:split": "9b50a9f41a3e0b6d84af95eb9ee41d1a882ac43b3de9bd9f7303936fa0cc1712",
       "semantic:message-board": "daf37f5aa10420a89f6358fcef750d30c0f74521542ab79ed617368f7c156e7f",
       "semantic:kinetic-text": "5086bee836e96584a1447f65f6c1aa57a296cf80ecc48f82415e0e068890bee9",
       "semantic:evidence-wipe": "e42b189261b76ddd54646452ad24ef013c4f37a3e80c34018ea8b0e47ada95ff",
@@ -11156,28 +11186,28 @@
       "concept:glass-lens": "a736dbe65f157de3315ebf2e792e5293b2fa74f4d94fbcd8b9567f5d970dbf0a",
       "concept:automation-flow": "b52cc7f6274f3e0e35239364985e8a7d7420688010b7dc8c05ffae13ce42682f",
       "concept:chaos-to-brand": "5b64f1df11949dfeb0585dd7fde78db5a8e3f11482b5ca5247d9ac698c8fb710",
-      "gallery:122": "72bcf7ba7c050bc70a48d7ed9a81844e02a7f1c7d3cace892e49632dcf63fb0b",
-      "gallery:242": "4b23018236647d737ae5b03bd9883c5e0fa9d6e14913b07a4532c8c257698920"
+      "gallery:122": "62e504a1a8050f8fb9d7ead4b66af511c44c439410dfd5c0a891bf6fc3afc9ca",
+      "gallery:242": "a5b874ebb7a55f7ccc319413dc52cee0e7fa335e48689a6277071966d6f732a9"
     },
     "paper-collage": {
-      "classic:intro:takeover@12": "d9be3f69beb952d007f5d9946bed250c2cb210c2936443324c4acf0b13c30571",
-      "classic:intro:takeover": "8fd46da4035944f044401b7409dab098b7e0a7de9455216aa1c477ba112a990b",
-      "classic:intro:split": "300e09f43d3630e759486d6810d547512224ccd339640bd983bf014ce7a354ef",
-      "classic:proof:takeover@12": "7db0274337d0ad063ca17fd4c140abe5032dc30de2bacfb6c66c3392a809edab",
-      "classic:proof:takeover": "944dacf9923cbb1dc6bfec6f00bbbab026f7feab01a075cead9d67fd22d59b95",
-      "classic:proof:split": "8096a93f6b72ae38c4a350f435ecd10594f9d37446fd8da5b2454e582ea38d46",
-      "classic:process:takeover@12": "da81b68bd938f4cc22b4d42030cb95e476a21af54cd5a52319f259cb3235740e",
-      "classic:process:takeover": "5617d6e29de1c6d15fe75ca100e0384a7447d10093c84386059392b3fea56391",
-      "classic:process:split": "1236c9816a724400d4aa8f62f6c4d67e6ae951430c74e28f080ae60b4127911d",
-      "classic:comparison:takeover@12": "f2253d16319f76769668fe9f6fb81bf0d781ee908e8b2bce2d3dd52bd1f66116",
-      "classic:comparison:takeover": "b596a972f7a1a0d686f6ac3286f65f48f4c5f0973e5852de9125be6f5a7c63d3",
-      "classic:comparison:split": "1513442171dc39cf60195b85368f6929b0f4ee1e879d6220d44eaea19ef29f23",
-      "classic:comment:takeover@12": "76e9d0d292abb5d7ccfae79b084ee144ee5d2b8c1490804e4e385ed156c79b5b",
-      "classic:comment:takeover": "8157fd8b5218560332bbe7ce9281d08b3683d3a97a0044e04dc0c6ff670aba39",
-      "classic:comment:split": "d85f13954829ca4f8b6460ac4ec9abbab66cbe6ff6e53f1f6511aaa3a299acd7",
-      "classic:follow:takeover@12": "2d125ecef50350b220a80ae2a137c2f09ed850c75dc6dd5d299ce3bd1d0d14e3",
-      "classic:follow:takeover": "bbf67466950566c78cf84c90fc4136a838d7269285bf36e492218231578d00d9",
-      "classic:follow:split": "d5b26c1ab12bc584d32815e2a75779b249457dad3af3a1c1d86c444d660d0e4a",
+      "classic:intro:takeover@12": "24a9c4675b69d478d6c49a89212b2188bbe2b658a73b0437b03334451969618d",
+      "classic:intro:takeover": "2e9c3af01ab083bb3ce8310958be66725f3e332a82b2e8c482c23c4bc79393da",
+      "classic:intro:split": "6cec6378aea13bf3a71ed152f39d0303ae05b01eea4e09f93359946d509384aa",
+      "classic:proof:takeover@12": "3b5fa5f4749685066a7a59caa45764805cdc5bcbdd1f52a2d3e98ababa812a2f",
+      "classic:proof:takeover": "21a5097ed7a280cb3e85f03f87d9e71889eb60c47d3baf7629e96aa4231f2281",
+      "classic:proof:split": "47541e35a9906b65ed42521c1f53c793bda4dfca597c94efae7f26feba23311f",
+      "classic:process:takeover@12": "b94a23b08fb7ea9c40cfc478a4d29f648da39a8f1f179d67713add2cfd62f08b",
+      "classic:process:takeover": "e71b131c624b2d5f6c1faec0d28ad004c9914b5bafbcd58eec83f819fc04236c",
+      "classic:process:split": "29096c3a6288d768e5e3d7f1c049c92987f606822783546daee3909ce86b9166",
+      "classic:comparison:takeover@12": "98de270dc4b1e17987b8cbad0909e5a1e9edacfbc1e62e41e64d81e914ac0777",
+      "classic:comparison:takeover": "6343152b6ba2573ac5f04f324c98b2ee5fef3b7e1d2d748717209f6b950431a3",
+      "classic:comparison:split": "30c1fd894f4d7976092cd24ec475091f21ad239e3f958a3a296e531793c50a67",
+      "classic:comment:takeover@12": "c5e189355947c7d62529faed55e26f2170786042f40540d2c0e0e8cb423c1d11",
+      "classic:comment:takeover": "352137e68af58be4595ead5b97486ab0b06e4dd7973e3d3ba23dd38208c02a04",
+      "classic:comment:split": "8eeea30c012ea424955cd4179fed22f64060d1aa26d371b06309b0570cea0e7b",
+      "classic:follow:takeover@12": "8d624e4a1afe4c392e94ca094a103b5e188e18c1d30abc98d6f7afcc46d35a84",
+      "classic:follow:takeover": "ea869546821d898c7c9d7308cc9685909b84d41c86045997008afb2a0b7033af",
+      "classic:follow:split": "ca73e8f1cab6f658446244f1f436f744f56166602947b310d13fd2161fb4d954",
       "semantic:message-board": "ae7c4b3d872866fb50adcd25645965504df019c91162b482aeb7c4a921560073",
       "semantic:kinetic-text": "cf576c7714b1f1bfa666980aa1e4a8e3a4dcd46f1013ac9ef6235e9b70111af5",
       "semantic:evidence-wipe": "140e59cc4263367b8d2e07f472000dbae6ef9a8e79fc487675dc628cc188ef89",
@@ -11210,28 +11240,28 @@
       "concept:glass-lens": "029967658a1b0d9eac3777b4542827040e63db4bf893917cd3997193c96e74ae",
       "concept:automation-flow": "6971f9999b8de47339f6bb507b2be56c8815a2df9791316929cf2b3843540ad5",
       "concept:chaos-to-brand": "3a803c7ae2ef9be8a79acf6bde2b3c2e79f8c57a69d17cc6383e998610313877",
-      "gallery:122": "88bd4da28c59e5ee96f638c732c7348d96007a67051cb1c1b634f2193977f893",
-      "gallery:242": "afb21de1c4dc8e4a6e3fd4a3878830b94bf3523a20fa813a7121cfb5c63a7203"
+      "gallery:122": "86ced4d96cb8357b2fb6cc0122d554ec1d2c61e685ad0a73b50fc61f16d9b1b7",
+      "gallery:242": "b3c4f0b9e9e06aec86929ac92de07b3fc0bb8dbcb79116f38ba07873a4ee643d"
     },
     "judgment-board": {
-      "classic:intro:takeover@12": "17e24b65da5ca6b9e5072529bdbba5c878ad44c6972823f61adb33deacb1a5d1",
-      "classic:intro:takeover": "07191a111bd6db54c003be67f1258773ba936b04ab90088fcb3c425793c02a47",
-      "classic:intro:split": "025f08fbd929c6bd3df776e1e3b869e6fdcf5692dc0164c36856ff79218087e0",
-      "classic:proof:takeover@12": "79444b36226506d0f66746584fbd6a64ba7538f6603fc155e8cb9bbfacdd8b29",
-      "classic:proof:takeover": "5516ef2d3867350ae7d35b52f57e9b8433171328ca3511813346dba93cbaa0b1",
-      "classic:proof:split": "e63864fdd5a8ef9187ed1f16c9a0ea4aa3ca96243124367d92eeac2893d7e888",
-      "classic:process:takeover@12": "594d13296f6d119e3c1596ffa2243c4dd398b97d04ebbb090de2fe5bebaac5d1",
-      "classic:process:takeover": "89f774d3b605c2081dc9773331bbf64271f0eda5cf0f1a1e7f2c258e01dc60c5",
-      "classic:process:split": "ab969ac85ae838c38e40c87145b20aa981717a4884eb9c8fb5dc03ebf6c03c46",
-      "classic:comparison:takeover@12": "072ef3dd4f4b727961a7c668af8a8972ad8e88b6a04c7fbab4769d9529486cee",
-      "classic:comparison:takeover": "055a397688f64a719988af568c678e5e883907b967bbb8c0270a19228b92aa06",
-      "classic:comparison:split": "8c86098bf371a7410538a4184138f7d7449acc42949a12ea90f909af46a6cb64",
-      "classic:comment:takeover@12": "c82fa9ad77446536a4c36a4193674b4fbfad02b14d7ba9bda475bf95cbe7c416",
-      "classic:comment:takeover": "cea5c1a4bbcf9b80972bd34194bcdf21a146e73ac2c4ef92ba817e600f994e35",
-      "classic:comment:split": "830c3f5f11d07929df7180d58ff1a476063a82157776dc653e4f6f4e636c9f01",
-      "classic:follow:takeover@12": "1f9275bc01c84a1a30c2ea7d318567c9ddd30433259fc0052b1ee3a3abf01322",
-      "classic:follow:takeover": "d62fa2b9f30a40b3f09a1090bc431bd66c8473deb534af962a575a4e6a828639",
-      "classic:follow:split": "763ed8ce80f706ec6e8a2048144e2990b07e508bbf862564d7bc4d3e0d0082c2",
+      "classic:intro:takeover@12": "784ec44f5f6a47bdae1bf95d0b62d551b7a2ade1c8f5d7ca5fe550dfcc572119",
+      "classic:intro:takeover": "5c223be67d441dacd3ce8d3302c97e739dfc9bd660abd42df8df49dad5405360",
+      "classic:intro:split": "736e11f0de04de16e8209cdfd9807cec85a3034faff47c1a53c9ec1722eb0d61",
+      "classic:proof:takeover@12": "d524987304f68c6bd217d5406e7fe1ab5a327d39e908fec7d8c9ae6624a87c6d",
+      "classic:proof:takeover": "f5433513cc4067c11114bb60fae677b1f011dd6a90bdbb147e0af9621326d506",
+      "classic:proof:split": "32e2776c2be901fcd102a7bf74f3a40a80cb6c7c037d02eceaed0bcc96437bd3",
+      "classic:process:takeover@12": "0a35ac40320c95407ef226ea5a935f70f1945cc457f127a90e4c15a968e592c2",
+      "classic:process:takeover": "a31c7bfa49bf06bb830e5f4ae44c278608908bec1ca959c84a365e2d1b2512fc",
+      "classic:process:split": "c5a2592d393e4eabc372469cd1be0369edea1224395ff9f65da955661b8143ca",
+      "classic:comparison:takeover@12": "4975b516a2578e0cfdb8a29fb44a2a0d502412635359e542c7f78a1de449c2fc",
+      "classic:comparison:takeover": "204b5869966779360698777d72f331523f7e17d3b61b56a0447888d85cac2806",
+      "classic:comparison:split": "fc565c6bf019ddbf5983f76a300f8e4e984904feb657b24f2dc561a5330bde75",
+      "classic:comment:takeover@12": "7814ebff635a9467105ac9ea270a3ca6292d98cc574c1fa5a7aac85a6dc2ca79",
+      "classic:comment:takeover": "5ac7a783d1c41497b0f51036fd399d6c6fd8b602096a43958f6a22a11d84c910",
+      "classic:comment:split": "ca873912cbd45fe687a8c430cbf7b72be87cf20512f8079fa4a63b5847e3dbad",
+      "classic:follow:takeover@12": "a7d6b157d4a51835b6529966fbb2f53d07f9138441928e3513057b0ca38d7460",
+      "classic:follow:takeover": "2fda1c22e1c2792cd981f1f5b3655a40a17520a03c06f977c3d5019d2eb655f8",
+      "classic:follow:split": "5fc100f29a64171140fa0bd24f32873b73741fc763b4b6661c1d015281f51d98",
       "semantic:message-board": "796f401760dfb63dbf09ac3339e37bf4c9806f4e11351afcda90ecb18692752e",
       "semantic:kinetic-text": "21401d8054926800bba51115ce0a55383c697cb1bec76c1bf2f95c1d7164f850",
       "semantic:evidence-wipe": "f9232946a0eb267e64bead6b1147cf56dcdb1c8b2d73d6b71b8bbee55ee2514b",
@@ -11264,28 +11294,28 @@
       "concept:glass-lens": "61501b10e92007b132e46a20ae3d68e7b2f4d9d229308fb416ee5b328995e8e6",
       "concept:automation-flow": "72e6128f40d149dedd6cebc3765660bd766a23cb9e5fb0a2ff03c1be97d7774b",
       "concept:chaos-to-brand": "12c8e293fed224af6e8a7e7b9cb2c0ce6b5398e4a225e37b05ed326de8ad38cc",
-      "gallery:122": "3964512ec661f4bbab728d9bc59af47b81dbe0d12038b8fae4bcd255b77ce062",
-      "gallery:242": "cb8c71af7c3c2a2e6eabd0d3753ca88c832e40231d906fd83425900c22b84e33"
+      "gallery:122": "e930b82f816a8e54d0fac660b53f0dbac1416162745eaedb5597c2e2e301b9cb",
+      "gallery:242": "e44c3d6e17eb8ed0d61bafff3755345fc62096b17694ec368f2aab1fdcaafd12"
     },
     "stepped-editorial": {
-      "classic:intro:takeover@12": "5e91d0eabfd3a3365fa2b40497283797f9627432887f93317da01d3cda3139a3",
-      "classic:intro:takeover": "db3b0dfb828e71d3097c4171a878d99918b922fc9e900cb83906048cdf85b019",
-      "classic:intro:split": "8c3116367bd014b0a585624990fbd4a805c57d8678d4b2fa66a0e4a324ee69ec",
-      "classic:proof:takeover@12": "264c53af356a6df84a236101e87b30f6f2ae494f48f5e9e040ae18078d9639e6",
-      "classic:proof:takeover": "3c6820ccf3778ab8f9045990f8b3daa710638b4801181fec0a73b7e9c254f424",
-      "classic:proof:split": "4b0b2aea0b17c9237daf14d3b496575775937c0b3b9bce58aed0cd88f08d5798",
-      "classic:process:takeover@12": "dd6afdccb97497cc4c0213fbbc02b191be15d36336455668ef9611ac4b82ef1a",
-      "classic:process:takeover": "0935980473b89cec4c1ec87800cd9881304a9a79e615eafe290ce15a36068ed9",
-      "classic:process:split": "b2fa7063f815d1b9c6d8d68c0d88f1b05d51cad051331eca6c713814a46bfa03",
-      "classic:comparison:takeover@12": "3ffb804c7166ef149cd7a1c86ad2ae94de286a39aacaf90880cb04b6857fac54",
-      "classic:comparison:takeover": "b71b9408572aada772f1cb61a67528e1e5be0f0d8b03b4b88cb03bfe45e80b7d",
-      "classic:comparison:split": "d7317890e7c2a8bee0a2954532f30201cc8546454a9f7b63f85d45ae9d01e2f9",
-      "classic:comment:takeover@12": "02fba47569d995ec764cef48288e4019da0ee6fd45698ccd87686cf8c6dd61a0",
-      "classic:comment:takeover": "159b002aca7ef1520bd45719c7fa334ddef8b6ab19318aa65c4ba1e663d4f731",
-      "classic:comment:split": "3bb686535ed083f77b9d87447892a8127281973119bff24b1c5c8e459b2a872f",
-      "classic:follow:takeover@12": "bc94aba3db430e3c010751fd509fe64f26533087ddeec1936b1f8ca73e0e19fb",
-      "classic:follow:takeover": "ea8de13a86dde690fd0371996330a5c69ed626a27f684aa557c693e221fc63e2",
-      "classic:follow:split": "d663842a340c8158c8b2e66e8fa8981d97850388eeba48d567e1506938466901",
+      "classic:intro:takeover@12": "be0887e2b2bb6e530cbde7c5625bdbd034998dadb98311a286609433550ffa45",
+      "classic:intro:takeover": "ebb41bba21ea589d791adea4d585f338814169c81525047eb7a07904a42e5bb1",
+      "classic:intro:split": "48ff28548ff840942a31801591820f979ee3168d788687df2e7f547a20797238",
+      "classic:proof:takeover@12": "41a5424effa6b160a5f3c3f8038e4084f9cda6fb0ed36f58fa5a31d222ef9486",
+      "classic:proof:takeover": "af3b7e75d29a680ef628445282b5d460f83258af6eee314f94ac9ebe41951e9a",
+      "classic:proof:split": "aeab90998fc21dac5394b67abb5e25f364c3912dc545cb1787eff37140a44cfd",
+      "classic:process:takeover@12": "e0d6d12356cf9298fd6db2921ad7e16a6efa0757c271ea580a46dfbc06a8fddd",
+      "classic:process:takeover": "3d6d895335014c7eba35f18c768aee7814edb65c471da92e7c83c6b190119662",
+      "classic:process:split": "7d466dd5497ce58ebfc20b886c6f2755a080145b8f053093192f7f75dff048ce",
+      "classic:comparison:takeover@12": "c44b99e7ae4837ccc7851e7e8d6c3cc9f087200a3bcb773bf30ec0f78edf63ec",
+      "classic:comparison:takeover": "743f348da21412970b2d43e4e66e98655511d021d04adc3859341d463af9ecc2",
+      "classic:comparison:split": "645e6753af7ac7057408b6b3d7f5925f3c14380c11653609eaa5789ee19f5b4d",
+      "classic:comment:takeover@12": "57072ee1b78aef56e789ea5ca5b8f33914ea981edd222ef772b12a5084c9055c",
+      "classic:comment:takeover": "8960dc0fcb780d80619bc1a850e9e7b222620943723ac3d3b2b3e04b72f7f182",
+      "classic:comment:split": "ca82febffee4c3f9061149bc0452046c2ba0667e29b2bee760e075244b113291",
+      "classic:follow:takeover@12": "24cbb2c6f70770716002ed4fb1193799082edcceddcae562a81691cfd5b677dd",
+      "classic:follow:takeover": "73a7496560467c9323499d41e54b9013d97d132bcbd8e6bf4ad75273599cafa7",
+      "classic:follow:split": "3c80651ad69a29229f2bba638e38ca37e339938566171407663d4ba9cc9f61bb",
       "semantic:message-board": "5ce105331f757411ac1eca8f4eddcf50ee3807993ddc010f20a2daddee71b58e",
       "semantic:kinetic-text": "ee42d072a623af1b53f782e81022cdeb36a7eb29d521475ea1b330bd0a784574",
       "semantic:evidence-wipe": "b858ef95debdb0c51ef596b869473053beb56138becb6029daba1f3e542c0ccd",
@@ -11318,28 +11348,28 @@
       "concept:glass-lens": "b87304ff2efd16274a48c0b6d2708a73d26574baf24fd829aa01bb36507d1f92",
       "concept:automation-flow": "2d75b4098d1f814cb53b7c3fa0ad86a3ed357aefcdb3747c8e79feb919b6dcdd",
       "concept:chaos-to-brand": "4d24395adeade7d2b3d3e1f2480992979ca78b27c7bc63d224f0c926d6b95d7c",
-      "gallery:122": "b52bbfa858be354816dc75238d426fac55c3e1356ea9eccb74155f87b6978533",
-      "gallery:242": "0cd299e90527ed83202016150c98f4f95b06a60b60ac7992b5c7108ab62d8ef7"
+      "gallery:122": "4a0a55248003c4aee788531bae38e4c434ebf8051110689b91f7cc96f57b3a07",
+      "gallery:242": "90b5db3f58ecc0ea3840b0a82660944a9f367c098e3bcb62e14d52bbd17406f9"
     },
     "liquid-glass": {
-      "classic:intro:takeover@12": "06a81a90a81a8bea816e25f801035a9124dce4d7f4f1303923a93de3e438fa93",
-      "classic:intro:takeover": "bdff46bc1351d0ef939bdc99cc82454a93ca5025047d76e04f6a928383021a51",
-      "classic:intro:split": "69a247848b88d89bdf57c30e211e84be6fb2b2c02335a4b4b890082dcc6d3af3",
-      "classic:proof:takeover@12": "2f34fce90b9228e43d147cf78ca8caac5bde6a380a5091c91a1e1898c810f8c4",
-      "classic:proof:takeover": "ab6b889aa10980428fe32bee8c47bc2176e5025200ccdc48521c2e502010d4ca",
-      "classic:proof:split": "57e53f47df5cefba9ca3fdc1ba1cb73ca060c081081f76ea66308c7196d44c58",
-      "classic:process:takeover@12": "4ce7feaadbc34d97947c29c3de021d831420fa4294f3ced6b11c04f831ec939f",
-      "classic:process:takeover": "7137d6ed99d86b10e0616f867fafb76bc8d6142103ec9cef9f6c4d1a51fe8c56",
-      "classic:process:split": "926fddfd115ad547f36b9400964a3d2b2d43c7499c0480c9a1f25d7297e2aa38",
-      "classic:comparison:takeover@12": "70729f687fb016c4b992a202f4dc7e40e1d971860dfe66dd8d134118c86e35fe",
-      "classic:comparison:takeover": "bcb10d67072c167a4b4c328b5a715c60fe7489b3d510cb52cae836a7d9fcca7d",
-      "classic:comparison:split": "4353d959dff203196e7b87c95cc8b5dd57fefc5eebe372b8701bd60ccecb8cb4",
-      "classic:comment:takeover@12": "57bf17974f21104c05e9af84338b0afef0691aca5fc15d657cb0021c7c0eb95e",
-      "classic:comment:takeover": "4fcb8d0c5a3dfecc8b8f22e33d7141cee7ad9252974e0f40d12c32d993977a01",
-      "classic:comment:split": "c7c980e2c8000a39e6d608799fef6be64d3bcd2ba7818050fa952c313424d5f1",
-      "classic:follow:takeover@12": "acb73931647a60ff7e02cd867bf9cce9a6c2657c29e2205dcbf8c1033e5e807d",
-      "classic:follow:takeover": "20a89e2b500b4012e6f97e11f8d340e12c1b7a052edf2fb835a1bc6f90f17dea",
-      "classic:follow:split": "b646f87487eb0c6d7e8ac75612adb1cbbd512e4e75142366c27f6014566f1b28",
+      "classic:intro:takeover@12": "9cd6c8c9721a06dbd18d9d87f9c306a84dbec9f043d41a26712ffc970f9c15a0",
+      "classic:intro:takeover": "f2cfe26312729013430efd21357718de40d4511b6dda43563328b937eba999c7",
+      "classic:intro:split": "11eecc860f3bd1751fd226fb5f77837a5c7ed96f37920921e3898d431d9e4d33",
+      "classic:proof:takeover@12": "03a34e94739dce759e1fa3a9724ea9c9af152350dc84c5797a5ea4e99f513a06",
+      "classic:proof:takeover": "e1d8a9401f6af05779545d8c8791048a4831525f878d5161728e99964cd54577",
+      "classic:proof:split": "5382d3a9e1e941d270d557df8dbdcf87a4f69c43169d58ef12f477e07a0a9b2a",
+      "classic:process:takeover@12": "3f9f52a64fd93b87e21728eae7b850e008eceeb34104b540c384ed6653e5f430",
+      "classic:process:takeover": "0fb560d7ff4a52195f26dd2f5295e2c5f9c2bc4663786af4793ece5236c4f398",
+      "classic:process:split": "472405ac57b8cf206999b1d78572f89b158c4d364c10e1348559c46264b23fcb",
+      "classic:comparison:takeover@12": "f87e34849b4a5891222113dc3e7ba4fda24585f836e51ee1ac424dfb4ef77deb",
+      "classic:comparison:takeover": "08acb074606cc46d95b5efc24d503327bd6a67d6bd4e5f5a862ecc54aef15cd6",
+      "classic:comparison:split": "a7525bf86e6d4225db3a025a268bba85f2f38e8af91bea11cf50ac32f43c23a2",
+      "classic:comment:takeover@12": "6327231c1c9c28691d0db061045cfaa27c4eff42f7d9ec0852216d0dc7532e3f",
+      "classic:comment:takeover": "7f72dd0f364a854b28e20bd06aff5e9ffc59a2f12be68f1e7b48f8a3525fff62",
+      "classic:comment:split": "4d80cd90d0170404bd2099ee6084e5730737707bef2ed4e994b65f053c19f236",
+      "classic:follow:takeover@12": "57bda0b60b58c36e515ff18bc635c571225f4c0316849276a2c9513bab53bfb4",
+      "classic:follow:takeover": "5243032817fe77f44e92c71286c347967172962449d293d4b8fa910134a3d211",
+      "classic:follow:split": "5c8b6b5f614b7a2661b8cdc49fa6ac7ae00c04170dbb6cbdb711fc2028201a62",
       "semantic:message-board": "43bc366cf3c0fa098f41f85dedd673298b7918772967e5be86b61dab5f81ac88",
       "semantic:kinetic-text": "162694b4f6178b6da53cf356c0dbd4470ceeec3756021e542b5ca8f4d559b201",
       "semantic:evidence-wipe": "40d0a0148196a6f366af53ddb5185708ed92f9a6650cf558c2b60fdec6189716",
@@ -11372,28 +11402,28 @@
       "concept:glass-lens": "34d294cdb39b162badc8f234537768fadcfd4f835a15e46adcb46887c7a6e92f",
       "concept:automation-flow": "40afa3627e2a0a2f76d772304b94d1217f6d9fcafba2bba793517e922ef829dc",
       "concept:chaos-to-brand": "9e98b18662068aeddac6eb5903ec26c0c53213d0a8e032249925a3728c32e7e1",
-      "gallery:122": "7fa059da08db5d22611392deca043d7b7f4ab3ab74c4e4f4ec27d294ab1d3346",
-      "gallery:242": "2145b93f85a013428bed96e6e65657e8b5ae92aa3251cb9c0e88ffbd65031776"
+      "gallery:122": "22f1c01290e917d42bcaf9050b1c916dc7f98f4af0f1a529945f1d8b7d01e482",
+      "gallery:242": "dba2f5524915863c6881c44a0e4a280639ef44646d7fec0a6f55dd06e3c3ebfa"
     },
     "campaign-tickets": {
-      "classic:intro:takeover@12": "16ff2a5075577a8fd5288c9dde6aa805dc4429bb39d07795a66561a2ebb47bc2",
-      "classic:intro:takeover": "3c301839587a83c6c97c57a373b9fc0488b4f138a433dfe4b8e199fc2077a836",
-      "classic:intro:split": "577beef994187bdb461931943fece13599f5c1e5b27aa41faf6e810709be2aa4",
-      "classic:proof:takeover@12": "0083528ed45a456f0c28e1946056ac476e659ae9e861fc1b0641c9c220f283e9",
-      "classic:proof:takeover": "cb6f63c88d455ad6d24e1274fd5b7299d78ae2fbd4c9bb4665c63008f460adef",
-      "classic:proof:split": "6d022f9c8cdd00e8b1af742e308b0e40a6c7df63ff9441ca1119487ea6a04f46",
-      "classic:process:takeover@12": "dd1a6fe7ec0cc10444a678df65567eb96eb872424de8324f24608812e7999cd2",
-      "classic:process:takeover": "807130de014f6b5efdb02b31f351e93e0b1e4973822de8d74ae802e8bae616c1",
-      "classic:process:split": "793877cbedfbf3f2f6bf3cff3e9437bf388d3eaa76704d1f32981d320cb93fda",
-      "classic:comparison:takeover@12": "d7a1eed7b9a3a0f5b54027beec95dc755a04a18581dfdb4cbccc29a38b38fd96",
-      "classic:comparison:takeover": "60ad4aab95480c99479a605ee1d945247402d84693808ada424094444a129888",
-      "classic:comparison:split": "cc53b1881cb4cc6c7e7b6b32cb6c7218c2e38fe7ae7598caee7783ff4328b94a",
-      "classic:comment:takeover@12": "d48ff84511352c5b88965aa59ad728b83c1049d04cf970f6161ba02c953cb8bd",
-      "classic:comment:takeover": "1eaf7d43a57993bbea68d4952678d2f5b5d164bae2e99e284199b2d84f50a7a0",
-      "classic:comment:split": "c277eb989f043472a72864ea3ffd202999b5b3e6a83ca2e7314cccda09f83b0a",
-      "classic:follow:takeover@12": "36cd93e5dc02915823538c8edc67954b2f175bd766787f32a405cd0bda9096e4",
-      "classic:follow:takeover": "2c077c5c05e21dea2455cb3e09ba20ec5465f16021eac3553148dba0150a9d59",
-      "classic:follow:split": "4bea384a5057145743a288c7f76891c1f183780d871fe0509de8bf5f042cbcef",
+      "classic:intro:takeover@12": "cd48c86c287c34b2fcb6928e17a8125cc7b9555512495ce86abc5a0f4d650404",
+      "classic:intro:takeover": "66d1b06d8762b4b22c6311df9ec9bf838ab9abcc3fcbb8e28c6cc52ced28ad0f",
+      "classic:intro:split": "52d4307e3bedfe4d38d9a46f0dfa9483acec8f6c94621f3741ce18430014445e",
+      "classic:proof:takeover@12": "b72229502bf0dc048769a0cf17688f7fdc2752972d064ac09f120b37a5ed9bdb",
+      "classic:proof:takeover": "1485d91ea928788b5ff14e1530e6b5ca950ab368241422da9045ca59f6808070",
+      "classic:proof:split": "8fc733a5e5a70d3f20940e7914c6dd8a4b1518a3e647e6f9a47ee1d95c61646a",
+      "classic:process:takeover@12": "6b1b9df10ff5d08f480dfc176b8cafdf514dfa0ced6d03a1b386da7eb3df2675",
+      "classic:process:takeover": "c6731ddad697741614a4b6684686828379b7e65857087b222844b61d1f9b37c1",
+      "classic:process:split": "b10afb11771b9164873d6ca761b651db28223932ced9f7a60104fc4562c7829a",
+      "classic:comparison:takeover@12": "3f0aad6a66678da0d1fe77ecc169378055519bcf51fc9a0ca7a83b14b94c9b3e",
+      "classic:comparison:takeover": "b5b93395cbfc649d5292cc6370ab4343d3841dac73c7a9c2177cc7fa3cd6008a",
+      "classic:comparison:split": "951cfc55e50918f5b09c8557db743340cf27fb6b7eb0d9f9ba95b8c606ca56f6",
+      "classic:comment:takeover@12": "b1fcf79122e158b83ed6f3292a38e3ea580bee59348ead54ceffdb2fcac00aea",
+      "classic:comment:takeover": "61763aec8e19c40b08c325de0198517f9e6a51528eb35af1c3a19086a96ea1d9",
+      "classic:comment:split": "429426b9bdf6471bf135d697498c84afa5ebefe1bd9395cc3ab04e0da0498fe5",
+      "classic:follow:takeover@12": "0d16b69ddcea9466d67f2fb51d76cac48ea03285ad44ce993edcc0460ea125ee",
+      "classic:follow:takeover": "ad05664b478caa7c77dc3a3a9d054cc4b429b498bc8c587b46192ef9b0cd013c",
+      "classic:follow:split": "6c2fc8182b363ff7d75c2c8528e43b940ea3262bd2b2b5066e8962ebe81d02c8",
       "semantic:message-board": "16fe3d070751d334d86e84b323923438aac3bacb8b9ca45ff111bcb2eabcf9d5",
       "semantic:kinetic-text": "b2ceeb52a876a0df1d27200cd3d6b4cd240c90bcf45a66507e5814a25b5e0f81",
       "semantic:evidence-wipe": "a37beb5799a9f7b699f603e76d5e53f1042b1ace3fba958693df54676c5d671a",
@@ -11426,28 +11456,28 @@
       "concept:glass-lens": "cacd149bbf90a1ad01a735856e29266d993f98a85c8a22f598934f281437a13d",
       "concept:automation-flow": "5b59fe6b205a37333dd7a48dd0be808b664488f4679699f8ec5e7dda9516ce77",
       "concept:chaos-to-brand": "680604e2b9b1ba9130539f8cc53f1cd0613eae5834ad2f0fca8a87c535051d60",
-      "gallery:122": "70e660d976015ad8153860fb1c850e264f80faa472e5414a27dd5c2dc7ca7fde",
-      "gallery:242": "c99b78d3d263da77bd014b96b15aaa2011ea14c11fcdb623dcbd2a30a4fe337e"
+      "gallery:122": "736ebd6301e12f9080fd20df028aee4c7819285ba316fccdb7eefa854ace2124",
+      "gallery:242": "5af07cff306da596956f6ae733e41f7ff92bde159152331337ba7769469d06a7"
     },
     "magazine-interview": {
-      "classic:intro:takeover@12": "1fc0b52bc5e52196167d39f37e58d95716e61a3c3fb20897a9a90d2ff9c9e252",
-      "classic:intro:takeover": "5701177fc88c3ce46bbb6e92c3c63f3b4d66a4df9af2a95307dde00eab89190b",
-      "classic:intro:split": "d764039ad113a18658b5bad437c4bf35759d84ba756bf0a9546e093b8f2851d9",
-      "classic:proof:takeover@12": "056c2dc747d5613108f39ea3eec3a464c144cb5580a99f4dc5362b8f0c20ec4e",
-      "classic:proof:takeover": "6e4a35fed6dbabd3aa0f1edb14bdef973b43d5f432b45201451d250694d4f252",
-      "classic:proof:split": "579208f7c39855844e0b8ae159e71ee361b9738f34d1f9541cfb3166f4c18866",
-      "classic:process:takeover@12": "171f4eee36e1001ad3b7a53d200dec94dc51e19b20f07ccb75bdbbc4be93370a",
-      "classic:process:takeover": "10dea4ce92610417609ad9ac63c55d4200548a450b4a9001a44f5880a4544fa2",
-      "classic:process:split": "91156b7ceffa6e007ad5350711a0cba9a2b4e37727e7641fc71b3cee609152ba",
-      "classic:comparison:takeover@12": "23aa2f246f37fbf09746110db07df7e832ff368aa88b505d7a4e65dc3ec3b51b",
-      "classic:comparison:takeover": "7d7fbe6920874c5d902488e1e3e98dd91e511bbb10e1c8e0cb87d5896d69009d",
-      "classic:comparison:split": "c18aba5f4334ce1f74807f551551e1b7712ba9f5e4d55debfefa28dd41c53385",
-      "classic:comment:takeover@12": "fe1315da9d8c4a3925916a8a2e0ecf92aa05a25457688a025b1c710f793e90e1",
-      "classic:comment:takeover": "8cc2df951657d04407ebbbea931b9356db2e1b35c7c06ec71e61e0710d4d1d69",
-      "classic:comment:split": "500939819a6015d61a8c69f13ad7e64e7a84cdede313d0516ab603e303d0c465",
-      "classic:follow:takeover@12": "79347ad8db6023c9282a5c1f26366848d033f20c80006994fd81e4ad176cc806",
-      "classic:follow:takeover": "1c46bf05cff52f2299df885c1e2d511c5af9b8b21fc574d89bf204a08b033ff8",
-      "classic:follow:split": "5eadd0ebeb318ded9b6061cbe8d227db214ce041a5b34d015960c77314b5fda0",
+      "classic:intro:takeover@12": "03e747fa8864daeb9447db06355fb889b606c48e57d1245a76cd0e1bb4062425",
+      "classic:intro:takeover": "360827ef31f5a76ce23b5144cc5ea0d543ef1aa71426b4bfe4a7fa011375ad4e",
+      "classic:intro:split": "4d477127321bb787d4e894698315f10df5bbee61c0e48b39521d158aaa66d634",
+      "classic:proof:takeover@12": "5ada927ce422432b39227139e33437d7358c142ad80fce188ac9a2bac8ae85bf",
+      "classic:proof:takeover": "b4848109d51fdebc2267a8927042abf3aee86c9da48c1106c2f8651d663934d6",
+      "classic:proof:split": "3ce77ed269ab356caba951675da1bea8a6d8f484b1fb480c16e5c27064345cf9",
+      "classic:process:takeover@12": "cd3d441d04e4308bae7afcca450944a5900a105630ac44b1041509acda6e6de5",
+      "classic:process:takeover": "8a4b60d1c417b4b5f5ffeb033a1d5f0f68a364872334d099d5e321ac4f1d2cff",
+      "classic:process:split": "6975347dbd6b9099eda15eec10f50f5dff28e611d70bfb813a4534b58c3a3c7c",
+      "classic:comparison:takeover@12": "1a2d1675e6cc3953b3e840fe2c8752439653e40c4bf748f475db61015eef10fe",
+      "classic:comparison:takeover": "e0cab19a2ff084618aa89a874d2ba8f091b2a8ffe968558c4b2d3e8dda29d2a6",
+      "classic:comparison:split": "b8817d262b7152b1667217424b1824be1cea66bbb07db1d79da50b38df314cac",
+      "classic:comment:takeover@12": "8eb26982d475daea98a4bd35c3e6c1547305fe7179f2535d80b841ad74ce93fe",
+      "classic:comment:takeover": "c2ba5ff3c96eaab982a6a6179c65d659b7b6c6898d29f986b4065d54b4ff519e",
+      "classic:comment:split": "0f434720c055cc13d4b6befdd9be0b7f22b427e6b68a7134d11baaa9233af8b3",
+      "classic:follow:takeover@12": "a0c884018f91cdec39a7642e951e621ef62d7f0409e98ff559022b288170e479",
+      "classic:follow:takeover": "108f1feb2267b84931a138c0ff247d4b399ddb013510892cbc276cc0ba3f6c61",
+      "classic:follow:split": "b84ca8ecf06e72a0c01e6fe8160149997b393d254559d94e2fbe804f1cef37ca",
       "semantic:message-board": "5763123a67c02bec09d377fc466f44748a5ca761420f86af2c7eb271cbbc2a44",
       "semantic:kinetic-text": "76ca99b6826251c3d419a77852758f921d3d1228f74dc54e338fd3e8fcc20ece",
       "semantic:evidence-wipe": "4820c4739b18e93e65a83cc3b568f88cc52a83a7d96ba6488d6e651113480eaf",
@@ -11480,28 +11510,28 @@
       "concept:glass-lens": "61401283cf39d922655b4bd43aa6bef41b382c206343f3bae6dc7260263b5c35",
       "concept:automation-flow": "9b94faceafe341a5ca0e9862881db12b62f3dbf028109f31b0125237961a4aa4",
       "concept:chaos-to-brand": "ff318cfef654d58d71925551b6b89385e2b4f735da673f5400e3c43735c6121b",
-      "gallery:122": "d5243f9012bfc4114179fe754413983783edf8895d08438784f51be56da67d1f",
-      "gallery:242": "4ce172ef65a9354efddc50bd6a33937aa1da6f5095c53cb08dc7464ca5f85775"
+      "gallery:122": "9cf1a859ffe9478ec302401543bad19ec08ca07c97340a73a221c294cea33088",
+      "gallery:242": "080a2219075031ebd837bbbb28bc86c0c1d6c7a28ebca7cc55bbc3df5075b629"
     },
     "scrapbook-route": {
-      "classic:intro:takeover@12": "0c0082f717066075a108b4c605ede0a8d8cb1890db042fd6a2f879aff27f941f",
-      "classic:intro:takeover": "2d7c8dfb65ae0d835aca017735625808db77a5fc31aa245c014a7acf88d49f27",
-      "classic:intro:split": "ff4bef2a56aa86fa9dbf2775d470728e7fe074e52bc75c85803752e2c68830a6",
-      "classic:proof:takeover@12": "06f13bbb66e3f7b0b2f99f528f795ea8a5915add6aeb0212f40855a55723f1ec",
-      "classic:proof:takeover": "2acdb0e33825a8e14444ff8139a1961022281cb9719216fab0067fcc3eeab84e",
-      "classic:proof:split": "b214f8de9ccb3027bbf1fe887d50924d114b625095511255733f6c89d18ef6b7",
-      "classic:process:takeover@12": "070e68ba27fb0c18b64c11040964e61764b12158a456a684d88041b65c953d8b",
-      "classic:process:takeover": "a251ebe8fa73f49fd90f44a36d82ac20233078136860f274876c4cf051c14fa3",
-      "classic:process:split": "3892d1bfb617b0fbcf60fa6c5003c1fd101a1853405fb408f2ab7030af0855e6",
-      "classic:comparison:takeover@12": "009215074897c4a827cc6daba9525848383a4795a3bc5fc7fd0fe7a91a15936a",
-      "classic:comparison:takeover": "09c918230b93371dea6a3624dac953c398f97089d896f8b234c78007b0d467e3",
-      "classic:comparison:split": "3ea79da77eaa22e316d393d75fcb7b7d4cd3f9da6df20557bf89f8cf51ab7567",
-      "classic:comment:takeover@12": "5c2161f0c4a66d8edaa9bd90c06353a0fd53f5e2f6fe8b6b1aaaca63cc20c9d6",
-      "classic:comment:takeover": "ac351670711664e373ed68d40f586102c71b8372e0694f98c9e7e23727a8b202",
-      "classic:comment:split": "dbada5d5e2c4eeeef3c699765ed9ec1ca8e51ea05612b604065b3252ea0fe4da",
-      "classic:follow:takeover@12": "73ca76ea89ed8c0b4bc0fe7522222d7fc6b1d7d61538ad2cabd120716e2eb854",
-      "classic:follow:takeover": "379ab56a7c2a85f98bbc31774f61306c4792cd1e1925eb93d52f08dfa2235580",
-      "classic:follow:split": "7b9afb87c712b5a5857c4185fefa34334e0c83a09d1c7aab5cd81afcf6312a6b",
+      "classic:intro:takeover@12": "89a42e48f6f82c232a8c206f0ba0fceda1012a5f8f5ec8e03d9ffccaf71b5ad9",
+      "classic:intro:takeover": "5203aaeda6155f159c9e37d158b10c75b443d9b6a30480bafc16fbc3889175b7",
+      "classic:intro:split": "0043316eae24158efae4791dc1dd3cc9ae5f9c67321b3c21d790b7a15da90e93",
+      "classic:proof:takeover@12": "0200b04d8d7ef525fa5b05ee34a213bfec8a6efe0b09494c2f2a6b7d1dcb67e2",
+      "classic:proof:takeover": "81a8e0c1cd13e1f8e640bb7d794afabdf3fa88c6ab32ad36c64b029d84d636b0",
+      "classic:proof:split": "ac2c9554c93cf76f69e7ef29ef9bf26c67563dffe663a9233615c5c6bf70b95d",
+      "classic:process:takeover@12": "d6887b0cc97555eb20ce3ebc7231a97fcff6473bca396ef89248e18df214dd74",
+      "classic:process:takeover": "cae2b7ecfd28b79e3c169efdb83c1e599f1a2e770d3c434264a967154f44ff1a",
+      "classic:process:split": "f27c517f92ab7c5827e2b8e36c2050f6df5a199f8edb9c2f1d22fe05a9ca4ce5",
+      "classic:comparison:takeover@12": "86f55da6080bb5038850a26744b457607724659a8f65c53f3697226523d2bf7f",
+      "classic:comparison:takeover": "df8bf113f27aba08abe0856f1ba3207e34ba148300b432254d58a0cdb429a490",
+      "classic:comparison:split": "2a8fc1b1d54bc2d6b86fe9a78c9b593346e0130953360e781e00a25239c2b34d",
+      "classic:comment:takeover@12": "c26d004384b50ce157ebf40a23dada9257cee7c646abf1624d00b33c2cb37e49",
+      "classic:comment:takeover": "fa0b149ff5217185dba593fc342c2f21111e1d7a96a814fc01ad267e99df0667",
+      "classic:comment:split": "a727ff8a8ef0be5239e764f94f6c783926086859945a614999242adbc2a8e5ae",
+      "classic:follow:takeover@12": "7a7c4625a334f24f6fab6b93eaf1608a74029fee3a9590ae59d1e811cab7f2af",
+      "classic:follow:takeover": "db1dc15ff621cce710ab3fe56699f8a560d0dd7ec0b1db2222d2a701808828a4",
+      "classic:follow:split": "79d1a93fc83b5f8a7995aa52d5453e50ab3ea19405bd24a3abe50db27697e979",
       "semantic:message-board": "6c404990f307f9565526f97633725284583f1807739e5675eab096efe67a428c",
       "semantic:kinetic-text": "bd4d29f2d30fdd842a574c1f2bbae37c1901efa6ef0a12515213e02cf9b16301",
       "semantic:evidence-wipe": "1166ecbbe1dff3f9d15d648b3fb727cc331d27593bf0427e409a7c0027681ee7",
@@ -11534,8 +11564,8 @@
       "concept:glass-lens": "973f70f1e257d4bafd457bc7e2eab236fa71646c4bdb2c1eba5df55420709c00",
       "concept:automation-flow": "e18de51aaa2cecdfb14ca6cce52d42a44a58f6a6ba0568818d4842b3943b54f7",
       "concept:chaos-to-brand": "9def44ce245912309d00bb7781c736c26b45880f1cf3ec219ad8130d1de5c799",
-      "gallery:122": "a79f355bc69c7f33e0009c7da4d860827f08b2017b880f6276484887f8f1a999",
-      "gallery:242": "3f96eedbcbc963fa80939e246165f051dc0f8bfee6dca12cbf4ca4644404ad62"
+      "gallery:122": "0d4c3472e9f29d0366dd8e4fae390180249d60d6d77b486a25b5017056a69e0f",
+      "gallery:242": "a91477a36376f828caf2e3a77f1e0b6a0c27fc790ed64767b15b5b106b4034ee"
     }
   },
   "parses": {

@@ -15,7 +15,7 @@ The [runnable graphics specification](examples/idea-to-results.json) is a twenty
 | 13–16 s | Review that result | The resolved focus holds; no replacement object or image cut is needed. |
 | 16–20 s | Try a small example | The final invitation appears over the settled state and holds. |
 
-This optional `message-board` example preserves the approved copy and the same three object IDs throughout. It illustrates an explanation, not a claim that a product produced real results. Replace copy and durations with the current explanation. Other ideas can use the fifteen existing concepts unchanged; no family is required in every edit.
+This optional `message-board` example preserves the approved copy and the same three object IDs throughout. It illustrates an explanation, not a claim that a product produced real results. Replace copy and durations with the current explanation. Other ideas can use the existing concepts unchanged (`node scripts/library.mjs inventory` lists them); no family is required in every edit.
 
 ## A process with a visible cause and result
 

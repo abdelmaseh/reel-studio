@@ -12,6 +12,8 @@ import sectionDeck from "./section-deck/theme";
 import splitCanvas from "./split-canvas/theme";
 import steppedEditorial from "./stepped-editorial/theme";
 import gridGlide from "./grid-glide/theme";
+import oneShot from "./one-shot/theme";
+import cartoon from "./cartoon/theme";
 
 /** One entry per registered style. A style without an entry fails the typecheck. */
 const THEMES: Record<StyleId, StyleThemeModule> = {
@@ -27,6 +29,8 @@ const THEMES: Record<StyleId, StyleThemeModule> = {
   "magazine-interview": magazineInterview,
   "scrapbook-route": scrapbookRoute,
   "grid-glide": gridGlide,
+  "one-shot": oneShot,
+  "cartoon": cartoon,
 };
 
 // getStyleMeta throws `Unknown style "x". Choose one of: ...` for an id outside the registry.

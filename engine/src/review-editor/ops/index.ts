@@ -3,6 +3,7 @@ export * from "./captions.ts";
 export * from "./scenes.ts";
 export * from "./cuts.ts";
 export * from "./events.ts";
+export * from "./look.ts";
 export { growLimit } from "./paging.ts";
 export { findRow, onRow, STALE_ROW } from "./rows.ts";
 export { explainIssue, issuesReason, explainEnglish } from "./explain.ts";

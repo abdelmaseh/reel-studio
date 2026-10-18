@@ -66,3 +66,17 @@ Follow the [motion concept contract](engine/src/motion-concepts/CONTRACT.md)
 when adding a concept. Preserve [LICENSE](LICENSE), [NOTICE.md](NOTICE.md) and
 the third-party notices. Keep dependency changes deliberate and update the
 lockfile only when required.
+
+## Releasing
+
+An update installs the newest official release tag, never unreleased work on
+`main`.
+
+1. Set `edition` in `versions.lock.json` before tagging. The update check reads
+   the edition from the tagged commit.
+2. The tag is `v<edition>` and annotated, for example
+   `git tag -a v<edition> -m "Reel Studio <edition>"`. Its commit must be
+   reachable from `main`. Push it right away: the update check prunes local
+   tags that origin does not have, including in this clone.
+3. Never move or delete a published tag. Studios that already installed it
+   would stop updating as diverged. Publish a new release to fix a mistake.

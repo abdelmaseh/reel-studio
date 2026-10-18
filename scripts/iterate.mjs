@@ -2,6 +2,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import './lib/project-tmp.mjs';
 import { parseArgs, run, ROOT } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const comp = args._[0];
@@ -11,7 +12,7 @@ if (!comp) {
 }
 
 const ats = String(args.at ?? '2.9,8.8,17,27.5,43,53').split(',').map(Number).filter((n) => Number.isFinite(n));
-const outDir = path.resolve(ROOT, args.out ?? path.join('state', 'cache', 'work', 'iterate', comp));
+const outDir = assertProjectOutput(path.resolve(ROOT, args.out ?? path.join('state', 'cache', 'work', 'iterate', comp)));
 const cols = Math.max(1, Number(args.cols ?? 3));
 await fs.mkdir(outDir, { recursive: true });
 

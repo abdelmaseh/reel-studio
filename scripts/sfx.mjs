@@ -2,6 +2,7 @@ import { promises as fs, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 import { GLIDE_LAYERS, GLIDE_CLICK, GLIDE_VOICES } from './lib/sfx-glide-tables.mjs';
 
 const SR = 48000;
@@ -109,6 +110,35 @@ const renderGlideClick = () => {
     if (t >= 0) x[i] += c.noise_gain * z * Math.exp(-t / c.noise_tau_s);
   }
   return Float32Array.from(x);
+};
+
+// ---- One-shot voices: soft wind ------------------------------------------------------------------------------------
+// airRise is pulled toward the camera and stops abruptly as the next world arrives. airPass is a stereo fly-by that
+// peaks a little after its middle. Both are filtered noise under a pink-noise body: seeded, so they never change.
+const airVoice = (shape, dur, seed, lo, hi) => {
+  const n = Math.round(dur * SR), left = new Float32Array(n), right = new Float32Array(n), rng = makeRng(seed), a = svf(), b = svf(), low = svf();
+  let pink = 0, peak = 1e-9;
+  for (let i = 0; i < n; i++) {
+    const p = i / n;
+    pink = 0.97 * pink + 0.03 * rng() * 6;
+    let env, fc, pan;
+    if (shape === 'rise') {
+      env = Math.pow(p, 1.8) * Math.min(1, (n - i) / (0.012 * SR));
+      fc = lo * Math.pow(hi / lo, Math.pow(p, 1.4));
+      pan = 0.3 * Math.tanh((p - 0.5) * 3);
+    } else {
+      const q = p < 0.55 ? p / 0.55 : 1 - (p - 0.55) / 0.45;
+      env = Math.pow(Math.sin(Math.max(0, q) * Math.PI / 2) ** 2, 1.4);
+      fc = (lo + (hi - lo) * Math.sin(Math.max(0, q) * Math.PI / 2) ** 2) * (1 + 0.35 * Math.tanh((0.55 - p) * 6));
+      pan = Math.tanh((p - 0.55) * 4) * 0.6;
+    }
+    const x = (a(rng(), fc, 0.7).bp * 0.8 + b(pink, fc * 0.5, 0.9).bp * 0.5 + low(pink, 140 + 160 * env, 0.6).lp * 0.9) * env;
+    const angle = (pan + 1) * Math.PI / 4;
+    left[i] = x * Math.cos(angle) * Math.SQRT2; right[i] = x * Math.sin(angle) * Math.SQRT2;
+    peak = Math.max(peak, Math.abs(left[i]), Math.abs(right[i]));
+  }
+  for (let i = 0; i < n; i++) { left[i] *= 0.9 / peak; right[i] *= 0.9 / peak; }
+  return { left, right };
 };
 
 // These voices take no options, so each is rendered once and shared. Treat the result as read-only.
@@ -239,6 +269,10 @@ const SOUNDS = {
     return out;
   },
 
+  // One-shot voices (stereo).
+  airRise: (dur = 0.9, seed = 11, lo = 220, hi = 3200) => airVoice('rise', dur, seed, lo, hi),
+  airPass: (dur = 0.9, seed = 21, lo = 260, hi = 2400) => airVoice('pass', dur, seed, lo, hi),
+
   // Grid Glide voices. subBoom and uiClick are mono; the others return { left, right }.
   subBoom: once(() => renderGlideVoice(GLIDE_VOICES.subBoom)),
   subThump: once(() => renderGlideVoice(GLIDE_VOICES.subThump)),
@@ -262,6 +296,8 @@ const render = (name, opts = {}) => {
     case 'keyTap': return SOUNDS.keyTap(opts.dur ?? 0.045, opts.seed ?? 131, opts.fc ?? 3800);
     case 'mouseClick': return SOUNDS.mouseClick(opts.dur ?? 0.06, opts.seed ?? 149, opts.fc ?? 4200);
     case 'whooshShort': return SOUNDS.whooshShort(opts.dur ?? 0.2, opts.seed ?? 163, opts.f0 ?? 900, opts.f1 ?? 4200);
+    case 'airRise': return SOUNDS.airRise(opts.dur ?? 0.9, opts.seed ?? 11, opts.lo ?? 220, opts.hi ?? 3200);
+    case 'airPass': return SOUNDS.airPass(opts.dur ?? 0.9, opts.seed ?? 21, opts.lo ?? 260, opts.hi ?? 2400);
     case 'subBoom': return SOUNDS.subBoom();
     case 'subThump': return SOUNDS.subThump();
     case 'subThud': return SOUNDS.subThud();
@@ -342,7 +378,7 @@ const invokedDirectly = (() => {
 if (invokedDirectly) {
   const args = parseArgs(process.argv.slice(2));
   if (args.kit) {
-    const dir = path.resolve(args.kit);
+    const dir = assertProjectOutput(path.resolve(args.kit));
     await fs.mkdir(dir, { recursive: true });
     for (const name of Object.keys(SOUNDS)) {
       const { left, right } = toStereo(render(name));
@@ -352,9 +388,10 @@ if (invokedDirectly) {
     process.exit(0);
   }
 
+  const out = assertProjectOutput(path.resolve(String(args.out)));
   const hits = JSON.parse(await fs.readFile(path.resolve(args.hits), 'utf8'));
   const dur = Number(args.dur);
   const { L, R, placed, peak } = mixHits(hits, dur);
-  await writeWav(path.resolve(args.out), L, R);
-  console.log(JSON.stringify({ ok: true, out: path.resolve(args.out), hits: placed, durSec: dur, peakBeforeNorm: +peak.toFixed(3) }, null, 2));
+  await writeWav(out, L, R);
+  console.log(JSON.stringify({ ok: true, out, hits: placed, durSec: dur, peakBeforeNorm: +peak.toFixed(3) }, null, 2));
 }

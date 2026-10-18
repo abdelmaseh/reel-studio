@@ -13,7 +13,9 @@ test('a warm partial setup keeps its original done result without counting a new
   // Setup runs before `npm ci`, so the registry and every style meta must load from a bare tree.
   const styleFiles = ['types.ts', 'registry.ts', ...readdirSync(path.join(ROOT, 'engine/src/styles'), {withFileTypes: true})
     .filter(entry => entry.isDirectory()).map(entry => `${entry.name}/meta.ts`)].map(file => `engine/src/styles/${file}`);
-  const files = ['scripts/studio.mjs', 'versions.lock.json', 'engine/src/core/preference-options.ts', 'engine/src/creative-kit/styles.ts', ...styleFiles,
+  // branding.mjs validates the optional cartoon character with the same Node-safe module the scenes use.
+  const cartoonFiles = ['engine/src/styles/cartoon/scenes/character.ts', 'engine/src/styles/cartoon/scenes/kit/narrator/presets.ts'];
+  const files = ['scripts/studio.mjs', 'versions.lock.json', 'engine/src/core/preference-options.ts', 'engine/src/creative-kit/styles.ts', ...styleFiles, ...cartoonFiles,
     ...['project-tmp', 'project-paths', 'branding', 'studio-doctor', 'studio-git', 'studio-lock', 'studio-setup', 'studio-state', 'studio-download', 'npm-command', 'engine-dependencies'].map(name => `scripts/lib/${name}.mjs`)];
   for (const file of files) {
     await fs.mkdir(path.dirname(path.join(root, file)), {recursive: true});

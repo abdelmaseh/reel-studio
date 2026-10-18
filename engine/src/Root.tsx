@@ -5,10 +5,12 @@ import {creativeGalleryDefaults,creativeGallerySchema} from './creative-kit/sche
 import {PreparedEdit,preparedEditDefaults,calculatePreparedMetadata} from './prepared-edit/PreparedEdit';
 import {Practice} from './practice/Practice';
 import {Doctor,calculateDoctorMetadata,doctorDefaults} from './doctor/Doctor';
+import {CartoonLab,cartoonLabDefaults} from './styles/cartoon/lab';
 
 export const RemotionRoot:React.FC=()=> <>
   <Composition id="Doctor" component={Doctor} width={1080} height={1920} fps={30} durationInFrames={120} defaultProps={doctorDefaults} calculateMetadata={calculateDoctorMetadata}/>
   <Composition id="Practice" component={Practice} width={360} height={640} fps={30} durationInFrames={90}/>
+  <Composition id="CartoonLab" component={CartoonLab} width={2200} height={1400} fps={30} durationInFrames={1} defaultProps={cartoonLabDefaults}/>
   <Composition id="PreparedEdit" component={PreparedEdit} width={1080} height={1920} fps={30} durationInFrames={90} defaultProps={preparedEditDefaults} calculateMetadata={calculatePreparedMetadata}/>
   <Composition id="CreativeKitGallery" component={CreativeKitGallery} width={1080} height={1920} fps={30} durationInFrames={720} defaultProps={creativeGalleryDefaults} schema={creativeGallerySchema} calculateMetadata={calculateCreativeGalleryMetadata}/>
 </>;

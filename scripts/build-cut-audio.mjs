@@ -3,6 +3,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { run, parseArgs, ffprobeJson } from './lib/media.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 export const JOIN_XFADE_MAX_MS = 200;
 
@@ -58,7 +59,7 @@ async function main() {
     process.exit(1);
   }
   const FADE = Number(args.fade);
-  const out = path.resolve(args.out);
+  const out = assertProjectOutput(path.resolve(args.out));
   let segs, joinXfadeMs, filter;
   try {
     segs = parseCutSegments(args.segments);

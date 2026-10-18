@@ -436,7 +436,7 @@ export function createJobManager({
       throw new HttpError(422, `الـ id (${manifest.id}) مش بيطابق فولدر المشروع. الـ pipeline بيرفضه: الـ manifest لازم يكون جوّه ${project}/.`);
     }
     if (kind === 'export' && mode === 'deliver' && !check.deliveryReady) {
-      const delivery = check.issues.filter((i) => i.stage === 'delivery');
+      const delivery = check.issues.filter((i) => i.stage === 'delivery' && i.severity === 'error');
       throw new HttpError(422, `مش جاهز للتصدير النهائي (${delivery.length} حاجة ناقصة): ${delivery[0]?.message ?? ''}`, { issues: delivery });
     }
     const motionPlan = manifest.presenter === false ? null : `${dir}/motion-plan.json`;

@@ -1,4 +1,4 @@
-import {glideVideoSources} from '../styles/grid-glide/scenes/media.ts';
+import {styleSceneVideoSources} from '../styles/media.ts';
 
 export function preparedPlateList(edit:{scenes:readonly {family:string;data?:unknown}[]},plateSrc:string):string[]{
   const foregrounds:string[]=[],captures:string[]=[];
@@ -6,7 +6,7 @@ export function preparedPlateList(edit:{scenes:readonly {family:string;data?:unk
     const data=scene.data as {foreground?:{src:string};steps?:{kind?:string;src:string}[]}|undefined;
     if(scene.family==='kinetic-hook' && data?.foreground)foregrounds.push(data.foreground.src);
     if(scene.family==='screen-focus'||scene.family==='screens')for(const step of data?.steps??[])if(step.kind==='video')captures.push(step.src);
-    captures.push(...glideVideoSources(scene));
+    captures.push(...styleSceneVideoSources(scene));
   }
   return [plateSrc,...new Set([...foregrounds,...captures])];
 }

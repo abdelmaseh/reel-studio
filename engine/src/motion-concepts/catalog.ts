@@ -9,6 +9,7 @@ import {
   type ConceptFamily,
   type ConceptId,
   type ConceptMode,
+  type ConceptDataMap,
 } from "./types.ts";
 import { MIN_FRAMES as MIN_BUTTON_TO_WINDOW, settledFrame as settledButtonToWindow } from "./button-to-window/math.ts";
 import { buttonToWindowDemo, buttonToWindowSchema } from "./button-to-window/schema.ts";
@@ -40,6 +41,10 @@ import { MIN_FRAMES as MIN_AUTOMATION_FLOW, settledFrame as settledAutomationFlo
 import { automationFlowDemo, automationFlowSchema } from "./automation-flow/schema.ts";
 import { MIN_FRAMES as MIN_CHAOS_TO_BRAND, settledFrame as settledChaosToBrand } from "./chaos-to-brand/math.ts";
 import { chaosToBrandDemo, chaosToBrandSchema } from "./chaos-to-brand/schema.ts";
+import { MIN_FRAMES as MIN_CONDITIONAL_BRANCHING, DEFAULT_FRAMES as DEFAULT_CONDITIONAL_BRANCHING, settledFrame as settledConditionalBranching } from './conditional-branching/math.ts';
+import { conditionalBranchingDemo, conditionalBranchingSchema } from './conditional-branching/schema.ts';
+import { MIN_FRAMES as MIN_IDENTITY_FILTERING, DEFAULT_FRAMES as DEFAULT_IDENTITY_FILTERING, settledFrame as settledIdentityFiltering } from './identity-filtering/math.ts';
+import { identityFilteringDemo, identityFilteringSchema } from './identity-filtering/schema.ts';
 
 
 
@@ -81,7 +86,7 @@ export const conceptMetaIssues = (meta: ConceptMeta, minFrames: number): string[
 
 
 
-type Source = {
+type Source<D> = {
   readonly title: string;
   readonly message: string;
   readonly family: ConceptFamily;
@@ -89,11 +94,12 @@ type Source = {
   readonly loopable: boolean;
 
   readonly minFrames: number;
-  readonly schema: ZodType;
-  readonly demo: unknown;
+  readonly defaultFrames?: number;
+  readonly schema: ZodType<D>;
+  readonly demo: D;
 };
 
-const SOURCES: Readonly<Record<ConceptId, Source>> = {
+const SOURCES: Readonly<{[K in ConceptId]: Source<ConceptDataMap[K]>}> = {
   "button-to-window": {
     title: "Button to window",
     message: "One click becomes a live product demo.",
@@ -293,6 +299,28 @@ const SOURCES: Readonly<Record<ConceptId, Source>> = {
     schema: chaosToBrandSchema,
     demo: chaosToBrandDemo,
   },
+  'conditional-branching': {
+    title: 'Conditional branching',
+    message: 'The same input is evaluated against a supplied condition and follows exactly one of two outcomes.',
+    family: 'flow',
+    tags: ['condition', 'branching', 'decision', 'predicate', 'routing', 'workflow', 'شرط', 'تفرع', 'قرار', 'مسار', 'اختيار', 'سير العمل'],
+    loopable: false,
+    minFrames: MIN_CONDITIONAL_BRANCHING,
+    defaultFrames: DEFAULT_CONDITIONAL_BRANCHING,
+    schema: conditionalBranchingSchema,
+    demo: conditionalBranchingDemo,
+  },
+  'identity-filtering': {
+    title: 'Identity filtering',
+    message: 'The same authored cards pass typed criteria while rejected identities remain visible and the surviving shortlist holds.',
+    family: 'flow',
+    tags: ['filtering', 'criteria', 'shortlist', 'identity', 'selection', 'تصفية', 'معايير', 'قائمة مختصرة', 'هوية', 'اختيار'],
+    loopable: false,
+    minFrames: MIN_IDENTITY_FILTERING,
+    defaultFrames: DEFAULT_IDENTITY_FILTERING,
+    schema: identityFilteringSchema,
+    demo: identityFilteringDemo,
+  },
 };
 
 
@@ -331,6 +359,8 @@ const KINDS: Readonly<Record<string, ConceptDataField["kind"]>> = {
   object: "object",
   enum: "choice",
   literal: "choice",
+  union: 'choice',
+  record: 'object',
 };
 
 
@@ -382,7 +412,7 @@ export const CATALOG: readonly ConceptCatalogEntry[] = Object.freeze(
       family: s.family,
       tags: Object.freeze([...s.tags]),
       minFrames: s.minFrames,
-      defaultFrames: CONCEPT_DEFAULT_FRAMES,
+      defaultFrames: s.defaultFrames ?? CONCEPT_DEFAULT_FRAMES,
       loopable: s.loopable,
       dataFields: Object.freeze(dataFieldsOf(s.schema)),
     });
@@ -396,8 +426,8 @@ export const getCatalogEntry = (id: string): ConceptCatalogEntry => {
 };
 
 
-export const catalogSchema = (id: ConceptId): ZodType => SOURCES[id].schema;
-export const catalogDemo = (id: ConceptId): unknown => SOURCES[id].demo;
+export const catalogSchema = <K extends ConceptId>(id: K): ZodType<ConceptDataMap[K]> => SOURCES[id].schema;
+export const catalogDemo = <K extends ConceptId>(id: K): ConceptDataMap[K] => SOURCES[id].demo;
 
 
 
@@ -424,6 +454,8 @@ const SETTLED: Readonly<Record<ConceptId, (mode: ConceptMode, duration: number, 
   "glass-lens": (m, d) => settledGlassLens(m, d),
   "automation-flow": (m, d) => settledAutomationFlow(m, d),
   "chaos-to-brand": (m, d) => settledChaosToBrand(m, d),
+  'conditional-branching': (_m, d) => settledConditionalBranching(d),
+  'identity-filtering': (m, d) => settledIdentityFiltering(m, d),
 };
 
 
@@ -511,6 +543,7 @@ export const conceptCatalogIssues = (def: ConceptRecord): string[] => {
   if (def.family !== src.family) issues.push(`${id}: family differs from the catalog`);
   if (JSON.stringify(def.tags) !== JSON.stringify(src.tags)) issues.push(`${id}: tags differ from the catalog`);
   if (def.minFrames !== src.minFrames) issues.push(`${id}: minFrames ${String(def.minFrames)} differs from math.ts MIN_FRAMES ${src.minFrames}`);
+  if (def.defaultFrames !== (src.defaultFrames ?? CONCEPT_DEFAULT_FRAMES)) issues.push(`${id}: defaultFrames differs from the catalog`);
   if (def.loopable !== src.loopable) issues.push(`${id}: loopable differs from the catalog`);
   if (def.schema !== src.schema) issues.push(`${id}: schema is not the one exported by schema.ts`);
   if (def.demo !== src.demo) issues.push(`${id}: demo is not the one exported by schema.ts`);

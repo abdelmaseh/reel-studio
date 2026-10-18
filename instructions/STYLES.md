@@ -1,6 +1,6 @@
 # Styles
 
-This edition's styles are driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. Choose one per video with the creator. Recommendations consider every style in the table below and the authored scene mechanisms; explicit/profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
+This edition's styles are driven by `node scripts/editor.mjs` and rendered by `PreparedEdit`. When the style is automatic, the production manager chooses one per video by judgement, from the "Best for" column below and the style's own fit rule, before the beats are written, and tells the creator why in one plain line. `editor.mjs recommend` ranks styles by points and is only a second opinion. Explicit and profile-fixed choices always win. Use `EDITORIAL.md` to plan the idea and `MOTION-CHOICES.md` to check real family/layout contracts. A direction is not a fixed montage.
 
 Every style has its own guide, `styles/<id>.md`, linked from the table: Look, Best for, Layouts and footage, Palette and brand, Recipe, Style-owned scenes and Avoid. Read the chosen style's guide before planning its scenes; this page holds the rules every style shares. To learn from named finished references, use [STYLE-LEARNING.md](STYLE-LEARNING.md): evidence stays in the current project's Style DNA and transfers into its actual scene plan/data/code. It does not add an unsupported style ID or change the creator's saved choices. [PROJECT-SCENES.md](PROJECT-SCENES.md) supports project-local behavior beyond a shipped family's mechanism. Adding or promoting a global style is studio maintenance and follows [STYLE-AUTHORING.md](STYLE-AUTHORING.md).
 
@@ -23,11 +23,15 @@ Generated from the style registry (`engine/src/styles/registry.ts`) by `node scr
 | <a id="magazine-interview"></a>[`magazine-interview`](styles/magazine-interview.md) | Magazine interview · حوار مجلة | opinion, case-study, story | own palette | none |
 | <a id="scrapbook-route"></a>[`scrapbook-route`](styles/scrapbook-route.md) | Scrapbook route · رحلة على ورق | story, tutorial, case-study | own palette | none |
 | <a id="grid-glide"></a>[`grid-glide`](styles/grid-glide.md) | Grid glide · كلمات وكروت | explainer, tutorial, comparison | own palette | `glide-chapter`, `glide-card`, `glide-lines`, `glide-comment`, `glide-follow` |
+| <a id="one-shot"></a>[`one-shot`](styles/one-shot.md) | One shot · ونشوت | tutorial, explainer | own palette | `one-shot` |
+| <a id="cartoon"></a>[`cartoon`](styles/cartoon.md) | Cartoon · كارتون | explainer, tutorial, comparison | own palette | `cartoon`, `cartoon-ending` |
 <!-- styles:table:end -->
 
 ## Choosing a style
 
-**split-canvas** and **section-deck** were refined on real footage first and are the proven styles. Every other style is newer: every edit still needs the creator's own creative approval, and a newer style that keeps its own palette adds a plan notice that brand colours do not apply. For a newer style always show the fast preview (gate 2) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
+Apply the current request's delegated choices or directed overrides through [PRODUCTION-MANAGER.md](PRODUCTION-MANAGER.md). Preserve real review requirements and existing approvals; do not repeat settled aesthetic decisions.
+
+**split-canvas** and **section-deck** were refined on real footage first and are the proven styles. Every other style is newer: every edit still needs the creator's own creative approval, and a newer style that keeps its own palette adds a plan notice that brand colours do not apply. For a newer style always show the fast preview (`EDITING.md` step 5) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
 
 ## Recipes
 
@@ -41,7 +45,7 @@ The original six semantic families support `split` or `takeover`; their default 
 
 | Family | Inputs |
 | --- | --- |
-| `motion-concept` | `{concept, config}` selects any of the fifteen concept schemas; takeover only and scaled minimum duration. |
+| `motion-concept` | `{concept, config}` selects a registered concept schema; takeover only and its fps-scaled minimum duration. Inspect the current library. |
 | `kinetic-text` | Literal recorded `sourceIndices`, language, entrance and optional emphasis; no synthetic transcript. |
 | `evidence-wipe` | Supplied before/after images with exact dimensions, labels, reveal frame/duration and direction. |
 | `token-lens` | Heading, 1–3 labelled groups of 1–6 pieces, a real selected group/piece and a footer. This is illustrative grouping unless actual tokenizer results are supplied. |
@@ -78,11 +82,12 @@ Every style except Grid Glide draws the comment card and the follow card with th
 ## Screen-recording reels
 
 - Set the brief's `sourceKind` to `"screen"` when the source is a screen recording. The face check and the presenter motion check are then exempt and `screen-recording` beats are allowed.
+- A cartoon video sets `sourceKind` to `"cartoon"`: the same exemptions apply because the recorded picture is never shown, and only the cartoon scenes may cover the timeline; see [styles/cartoon.md](styles/cartoon.md).
 - A `screen-recording` beat shows the recording in the Instagram safe area (1080 x 1220 from y 250). Its data holds:
   - `keys`: camera keys `{atFrame, focus:{x,y,width,height}, zoom, moveFrames}` in frames from the start of the beat; the first key starts at 0; `moveFrames` 0 is a cut, otherwise the move eases in over that many frames.
   - `clicks`: `{atFrame, x, y}` where the recording's own pointer clicks (normalised 0–1 recording coordinates); a ring ripple lands on each.
   - `callouts`: `{atFrame, untilFrame, kind: "rect" | "circle", rect}` pinned to the recording, drawn in the highlight colour.
-- Pick focus rectangles and click points from stills of the recording. The planner refuses keys that enlarge the recording more than 1.25x (text turns soft) and callouts that land outside the safe zone.
+- Pick focus rectangles from stills of the recording. Take click points and times only from frames where the recording's own pointer visibly presses; otherwise leave the click out. The planner refuses keys that enlarge the recording more than 1.25x (text turns soft) and callouts that land outside the safe zone.
 - A screen capture inside a presenter video is a different tool: the `screen-focus` scene family with its own capture file.
 
 ## Select, adapt and prove the direction

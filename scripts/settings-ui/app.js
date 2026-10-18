@@ -2,11 +2,11 @@ const token = new URLSearchParams(location.search).get('token');
 const content = document.querySelector('#content');
 const actions = document.querySelector('#actions');
 const errorBox = document.querySelector('#error');
-const steps = ['بياناتك', 'ستايل الفيديو', 'الكلام على الفيديو', 'الخطوط', 'وصف المنشور', 'الألوان والنهاية', 'راجع واحفظ'];
+const steps = ['بياناتك', 'ستايل الفيديو', 'الكلام على الفيديو', 'الخطوط والأرقام', 'وصف المنشور', 'الألوان والنهاية', 'راجع واحفظ'];
 const labels = {
   captionsGrouping: {compact: 'كلمات قصيرة', clauses: 'جُمل هادية', single: 'كلمة في كل مرة'},
   captionsPresentation: {pill: 'كبسولة واضحة', minimal: 'كلام من غير خلفية', 'ink-strip': 'شريط غامق'},
-  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display', 'Grid Sans': 'Grid Sans'},
+  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display', 'Grid Sans': 'Grid Sans', 'Noto Kufi Arabic': 'كوفي', 'Readex Pro': 'Readex', 'El Messiri': 'المسيري'},
   writingStyle: {short: 'مختصر ومباشر', educational: 'شرح ونقط عملية', storytelling: 'حكاية قصيرة'},
 };
 const sampleWriting = {
@@ -14,6 +14,9 @@ const sampleWriting = {
   educational: 'إزاي تخلي فكرتك أوضح؟\n• ابدأ بالنقطة اللي تهم جمهورك.\n• قسّم الشرح لخطوات بسيطة.\n• استخدم صورة توضح كل خطوة.',
   storytelling: 'كانت الفكرة واضحة في دماغي، بس الفيديو كان مزدحم.\nلما قسّمت الشرح، واستخدمت صورة لكل نقطة، بقى الكلام أسهل يتفهم.\nكل فكرة محتاجة مساحة.',
 };
+// The three digit states. tests/settings-arabic.test.mjs pins these strings to DIGIT_LABELS_AR in preference-options.ts.
+const digitLabels = {auto: 'كما هو', latin: '1 2 3', 'arabic-indic': '١ ٢ ٣'};
+const digitSamples = {auto: 'كل مشهد كما كان', latin: '3 خطوات · 2025', 'arabic-indic': '٣ خطوات · ٢٠٢٥'};
 let catalog, draft, etag, existing = false, dirty = false, busy = false, step = 0, setup, pollTimer;
 
 function el(tag, text, attrs = {}) {
@@ -61,6 +64,23 @@ function pills(key) {
     row.append(button(prefLabel(key, value), 'option-pill', () => setPref(key, 'fixed', value, id), {id, 'aria-pressed': String(draft.preferences[key].mode === 'fixed' && draft.preferences[key].value === value)}));
   }
   return row;
+}
+function setDigits(value, focusId) {
+  if (value === 'auto') delete draft.preferences.digits; else draft.preferences.digits = {mode: 'fixed', value};
+  changed(); render(); document.getElementById(focusId)?.focus();
+}
+function digitsSection() {
+  const current = draft.preferences.digits ?? {mode: 'auto', value: null};
+  const state = current.mode === 'fixed' ? current.value : 'auto';
+  const row = el('div', null, {class: 'radio-options', role: 'group', 'aria-label': 'شكل الأرقام'});
+  for (const value of ['auto', ...catalog.choices.digits]) {
+    const id = `digits-${value}`;
+    row.append(button(digitLabels[value], 'option-pill', () => setDigits(value, id), {id, 'aria-pressed': String(state === value)}));
+  }
+  const sample = el('p', digitSamples[state], {class: 'sample-note'});
+  sample.style.fontFamily = `"${draft.preferences.font.value ?? 'Cairo'}"`; sample.style.fontSize = '22px'; sample.style.color = 'var(--ink)';
+  return [el('h3', 'شكل الأرقام على الشاشة', {class: 'section-title'}), row, sample,
+    note('هذا الاختيار يغيّر شكل الأرقام على الشاشة وفي الكابشن أيضًا. «كما هو» يترك كل مشهد كما كان.')];
 }
 function field(labelText, key, value, callback, {hint, max = 80, dir} = {}) {
   const label = el('label', null, {class: 'field', for: key}); label.append(el('span', labelText));
@@ -137,7 +157,7 @@ function fontsPage() {
     const copy = el('div', null, {class: 'card-copy'}); copy.append(el('strong', labels.font[family] ?? family), el('small', ready ? 'معاينة بالخط الحقيقي على جهازك' : 'اختاره دلوقتي، والمعاينة تظهر بعد تنزيل الخطوط.', {class: ready ? '' : 'waiting'})); card.append(sample, copy);
     if (selected) card.append(el('span', '✓', {class: 'selected', 'aria-hidden': 'true'})); grid.append(card);
   }
-  content.append(grid, note('التلقائي بيختار خط مناسب للستايل. لو ثبّتّ خط، هيفضل هو الأساس لكل فيديو.'));
+  content.append(grid, note('التلقائي بيختار خط مناسب للستايل. لو ثبّتّ خط، هيفضل هو الأساس لكل فيديو.'), ...digitsSection());
 }
 function writingPage() {
   title('ووصف المنشور يتكتب إزاي؟', 'ده الكلام اللي بيتنشر تحت الفيديو على المنصات اللي اخترتها. اختار طريقتك، أو سيبها حسب فكرة كل فيديو.');
@@ -178,6 +198,7 @@ function summaryPage() {
     ['ترتيب الكابشن', draft.preferences.captionsGrouping.mode === 'auto' ? 'تلقائي لكل فيديو' : prefLabel('captionsGrouping', draft.preferences.captionsGrouping.value), 2],
     ['شكل الكابشن', draft.preferences.captionsPresentation.mode === 'auto' ? 'تلقائي لكل فيديو' : prefLabel('captionsPresentation', draft.preferences.captionsPresentation.value), 2],
     ['الخط', draft.preferences.font.mode === 'auto' ? 'تلقائي حسب الستايل' : prefLabel('font', draft.preferences.font.value), 3],
+    ['الأرقام', digitLabels[draft.preferences.digits?.mode === 'fixed' ? draft.preferences.digits.value : 'auto'], 3],
     ['وصف المنشور', draft.preferences.writingStyle.mode === 'auto' ? 'تلقائي حسب المحتوى' : prefLabel('writingStyle', draft.preferences.writingStyle.value), 4],
     ['الألوان', draft.preferences.palette.mode === 'auto' ? 'ألوان الستايل' : 'ألوان البراند بتاعك', 5],
     ['النهاية', [draft.ending.followCard ? 'كارت متابعة' : 'بدون كارت متابعة', draft.ending.ctaDefault ? `كلمة: ${draft.ending.ctaDefault}` : 'بدون كلمة كومنت ثابتة'].join(' · '), 5],
@@ -258,6 +279,7 @@ async function load() {
   try {
     const [options, state, progress] = await Promise.all([api('catalog'), api('profile'), api('status')]);
     catalog = options; draft = state.profile ?? structuredClone(catalog.defaults); etag = state.etag; existing = state.profile !== null; setup = progress.setup;
+    draft.preferences.digits ??= {mode: 'auto', value: null};
     document.querySelector('#edition').textContent = catalog.edition ? `v${catalog.edition}` : '';
     document.querySelector('#save-state').textContent = existing ? 'إعداداتك محفوظة ✓' : 'جاهز لاختياراتك';
     render(); pollTimer = setInterval(refreshStatus, 3000);

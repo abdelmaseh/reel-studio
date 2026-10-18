@@ -21,7 +21,7 @@ export function exportAvailability(v: ValidationResult, mode: ExportModeId, info
   if (needsPrepare) return { enabled: false, reason: "لازم تضغط «حضّر» الأول: القص اتغيّر أو الفيديو لسه مش متحضّر." };
   if (info && !info.available) return { enabled: false, reason: info.reason ?? "الوضع ده مش متاح للمشروع ده." };
   if (mode === "deliver" && !v.deliveryReady) {
-    const d = deliveryIssues(v);
+    const d = deliveryIssues(v).filter((i) => i.severity === "error");
     return { enabled: false, reason: `ناقص للتصدير النهائي (${d.length}): ${d[0]?.message ?? ""}`.trim() };
   }
   return { enabled: true };

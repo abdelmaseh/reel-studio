@@ -8,6 +8,7 @@ import {normalizeGraphicsSpec} from '../scripts/lib/graphics-project.mjs';
 import {loadReviewProject} from '../scripts/lib/review-editor-project.mjs';
 import {createJobManager} from '../scripts/lib/review-editor-jobs.mjs';
 import {reviewManifest} from './helpers/review-manifest.mjs';
+import {addSceneFromTemplate} from '../engine/src/review-editor/ops/scenes.ts';
 
 const GB = 1024 ** 3;
 
@@ -117,4 +118,42 @@ test('screen-only export still refuses an empty recording transcript', async t =
 test('graphics export still requires delivery purpose', async t => {
   const {manager} = await project(t, id => ({...graphics(id), purpose: 'test'}));
   await assert.rejects(manager.start('export', 'deliver'), error => error.status === 422 && error.extra?.issues?.some(issue => issue.code === 'delivery:purpose'));
+});
+
+// A kit number template sits in the free second of the 120-frame recording.
+const withKitScene = (make, family, change = () => {}) => id => {
+  const added = addSceneFromTemplate(make(id), family, {atFrame: 60});
+  assert.equal(added.ok, true, added.reason);
+  change(added.manifest);
+  return added.manifest;
+};
+
+test('a template figure and template words refuse the final export and the message names the figure first', async t => {
+  const {manager} = await project(t, withKitScene(recording, 'count'));
+  await assert.rejects(manager.start('export', 'deliver'), error => {
+    assert.equal(error.status, 422);
+    assert.match(error.message, /987654/);
+    assert.deepEqual(error.extra.issues.map(issue => issue.code), ['delivery:sample-number', 'delivery:sample-text']);
+    assert.deepEqual(error.extra.issues.map(issue => issue.severity), ['error', 'error']);
+    return true;
+  });
+});
+
+test('template words alone stop the final export until the creator writes them', async t => {
+  const {manager} = await project(t, withKitScene(screen, 'count', manifest => { manifest.scenes.at(-1).data.value = 1250; }));
+  await assert.rejects(manager.start('export', 'deliver'), error => {
+    assert.equal(error.status, 422);
+    assert.deepEqual(error.extra.issues.map(issue => issue.code), ['delivery:sample-text']);
+    assert.match(error.message, /نصًا تجريبيًا/);
+    return true;
+  });
+});
+
+test('a kit scene with its figure and its words written exports', async t => {
+  const {manager, captured} = await project(t, withKitScene(screen, 'count', manifest => {
+    Object.assign(manifest.scenes.at(-1).data, {value: 1250, kicker: 'أرقام العام', title: 'عدد المشاهدات', unit: 'مشاهدة'});
+  }));
+  const result = await manager.start('export', 'deliver');
+  assert.ok(result.jobId);
+  assert.ok((await captureArguments(captured)).includes('--deliver'));
 });

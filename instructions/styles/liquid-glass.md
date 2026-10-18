@@ -23,7 +23,7 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 - **Decision:** Choose it when a grouping, measurement or focused detail benefits from isolation. Identify what the lens reveals and how that detail belongs to the whole.
 - **Composition/material:** Use a dark aurora, translucent panels and a bright rim. Keep enough opaque/contrasting support for text; glass is a graphic material, not a filter over the presenter or factual screen detail.
 - **Timing/action:** Establish the whole, select a group or value, magnify/emphasize the meaningful part and hold the resulting explanation. Keep selection and the wider context visible where possible.
-- **Transition/sound:** Continue the selected object through the focus move. A soft selection/settling cue can help; avoid adding a shiny sweep with no state change.
+- **Transition/sound:** Continue the selected object through the focus move. A soft selection/settling cue can help; avoid adding a shiny sweep with no state change. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** `token-lens` supports labelled grouping; `meter-receipt` supports two values on one positive maximum. Illustrative groups are not real tokenizer output unless supplied evidence establishes that. Review contrast, lens targets, units and glow that may obscure type.
 
 ## Style-owned scenes

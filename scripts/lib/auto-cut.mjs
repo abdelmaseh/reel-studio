@@ -329,9 +329,12 @@ export function proposeCuts({words, silences = [], rms = null, fps, totalFrames,
   }
 
 
+  // Pauses beside a proposed speech cut lie inside that cut; they are kept apart so the pause-only cut can still remove them.
+  const pausesNearSpeechCuts = [];
   for (let k = 0; k <= list.length; k++) {
     const prev = k > 0 ? list[k - 1] : null, next = k < list.length ? list[k] : null;
-    if ((prev && removedWords.has(prev.index)) || (next && removedWords.has(next.index))) continue;
+    const beside = (prev && removedWords.has(prev.index)) || (next && removedWords.has(next.index));
+    const target = beside ? pausesNearSpeechCuts : removed;
     const gapFrom = prev ? prev.endSec : 0, gapTo = next ? next.startSec : totalSec;
     if (gapTo <= gapFrom) continue;
     const hardLo = prev ? Math.ceil(prev.endF) : 0;
@@ -346,7 +349,7 @@ export function proposeCuts({words, silences = [], rms = null, fps, totalFrames,
       const toFrame = next ? place(toIdeal, hardLo, hardHi) : Math.min(totalFrames, Math.floor(b * fps + 1e-9));
       if (fromFrame === null || toFrame === null || toFrame - fromFrame < minRemove) continue;
       if (guarded(fromFrame / fps, toFrame / fps)) continue;
-      removed.push(entry('silence', 'proposed', fromFrame, toFrame, {detail: `pause ${(b - a).toFixed(2)}s tightened`}));
+      target.push(entry('silence', 'proposed', fromFrame, toFrame, {detail: `pause ${(b - a).toFixed(2)}s tightened`}));
     }
   }
   let inside = 0;
@@ -392,7 +395,39 @@ export function proposeCuts({words, silences = [], rms = null, fps, totalFrames,
   if (segments.length > MAX_SEGMENTS) throw new Error(`auto-cut: ${segments.length} segments exceed the manifest limit of ${MAX_SEGMENTS}; raise gapSec.`);
   const issues = verifyProposal(list, segments, removedWords);
   if (issues.length) throw new Error(`auto-cut: internal invariant failed: ${issues.join('; ')}`);
-  return {segments, removed, warnings, signoffFromSec: signoff};
+  // Pauses only: every word stays, so this cut can be applied before the creator reviews speech cuts.
+  let silenceSegments = segmentsFromRemovals([...removed.filter((r) => r.reason === 'silence' && r.status === 'proposed'), ...pausesNearSpeechCuts],
+    {totalFrames, keptWords: list, minKeepFrames: minKeep});
+  if (!silenceSegments.length || silenceSegments.length > MAX_SEGMENTS) {
+    warnings.push({code: 'silence-cut-skipped', message: 'The pauses could not be cut on their own; the draft keeps the full source.'});
+    silenceSegments = [{fromFrame: 0, toFrame: totalFrames}];
+  }
+  const silenceIssues = verifyProposal(list, silenceSegments, new Set());
+  if (silenceIssues.length) throw new Error(`auto-cut: internal invariant failed: ${silenceIssues.join('; ')}`);
+  return {segments, silenceSegments, pausesNearSpeechCuts: pausesNearSpeechCuts.map(({fromFrame, toFrame}) => ({fromFrame, toFrame})),
+    removed, warnings, signoffFromSec: signoff};
+}
+
+// Segments for the cuts the creator approved: every proposed pause plus the chosen speech entries (0-based indexes into removed).
+export function approvedSegments({words, fps, totalFrames, removed, approved, pauses = []}) {
+  if (!(Number.isFinite(fps) && fps > 0)) throw new Error('auto-cut: fps must be a positive number.');
+  if (!Number.isSafeInteger(totalFrames) || totalFrames < 1) throw new Error('auto-cut: totalFrames must be the positive integer source frame count.');
+  if (!Array.isArray(removed)) throw new Error('auto-cut: the proposal has no removed list.');
+  const chosen = new Set();
+  for (const index of approved) {
+    if (!Number.isInteger(index) || index < 0 || index >= removed.length) throw new Error(`auto-cut: entry ${index + 1} is not in the proposal.`);
+    chosen.add(index);
+  }
+  const list = prepareWords(words, fps, totalFrames / fps);
+  const cuts = [...removed.filter((r, i) => (r.reason === 'silence' && r.status === 'proposed') || chosen.has(i)), ...pauses];
+  const removedWords = new Set(cuts.flatMap((r) => r.words ?? []));
+  const keptWords = list.filter((w) => !removedWords.has(w.index));
+  const segments = segmentsFromRemovals(cuts, {totalFrames, keptWords, minKeepFrames: Math.max(1, Math.ceil(MIN_KEEP_SEC * fps - 1e-9))});
+  if (!segments.length) throw new Error('auto-cut: the approved cuts would remove the whole source.');
+  if (segments.length > MAX_SEGMENTS) throw new Error(`auto-cut: ${segments.length} segments exceed the manifest limit of ${MAX_SEGMENTS}.`);
+  const issues = verifyProposal(list, segments, removedWords);
+  if (issues.length) throw new Error(`auto-cut: approved cuts would cut a kept word: ${issues.join('; ')}`);
+  return segments;
 }
 
 

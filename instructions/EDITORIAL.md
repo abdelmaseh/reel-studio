@@ -10,6 +10,10 @@ The edit should make the idea easier to see. A style supplies its material, type
 4. Choose presenter, split or takeover because it helps this idea. A personal statement can return to the speaker; a multi-step explanation may need the full canvas. Keep the face and existing subtitles clear. Presenter screen time has no fixed target.
 5. Choose assets and sound for a reason. A source capture proves a product state; an illustrative diagram explains a relationship. Label examples clearly. A click belongs on the click, a paper move on the movement, and a held reveal may work better with silence.
 
+For each distinct visual job, use [LIBRARY.md](LIBRARY.md) to form a small context from this plan and the actual profile/source: meaning first, mood/energy second, fixed identity and layout as constraints. Run the library shortlist, inspect the selected item's meaning/requirements, and record the qualified key plus one reason. A quiet presenter passage can be the right choice when no diagram adds understanding. The native branch/filter concepts have specific typed-data and timing limits. Unsupported queue/feedback behavior needs an honest project-local design; a linear flow or repeating playback does not supply that meaning.
+
+Use [PRODUCTION-MANAGER.md](PRODUCTION-MANAGER.md) for delegated routine choices, directed overrides, source observations versus editorial interpretations and bounded worker handoffs. Keep the live edit's designated writer and revision protections.
+
 For a named recording with burned-in subtitles, use the brief's `captionsVisible: false` to suppress only the studio's added caption overlay. Keep reviewed words, cut timing and literal kinetic emphasis intact, then verify that the chosen footage window preserves the source's original subtitle text. This is a per-video choice, not a profile change or an empty-transcript workaround.
 
 ## Scene-plan contract
@@ -25,6 +29,7 @@ Write `Projects/<slug>/EDITORIAL_PLAN.md` before authoring the beat data. Keep i
 | Layout | Presenter/split/takeover and why it helps |
 | Assets | Exact named asset or generated illustration; evidence/source note |
 | Implementation | Supported family/concept plus its schema and duration limits, or declared project scene component/values |
+| Library choice | Qualified key, what its action explains in this beat, mood/identity fit and any unresolved requirement |
 | Text and sound | Literal subtitle versus explanatory label; action-linked sound or silence |
 | Review concern | The hardest moment to understand or keep readable |
 

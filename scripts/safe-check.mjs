@@ -6,6 +6,7 @@ import './lib/project-tmp.mjs';
 import { parseArgs, ROOT, writeJson } from './lib/media.mjs';
 import { getServeUrl, requireFromEngine } from './lib/bundle.mjs';
 import { SPEC, zone, zoneTests, profileIds } from './lib/ig.mjs';
+import { assertProjectOutput } from './lib/project-paths.mjs';
 
 const args = parseArgs(process.argv.slice(2), { step: '0.5', scale: '0.5', 'min-alpha': '0.35', 'min-area': '400', concurrency: '4' });
 const { renderFrames, renderStill, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
@@ -25,7 +26,7 @@ if (!args.comp && !args['self-test']) {
 }
 
 const bandsPath = args.bands ? path.resolve(String(args.bands)) : null;
-const outArg = args.out ? path.resolve(String(args.out)) : null;
+const outArg = args.out ? assertProjectOutput(path.resolve(String(args.out))) : null;
 if (!(Number(args.step) > 0)) { console.error('--step must be a positive number of seconds'); process.exit(1); }
 if (!(SCALE > 0 && SCALE <= 1)) { console.error('--scale must be in (0, 1]'); process.exit(1); }
 

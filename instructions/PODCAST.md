@@ -4,13 +4,13 @@ Work only on the recording the creator names. Read `RULES.md` and `EDITING.md`. 
 
 ## 1. Reviewed transcript and proposals
 
-Transcribe locally, review the words against the recording, and keep word timestamps in original recording seconds/milliseconds. Then:
+Transcribe locally (a draft is enough to choose) and keep word timestamps in original recording seconds/milliseconds. Read the whole transcript yourself and pick 3 to 5 self-contained moments of 20-60 s: a question and its answer, a story with its ending, one clear idea. Show the creator only those, each with its first sentence, why it works as a clip and its start-end. Confirm the words inside the chosen windows only and save the corrected transcript. Use the name the creator gave as reviewer and approver; never type a placeholder such as `Creator`. Then:
 
 ```text
-node scripts/podcast.mjs propose --source Raw/example-podcast.mp4 --transcript Projects/example-podcast/words.json --id example-podcast --reviewed-by Creator --min-sec 15 --max-sec 90
+node scripts/podcast.mjs propose --source Raw/example-podcast.mp4 --transcript Projects/example-podcast/words.json --id example-podcast --reviewed-by "<creator name>" --min-sec 15 --max-sec 90
 ```
 
-The proposal contains transcript quotations and source windows. It does not select or cut anything. Show the candidates to the creator and agree on exact ranges with complete words and clear context.
+The proposal contains transcript quotations and pause-bounded source windows. It does not select or cut anything and does not judge which moments work as clips. Use it only as a map of clean edges: copy the exact start and end of each moment you chose from its nearest windows, then agree the final ranges with the creator, with complete words and clear context.
 
 ## 2. Record the actual selection
 
@@ -20,7 +20,7 @@ Write `Projects/example-podcast/selections.json` only after approval. Author bea
 {
   "version": 1,
   "selectionApproved": true,
-  "approvedBy": "Creator",
+  "approvedBy": "<creator name>",
   "clips": [{
     "id": "one-idea",
     "fromSec": 630,
@@ -65,11 +65,11 @@ This creates previews sequentially. For final export, apply each clip's ordinary
 ```
 
 ```text
-node scripts/podcast.mjs render Projects/example-podcast/podcast/batch.json --deliver --approved-by Creator --options Projects/example-podcast/render-options.json
+node scripts/podcast.mjs render Projects/example-podcast/podcast/batch.json --deliver --approved-by "<creator name>" --options Projects/example-podcast/render-options.json
 ```
 
 Use the project path returned by preparation. Screen-only sources do not use presenter motion options. `--clip one-idea` limits prepare/render to one selected clip. Repeat the same render request after a failure; reuse requires matching manifest, options, current media/asset bytes, output and QC. A rendered status is not creative acceptance or publication.
 
 ## 4. Complete each delivery
 
-Watch/listen to each actual output and follow its normal delivery checks. For every clip, write its post description with the `social-captions` skill (project `<clip-project-id>`, video `<returned-output>`). Copy the accepted MP4 to its `Outputs/` folder. Report individual paths and each platform's post description. No external posting is implied.
+Check each actual output with stills and its normal delivery checks, then ask the creator to play it with sound; you cannot hear it. For every clip, write its post description with the `social-captions` skill (project `<clip-project-id>`, video `<returned-output>`). Copy an MP4 to its `Outputs/` folder only after the creator accepts it. Report individual paths and each platform's post description. No external posting is implied.

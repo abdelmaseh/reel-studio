@@ -6,6 +6,7 @@ import {centredRowY, layoutGlideComment, layoutGlideFollow, type EndingRow} from
 import {assertGlideFits} from './fit-guard';
 import {glideChapterPillAt, type GridGlideScene} from './schema';
 import {useSceneTheme} from '../../../creative-kit/chapter-theme';
+import {useGlideData} from './use-glide-data';
 
 type CommentScene = Extract<GridGlideScene, {family: 'glide-comment'}>;
 type FollowScene = Extract<GridGlideScene, {family: 'glide-follow'}>;
@@ -28,7 +29,7 @@ const BigRow: React.FC<{row: EndingRow; size: number}> = ({row, size}) => (
 );
 
 export const GlideCommentScene: React.FC<{scene: CommentScene}> = ({scene}) => {
-  const {data} = scene, layout = layoutGlideComment(data);
+  const data = useGlideData(scene.data), layout = layoutGlideComment(data);
   const fontFamily = useSceneTheme('grid-glide').display;
   if (layout.issues.length) throw new Error(`${scene.id}: ${layout.issues.join('; ')}`);
   layout.lines.forEach((line, index) => assertGlideFits(`${scene.id} line ${index + 1}`, line.words.join(' '), {...line, family: fontFamily}));
@@ -44,7 +45,7 @@ export const GlideCommentScene: React.FC<{scene: CommentScene}> = ({scene}) => {
 };
 
 export const GlideFollowScene: React.FC<{scene: FollowScene}> = ({scene}) => {
-  const {data} = scene, layout = layoutGlideFollow(data);
+  const data = useGlideData(scene.data), layout = layoutGlideFollow(data);
   const fontFamily = useSceneTheme('grid-glide').display;
   const {fps} = useVideoConfig();
   if (layout.issues.length) throw new Error(`${scene.id}: ${layout.issues.join('; ')}`);

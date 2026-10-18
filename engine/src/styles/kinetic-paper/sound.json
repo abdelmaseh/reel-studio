@@ -4,10 +4,10 @@
     "transition": {
       "recipe": "soft-transition",
       "gain": 0.5,
-      "leadSec": 0.11,
-      "confidence": "medium",
-      "basis": "observed",
-      "evidence": "Style-specific sound palette; review each cue with the creator."
+      "leadSec": 0,
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
     },
     "stamp": {
       "recipe": "restrained-reveal",
@@ -21,9 +21,9 @@
       "recipe": "highlight-swipe",
       "gain": 0.4,
       "leadSec": 0,
-      "confidence": "medium",
-      "basis": "observed",
-      "evidence": "Style-specific sound palette; review each cue with the creator."
+      "confidence": "low",
+      "basis": "inferred",
+      "evidence": "A soft low landing (or a small pop) replaces the earlier sweep: the studio's sound policy (instructions/SOUND.md) keeps sweeps for the creator's explicit request."
     },
     "click": {
       "recipe": "ui-confirmation",

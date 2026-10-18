@@ -248,7 +248,7 @@ const Shell: React.FC<{ initialProject: ProjectResponse }> = ({ initialProject }
         const when = Number.isFinite(at) ? at : Date.now();
         setLastSavedAt(when);
         if (store.getSnapshot().dirty) writer.schedule(store.getSnapshot().manifest); else writer.clear();
-        const left = verdict.issues.filter((i) => i.stage === "delivery").length;
+        const left = verdict.issues.filter((i) => i.stage === "delivery" && i.severity === "error").length;
         push("ok", `اتسجّل ${timeOfDay(when)}${left ? ` · لسه ناقص ${left} للتصدير النهائي` : ""}`);
         return true;
       } catch (error) {
@@ -378,7 +378,7 @@ const Shell: React.FC<{ initialProject: ProjectResponse }> = ({ initialProject }
   useEffect(() => {
     const onDown = (e: KeyboardEvent) => {
       if (e.isComposing) return;
-      const cmd = resolveKey(e, { editable: isEditableElement(e.target as HTMLElement | null), modal: modalRef.current });
+      const cmd = resolveKey(e, { editable: isEditableElement(e.target as HTMLElement | null), modal: modalRef.current, select: (e.target as HTMLElement | null)?.tagName === "SELECT" });
       if (!cmd) {
         if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") e.preventDefault();
         return;

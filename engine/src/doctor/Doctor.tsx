@@ -46,7 +46,7 @@ export const Doctor: React.FC<DoctorProps> = ({name, handle, followCard, cta, si
       {followCard && handle ? (
         <div style={{...block, left: 140, right: 140, top: 760, height: 200, borderRadius: 36, background: brand.accent, color: onAccent, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18}}>
           <div style={{fontSize: handleFontSize(handle), fontWeight: 800, whiteSpace: 'nowrap', direction: 'ltr'}}>{handle}</div>
-          <div style={{fontSize: 36, fontWeight: 800, padding: '6px 36px', borderRadius: 999, background: onAccent, color: brand.accent, direction: 'ltr'}}>Follow</div>
+          <div style={{fontSize: 36, fontWeight: 800, padding: '6px 36px', borderRadius: 999, background: onAccent, color: brand.accent, direction: 'rtl'}}>متابعة</div>
         </div>
       ) : null}
       {cta ? <div style={{...block, top: 1000, color: text, fontSize: 44, fontWeight: 700}}>اكتب «{cta}» في الكومنتات</div> : null}

@@ -8,7 +8,7 @@ import {
   ConceptStage,
   ConceptText,
   dirOf,
-  digitsFor,
+  useConceptDigits,
   numberFont,
   rectStyle,
   styleShape,
@@ -35,7 +35,7 @@ const Scene: React.FC<{ data: BriefToWorkspaceData }> = ({ data }) => {
   const W = L.window.width;
   const H = L.window.height;
   const align = rtl ? "right" : "left";
-  const digits = digitsFor(data.briefTitle);
+  const digits = useConceptDigits(data.briefTitle);
   const numFont = numberFont(theme, digits);
   const cx = L.window.x + W / 2;
   const cy = L.window.y + H / 2;

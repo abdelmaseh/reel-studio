@@ -13,8 +13,17 @@ const REMOTION = path.join(ROOT, 'engine', 'node_modules', 'remotion', 'dist', '
 const REMOTION_SHIM = `
 export * from ${JSON.stringify(REMOTION)};
 export const useCurrentFrame = () => globalThis.__SSR_FRAME__ ?? 0;
-export const useVideoConfig = () => ({width: 1080, height: 1920, fps: 30, durationInFrames: 600, id: 'ssr', defaultProps: {}, props: {},
+export const useVideoConfig = () => ({width: 1080, height: 1920, fps: globalThis.__SSR_FPS__ ?? 30, durationInFrames: 600, id: 'ssr', defaultProps: {}, props: {},
   defaultCodec: null, defaultOutName: null, defaultVideoImageFormat: null, defaultPixelFormat: null, defaultProResProfile: null});
+`;
+
+// Opt-in (`media: true`): plain stand-ins for the media components, which need a registered composition to render.
+const MEDIA_SHIM = `
+import React from 'react';
+export const staticFile = (file) => '/' + file;
+export const Sequence = ({children}) => React.createElement(React.Fragment, null, children);
+export const Img = ({src, style}) => React.createElement('img', {src, style});
+export const OffthreadVideo = ({src, style, trimBefore}) => React.createElement('video', {src, style, 'data-trim-before': trimBefore});
 `;
 
 // Deterministic stand-in for the browser text measurement of @remotion/layout-utils.
@@ -53,12 +62,12 @@ const lockManifest = (lock) => ({
   },
 });
 
-const ssrAdapters = () => ({
+const ssrAdapters = ({media = false} = {}) => ({
   name: 'ssr-adapters',
   setup(b) {
     b.onResolve({filter: /^remotion$/}, () => ({path: 'remotion-shim', namespace: 'engine-test'}));
     b.onResolve({filter: /^@remotion\/layout-utils$/}, () => ({path: 'layout-utils', namespace: 'engine-test'}));
-    b.onLoad({filter: /^remotion-shim$/, namespace: 'engine-test'}, () => ({contents: REMOTION_SHIM, loader: 'js', resolveDir: ROOT}));
+    b.onLoad({filter: /^remotion-shim$/, namespace: 'engine-test'}, () => ({contents: media ? REMOTION_SHIM + MEDIA_SHIM : REMOTION_SHIM, loader: 'js', resolveDir: ROOT}));
     b.onLoad({filter: /^layout-utils$/, namespace: 'engine-test'}, () => ({contents: LAYOUT_UTILS, loader: 'js'}));
     b.onLoad({filter: /core[\\/]fonts\.ts$/}, async ({path: file}) => {
       let source = await readFile(file, 'utf8');
@@ -71,13 +80,13 @@ const ssrAdapters = () => ({
 });
 
 /** Bundles `entry` (TSX source resolved from the repository root) and returns its exports. */
-export async function bundleEngine(entry, {ssr = false} = {}) {
+export async function bundleEngine(entry, {ssr = false, media = false} = {}) {
   const lock = JSON.parse(await readFile(path.join(ROOT, 'versions.lock.json'), 'utf8'));
   const result = await build({
     stdin: {contents: entry, resolveDir: ROOT, loader: 'tsx'},
     nodePaths: [path.join(ROOT, 'engine', 'node_modules')],
     bundle: true, write: false, platform: 'node', format: 'cjs', logLevel: 'silent',
-    plugins: ssr ? [lockManifest(lock), ssrAdapters()] : [lockManifest(lock)],
+    plugins: ssr ? [lockManifest(lock), ssrAdapters({media})] : [lockManifest(lock)],
   });
   if (ssr) globalThis.document ??= {};
   const module = {exports: {}};
@@ -87,3 +96,6 @@ export async function bundleEngine(entry, {ssr = false} = {}) {
 
 /** The frame every Remotion clock hook reports in an `ssr: true` bundle. */
 export const setSsrFrame = (frame) => { globalThis.__SSR_FRAME__ = frame; };
+
+/** The fps every Remotion clock hook reports in an `ssr: true` bundle (30 unless a test sets it). */
+export const setSsrFps = (fps) => { globalThis.__SSR_FPS__ = fps; };

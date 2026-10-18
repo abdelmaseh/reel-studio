@@ -5,9 +5,14 @@ import {GlideChapterScene} from './grid-glide/scenes/chapter';
 import {GlideCardScene} from './grid-glide/scenes/card';
 import {GlideLinesScene} from './grid-glide/scenes/lines';
 import {GlideCommentScene, GlideFollowScene} from './grid-glide/scenes/ending';
+import {OneShotSceneView} from './one-shot/scenes/scene';
+import type {MouthTable, WordLike} from './cartoon/scenes/math.ts';
+import {CartoonSceneView} from './cartoon/scenes/scene';
+import {CartoonEndingView} from './cartoon/scenes/ending';
 
-/** Renders a style-owned scene family. It refuses to draw under a style that does not own the family. */
-export const StyleSceneRenderer: React.FC<{scene: StyleScene; style: string}> = ({scene: input, style}) => {
+/** Renders a style-owned scene family. It refuses to draw under a style that does not own the family.
+ * Cartoon scenes read the compiled edit words (their times are word anchors); the others ignore them. */
+export const StyleSceneRenderer: React.FC<{scene: StyleScene; style: string; words?: readonly WordLike[]; mouth?: MouthTable}> = ({scene: input, style, words = [], mouth}) => {
   const scene = styleSceneSchema.parse(input);
   const owner = ownSceneStyle(scene.family);
   if (owner !== style) throw new Error(`${scene.id}: ${scene.family} belongs to ${owner ?? 'no style'}, not ${style}`);
@@ -17,6 +22,9 @@ export const StyleSceneRenderer: React.FC<{scene: StyleScene; style: string}> = 
     case 'glide-lines': return <GlideLinesScene scene={scene}/>;
     case 'glide-comment': return <GlideCommentScene scene={scene}/>;
     case 'glide-follow': return <GlideFollowScene scene={scene}/>;
+    case 'one-shot': return <OneShotSceneView scene={scene}/>;
+    case 'cartoon': return <CartoonSceneView scene={scene} words={words} mouth={mouth}/>;
+    case 'cartoon-ending': return <CartoonEndingView scene={scene} words={words} mouth={mouth}/>;
     default: {
       // A new family without a renderer is a type error here, and a thrown error instead of an empty scene at runtime.
       const unhandled: never = scene;

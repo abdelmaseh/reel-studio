@@ -7,6 +7,7 @@ import { isArabic } from "../core/type";
 import { MediaFill, type DeviceMedia } from "../core/device";
 import { splitBox, wipeGeometry, type Fit, type Rect, type WipeDir } from "../core/device-geo";
 import { getSceneTheme, type SceneTheme } from "./primitives";
+import { useDisplayText } from "./digits";
 
 export const COMPARE_SHADOW = {
   css: "0 8px 22px rgba(0,0,0,0.22)",
@@ -25,7 +26,9 @@ const Label: React.FC<{ text: string; theme: SceneTheme; accent?: boolean; style
   accent = false,
   style,
 }) => {
-  const arabic = isArabic(text);
+  // The label follows the video's digits preference; with none, the text is drawn as written.
+  const shown = useDisplayText(text);
+  const arabic = isArabic(shown);
   return (
     <div
       style={{
@@ -44,7 +47,7 @@ const Label: React.FC<{ text: string; theme: SceneTheme; accent?: boolean; style
         ...style,
       }}
     >
-      {text}
+      {shown}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import { checkedPath, readJson, digest, relativePath } from './job-paths.mjs';
 import { loadSoundCatalog } from './job-sound.mjs';
 import { manifestRevision } from './review-editor-revision.mjs';
 import { editManifestSchema } from '../../engine/src/prepared-edit/schema.ts';
+import { needsMouth } from './mouth-table.mjs';
 
 export const PUBLIC_DIR = path.join(ROOT, 'engine', 'public');
 const posix = (p) => p.split(path.sep).join('/');
@@ -124,6 +125,7 @@ export async function loadReviewProject(manifestRel) {
   const deliveryMotionReady = manifest.presenter === false || motionPlanPath !== null;
   const catalog = await loadSoundCatalog().catch(() => ({ recipes: [] }));
   const props = await readJson(`${dir}/prepared/props.json`, { optional: true }).catch(() => null);
+  if (needsMouth(manifest) && !props?.mouth) warnings.push('فم شخصية الكارتون هيفضل مقفول في المعاينة لحد ما المشروع يتجهّز (prepare)؛ التجهيز بيقيس الصوت ويحرّك الفم معاه.');
   return {
     slug: manifest.id,
     manifestPath: manifestRel,
@@ -143,6 +145,7 @@ export async function loadReviewProject(manifestRel) {
     recipeInfo: catalog.recipes.map((r) => ({ id: r.id, name: r.name, use: r.use, duration: r.duration })),
 
     ...(props?.headGuide ? { headGuide: props.headGuide } : {}),
+    ...(props?.mouth ? { mouth: props.mouth } : {}),
     warnings,
   };
 }
