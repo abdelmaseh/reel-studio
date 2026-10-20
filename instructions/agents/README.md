@@ -1,6 +1,6 @@
 # Worker agents
 
-The production manager (`PRODUCTION-MANAGER.md`) staffs an edit with the workers defined here. One canonical file per role; the Claude copies in `.claude/agents/reel-<role>.md` are generated with `node scripts/sync-assistant-guides.mjs` and must not be edited by hand. Codex reads these files directly.
+The production manager and creative director (`PRODUCTION-MANAGER.md`) staffs an edit with the workers defined here and briefs them with the video's creative direction. One canonical file per role; the Claude copies in `.claude/agents/reel-<role>.md` are generated with `node scripts/sync-assistant-guides.mjs` and must not be edited by hand. Codex reads these files directly.
 
 ## Staffing rule
 
