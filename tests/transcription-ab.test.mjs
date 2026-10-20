@@ -44,6 +44,7 @@ test('a junction inside state/qa is refused, so state/qa cannot become a way to 
   const link = path.join(ROOT, 'state', 'qa', `zz-ab-link-${process.pid}`);
   mkdirSync(target, {recursive: true});
   t.after(() => { rmSync(link, {force: true}); rmSync(target, {recursive: true, force: true}); });
+  mkdirSync(path.dirname(link), {recursive: true}); // state/ is not tracked: a clean checkout has no state/qa until something writes there
   symlinkSync(target, link, 'junction');
   assert.throws(() => parseAbArgs(['a.mp4', '--out', `state/qa/zz-ab-link-${process.pid}/run`], NOW), /symlink or junction/);
 });
