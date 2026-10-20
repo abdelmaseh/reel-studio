@@ -1,5 +1,6 @@
 import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { editSceneSchema } from "../../prepared-edit/schema.ts";
+import { ENDING_FAMILIES } from "../../prepared-edit/broll.ts";
 import { creativeGalleryDefaults, sceneFamilies } from "../../creative-kit/schema.ts";
 import {semanticFamilies} from '../../creative-kit/semantic/schema.ts';
 import {GRID_GLIDE_FAMILIES} from '../../styles/grid-glide/scenes/schema.ts';
@@ -35,8 +36,7 @@ export type SceneMotion = (typeof MOTIONS)[number];
 
 export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...KIT_TEMPLATE_FAMILIES,...GRID_GLIDE_FAMILIES,...ONE_SHOT_FAMILIES,...CARTOON_FAMILIES];
 
-// The scene families that count as the video's ending: the delivery gate (scripts/lib/endings.mjs) allows only one ending.
-const ENDING_FAMILIES: readonly string[] = ["comment", "follow", "glide-comment", "glide-follow", "creator-cta"];
+// ENDING_FAMILIES (imported above) is the one list of scene families that count as the video's ending: the delivery gate (scripts/lib/endings.mjs) allows only one.
 const NO_ROOM_AFTER_LAST = "لا توجد مساحة بعد آخر مشهد وقبل نهاية الفيديو. قصّر المشهد الأخير أولًا.";
 
 

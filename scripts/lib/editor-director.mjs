@@ -42,6 +42,7 @@ import {emphasisPunch, composeTrack, toManifestKeys, PUNCH_KINDS, PUNCH_CAPS} fr
 import {SAMPLE_NUMBER, manifestSampleNumbers} from '../../engine/src/prepared-edit/sample-numbers.ts';
 import {sceneDemoFields} from '../../engine/src/review-editor/ops/demo.ts';
 import {isKitFamily} from '../../engine/src/review-editor/ops/templates.ts';
+import {isBrollScene} from '../../engine/src/prepared-edit/broll.ts';
 
 export const EDITOR_PURPOSES = Object.freeze(['explainer','case-study','tutorial','comparison','opinion','story']);
 export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
@@ -56,7 +57,7 @@ const DATA_SCHEMAS = {intro:introSchema,proof:proofSchema,process:processSchema,
 const SEMANTIC_FAMILIES=semanticSceneVariants.map(schema=>schema.shape.family.value);
 const GLIDE_FAMILY_SET=new Set(GRID_GLIDE_FAMILIES);
 export const isGlideFamily=family=>GLIDE_FAMILY_SET.has(family);
-const defaultLayout=family=>family==='project-scene'||SEMANTIC_FAMILIES.includes(family)||isGlideFamily(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
+const defaultLayout=family=>family==='project-scene'||family==='screens'||SEMANTIC_FAMILIES.includes(family)||isGlideFamily(family)?'takeover':KINETIC_SCHEMAS[family]?.shape.layout.value??(['process','comparison','follow','data-story'].includes(family)?'takeover':'split');
 // false turns the automatic watermark off, a text (1 to 40 characters, checked in validateEditorBrief and stored trimmed) replaces the profile handle, and omitting
 // the field uses the handle when the profile has one. It is filled into every Grid Glide scene except glide-follow, whose hero already is the complete handle.
 // A scene's own data.watermark always wins: it is only filled in where the scene left it out, and a follow scene shows one only if it sets its own.
@@ -71,6 +72,8 @@ const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
   statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent',
   'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump',cartoon:'soft-pop','cartoon-ending':'cartoon-flip'};
+/** The recipe "recipes" sound mode places at a scene's start. B-roll plays silently under the voice, so it gets none. */
+export const soundCandidateFor=scene=>isBrollScene(scene)?undefined:SOUND_FOR_FAMILY[scene.family];
 const text = (value,label,max=200) => {
   if(typeof value!=='string' || !value.trim() || value.length>max) throw new Error(`${label} must be nonblank text (maximum ${max} characters).`);
   return value;
@@ -280,7 +283,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     transcript:{path:brief.transcript,status:manifest.captions.status,reviewer:manifest.captions.reviewer??null,words:words.length,mode:manifest.captions.mode??null},
     beatDecisions:scenes.map((scene,index)=>({id:scene.id,intent:brief.beats[index].intent,family:scene.family,fromFrame:scene.fromFrame,
       durationInFrames:scene.durationInFrames,layout:scene.layout,motion:scene.motion,dataOrigin:'Explicit authored beat data',
-      rounding:{fromSec:brief.beats[index].fromSec,toSec:brief.beats[index].toSec},soundCandidate:SOUND_FOR_FAMILY[scene.family]})),
+      rounding:{fromSec:brief.beats[index].fromSec,toSec:brief.beats[index].toSec},soundCandidate:soundCandidateFor(scene)})),
     reviewRequired:['Check source-specific framing and timing in rendered media.','Verify all on-screen copy and supplied evidence.',
       'Review style adaptation separately from source approval.','Preserve comment CTA, complete follow handle, recorded signoff and hard stop.'],
     ...(emphasisRecord?{emphasis:emphasisRecord}:{}),notices:[...ending.notices,...branded.notices,...glideNotices]};
@@ -471,8 +474,8 @@ export async function placeBriefSounds(plan,brief,{totalFrames,loadPalette=loadS
   }
   let placed=0;
   for(const [i,scene] of plan.manifest.scenes.entries()) {
-    const candidate=SOUND_FOR_FAMILY[scene.family];
-    if(!candidate){plan.decision.beatDecisions[i].soundOmitted='Custom scene sound is authored explicitly; no unrelated cue is assumed.';continue;}
+    const candidate=soundCandidateFor(scene);
+    if(!candidate){plan.decision.beatDecisions[i].soundOmitted=isBrollScene(scene)?'B-roll plays silently under the voice; it gets no automatic sound.':'Custom scene sound is authored explicitly; no unrelated cue is assumed.';continue;}
     const recipe=await loadRecipe(sweeps?SWEEP_RECIPES[candidate]??candidate:candidate);
     const soundEnd=scene.fromFrame+Math.ceil(recipe.duration*plan.manifest.source.fps);
     if(soundEnd<=Math.min(scene.fromFrame+scene.durationInFrames,plan.manifest.signoffFromFrame??totalFrames)) {

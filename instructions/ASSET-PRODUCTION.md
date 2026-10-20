@@ -21,7 +21,7 @@ For an unapproved direction, use authorized local placeholders/diagrams or named
 
 ## Maintain a project-local asset ledger
 
-Write `Projects/<slug>/assets.json` as the structured ledger and `ASSET_MANIFEST.md` as its concise readable summary. These are production records, not new fields accepted by `edit.json`. Use stable asset IDs, append revision entries, and explicitly choose the revision used by each scene. Keep generated/downloaded derivatives in `Projects/<slug>/assets/`. When a scene requires a public-local `src`, stage the selected derivative in a project-specific untracked folder under `engine/public/` using the documented scene contract. Record both paths; do not point a renderer at an unsupported arbitrary path.
+Write `Projects/<slug>/assets.json` as the structured ledger and `ASSET_MANIFEST.md` as its concise readable summary. These are production records, not new fields accepted by `edit.json`. Use stable asset IDs, append revision entries, and explicitly choose the revision used by each scene. Keep generated/downloaded derivatives in `Projects/<slug>/assets/`. When a scene requires a public-local `src`, stage the selected derivative in a project-specific untracked folder under `engine/public/` using the documented scene contract. Record both paths; do not point a renderer at an unsupported arbitrary path. B-roll clips are the exception to writing the ledger by hand: `node scripts/clips.mjs add` (see `EDITING.md`) normalises the file the creator named and appends its ledger entry with the clip's hashes, size, frame rate and the usage statement passed as `--licence`.
 
 Each asset entry contains these slots:
 

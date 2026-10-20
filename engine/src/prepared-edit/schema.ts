@@ -11,6 +11,7 @@ import {ownSceneStyle} from '../styles/registry.ts';
 import {validateChapter,describeIssues,contrastRatio,relativeLuminance,mixToHex,CHAPTER_MIN_CONTRAST} from '../core/chapters.ts';
 import {pipAllowed,PIP_REACH} from '../core/pip.ts';
 import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graphics-transitions.ts';
+import {brollIssues} from './broll.ts';
 import {LAYOUT_TRANSITION_MIN_FRAMES,layoutTransitionIssues} from './footage.ts';
 import {CAPTION_EMPHASIS_KINDS,captionEmphasisIssues} from './caption-emphasis.ts';
 import {compileEdit} from './timeline.ts';
@@ -219,7 +220,8 @@ export const editManifestSchema = z.object({
       if(geometry.windowTop+geometry.windowHeight>1920 || geometry.videoLeft>0 || geometry.videoLeft+geometry.videoWidth<1080 || geometry.videoTop>0 || geometry.videoTop+geometry.videoWidth*aspect<geometry.windowHeight)issue('Footage geometry must cover its complete window without exposed edges.');
     }
   }
-  for(const message of graphicsTransitionIssues(m.transitions??[],m.scenes))issue(message);
+  for(const message of graphicsTransitionIssues(m.transitions??[],m.scenes,m.projectScenes))issue(message);
+  for(const message of brollIssues(m))issue(message);
   for(const message of layoutTransitionIssues(m,total,m.signoffFromFrame))issue(message);
   for(const message of captionEmphasisIssues(m.style,m.captions.words.length,m.captions.emphasis))issue(message);
   if(m.footage?.pip){

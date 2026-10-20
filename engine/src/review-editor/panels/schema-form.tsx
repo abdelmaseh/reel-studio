@@ -1,9 +1,12 @@
 import React, { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import { getIn, removeIn, setIn, type Path } from "../ops/paths.ts";
+import { clipOptionLabel } from "../ops/broll.ts";
 import {
   blankValue, blankVariant, defaultItem, fieldHint, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex, scalarVariantIndex, recordKeyIssue,
   type ArrayField, type Field, type JsonField, type NumberField, type ObjectField, type StringField, type UnionField, type ScalarUnionField, type RecordField,
 } from "./form-schema.ts";
+import { CLIP_TEXT } from "./family-labels.ts";
+import type { ClipIndexEntry } from "../../core/clip-schema.ts";
 
 export type SchemaFormProps = {
   family: string;
@@ -12,6 +15,9 @@ export type SchemaFormProps = {
   fps: number;
 
   assets?: readonly string[];
+
+  /** The clips registered for the project, offered by the picker of every clip object. */
+  clips?: readonly ClipIndexEntry[];
 
   demoPaths?: readonly string[];
 
@@ -22,6 +28,7 @@ type Ctx = {
   family: string;
   fps: number;
   assets: readonly string[];
+  clips: readonly ClipIndexEntry[];
   demo: ReadonlySet<string>;
   issues: Map<string, string[]>;
   change: (path: Path, value: unknown, key: string) => void;
@@ -31,7 +38,7 @@ type Ctx = {
 const pathKey = (path: Path) => path.join(".");
 const MEDIA = /\.(png|jpe?g|webp|gif|svg|mp4|webm)$/i;
 
-export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, assets = [], demoPaths = [], onCommit }) => {
+export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, assets = [], clips = [], demoPaths = [], onCommit }) => {
   const fields = useMemo(() => fieldsForFamily(family), [family]);
   const [draft, setDraft] = useState<unknown>(()=>family==='project-scene'?formDataWithDefaults(familyDataSchema(family),data):data);
   const [refusal, setRefusal] = useState<string | null>(null);
@@ -62,7 +69,7 @@ export const SchemaForm: React.FC<SchemaFormProps> = memo(({ family, data, fps, 
   };
 
   if (!fields.length) return <div className="sf-empty">مفيش حقول قابلة للتعديل للـ family دي.</div>;
-  const ctx: Ctx = { family, fps, assets, demo, issues, change, uid };
+  const ctx: Ctx = { family, fps, assets, clips, demo, issues, change, uid };
   const pending = validation.ok && refusal !== null;
   return (
     <div className="sf" dir="rtl">
@@ -211,7 +218,7 @@ const NumberView: React.FC<WithRemove<NumberField>> = ({ field, path, draft, ctx
           onChange={(e) => onText(e.target.value)}
         />
       </label>
-      {field.isFrame ? <span className="sf-hint">فريم داخل المشهد، مش داخل الفيديو كله.</span> : null}
+      {field.isFrame ? <span className="sf-hint">{field.inClipFile ? CLIP_TEXT.inPoint : "فريم داخل المشهد، مش داخل الفيديو كله."}</span> : null}
       {removable}
       {local ? <div className="sf-msg bad">{local}</div> : <Msgs list={ctx.issues.get(key)} />}
     </div>
@@ -220,10 +227,37 @@ const NumberView: React.FC<WithRemove<NumberField>> = ({ field, path, draft, ctx
 
 
 
+/** The four fields that identify a clip file; the picker fills them, so the form does not show them. */
+const CLIP_RECORD_KEYS = new Set(["src", "sha256", "width", "height"]);
+
+const ClipPicker: React.FC<{ path: Path; draft: unknown; ctx: Ctx }> = ({ path, draft, ctx }) => {
+  const key = pathKey(path);
+  const value = (getIn(draft, path) as Record<string, unknown> | undefined) ?? {};
+  if (!ctx.clips.length) return <div className="sf-msg bad" role="alert">{CLIP_TEXT.none}</div>;
+  const current = ctx.clips.find((clip) => clip.src === value.src);
+  const pick = (id: string) => {
+    const clip = ctx.clips.find((item) => item.id === id);
+    if (clip) ctx.change(path, { ...value, src: clip.src, sha256: clip.sha256, width: clip.width, height: clip.height, trimBeforeFrame: clip.inFrame }, key);
+  };
+  return (
+    <div className="sf-field">
+      <label>
+        <span className="sf-label">{CLIP_TEXT.label}</span>
+        <select value={current?.id ?? ""} onChange={(e) => pick(e.target.value)} aria-label={CLIP_TEXT.label}>
+          {current ? null : <option value="">{value.src ? CLIP_TEXT.unregistered : CLIP_TEXT.choose}</option>}
+          {ctx.clips.map((clip) => <option key={clip.id} value={clip.id}>{clipOptionLabel(clip)}</option>)}
+        </select>
+      </label>
+      <Msgs list={ctx.issues.get(`${key}.src`)} />
+    </div>
+  );
+};
+
 const ObjectView: React.FC<WithRemove<ObjectField>> = ({ field, path, draft, ctx, removable }) => (
   <fieldset className="sf-object">
     <legend><Label field={field} path={path} ctx={ctx} /> {removable}</legend>
-    {field.fields.map((f) => <FieldView key={f.key} field={f} path={[...path, f.key]} draft={draft} ctx={ctx} />)}
+    {field.clip ? <ClipPicker path={path} draft={draft} ctx={ctx} /> : null}
+    {field.fields.filter((f) => !(field.clip && CLIP_RECORD_KEYS.has(f.key))).map((f) => <FieldView key={f.key} field={f} path={[...path, f.key]} draft={draft} ctx={ctx} />)}
     <Msgs list={ctx.issues.get(pathKey(path))} />
   </fieldset>
 );

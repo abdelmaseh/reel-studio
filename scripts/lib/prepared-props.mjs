@@ -5,15 +5,17 @@ import {kineticSceneSchema,kineticAssets} from '../../engine/src/creative-kit/ki
 import {librarySceneSchema,libraryAssets} from '../../engine/src/motion-library/schema.ts';
 import {semanticSceneSchema,semanticAssets} from '../../engine/src/creative-kit/semantic/schema.ts';
 import {styleSceneSchema,styleSceneAssets,styleSceneAssetClaims} from '../../engine/src/styles/scenes.ts';
-import {styleSceneVideoSources} from '../../engine/src/styles/media.ts';
+import {sceneClipClaims,sceneVideoSources} from '../../engine/src/core/scene-media.ts';
 import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
-import {verifyPreparedHeadGuide} from './head-guide.mjs';
+import {verifyPreparedHeadGuide,splitCanvasHeightFor} from './head-guide.mjs';
+import {isBrollScene,brollSplitIssues} from '../../engine/src/prepared-edit/broll.ts';
 import {verifyPreparedMouth} from './mouth-table.mjs';
 import {readFile} from 'node:fs/promises';
 import {projectSceneBuild} from './project-scenes.mjs';
-import {projectSceneAssets} from '../../engine/src/project-scenes/schema.ts';
+import {projectSceneAssets,projectSceneClips} from '../../engine/src/project-scenes/schema.ts';
+import {verifyClipMedia} from './clips.mjs';
 
 // SVG is rendered by the browser; FFprobe builds without librsvg cannot probe it.
 // Read the intrinsic vector viewport while retaining the same file hash contract.
@@ -38,13 +40,17 @@ export async function hasForegroundAlpha(video){
 
 
 export async function verifyKineticAssets(edit){
+  // A split B-roll scene in a manifest without `footage` sits above the style's own seam, which the manifest rule cannot know. Measure it here, before any file is read; the seam is only computed when such a scene exists.
+  const splitScenes=edit.footage?[]:edit.scenes.filter(scene=>isBrollScene(scene)&&scene.layout==='split');
+  const tooSmall=splitScenes.flatMap(scene=>brollSplitIssues(scene,splitCanvasHeightFor(edit.style)));
+  if(tooSmall.length)throw new Error(tooSmall.join('\n'));
   const assets=new Map();
   for(const input of edit.scenes){
     const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input),styled=styleSceneSchema.safeParse(input);
     const custom=input.family==='project-scene';
     if(!parsed.success && !library.success && !semantic.success && !styled.success && !custom)continue;
     const scene=parsed.success?parsed.data:library.success?library.data:semantic.success?semantic.data:styled.success?styled.data:input;
-    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):styled.success?styleSceneAssets(styled.data):projectSceneAssets({...edit,scenes:[input]});
+    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):styled.success?styleSceneAssets(styled.data):[...projectSceneAssets({...edit,scenes:[input]}),...projectSceneClips({...edit,scenes:[input]})];
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
@@ -53,8 +59,14 @@ export async function verifyKineticAssets(edit){
         if(!video?.width || !video.height)throw new Error(`Scene asset is not a decodable image/video: ${src}`);
         assets.set(src,{...identity,src,absolute,video});
       }
-      const isMoving=(scene.family==='kinetic-hook' && scene.data.foreground?.src===src) || ((scene.family==='screens' || scene.family==='screen-focus') && scene.data.steps.some(step=>step.src===src&&step.kind==='video')) || styleSceneVideoSources(scene).includes(src);
+      const isMoving=sceneVideoSources(scene,edit.projectScenes).includes(src);
       if(!isMoving && !['png','mjpeg','webp','gif','bmp','tiff','svg'].includes(assets.get(src).video.codec_name))throw new Error(`Static scene asset must contain an image: ${src}`);
+    }
+    for(const claim of sceneClipClaims(scene,edit.projectScenes)){
+      const asset=assets.get(claim.src);
+      if(asset.sha256!==claim.sha256)throw new Error(`Scene clip bytes do not match the supplied hash: ${claim.src}`);
+      if(asset.video.width!==claim.width || asset.video.height!==claim.height)throw new Error(`Scene clip dimensions disagree with its provided file: ${claim.src}`);
+      await verifyClipMedia(asset,claim,{fps:edit.source.fps});
     }
     if(scene.family==='evidence-wipe')for(const image of [scene.data.before,scene.data.after]){
       const asset=assets.get(image.src);

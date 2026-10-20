@@ -7,6 +7,7 @@ import { loadSoundCatalog } from './job-sound.mjs';
 import { manifestRevision } from './review-editor-revision.mjs';
 import { editManifestSchema } from '../../engine/src/prepared-edit/schema.ts';
 import { needsMouth } from './mouth-table.mjs';
+import { readClipIndex } from './clips.mjs';
 
 export const PUBLIC_DIR = path.join(ROOT, 'engine', 'public');
 const posix = (p) => p.split(path.sep).join('/');
@@ -126,6 +127,9 @@ export async function loadReviewProject(manifestRel) {
   const catalog = await loadSoundCatalog().catch(() => ({ recipes: [] }));
   const props = await readJson(`${dir}/prepared/props.json`, { optional: true }).catch(() => null);
   if (needsMouth(manifest) && !props?.mouth) warnings.push('فم شخصية الكارتون هيفضل مقفول في المعاينة لحد ما المشروع يتجهّز (prepare)؛ التجهيز بيقيس الصوت ويحرّك الفم معاه.');
+  let clips = [];
+  try { clips = (await readClipIndex(manifest.id)).clips; }
+  catch { warnings.push('ملف لقطات المشروع (clips.json) غير صالح، لذلك تظهر قائمة اللقطات فارغة حتى يُصلَح.'); }
   return {
     slug: manifest.id,
     manifestPath: manifestRel,
@@ -135,6 +139,7 @@ export async function loadReviewProject(manifestRel) {
     needsPrepare,
     ...(needsPrepareReason ? { needsPrepareReason } : {}),
     staticFiles: await listStaticFiles(),
+    clips,
     hasMotionPlan: motionPlanPath !== null,
     motionPlanPath,
     exportModes: [

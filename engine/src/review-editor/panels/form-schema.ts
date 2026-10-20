@@ -77,7 +77,7 @@ const VARIANT_LABELS: Record<string, string> = {
   "exit|kind: cut": "قطع مباشر (cut)", "exit|kind: push": "دفع المشهد للخارج (push)", "exit|kind: dip": "ضبابية وتعتيم (dip)",
   "steps|kind: drop": "سحب ملف لمكان (drop)", "steps|kind: field": "كتابة طلب (field)", "steps|kind: toggle": "تشغيل اختيارات (toggle)",
   "steps|kind: stat": "رقم كبير (stat)", "steps|kind: work": "شغل بيخلص (work)",
-  "condition|kind: boolean-equals": "اختيار صح أو غلط", "condition|kind: number-at-least": "رقم بحد أدنى",
+  "condition|kind: boolean-equals": "اختيار صح أو غلط", "condition|kind: number-at-least": "رقم بحد أدنى", "|look: window": "نافذة لقطات الشاشة", "|look: broll": "لقطات فيديو (B-roll)",
 };
 export const fieldLabel = (key: string): string => LABELS[key] ?? key;
 
@@ -95,10 +95,12 @@ const ASSET_KEYS = new Set(["src", "image"]);
 
 type Base = { key: string; label: string; required: boolean; description?: string };
 export type StringField = Base & { kind: "string"; minLength?: number; maxLength?: number; multiline: boolean; asset: boolean; default?: string };
-export type NumberField = Base & { kind: "number"; integer: boolean; min?: number; max?: number; exclusiveMin?: number; step: number | "any"; isFrame: boolean; default?: number };
+export type NumberField = Base & { kind: "number"; integer: boolean; min?: number; max?: number; exclusiveMin?: number; step: number | "any"; isFrame: boolean; default?: number;
+  /** A frame counted inside the clip's own file (the in-point of a clip), not inside the scene. */
+  inClipFile?: boolean };
 export type BooleanField = Base & { kind: "boolean"; default?: boolean };
 export type EnumField = Base & { kind: "enum"; options: (string | number | boolean)[]; fixed: boolean; default?: string | number | boolean };
-export type ObjectField = Base & { kind: "object"; fields: Field[]; default?:Record<string,unknown> };
+export type ObjectField = Base & { kind: "object"; fields: Field[]; default?:Record<string,unknown>; clip?: boolean };
 export type ArrayField = Base & { kind: "array"; item: Field; minItems: number; maxItems: number; fixedLength: boolean; default?:unknown[] };
 export type UnionVariant = { label: string; field: ObjectField;                                                                                         consts: Record<string, string | number | boolean>; required: string[]; properties: string[]; closed: boolean };
 export type UnionField = Base & { kind: "union"; variants: UnionVariant[] };
@@ -161,7 +163,10 @@ function fromJsonSchema(js: JS, key: string, required: boolean): Field {
       }
       if (!js.properties) return { ...base, kind: "json", schema: js };
       const need = new Set<string>(js.required ?? []);
-      return { ...base, kind: "object", fields: Object.entries<JS>(js.properties).map(([k, v]) => fromJsonSchema(v, k, need.has(k))),...(js.default!==undefined?{default:js.default}:{}) };
+      const clip = js['x-reel-clip'] === true;
+      // Inside a clip object `trimBeforeFrame` counts frames of the clip's own file; the step's `atFrame` still counts frames of the scene.
+      const fields = Object.entries<JS>(js.properties).map(([k, v]) => fromJsonSchema(v, k, need.has(k))).map((field): Field => (clip && field.kind === "number" && field.key === "trimBeforeFrame" ? { ...field, inClipFile: true } : field));
+      return { ...base, kind: "object", fields,...(js.default!==undefined?{default:js.default}:{}),...(clip?{clip:true}:{}) };
     }
     case "array": {
       if (!js.items || Array.isArray(js.items)) return { ...base, kind: "json", schema: js };
@@ -281,6 +286,7 @@ const TYPE_AR: Record<string, string> = { string: "نص", number: "رقم", bool
 const CUSTOM_AR: [RegExp, string][] = [
   [/local public asset path/, "لازم مسار ملف محلي جوّه public (من غير / في الأول ومن غير : أو .. )."],
   [/local \.mp4 or \.webm/, "لازم ملف فيديو mp4 أو webm."],
+  [/local \.mp4 file/, "يجب أن تكون اللقطة ملف mp4 محليًا داخل مجلد public؛ اختر لقطة من القائمة أو اطلب من المساعد تجهيزها."],
   [/Focus rectangle must stay inside/, "المستطيل لازم يفضل جوّه الصورة (x+width و y+height مايزيدوش عن 1)."],
   [/complete @handle/, "لازم @handle كامل: حروف وأرقام و _ و . بحد أقصى 30."],
   [/cannot be blank/, "النص مينفعش يبقى فاضي."],

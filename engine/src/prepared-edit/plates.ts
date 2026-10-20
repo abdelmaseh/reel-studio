@@ -1,12 +1,12 @@
-import {styleSceneVideoSources} from '../styles/media.ts';
+import {sceneMovingSources} from '../core/scene-media.ts';
+import type {ProjectScenes} from '../core/scene-media.ts';
 
-export function preparedPlateList(edit:{scenes:readonly {family:string;data?:unknown}[]},plateSrc:string):string[]{
+export function preparedPlateList(edit:{scenes:readonly {family:string;data?:unknown}[];projectScenes?:ProjectScenes},plateSrc:string):string[]{
   const foregrounds:string[]=[],captures:string[]=[];
   for(const scene of edit.scenes){
-    const data=scene.data as {foreground?:{src:string};steps?:{kind?:string;src:string}[]}|undefined;
-    if(scene.family==='kinetic-hook' && data?.foreground)foregrounds.push(data.foreground.src);
-    if(scene.family==='screen-focus'||scene.family==='screens')for(const step of data?.steps??[])if(step.kind==='video')captures.push(step.src);
-    captures.push(...styleSceneVideoSources(scene));
+    const moving=sceneMovingSources(scene,edit.projectScenes);
+    foregrounds.push(...moving.foreground);
+    captures.push(...moving.captures);
   }
   return [plateSrc,...new Set([...foregrounds,...captures])];
 }

@@ -2,7 +2,7 @@ import path from 'node:path';
 import { promises as fs } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { styleSceneVideoSources } from '../../engine/src/styles/media.ts';
+import { sceneMovingSources } from '../../engine/src/core/scene-media.ts';
 
 export const FOOTAGE_EXT = /\.(mp4|mov|webm|mkv)$/i;
 export const HEAD_FLAG_KEYS = Object.freeze(['head-envelope', 'head-geometry', 'head-source', 'head-method', 'head-exempt']);
@@ -36,12 +36,9 @@ export function manifestFootage(props) {
   if (isObject(props.plate)) pushUnique(found, footageName(props.plate.src));
   const scenes = isObject(props.edit) && Array.isArray(props.edit.scenes) ? props.edit.scenes : [];
   for (const scene of scenes) {
-    const data = isObject(scene) ? scene.data : null;
-    if (!isObject(data)) continue;
-    if (isObject(data.foreground)) pushUnique(found, footageName(data.foreground.src));
-    for (const src of styleSceneVideoSources(scene)) pushUnique(found, footageName(src));
-    if (!Array.isArray(data.steps)) continue;
-    for (const step of data.steps) if (isObject(step) && step.kind === 'video') pushUnique(found, footageName(step.src));
+    if (!isObject(scene)) continue;
+    const { foreground, captures } = sceneMovingSources(scene, isObject(props.edit) ? props.edit.projectScenes : undefined);
+    for (const src of [...foreground, ...captures]) pushUnique(found, footageName(src));
   }
   return found;
 }

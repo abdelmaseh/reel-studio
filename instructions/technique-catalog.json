@@ -1,6 +1,7 @@
 {
   "schema": 2,
   "techniques": [
+    {"id":"broll-clips","label":"B-roll clips","purpose":"Normalise creator-named clips to silent SDR at the project rate and play them in the B-roll look of screens or in project scenes with verified hash, size, rate and length.","implementationPath":"scripts/clips.mjs","status":"ready","requires":["ffmpeg","ffprobe"]},
     {"id":"semantic-scenes","label":"Meaning-led scenes","purpose":"Authored token lenses, meters, tickets, questions, chapters and route stops; optional supplied transparent PNG cover.","implementationPath":"engine/src/creative-kit/semantic/scenes.tsx","status":"ready","requires":[]},
     {"id":"resumable-render","label":"Resumable render","purpose":"Bounded verified chunks and exact-input resume for full renders.","implementationPath":"scripts/lib/render-chunks.mjs","status":"ready","requires":["ffmpeg","ffprobe","Remotion Chromium"]},
     {"id":"audio-revision","label":"Audio revision","purpose":"Sample-accurate separate audio tracks with unchanged picture verification.","implementationPath":"scripts/render-audio.mjs","status":"ready","requires":["ffmpeg","ffprobe"]},

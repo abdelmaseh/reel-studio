@@ -25,9 +25,20 @@ The new folder must not already contain a generated base or edit manifest. After
 - `id`: a unique lowercase slug.
 - `label`: a short name for the authored component.
 - `entry`: a TSX/JSX path relative to the pack, inside this same project.
-- `fields`: an ordered list of editable values. Each field has `key`, `type`, optional `label`, `required`, `default`, `min` and `max`. Types are `string`, `number`, `boolean`, `color`, `asset`, `enum`, `array` and `object`. An enum declares `options`; an array declares `items`; an object declares `fields`. Use short readable labels and appropriate limits.
+- `fields`: an ordered list of editable values. Each field has `key`, `type`, optional `label`, `required`, `default`, `min` and `max`. Types are `string`, `number`, `boolean`, `color`, `asset`, `clip`, `enum`, `array` and `object`. An enum declares `options`; an array declares `items`; an object declares `fields`. Use short readable labels and appropriate limits.
 
-Colour is a six-digit hex value. An asset value is a local image path relative to `engine/public/`; keep its bytes and provenance in the project's own untracked asset directory. Static custom assets go through the same image/dimension/hash checks as other scene assets. For moving captures use the existing `screens`, `screen-focus` or `screen-recording` families and their explicit media contracts. No remote media URL is a substitute for a verified local source.
+Colour is a six-digit hex value. An asset value is a local image path relative to `engine/public/`; keep its bytes and provenance in the project's own untracked asset directory. Static custom assets go through the same image/dimension/hash checks as other scene assets. For moving screen captures use the existing `screens`, `screen-focus` or `screen-recording` families and their explicit media contracts. No remote media URL is a substitute for a verified local source.
+
+A `clip` field holds a silent video clip registered with `node scripts/clips.mjs add` (see [EDITING.md](EDITING.md)). Its value is the clip's `src`, `sha256`, `width` and `height` plus optional `trimBeforeFrame` (when you write a clip value by hand, set `trimBeforeFrame` to the clip record's `inFrame`, as [EDITING.md](EDITING.md#named-b-roll-clips) explains for B-roll steps), `fit` (`cover` or `contain`) and `focus` (`x`, `y` from 0 to 1); the editor fills the file fields from a list of the project's registered clips. A clip field has no default, because a default would be a file nobody registered. Declare the clip field with `required: true` when the component always needs a clip, because an optional clip field arrives as `undefined` when the creator has not chosen one and `SceneClip` needs a clip. Draw it with `SceneClip` from `@reel-studio/core/clip`:
+
+```tsx
+import {SceneClip} from '@reel-studio/core/clip';
+
+// values.background is a clip field
+<SceneClip clip={values.background} width={1080} height={1920} />
+```
+
+`SceneClip` plays the verified file through the same footage component as the presenter, so safe-zone probes and previews apply, and it fails the render if the clip would be enlarged more than 1.25x in its box. Preparation checks every clip's hash, size, frame rate, silence and length against the scene. A project scene cannot import `OffthreadVideo`, `Video`, `Html5Video` or `@remotion/media` itself: the build refuses it and points to this field.
 
 Nested defaults are validated and expanded consistently for preview, rendering and asset verification. Duplicate names, escaping paths and data that violate declared fields are rejected. Do not use `constructor`, `prototype` or other reserved keys. Contracts are bounded to 32 scenes, 32 fields per object and six nesting levels; composition code remains free to animate those authored values.
 

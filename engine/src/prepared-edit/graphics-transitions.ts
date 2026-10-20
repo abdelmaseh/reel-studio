@@ -1,5 +1,6 @@
 import type {ChapterPalette} from '../core/chapters.ts';
-import {styleSceneVideoSources} from '../styles/media.ts';
+import {sceneVideoSources} from '../core/scene-media.ts';
+import type {ProjectScenes} from '../core/scene-media.ts';
 
 export const OVERLAY_KINDS=['whiteout','leak','bloom','burn'] as const;
 
@@ -42,15 +43,11 @@ export function entranceBox(layout:string,seam:number):Box{
 
 
 
-function mountsVideo(scene:TransitionScene):boolean{
-  const data=scene.data as {foreground?:unknown;steps?:readonly {kind?:string}[]}|undefined;
-  if(scene.family==='kinetic-hook' && data?.foreground)return true;
-  if((scene.family==='screens' || scene.family==='screen-focus') && (data?.steps??[]).some(step=>step?.kind==='video'))return true;
-  if(styleSceneVideoSources(scene).length>0)return true;
-  return false;
+function mountsVideo(scene:TransitionScene,projectScenes?:ProjectScenes):boolean{
+  return sceneVideoSources(scene,projectScenes).length>0;
 }
 
-export function graphicsTransitionIssues(transitions:readonly TransitionEntry[],scenes:readonly TransitionScene[]):string[]{
+export function graphicsTransitionIssues(transitions:readonly TransitionEntry[],scenes:readonly TransitionScene[],projectScenes?:ProjectScenes):string[]{
   const issues:string[]=[];
   const entrances=new Map<number,number>(),hues=new Map<number,number>();
   for(const t of transitions){
@@ -63,7 +60,7 @@ export function graphicsTransitionIssues(transitions:readonly TransitionEntry[],
     if(t.kind!=='clip-wipe' && scene.layout==='presenter')issues.push(`${t.kind} cannot run on presenter scene ${scene.id}: it would move or tint graphics across the creator (rule 15).`);
     if(t.kind==='whip-pan'){
 
-      if(mountsVideo(scene))issues.push(`whip-pan at ${t.atFrame} would decode scene ${scene.id}'s video once per echo (core/mblur.tsx); use clip-wipe or light-scan.`);
+      if(mountsVideo(scene,projectScenes))issues.push(`whip-pan at ${t.atFrame} would decode scene ${scene.id}'s video once per echo (core/mblur.tsx); use clip-wipe or light-scan.`);
 
 
       if(scene.layout==='split' && (t.dir==='up' || t.dir==='down'))issues.push(`whip-pan at ${t.atFrame} on split scene ${scene.id} may only travel rtl or ltr; up/down is not clipped to the panel and would smear onto the presenter window below the seam.`);

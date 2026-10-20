@@ -253,7 +253,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -307,11 +307,11 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         }
       ]
     },
@@ -538,15 +538,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -597,11 +597,11 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         }
       ]
     },
@@ -1178,11 +1178,11 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         }
       ]
     },
@@ -1244,7 +1244,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -1297,15 +1297,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -1369,7 +1369,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -1845,15 +1845,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -1919,7 +1919,7 @@
       "role": "extension",
       "labelAr": "مشهد مخصوص للمشروع",
       "explains": "Provides a project-local component route when shipped families cannot express the required explanatory action.",
-      "action": "A declared TSX/JSX component receives validated editable values and the current scene's style, layout and duration.",
+      "action": "A declared TSX/JSX component receives validated editable values and the current scene's style, layout and duration. A clip field can place a registered silent clip anywhere in the scene.",
       "useWhen": [
         "A custom diagram, state change or visual metaphor needs authored object behavior.",
         "The project's declared component and reviewed copy already define a concrete explanation."
@@ -1962,7 +1962,7 @@
       "requirements": [
         "Declare a scene pack in this same project with a local TSX/JSX entry and bounded editable fields; scene values must match that component's contract.",
         "Split or takeover is available; source-free graphics require takeover, and custom split code must respect seam, head geometry and safe zones.",
-        "Assets depend on declared asset fields and must be local and verified; use the explicit capture families for moving screen media.",
+        "Assets depend on declared asset fields and must be local and verified. A moving clip goes in a clip field registered with node scripts/clips.mjs add and is drawn with SceneClip; importing OffthreadVideo or Video directly is refused.",
         "Code or contract changes require preparation and editor reload; this extension is not one universal ready-made visual."
       ],
       "display": {
@@ -1973,7 +1973,7 @@
       "evidence": [
         {
           "path": "engine/src/project-scenes/schema.ts",
-          "sha256": "34f9b491c00fc93445b1d5e0c2ed4ef88d74e9154f72c24925bc660d1b058bd9"
+          "sha256": "25474998e26499168a47c6b0329bf5efa8976c9e459a442a8ef1e994839177c7"
         },
         {
           "path": "engine/src/project-scenes/ProjectScene.tsx",
@@ -1986,6 +1986,10 @@
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
           "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+        },
+        {
+          "path": "engine/src/core/clip.tsx",
+          "sha256": "ad7f8beb31088b86a5d11fd5edadca43ad360473735ded85bb95d04d0b54144c"
         }
       ]
     },
@@ -2233,7 +2237,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "8994387309fde13721ea27d9615fd71f50ca638d50a9112a4a439384a2ab116c"
+          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
         }
       ]
     },
@@ -2241,15 +2245,17 @@
       "key": "scene:screens",
       "role": "explanation",
       "labelAr": "شاشات متتابعة",
-      "explains": "Walks through a short sequence of supplied screens or visual results with one title per step.",
-      "action": "A framed viewport switches between authored image or muted-video steps and updates its progress markers.",
+      "explains": "Walks through a short sequence of supplied screens or visual results with one title per step; its B-roll look instead plays short silent clips from files the creator named over the continuing voice.",
+      "action": "A framed viewport switches between authored image or muted-video steps and updates its progress markers. In the B-roll look a registered clip fills the full screen or the area above the presenter, changes by hard cuts and may carry a short label.",
       "useWhen": [
         "Showing a screen sequence where whole-step context matters more than precise focus tracking.",
-        "Revealing supplied interface states or outputs in order."
+        "Revealing supplied interface states or outputs in order.",
+        "Illustrating what the speaker names with a short real clip (the B-roll look): start on the cue word and keep it to one to three seconds."
       ],
       "avoidWhen": [
         "A small control needs a source-aligned zoom, cursor or pinned callout.",
-        "The supplied video needs its audio or the result is not available as real media."
+        "The supplied video needs its audio or the result is not available as real media.",
+        "The B-roll look would be used as proof of a result, or the style is cartoon, one-shot or grid-glide, which draw their own screen."
       ],
       "intents": [
         "process",
@@ -2280,21 +2286,34 @@
       "requirements": [
         "Supply one to six local image/video steps; first atFrame is zero and later cues are strictly ordered.",
         "Each step chooses contain or cover; video is muted and uses its authored trimBeforeFrame.",
-        "Takeover only; use screen-focus for explicit region focus and pinned annotations."
+        "Window look: takeover only; use screen-focus for explicit region focus and pinned annotations.",
+        "B-roll look: clips only from files the creator named, registered with node scripts/clips.mjs add (silent, SDR, at the project frame rate); full screen or split, enlarged at most 1.25x, never over the ending."
       ],
       "display": {
-        "explains": "بيمشي على شاشات أو نتايج حقيقية بالترتيب.",
-        "useWhen": "لشرح مراحل كل واحدة ليها شاشة.",
-        "avoidWhen": "لو محتاج تكبير زرار أو مؤشر دقيق."
+        "explains": "بيمشي على شاشات أو نتايج حقيقية بالترتيب، وبشكل B-roll بيعرض لقطة قصيرة صامتة فوق كلامك.",
+        "useWhen": "لشرح مراحل كل واحدة ليها شاشة، أو لتوضيح اللي بتقوله بلقطة قصيرة.",
+        "avoidWhen": "لو محتاج تكبير زرار أو مؤشر دقيق، أو لو اللقطة هتتحط كدليل على نتيجة."
       },
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+        },
+        {
+          "path": "engine/src/prepared-edit/broll.ts",
+          "sha256": "3d9028513cda5b0180fa885e0cd45b4c3636903a9baed74bf89fa89d64b48969"
+        },
+        {
+          "path": "engine/src/core/clip-schema.ts",
+          "sha256": "2cb90fa0041385f9b0de7ec58093b3f7618d3f32737573bebd82029155bdfab9"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic/broll.tsx",
+          "sha256": "a67cd2f958bf49cb50e61ca907727a40286aa9d8579ff67afdd5f51f3432a300"
         }
       ]
     },
@@ -2346,11 +2365,11 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic/schema.ts",
-          "sha256": "54c2e1719b9793e2c3db0b12b13715f0b1cacc4224f1175d1704ba4d0702633e"
+          "sha256": "ae1103b82a5c876cc998c60d8ed0624645ae19866e250f6e77c2f9e36bc3205c"
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "6b3c861b02bc837fcd6458be1f78b60451e68b30be96ecba106d86ca67744c42"
+          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
         }
       ]
     },

@@ -2,6 +2,7 @@ import { editManifestSchema, type EditManifest } from "../prepared-edit/schema.t
 import { manifestSampleNumbers, SAMPLE_NUMBER } from "../prepared-edit/sample-numbers.ts";
 import { tryCompile } from "./time.ts";
 import { sceneDemoFields } from "./ops/demo.ts";
+import { explainEnglish } from "./ops/explain.ts";
 import { isKitFamily } from "./ops/templates.ts";
 import spec from "../core/platform/instagram-reels.json" with { type: "json" };
 import type { Issue, IssueSeverity, IssueStage, ValidationResult } from "./types.ts";
@@ -74,6 +75,9 @@ function translate(zodIssue: any): { message: string; detail?: string } {
       const hit = rx.exec(english);
       if (hit) return { message: arabic.replace("$1", hit[1] ?? ""), detail: english };
     }
+    // The refusal text of the editor operations keeps the rules for messages that carry a scene id and numbers (B-roll among them); the lists show the same Arabic.
+    const explained = explainEnglish(english);
+    if (explained) return { message: explained, detail: english };
     return { message: `مشكلة في الـ manifest: ${english}`, detail: english };
   }
   const fn = ZOD[zodIssue.code];

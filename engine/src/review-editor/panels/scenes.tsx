@@ -12,6 +12,7 @@ import { SchemaForm } from "./schema-form.tsx";
 import type { ApplyFn } from "../store.ts";
 import {CATALOG} from '../../motion-concepts/catalog.ts';
 import type {ConceptId} from '../../motion-concepts/types.ts';
+import type { ClipIndexEntry } from "../../core/clip-schema.ts";
 
 type Runner = ReturnType<typeof useRunner>;
 const LAYOUT_AR: Record<string, string> = { presenter: "presenter (هو على الشاشة)", split: "split (نص ونص)", takeover: "takeover (جرافيك كامل)" };
@@ -25,6 +26,7 @@ type CardProps = {
   fps: number;
   issues: Issue[];
   assets: readonly string[];
+  clips: readonly ClipIndexEntry[];
   apply: ApplyFn;
   run: Runner;
   seek: (frame: number) => void;
@@ -33,7 +35,7 @@ type CardProps = {
   getPlayhead: () => number;
 };
 
-const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, issues, assets, apply, run, seek, select, toggle, getPlayhead }: CardProps) {
+const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, issues, assets, clips, apply, run, seek, select, toggle, getPlayhead }: CardProps) {
   const [armed, setArmed] = useState(false);
   const end = scene.fromFrame + scene.durationInFrames;
   const demo = ops.sceneDemoFields(scene);
@@ -49,7 +51,7 @@ const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, i
         onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(id); select({ kind: "scene", id }); seek(scene.fromFrame); } }}
         aria-expanded={open}>
         <span className="sp-no" dir="ltr">{index + 1}</span>
-        <Badge text={scene.family} hue={hueOf(scene.family)} />
+        <Badge text={scene.family === "screens" && (scene.data as { look?: string }).look === "broll" ? "screens · B-roll" : scene.family} hue={hueOf(scene.family)} />
         <strong className="sp-id" dir="ltr">{id}</strong>
         <span className="sp-range" dir="ltr">{formatTimecode(scene.fromFrame, fps)} → {formatTimecode(end, fps)} · {scene.durationInFrames}f</span>
         {demo.length ? <Badge text="نص تجريبي" tone="warn" title={`${demo.length} حقل لسه بنص الـ kit التجريبي. بدّله قبل التصدير.`} /> : null}
@@ -96,6 +98,7 @@ const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, i
             data={scene.data}
             fps={fps}
             assets={assets}
+            clips={clips}
             demoPaths={demo}
             onCommit={(draft, key) => {
               const r = runOp(apply, `تعديل المشهد ${id}`, (m) => ops.setSceneData(m, id, draft), { coalesce: `scene:${id}:${key}` });
@@ -120,6 +123,10 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
   const toggle = useCallback((id: string) => setOpen((cur) => (cur === id ? null : id)), []);
   const fps = manifest.source.fps;
   const selectedId = selection?.kind === "scene" ? selection.id : null;
+  const clips = project.clips ?? [];
+  const [pickedClip, setPickedClip] = useState<string>("");
+  const clip = clips.find((item) => item.id === pickedClip) ?? clips[0];
+  const brollRefused = ops.brollRefusal(manifest);
 
 
   useEffect(() => {
@@ -130,6 +137,17 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
 
   const add = () => {
     const r = run(`إضافة مشهد ${family}`, (m) => ops.addSceneFromTemplate(m, family, { atFrame: getPlayhead(), ...(family === 'motion-concept' ? {concept} : {}) }), { coalesce: false });
+    if (r.ok) {
+      const scene = r.manifest.scenes[r.index];
+      select({ kind: "scene", id: scene.id });
+      seek(scene.fromFrame);
+      setOpen(scene.id);
+    }
+  };
+
+  const addBroll = () => {
+    if (!clip) return;
+    const r = run("إضافة مشهد B-roll", (m) => ops.addBrollScene(m, clip, { atFrame: getPlayhead() }), { coalesce: false });
     if (r.ok) {
       const scene = r.manifest.scenes[r.index];
       select({ kind: "scene", id: scene.id });
@@ -153,12 +171,23 @@ const ScenesPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selectio
         </div>
         <p className="pk-muted">{SCENES_TEXT.helper}</p>
       </Section>
+      <Section title={ops.BROLL_TEXT.section} actions={null}>
+        {clips.length === 0 ? <p className="pk-muted">{ops.BROLL_TEXT.none}</p> : (
+          <div className="sp-row">
+            <select value={clip?.id ?? ""} onChange={(e) => setPickedClip(e.target.value)} aria-label={ops.BROLL_TEXT.pick}>
+              {clips.map((item) => <option key={item.id} value={item.id}>{ops.clipOptionLabel(item)}</option>)}
+            </select>
+            <button type="button" className="primary" onClick={addBroll} disabled={brollRefused !== null} title={brollRefused ?? undefined}>{ops.BROLL_TEXT.add}</button>
+          </div>
+        )}
+        {brollRefused ? <p className="pk-muted">{brollRefused}</p> : null}
+      </Section>
       <Section title="المشاهد" count={manifest.scenes.length}>
         {manifest.scenes.length === 0 ? <Empty>مفيش مشاهد لسه. ضيف مشهد من فوق. (التصدير النهائي محتاج مشاهد.)</Empty> : null}
         {manifest.scenes.map((scene, index) => (
           <SceneCard
             key={scene.id} scene={scene} index={index} open={open === scene.id} selected={selectedId === scene.id} fps={fps}
-            issues={issuesAt(issues, `scenes.${index}`)} assets={project.staticFiles} apply={apply} run={run}
+            issues={issuesAt(issues, `scenes.${index}`)} assets={project.staticFiles} clips={clips} apply={apply} run={run}
             seek={seek} select={select} toggle={toggle} getPlayhead={getPlayhead}
           />
         ))}

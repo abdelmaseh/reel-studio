@@ -1,9 +1,11 @@
 import {z} from 'zod';
+import {clipValueSchema} from '../core/clip-schema.ts';
+import type {ClipValue} from '../core/clip-schema.ts';
 
-export type FieldContract={key:string;type:'string'|'number'|'boolean'|'color'|'asset'|'enum'|'array'|'object';label?:string;required?:boolean;default?:unknown;min?:number;max?:number;options?:string[];items?:FieldContract;fields?:FieldContract[]};
+export type FieldContract={key:string;type:'string'|'number'|'boolean'|'color'|'asset'|'clip'|'enum'|'array'|'object';label?:string;required?:boolean;default?:unknown;min?:number;max?:number;options?:string[];items?:FieldContract;fields?:FieldContract[]};
 const key=z.string().regex(/^[a-zA-Z][a-zA-Z0-9_]{0,63}$/).refine(value=>!['constructor','prototype','__proto__'].includes(value),'Reserved field name');
 const fieldSchema:z.ZodType<FieldContract>=z.lazy(()=>z.object({
-  key,type:z.enum(['string','number','boolean','color','asset','enum','array','object']),label:z.string().min(1).max(100).optional(),
+  key,type:z.enum(['string','number','boolean','color','asset','clip','enum','array','object']),label:z.string().min(1).max(100).optional(),
   required:z.boolean().optional(),default:z.json().optional(),min:z.number().finite().optional(),max:z.number().finite().optional(),
   options:z.array(z.string().min(1).max(200)).min(1).max(64).optional(),items:fieldSchema.optional(),fields:z.array(fieldSchema).max(32).optional(),
 }).strict());
@@ -14,6 +16,7 @@ function fieldIssues(fields:FieldContract[],depth=0):string[]{
     if(names.has(field.key))issues.push(`Duplicate field ${field.key}`);names.add(field.key);
     if(field.min!==undefined&&field.max!==undefined&&field.min>field.max)issues.push(`${field.key}: min exceeds max`);
     if(['string','asset','array'].includes(field.type)&&[field.min,field.max].some(n=>n!==undefined&&(!Number.isInteger(n)||n<0||n>10000)))issues.push(`${field.key}: length bounds must be integers from zero to 10000`);
+    if(field.type==='clip'&&field.default!==undefined)issues.push(`${field.key}: a clip field cannot have a default; a default would be a file nobody registered`);
     if(field.type==='enum'&&(!field.options||new Set(field.options).size!==field.options.length))issues.push(`${field.key}: enum needs distinct options`);
     if(field.type==='array'&&!field.items)issues.push(`${field.key}: array needs an item contract`);
     if(field.type==='object'&&!field.fields)issues.push(`${field.key}: object needs fields`);
@@ -27,6 +30,7 @@ function fieldValue(field:FieldContract):z.ZodType{
   switch(field.type){
     case 'string':schema=z.string().min(field.min??0).max(field.max??1000);break;
     case 'asset':schema=z.string().min(Math.max(1,field.min??1)).max(field.max??2000).refine(value=>!value.includes('\\')&&!value.includes(':')&&!value.startsWith('/')&&!value.split('/').some(part=>part==='..'||part==='.'||!part),'Asset must be relative to engine/public');break;
+    case 'clip':schema=clipValueSchema;break;
     case 'color':schema=z.string().regex(/^#[0-9a-fA-F]{6}$/);break;
     case 'number':{let value=z.number().finite();if(field.min!==undefined)value=value.min(field.min);if(field.max!==undefined)value=value.max(field.max);schema=value;break;}
     case 'boolean':schema=z.boolean();break;
@@ -36,7 +40,7 @@ function fieldValue(field:FieldContract):z.ZodType{
   }
   if(field.default!==undefined)schema=schema.prefault(field.default);
   else if(!field.required)schema=schema.optional();
-  schema=schema.meta({...(field.label?{title:field.label}:{}),...(field.type==='asset'?{'x-reel-asset':true}:{})});
+  schema=schema.meta({...(field.label?{title:field.label}:{}),...(field.type==='asset'?{'x-reel-asset':true}:{}),...(field.type==='clip'?{'x-reel-clip':true}:{})});
   return schema;
 }
 export function valuesSchema(fields:FieldContract[]):z.ZodType<Record<string,unknown>>{
@@ -91,4 +95,36 @@ export function projectSceneAssets(edit:{projectScenes?:z.infer<typeof projectSc
     for(const field of contract.fields)collect(field,values[field.key]);
   }
   return [...sources];
+}
+
+export type SceneClipUse={sceneId:string;field:string;clip:ClipValue};
+
+/** Every clip value a project scene fills in, with the field path it sits at. Invalid scenes and contracts are skipped, never thrown. */
+export function projectSceneClipValues(edit:{projectScenes?:z.infer<typeof projectScenesMetadataSchema>;scenes:{id?:string;family:string;data:unknown}[]}):SceneClipUse[]{
+  const uses:SceneClipUse[]=[];
+  for(const scene of edit.scenes){
+    if(scene.family!=='project-scene')continue;
+    const data=projectSceneDataSchema.safeParse(scene.data);
+    const contract=data.success?edit.projectScenes?.scenes.find(item=>item.id===data.data.component):undefined;
+    if(!data.success||!contract)continue;
+    let values:Record<string,unknown>;
+    try{
+      const parsed=valuesSchema(contract.fields).safeParse(data.data.values);
+      if(!parsed.success)continue;
+      values=parsed.data;
+    }catch{continue;}
+    const collect=(field:FieldContract,value:unknown,at:string)=>{
+      if(value===undefined||value===null)return;
+      if(field.type==='clip')uses.push({sceneId:scene.id??'',field:at,clip:value as ClipValue});
+      if(field.type==='array')(value as unknown[]).forEach((item,index)=>collect(field.items!,item,`${at}.${index}`));
+      if(field.type==='object')for(const child of field.fields!)collect(child,(value as Record<string,unknown>)[child.key],`${at}.${child.key}`);
+    };
+    for(const field of contract.fields)collect(field,values[field.key],field.key);
+  }
+  return uses;
+}
+
+/** The clip files of the project scenes, each once. */
+export function projectSceneClips(edit:Parameters<typeof projectSceneClipValues>[0]):string[]{
+  return [...new Set(projectSceneClipValues(edit).map(use=>use.clip.src))];
 }

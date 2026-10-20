@@ -15,7 +15,7 @@ The accepted `EDITORIAL_PLAN.md` and `plan.json`, the named source assets in you
 
 ## Steps
 
-1. For each plan row whose `Assets` cell names a file to make: crop, trim, resize or extract with ffmpeg from the named source only; write it under `assets/` in your task folder with a stable id as its name.
+1. For each plan row whose `Assets` cell names a file to make: crop, trim, resize or extract with ffmpeg from the named source only; write it under `assets/` in your task folder with a stable id as its name. An `Assets` cell value that is a clip id (`clip-` followed by eight hex characters) is already registered by the manager with `scripts/clips.mjs`; leave it alone and do not make it.
 2. Append one row per file to `assets.json`: `{"id":"a1","path":"<task folder>/assets/a1.png","source":"<named source or URL from the brief>","licence":"creator-supplied|CC0|project-capture","how":"<command summary>","revision":1,"forBeat":"b3"}`.
 3. A row that needs a download, a paid service, a new illustration, a stock search or a source the packet does not name → do not do it; list it in `result.json` summary and return `outcome:"needs-input"`.
 4. `result.json` with every file hashed; submit.

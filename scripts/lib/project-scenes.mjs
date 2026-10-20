@@ -6,6 +6,49 @@ import {ROOT,checkedPath,digest} from './job-paths.mjs';
 import {projectScenePackSchema} from '../../engine/src/project-scenes/schema.ts';
 const ENGINE=path.join(ROOT,'engine'),engineRequire=createRequire(path.join(ENGINE,'package.json'));
 const within=(parent,file)=>{const rel=path.relative(parent,file);return rel===''||(!rel.startsWith('..')&&!path.isAbsolute(rel));};
+const VIDEO_COMPONENTS=new Set(['OffthreadVideo','Video','Html5Video']);
+const VIDEO_GUIDANCE='Project scenes cannot mount video directly. Add a "clip" field to the scene contract and draw it with SceneClip from "@reel-studio/core/clip", so the file is hashed, probed and checked.';
+const nameOf=node=>node?.name??node?.value;
+/** Direct uses of Remotion's video components or @remotion/media in a project file. A guardrail for authored code, not a sandbox. */
+function videoUses(tree){
+  const found=[],namespaces=new Set();
+  const visit=node=>{
+    if(!node||typeof node!=='object')return;
+    const declaration=node.type==='ImportDeclaration'||node.type==='ExportNamedDeclaration'||node.type==='ExportAllDeclaration';
+    if(declaration&&node.importKind!=='type'&&node.exportKind!=='type'&&typeof node.source?.value==='string'){
+      const from=node.source.value;
+      if(from==='@remotion/media'||from.startsWith('@remotion/media/'))found.push(`module ${from}`);
+      if(from==='remotion'){
+        if(node.type==='ExportAllDeclaration')found.push("export * from 'remotion'");
+        for(const spec of node.specifiers??[]){
+          if(spec.type==='ImportNamespaceSpecifier'||spec.type==='ImportDefaultSpecifier'){namespaces.add(spec.local.name);continue;}
+          if(spec.type==='ExportNamespaceSpecifier'){found.push("export * as ... from 'remotion'");continue;}
+          const imported=nameOf(spec.imported??spec.local);
+          if(VIDEO_COMPONENTS.has(imported))found.push(`${imported} from 'remotion'`);
+        }
+      }
+    }
+    if(node.type==='VariableDeclarator'&&node.init?.type==='CallExpression'&&node.init.callee?.name==='require'){
+      const from=node.init.arguments?.[0]?.value;
+      if(from==='@remotion/media')found.push('module @remotion/media');
+      if(from==='remotion'){
+        if(node.id?.type==='ObjectPattern'){for(const prop of node.id.properties??[]){const key=nameOf(prop.key);if(VIDEO_COMPONENTS.has(key))found.push(`${key} from 'remotion'`);}}
+        else if(node.id?.type==='Identifier')namespaces.add(node.id.name);
+      }
+    }
+    if(node.type==='MemberExpression'&&node.object?.type==='Identifier'&&namespaces.has(node.object.name)){
+      const property=node.computed?node.property?.value:node.property?.name;
+      if(VIDEO_COMPONENTS.has(property))found.push(`${node.object.name}.${property}`);
+    }
+    if(node.type==='JSXMemberExpression'&&node.object?.type==='JSXIdentifier'&&namespaces.has(node.object.name)&&VIDEO_COMPONENTS.has(node.property?.name))found.push(`${node.object.name}.${node.property.name}`);
+    for(const [key,value] of Object.entries(node)){
+      if(key==='loc'||key==='leadingComments'||key==='trailingComments')continue;
+      if(Array.isArray(value))value.forEach(visit);else if(value&&typeof value==='object')visit(value);
+    }
+  };
+  visit(tree);
+  return found;
+}
 function staticImports(file,source){
   const parser=engineRequire('@babel/parser'),tree=parser.parse(source,{sourceType:'unambiguous',plugins:['typescript','jsx']});
   const visit=node=>{
@@ -16,6 +59,8 @@ function staticImports(file,source){
     }
     for(const value of Object.values(node)){if(Array.isArray(value))value.forEach(visit);else if(value&&typeof value==='object')visit(value);}
   };visit(tree);
+  const uses=videoUses(tree);
+  if(uses.length)throw new Error(`${VIDEO_GUIDANCE} (${path.relative(ROOT,file).split(path.sep).join('/')}: ${[...new Set(uses)].join(', ')})`);
 }
 async function regularProjectPath(file,id){
   if(typeof file!=='string'||!file.startsWith(`Projects/${id}/`))throw new Error('Scene pack and entries must belong to their project');
@@ -37,7 +82,9 @@ export async function resolveProjectScenes(edit){
 export async function projectSceneBuild(edit){
   const metadata=await resolveProjectScenes(edit);if(!metadata)return null;
   const projectRoot=path.join(ROOT,'Projects',edit.id),packDir=path.posix.dirname(metadata.pack);
-  const sharedMetadata=new Set([path.join(ENGINE,'public','fonts','manifest.json'),path.join(ENGINE,'proxies.json'),path.join(ENGINE,'plates.json')]);
+  // Registries a plate import pulls in. They stay importable, but every prepare or render of ANY project rewrites them, so they never take part in the identity (a prepared project would otherwise go stale whenever another project is prepared).
+  const mutableRegistries=new Set([path.join(ENGINE,'proxies.json'),path.join(ENGINE,'plates.json')]);
+  const sharedMetadata=new Set([path.join(ENGINE,'public','fonts','manifest.json'),...mutableRegistries]);
   const entryFiles=metadata.scenes.map(scene=>path.join(ROOT,packDir,scene.entry));
   const source=metadata.scenes.map((scene,index)=>`import Scene${index} from ${JSON.stringify(entryFiles[index].split(path.sep).join('/'))};`).join('\n')+`\nexport const PROJECT_SCENES = {${metadata.scenes.map((scene,index)=>`${JSON.stringify(scene.id)}:{Component:Scene${index},contract:${JSON.stringify(scene)}}`).join(',')}};\n`;
   const esbuild=engineRequire('esbuild');
@@ -49,14 +96,15 @@ export async function projectSceneBuild(edit){
         const resolved=await build.resolve(args.path,{kind:args.kind,resolveDir:args.resolveDir,pluginData:{checked:true}});
         if(resolved.errors.length)return resolved;
         if(!within(projectRoot,resolved.path)&&!within(path.join(ENGINE,'src'),resolved.path)&&!within(path.join(ENGINE,'node_modules'),resolved.path)&&!sharedMetadata.has(resolved.path))return {errors:[{text:'Project scene import is outside the allowed project and engine modules'}]};
-        return {path:resolved.path,namespace:resolved.namespace,external:resolved.external};
+        // The analysis hashes project and engine sources only. Installed packages stay unbundled, so their own imports (for example node: modules inside @remotion/media) cannot break it.
+        return {path:resolved.path,namespace:resolved.namespace,external:resolved.external||within(path.join(ENGINE,'node_modules'),resolved.path)};
       });
     }}]});
   const paths=[metadata.pack,...Object.keys(result.metafile.inputs).filter(file=>file!=='<stdin>').map(file=>path.relative(ROOT,path.resolve(file)).split(path.sep).join('/'))];
   const files=[];
   for(const relative of [...new Set(paths)].sort()){
     const absolute=path.resolve(ROOT,relative);
-    if(within(path.join(ENGINE,'node_modules'),absolute))continue;
+    if(within(path.join(ENGINE,'node_modules'),absolute)||mutableRegistries.has(absolute))continue;
     await checkedPath(relative,{mustExist:true});
     const bytes=await fs.readFile(absolute);files.push({path:relative,sha256:createHash('sha256').update(bytes).digest('hex')});
     if(within(projectRoot,absolute)&&/\.[cm]?[jt]sx?$/.test(absolute))staticImports(absolute,bytes.toString('utf8'));

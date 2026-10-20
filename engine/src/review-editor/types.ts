@@ -1,6 +1,7 @@
 import type { EditManifest } from "../prepared-edit/schema.ts";
 import type { HeadGuide } from "../prepared-edit/head-guide.ts";
 import type { MouthTable } from "../styles/cartoon/scenes/math.ts";
+import type { ClipIndexEntry } from "../core/clip-schema.ts";
 
 export type { EditManifest };
 
@@ -110,6 +111,8 @@ export type ProjectResponse = {
   needsPrepareReason?: "never-prepared" | "stale-plate";
 
   staticFiles: string[];
+  /** The clips registered for this project with scripts/clips.mjs; empty when there are none. */
+  clips: ClipIndexEntry[];
   hasMotionPlan: boolean;
   motionPlanPath: string | null;
   exportModes: ExportModeInfo[];

@@ -34,6 +34,7 @@ Find a concept with `node scripts/concept-stills.mjs --list --query <idea>`. Rea
 | Compare actual images | `evidence-wipe` or `image-compare` |
 | Emphasize words that were recorded | `kinetic-text` with literal transcript indices |
 | Real screen or source image supports the claim | `screens`, `screen-focus`, or `screen-recording` according to source type |
+| A short real clip illustrates what the speaker names, over the continuing voice | `screens` with `look: "broll"` (full screen or split; silent; never proof; not in cartoon, one-shot or grid-glide) |
 | A countable explainer (steps, tools, options), each with a real capture | `glide-chapter`, `glide-card` and `glide-lines`, only in the `grid-glide` style |
 | The comment call to action and the follow card in the `grid-glide` style | `glide-comment` and `glide-follow`, instead of the shared `comment` and `follow` |
 | A how-to told in one unbroken take (open, put something in, type, choose, wait, receive) | `one-shot`, only in the `one-shot` style |
@@ -47,7 +48,7 @@ The catalog is authoritative for exact inputs and supported lengths. Replace SAM
 
 ## Layout and text contracts
 
-Read the actual schema before specifying a layout. `motion-concept`, `screens`, `image-compare` and `checklist` use takeover. `count` and `outcome` are split-only; `statement`, `kinetic-hook` and `creator-cta` are presenter-only. A source-free graphics project requires takeover coverage throughout, so those presenter/split families cannot fill it.
+Read the actual schema before specifying a layout. `motion-concept`, `screens`, `image-compare` and `checklist` use takeover (`screens` with `look: "broll"` may also use split). `count` and `outcome` are split-only; `statement`, `kinetic-hook` and `creator-cta` are presenter-only. A source-free graphics project requires takeover coverage throughout, so those presenter/split families cannot fill it.
 
 `kinetic-text` uses `sourceIndices` (1–32 literal word indices), `lang`, `enter`, optional per-word `emphasis`, plus `kicker` and `title`. The manifest verifies the selected words against the cut and scene interval. It adds emphasis without replacing the existing caption stream; it cannot supply words for a silent graphics project.
 

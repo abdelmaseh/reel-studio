@@ -50,6 +50,19 @@ const RULES: [RegExp, (m: RegExpExecArray) => string][] = [
   [/^PiP scene (.+?) does not exist/, (m) => `الـ PiP بيشاور على مشهد "${m[1]}" مش موجود.`],
   [/^PiP scene (.+?) must be a takeover/, (m) => `الـ PiP على مشهد "${m[1]}" لازم يبقى takeover.`],
   [/^Chapter palette fails contrast/, () => "ألوان الـ chapter مش واضحة كفاية (contrast ضعيف)."],
+
+  // B-roll rules (engine/src/prepared-edit/broll.ts and the screens schema), in neutral Arabic like BROLL_TEXT. They keep the scene id and the numbers.
+  [/^(.+?): B-roll is not available in the (.+?) style, which draws its own screen\.$/, (m) => `المشهد "${m[1]}": لقطات B-roll غير متاحة في ستايل ${m[2]} لأنه يرسم الشاشة بنفسه. اختر ستايلًا آخر أو احذف المشهد.`],
+  [/^(.+?): B-roll must end before the recorded sign-off\.$/, (m) => `المشهد "${m[1]}": يجب أن ينتهي مشهد B-roll قبل «التوقيع» المسجّل في آخر الفيديو. قصّر المشهد أو انقله إلى موضع أبكر.`],
+  [/^(.+?): B-roll cannot sit on or after the ending scenes\.$/, (m) => `المشهد "${m[1]}": لا يجوز أن يقع مشهد B-roll على مشاهد الختام أو بعدها. ضعه قبلها.`],
+  [/^(.+?): a split B-roll scene needs the presenter on screen; use the full-screen layout\.$/, (m) => `المشهد "${m[1]}": مشهد B-roll بنصف الشاشة يحتاج إلى ظهور المتحدث على الشاشة. اجعل المشهد بملء الشاشة.`],
+  [/^(.+?) step (\d+): the clip would be enlarged ([\d.]+)x in its (\d+)x(\d+) box \(limit ([\d.]+)x\); use (.+)\.$/, (m) => {
+    const advice = [/the split layout/.test(m[7]) ? "اجعل المشهد بنصف الشاشة" : null, /fit "contain"/.test(m[7]) ? "اختر وضع contain" : null, "استخدم لقطة بدقة أعلى"].filter((x): x is string => x !== null);
+    const last = advice.pop();
+    return `المشهد "${m[1]}" (اللقطة ${m[2]}): ستُكبَّر اللقطة ${m[3]} مرة داخل مساحة ${m[4]}×${m[5]} والحد الأقصى ${m[6]} مرة، فتفقد وضوحها. ${advice.length ? `${advice.join("، ")} أو ${last}` : last}.`;
+  }],
+  [/^(.+?): a B-roll scene shown with the presenter window cannot carry a label,/, (m) => `المشهد "${m[1]}": نافذة المتحدث الصغيرة تغطي ركن التسمية، فلا يجوز أن يحمل مشهد B-roll تسمية وهو يظهر معها. احذف التسمية أو أخرج المشهد من مشاهد نافذة المتحدث.`],
+  [/^Only the B-roll look of screens supports the split layout/, () => "نصف الشاشة متاح لشكل B-roll وحده من مشهد الشاشات. اجعل المشهد بملء الشاشة أو بدّل شكله إلى B-roll."],
 ];
 
 

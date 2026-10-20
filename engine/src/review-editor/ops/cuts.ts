@@ -213,7 +213,7 @@ function ripple(m: EditManifest, delta: Delta, segments: Segments, options: CutO
 
   if (next.transitions?.length) {
     const ok = next.transitions.filter((t) => {
-      const problems = graphicsTransitionIssues([{ ...t, kind: t.kind ?? "whiteout" }], next.scenes);
+      const problems = graphicsTransitionIssues([{ ...t, kind: t.kind ?? "whiteout" }], next.scenes, next.projectScenes);
       if (problems.length) dropped.push({ kind: "transition", label: `الـ transition ${t.kind} @${t.atFrame}`, why: explainEnglish(problems[0]) ?? problems[0] });
       return problems.length === 0;
     });

@@ -11,6 +11,7 @@ import {displayDigits} from '../../core/digits.ts';
 import {useDigits,useDisplayText} from '../digits';
 import type {StyleFamily} from '../schema';
 import type {KineticScene} from './schema';
+import {Broll} from './broll';
 import {CAPTION_BAND_HALF,INK_EM,LIFT_TRAVEL,PRESENTER_CAPTION_CENTER,STACK_GAP,liftExcursion,placeTitle,type HeadBoxPx} from '../head-clear.ts';
 
 type Data<F extends KineticScene['family']>=Extract<KineticScene,{family:F}>['data'];
@@ -82,17 +83,20 @@ const Count:React.FC<Common&{data:Data<'count'>;seam:number}>=({theme,motion,dat
   </>;
 };
 
-const Screens:React.FC<Common&{data:Data<'screens'>}>=({theme,motion,data})=>{
+const ScreensWindow:React.FC<Common&{data:Exclude<Data<'screens'>,{look:'broll'}>}>=({theme,motion,data})=>{
   const {frame,fps}=useClock();let phase=0;for(let i=1;i<data.steps.length;i++)if(frame>=data.steps[i].atFrame)phase=i;
   const step=data.steps[phase];const scale=1+clamp01((frame-step.atFrame)/(fps*2))*.025;
   return <><CanvasFill background={theme.background}/><Sequence from={step.atFrame} layout="none"><Title key={phase} theme={theme} motion={motion} kicker={`${data.kicker} / ${String(phase+1).padStart(2,'0')}`} text={step.title}/></Sequence>
     <div style={{position:'absolute',left:95,top:500,width:735,height:775,background:theme.background,border:`3px solid ${theme.text}`,boxShadow:`12px 12px 0 ${theme.text}`,overflow:'hidden'}}>
       <div style={{height:45,background:theme.accent,borderBottom:`3px solid ${theme.text}`,padding:'6px 16px',...mono(theme)}}>● ● ● <span style={{float:'right',fontSize:18,...(arabicCopy(data)?{fontFamily:theme.ar,letterSpacing:0}:{})}}>{cardLabel('source',data)}</span></div>
-      {step.kind==='image'?<Img src={staticFile(step.src)} style={{width:'100%',height:724,objectFit:step.fit,objectPosition:'top',transform:`scale(${scale})`,transformOrigin:'50% 30%'}}/>:<div style={{position:'relative',height:724}}><Sequence from={step.atFrame} layout="none"><Footage src={step.src} muted startFromSec={step.trimBeforeFrame/fps} style={{objectFit:step.fit}}/></Sequence></div>}
+      {step.kind==='image'?<Img src={staticFile(step.src)} style={{width:'100%',height:724,objectFit:step.fit,objectPosition:'top',transform:`scale(${scale})`,transformOrigin:'50% 30%'}}/>:<div style={{position:'relative',height:724}}><Sequence from={step.atFrame} layout="none"><Footage src={step.src} muted startFromSec={step.trimBeforeFrame/fps} objectFit={step.fit}/></Sequence></div>}
     </div>
     <div style={{position:'absolute',left:100,top:1310,display:'flex',gap:18}}>{data.steps.map((_,i)=><div key={i} style={{width:i===phase?90:24,height:10,background:i===phase?theme.text:theme.dim}}/>)}</div>
   </>;
 };
+
+const Screens:React.FC<Common&{data:Data<'screens'>;layout:'takeover'|'split';seam:number}>=({theme,motion,data,layout,seam})=>
+  data.look==='broll'?<Broll theme={theme} data={data} layout={layout} seam={seam}/>:<ScreensWindow theme={theme} motion={motion} data={data}/>;
 
 
 
@@ -181,7 +185,7 @@ export const KineticSceneRenderer:React.FC<{scene:KineticScene;style:StyleFamily
     case 'image-compare':return <ImageCompare {...common} data={scene.data}/>;
     case 'checklist':return <Checklist {...common} data={scene.data}/>;
     case 'count':return <Count {...common} data={scene.data} seam={seam}/>;
-    case 'screens':return <Screens {...common} data={scene.data}/>;
+    case 'screens':return <Screens {...common} data={scene.data} layout={scene.layout} seam={seam}/>;
     case 'statement':return <Statement {...common} data={scene.data} head={headBox}/>;
     case 'outcome':return <Outcome {...common} data={scene.data} seam={seam}/>;
     case 'creator-cta':return <CreatorCTA {...common} data={scene.data} head={headBox}/>;

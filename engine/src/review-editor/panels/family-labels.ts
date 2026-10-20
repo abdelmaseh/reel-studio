@@ -22,3 +22,12 @@ export const SCENES_TEXT = {
   earlierTitle: "بدّل مكان هذا المشهد مع المشهد الذي قبله",
   laterTitle: "بدّل مكان هذا المشهد مع المشهد الذي بعده",
 } as const;
+
+/** Strings of the clip picker inside the scene form, in neutral Arabic. */
+export const CLIP_TEXT = {
+  label: "اللقطة",
+  choose: "اختر لقطة",
+  unregistered: "لقطة غير مسجّلة في المشروع",
+  inPoint: "فريم داخل ملف اللقطة نفسه: النقطة التي تبدأ اللقطة بالتشغيل منها.",
+  none: "لا توجد لقطات مسجّلة في هذا المشروع. اطلب من المساعد تجهيز لقطة من ملف تسمّيه.",
+} as const;

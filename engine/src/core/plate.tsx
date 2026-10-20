@@ -33,9 +33,14 @@ export const Footage: React.FC<{
 
   style?: React.CSSProperties;
 
+  /**
+   * How the footage fills its box. Left unset, each video engine keeps its own default.
+   * On the OffthreadVideo branch an explicit style.objectFit wins over this prop, while the WebCodecs <Video> only honours the prop.
+   */
+  objectFit?: "cover" | "contain";
 
   playbackRate?: number;
-}> = ({ src, startFromSec = 0, muted = false, transparent = false, style, playbackRate }) => {
+}> = ({ src, startFromSec = 0, muted = false, transparent = false, style, objectFit, playbackRate }) => {
   const probe = useProbe();
   const { fps } = useClock();
   const environment = useRemotionEnvironment();
@@ -53,7 +58,9 @@ export const Footage: React.FC<{
   const selectedSrc = resolvePreviewSource({ source: src, transparent, isPreview, registry: proxyRegistry as ProxyRegistry, assets });
   const hasProxy = selectedSrc !== src;
   const useWebCodecs = props.__editorMediaEngine === "webcodecs" && !transparent;
-  const videoStyle: React.CSSProperties = { width: "100%", height: "100%", maxWidth: "none", display: "block", ...style };
+  // OffthreadVideo takes the fill mode as a style, which an explicit style.objectFit still overrides. The WebCodecs <Video> takes it only as its own
+  // objectFit prop: it overwrites style.objectFit with that prop ("contain" when unset) and warns about it, so there it never travels in the style.
+  const videoStyle: React.CSSProperties = { width: "100%", height: "100%", maxWidth: "none", display: "block", ...(objectFit !== undefined && !useWebCodecs ? { objectFit } : {}), ...style };
   if (playbackRate !== undefined && playbackRate !== 1 && !muted) {
     throw new Error(`Footage ${src}: playbackRate ${playbackRate} needs muted — a retimed plate must never carry his speech (CLAUDE.md rule 5)`);
   }
@@ -64,7 +71,7 @@ export const Footage: React.FC<{
   }
   return (
     <>
-    {useWebCodecs ? <Video src={staticFile(selectedSrc)} trimBefore={toFrame(startFromSec, fps)} muted={muted || hasProxy} style={videoStyle} {...rate} /> : <OffthreadVideo
+    {useWebCodecs ? <Video src={staticFile(selectedSrc)} trimBefore={toFrame(startFromSec, fps)} muted={muted || hasProxy} style={videoStyle} objectFit={objectFit} {...rate} /> : <OffthreadVideo
       src={staticFile(selectedSrc)}
       startFrom={toFrame(startFromSec, fps)}
       muted={muted || hasProxy}

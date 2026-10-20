@@ -26,6 +26,13 @@ export const Img = ({src, style}) => React.createElement('img', {src, style});
 export const OffthreadVideo = ({src, style, trimBefore}) => React.createElement('video', {src, style, 'data-trim-before': trimBefore});
 `;
 
+// Opt-in (`plateStub: true`): a plain <video> in place of core/plate, whose Footage needs a registered composition.
+const PLATE_STUB = `
+import React from 'react';
+export const Footage = ({src, startFromSec = 0, muted = false, objectFit, style}) =>
+  React.createElement('video', {'data-footage': src, 'data-start-from-sec': String(startFromSec), 'data-muted': String(muted), 'data-object-fit': objectFit, style});
+`;
+
 // Deterministic stand-in for the browser text measurement of @remotion/layout-utils.
 const LAYOUT_UTILS = `
 const width = (text, o) => {
@@ -62,13 +69,14 @@ const lockManifest = (lock) => ({
   },
 });
 
-const ssrAdapters = ({media = false} = {}) => ({
+const ssrAdapters = ({media = false, plateStub = false} = {}) => ({
   name: 'ssr-adapters',
   setup(b) {
     b.onResolve({filter: /^remotion$/}, () => ({path: 'remotion-shim', namespace: 'engine-test'}));
     b.onResolve({filter: /^@remotion\/layout-utils$/}, () => ({path: 'layout-utils', namespace: 'engine-test'}));
     b.onLoad({filter: /^remotion-shim$/, namespace: 'engine-test'}, () => ({contents: media ? REMOTION_SHIM + MEDIA_SHIM : REMOTION_SHIM, loader: 'js', resolveDir: ROOT}));
     b.onLoad({filter: /^layout-utils$/, namespace: 'engine-test'}, () => ({contents: LAYOUT_UTILS, loader: 'js'}));
+    if (plateStub) b.onLoad({filter: /core[\\/]plate\.tsx$/}, () => ({contents: PLATE_STUB, loader: 'tsx', resolveDir: path.join(ROOT, 'engine', 'src', 'core')}));
     b.onLoad({filter: /core[\\/]fonts\.ts$/}, async ({path: file}) => {
       let source = await readFile(file, 'utf8');
       source = patch(source, /if \(typeof document !== "undefined"\) \{(\s*)const handle/, 'if (false) {$1const handle', 'the module-load font loader');
@@ -80,13 +88,13 @@ const ssrAdapters = ({media = false} = {}) => ({
 });
 
 /** Bundles `entry` (TSX source resolved from the repository root) and returns its exports. */
-export async function bundleEngine(entry, {ssr = false, media = false} = {}) {
+export async function bundleEngine(entry, {ssr = false, media = false, plateStub = false} = {}) {
   const lock = JSON.parse(await readFile(path.join(ROOT, 'versions.lock.json'), 'utf8'));
   const result = await build({
     stdin: {contents: entry, resolveDir: ROOT, loader: 'tsx'},
     nodePaths: [path.join(ROOT, 'engine', 'node_modules')],
     bundle: true, write: false, platform: 'node', format: 'cjs', logLevel: 'silent',
-    plugins: ssr ? [lockManifest(lock), ssrAdapters({media})] : [lockManifest(lock)],
+    plugins: ssr ? [lockManifest(lock), ssrAdapters({media, plateStub})] : [lockManifest(lock)],
   });
   if (ssr) globalThis.document ??= {};
   const module = {exports: {}};

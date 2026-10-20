@@ -11,7 +11,7 @@ Make the idea visible: for every clause the creator speaks, decide what the view
 
 ## Inputs you may read
 
-The analysis artifacts (`analysis.md`, `cut-table.md`, the reviewed transcript), the profile fields in your packet, `instructions/EDITORIAL.md`, `STYLES.md` and the chosen style's guide, `LIBRARY.md`, `MOTION-CHOICES.md`.
+The analysis artifacts (`analysis.md`, `cut-table.md`, the reviewed transcript), the profile fields in your packet, `instructions/EDITORIAL.md`, `STYLES.md` and the chosen style's guide, `LIBRARY.md`, `MOTION-CHOICES.md`, `Projects/<id>/clips.json` (the registered clips, read-only).
 
 ## Steps
 
@@ -39,4 +39,5 @@ Author scene data or a brief; invent a fact, number, result, promise or spoken l
 - Hook: topic + a count or a stake within 2–4 s, designed visual on frame 0; tease, then reveal.
 - Ending grammar: comment keyword typed on screen → follow card → ~1 s silent hold → recorded sign-off whole → hard stop; the last frame is on the lens.
 - Number on screen = number said. Nothing covers the face, hair, beard or baked subtitles. Fill the canvas. "Another version" = a visible method change, not a re-render.
+- B-roll: only registered clips from files the creator named (`Projects/<id>/clips.json`); a clause with no suitable clip gets none. Start on the cue word (up to 6 frames before it), usually 1 to 3 s, hard cuts, silent, never proof of a result, never over the ending, not in cartoon, one-shot or grid-glide. Write the clip id in the `Assets` cell and `screens` with `look: "broll"` in `Implementation`; a clip you need but cannot find in `clips.json` goes into `questions.md` for the manager to register with `scripts/clips.mjs add` (never invent a clip id).
 - Every taste rule above is a default; the creator's latest explicit instruction wins.

@@ -1,6 +1,7 @@
 import { oneShotCues } from '../../engine/src/styles/one-shot/scenes/math.ts';
 import { CARTOON_FAMILIES, cartoonCues } from '../../engine/src/styles/cartoon/scenes/math.ts';
 import { compileEdit } from '../../engine/src/prepared-edit/timeline.ts';
+import { isBrollScene } from '../../engine/src/prepared-edit/broll.ts';
 
 export const CUE_KINDS = Object.freeze(['transition', 'stamp', 'swap', 'click', 'count', 'reveal', 'type']);
 
@@ -53,7 +54,8 @@ export function sceneCues(scene, fps = 30, { words = [] } = {}) {
   const dipEntrance = GLIDE_CUE_FAMILIES.includes(scene.family) && data.enter?.kind === 'dip';
   // A one-shot take starts silent on its home page and a cartoon body opens on its first act: their own cues carry every sound.
   // The cartoon ending's first frame is its flip, so it keeps the scene-start transition.
-  if (scene.family !== 'one-shot' && scene.family !== CARTOON_FAMILIES[0]) add(0, dipEntrance ? 'stamp' : 'transition');
+  // B-roll plays silently under the voice: it gets no cue, neither at its start nor at a clip change.
+  if (!isBrollScene(scene) && scene.family !== 'one-shot' && scene.family !== CARTOON_FAMILIES[0]) add(0, dipEntrance ? 'stamp' : 'transition');
   switch (scene.family) {
     case CARTOON_FAMILIES[0]:
     case CARTOON_FAMILIES[1]:
@@ -107,6 +109,7 @@ export function sceneCues(scene, fps = 30, { words = [] } = {}) {
       break;
     case 'screens':
     case 'screen-focus':
+      if (isBrollScene(scene)) break;
       list(data.steps).forEach((step, index) => {
         if (!step || typeof step !== 'object') return;
         if (index > 0) add(step.atFrame, 'swap');

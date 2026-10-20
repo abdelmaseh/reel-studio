@@ -32,6 +32,8 @@ node scripts/editor.mjs render Projects/<slug>/edit.json
 
 Use supplied or appropriately sourced assets and record their provenance in the project. Relative scene-image paths refer to files under `engine/public/`; keep generated project assets in their own untracked folder. A diagram may be illustrative; label it accordingly. Real numbers and places need reviewed sources.
 
+B-roll clips in a graphics project come only from files the creator names. Register each one with `node scripts/clips.mjs add ... --fps <the graphics spec's rate>` (see [EDITING.md](EDITING.md#named-b-roll-clips)) and place it as a full-screen `screens` beat with `look: "broll"`; there is no presenter, so the split layout and the presenter window do not apply.
+
 For a request to highlight regions on a map, verify the map geometry, region names, islands/enclaves and label positions. Keep the same verified map through successive highlights so the viewer sees where each region belongs. `screens` takeover scenes can sequence supplied/generated annotated map images (`steps`, at most six per scene), with another scene for remaining regions and a final combined view. This is a supplied-asset route, not a built-in geographic database. A `route-stops` diagram alone does not establish region borders. Explain and resolve a missing factual asset rather than quietly substituting an inaccurate outline.
 
 ## Review and deliver

@@ -20,7 +20,7 @@ With no usable head envelope, proposals have `anchor:null` and `status:"NEEDS-RE
 
 An explicit `footage.pip` uses the existing renderer and schema. Supply `x`, `y`, `width`, `height`, `radius`, a source-aspect-preserving `plate:{left,top,width,height}`, and `sceneIds` naming takeover scenes. Keep the measured head inside the rounded window. PiP is supported by split-canvas, kinetic-paper, calligraphic-receipts, paper-collage, judgment-board and stepped-editorial; other styles retain their split presenter window.
 
-The normal planner/preparation/editor preserve this geometry. The schema checks bounds, source aspect, takeover scene IDs and the caption band; source/hash checks still run. The head gate follows the retained source frame and maps the actual PiP window, including horizontal and rounded clipping. Use a top corner, leave room for platform controls and review the real result. For a PiP failure, revise its plate/window geometry and rerun the gate.
+The normal planner/preparation/editor preserve this geometry. The schema checks bounds, source aspect, takeover scene IDs and the caption band; source/hash checks still run. The head gate follows the retained source frame and maps the actual PiP window, including horizontal and rounded clipping. Use a top corner, leave room for platform controls and review the real result. For a PiP failure, revise its plate/window geometry and rerun the gate. Over a split B-roll scene, or a takeover B-roll scene named in `footage.pip.sceneIds`, the presenter plate and the clip are decoded together, so a render with PiP, or with a split B-roll scene, decodes two videos and can be slower than a plain full-screen takeover B-roll scene, which decodes only the clip.
 
 ## Optional forced alignment after text review
 

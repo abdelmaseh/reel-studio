@@ -5,10 +5,12 @@ export const DELIVERY_MAX_FPS = 60;
 export const MOVING_GAP_SEC = 0.1;
 export const MIN_MOTION_GAPS = 10;
 export const DUPLICATE_SHARE = 0.9;
-const HDR = Object.freeze({'arib-std-b67': 'hlg', smpte2084: 'pq'});
+/** The colour transfers that mean HDR, with the short name the tone-mapping filter and the clip records use. */
+export const HDR_TRANSFERS = Object.freeze({'arib-std-b67': 'hlg', smpte2084: 'pq'});
 
 export const BT709_TAGS = 'setparams=color_primaries=bt709:color_trc=bt709:colorspace=bt709:range=tv';
-const ratio = (value) => { const [n, d] = String(value ?? '0/1').split('/').map(Number); return d ? n / d : 0; };
+/** A frame rate as ffprobe writes it ("30000/1001") as a number; 0 when it is missing or has a zero denominator. */
+export const ratio = (value) => { const [n, d] = String(value ?? '0/1').split('/').map(Number); return d ? n / d : 0; };
 
 
 export function describeSource(probe) {
@@ -16,7 +18,7 @@ export function describeSource(probe) {
   if (!video) throw new Error('Intake needs a video stream.');
   const avgFps = ratio(video.avg_frame_rate), taggedFps = ratio(video.r_frame_rate);
   return {codec: video.codec_name, pixFmt: video.pix_fmt ?? null, transfer: video.color_transfer ?? null,
-    hdr: HDR[video.color_transfer] ?? null, avgFps, taggedFps,
+    hdr: HDR_TRANSFERS[video.color_transfer] ?? null, avgFps, taggedFps,
     vfr: !(avgFps > 0) || !(taggedFps > 0) || Math.abs(avgFps - taggedFps) / taggedFps > 0.005, driftFps: Math.abs(avgFps - taggedFps),
     hasAudio: (probe.streams ?? []).some((stream) => stream.codec_type === 'audio'), durationSec: Number(probe.format?.duration) || null};
 }

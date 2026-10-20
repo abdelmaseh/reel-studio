@@ -4,6 +4,7 @@ Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a su
 
 - **Authored graphics** (`scripts/editor.mjs graphics`): a validated source-free specification creates a generated silent base and a normal editable manifest. No fabricated transcript; see `GRAPHICS.md`.
 - **Project-authored scenes** (`engine/src/project-scenes/`): project-local React visuals and declared editable fields use the same preview/render registry and dependency identity. See `PROJECT-SCENES.md`.
+- **B-roll clips** (`scripts/clips.mjs`, `engine/src/core/clip.tsx`, `engine/src/creative-kit/kinetic/broll.tsx`): a named file becomes a silent SDR clip at the project's frame rate; the `broll` look of `screens` and the `clip` field of project scenes play it with hash, size, rate and length checked before the render. See `EDITING.md` and `PROJECT-SCENES.md`.
 - **Recorded-performance controls**: reviewed word/audio camera proposals, supported presenter PiP and optional post-review forced alignment. See `PERFORMANCE.md`; alignment timing remains a draft for listening review.
 - **Motion concepts** (`engine/src/motion-concepts/`): every concept is a normal takeover `motion-concept` scene with their existing typed config and duration floors.
 - **Recorded kinetic text and evidence comparison** (`engine/src/creative-kit/semantic/`): literal recorded word indices for emphasis; supplied image assets for before/after wipes.

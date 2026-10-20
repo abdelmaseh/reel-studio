@@ -90,6 +90,10 @@ Every style except Grid Glide draws the comment card and the follow card with th
 - Pick focus rectangles from stills of the recording. Take click points and times only from frames where the recording's own pointer visibly presses; otherwise leave the click out. The planner refuses keys that enlarge the recording more than 1.25x (text turns soft) and callouts that land outside the safe zone.
 - A screen capture inside a presenter video is a different tool: the `screen-focus` scene family with its own capture file.
 
+## B-roll availability
+
+The B-roll look of `screens` works in every style except `cartoon`, `one-shot` and `grid-glide`, which draw their own screen. The presenter window over a B-roll takeover scene needs a style whose `pip` policy allows it (see [PERFORMANCE.md](PERFORMANCE.md)).
+
 ## Select, adapt and prove the direction
 
 Recommend a direction by the message's dominant function and source needs, preserving an explicit or saved fixed choice. Compare the same representative passage when alternatives remain consequential. Implement the relevant decisions in actual scene data/code and asset placement, then review through [VISUAL-REVIEW.md](VISUAL-REVIEW.md). A matching palette alone does not show style fidelity, and a successful technical gate does not establish creative acceptance.
