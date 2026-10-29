@@ -16,6 +16,13 @@ export const PREVIEW_FAMILIES = Object.freeze([
   {alias: 'Noto Kufi Arabic', parts: [{source: 'Noto Kufi Arabic', weights: [400], css: '100 900'}]},
   {alias: 'Readex Pro', parts: [{source: 'Readex Pro', weights: [400], css: '160 700'}]},
   {alias: 'El Messiri', parts: [{source: 'El Messiri', weights: [400], css: '400 700'}]},
+  {alias: 'Lalezar', parts: [{source: 'Lalezar', weights: [400]}]},
+  {alias: 'Aref Ruqaa', parts: [{source: 'Aref Ruqaa', weights: [400, 700]}]},
+  {alias: 'Aref Ruqaa Ink', parts: [{source: 'Aref Ruqaa Ink', weights: [400, 700]}]},
+  {alias: 'Reem Kufi', parts: [{source: 'Reem Kufi', weights: [400], css: '400 700'}]},
+  {alias: 'Amiri', parts: [{source: 'Amiri', weights: [400, 700]}]},
+  {alias: 'Alexandria', parts: [{source: 'Alexandria', weights: [400], css: '100 900'}]},
+  {alias: 'Marhey', parts: [{source: 'Marhey', weights: [400], css: '300 700'}]},
 ]);
 
 /** `{alias, face, css}` for every lock font a preview family needs; `css` is its font-weight. */

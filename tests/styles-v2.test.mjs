@@ -8,6 +8,7 @@ import {editSceneSchema, editManifestSchema} from '../engine/src/prepared-edit/s
 import {resolvePalette, planSfxEvents, loadStylePalettes} from '../scripts/lib/sfx-events.mjs';
 import {sceneCues} from '../scripts/lib/scene-cues.mjs';
 import {verifyKineticAssets} from '../scripts/lib/prepared-props.mjs';
+import {STYLE_IDS, STYLE_ALIASES} from '../engine/src/styles/registry.ts';
 
 const baseProfile = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
 const source = {path:'Raw/example.mp4', sha256:'a'.repeat(64), fps:30, width:1080, height:1920, totalFrames:180};
@@ -21,7 +22,7 @@ export const samples = {
   'chapter-quote': {chapter:'01', title:'Start with the question', quote:'A clear question makes the next step easier.', speaker:'Example speaker', role:'Host', quoteFrame:25},
   'route-stops': {kicker:'THE ROUTE', title:'Follow the learning journey', stops:[{label:'Start', detail:'Choose the question', atFrame:10},{label:'Explore', detail:'Compare the options', atFrame:35},{label:'Review', detail:'Check the result', atFrame:60}], footer:'One useful step at a time'},
 };
-const styleFor = {'token-lens':'liquid-glass','meter-receipt':'liquid-glass','ticket-offer':'campaign-tickets','comment-stack':'campaign-tickets','chapter-quote':'magazine-interview','route-stops':'scrapbook-route'};
+const styleFor = {'token-lens':'liquid-glass','meter-receipt':'liquid-glass','ticket-offer':'kinetic-paper','comment-stack':'kinetic-paper','chapter-quote':'magazine-interview','route-stops':'documentary'};
 const scene = (family, data=samples[family]) => ({id:'example', family, layout:'split', motion:'land', fromFrame:0, durationInFrames:90, data:structuredClone(data)});
 function brief(family='intro', style) {
   return {version:1,id:'style-v2',source:source.path, transcript:'Projects/style-v2/words.json',purpose:'explainer',tone:'calm',
@@ -42,11 +43,22 @@ test('four fixed style preferences reach validated manifests with editable seman
   }
 });
 
-test('semantic beats qualify new recommendations while old automatic and explicit choices persist', () => {
-  for(const [family,style] of Object.entries(styleFor)) assert.equal(recommendEditorStyle(brief(family)).style,style);
+test('semantic beats use the V4 recommendations while every explicit and saved style resolves', () => {
+  const automatic = {...styleFor, 'meter-receipt': 'calligraphic-receipts'};
+  for(const [family,style] of Object.entries(automatic)) assert.equal(recommendEditorStyle(brief(family)).style,style, family);
   assert.equal(recommendEditorStyle(brief()).style,'section-deck');
-  for(const style of ['split-canvas','section-deck','kinetic-paper','calligraphic-receipts','paper-collage','judgment-board','stepped-editorial']) {
+  for(const style of STYLE_IDS) {
     assert.equal(recommendEditorStyle(brief('token-lens',style)).style,style);
+  }
+  for (const [alias, replacement] of Object.entries(STYLE_ALIASES)) {
+    assert.equal(recommendEditorStyle(brief('intro', alias)).style, replacement, `explicit ${alias}`);
+    const profile = {...baseProfile, schemaVersion: 3, preferences: defaultPreferences()};
+    profile.preferences.style = {mode: 'fixed', value: alias};
+    const saved = profileToBrief(normalizeProfile(profile));
+    assert.equal(saved.preferences.style.value, replacement, `saved ${alias}`);
+    const manifest = buildEditorPlan({...brief(), ...saved}, source, []).manifest;
+    assert.equal(manifest.style, replacement, `manifest ${alias}`);
+    assert.equal(editManifestSchema.safeParse(manifest).success, true);
   }
 });
 

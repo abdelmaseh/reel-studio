@@ -127,6 +127,11 @@ export function deleteCameraKey(m: EditManifest, index: number): OpResult {
 
 type Transition = NonNullable<EditManifest["transitions"]>[number];
 export const TRANSITION_DEFAULTS: Record<TransitionKind, { durationInFrames: number; dir?: TransitionDir }> = {
+  'ink-slab': {durationInFrames:12},
+  'magazine-flip': {durationInFrames:14},
+  'lens-zoom': {durationInFrames:14},
+  'paper-pull': {durationInFrames:14},
+  'paper-swap': {durationInFrames:14},
   whiteout: { durationInFrames: 8 },
   leak: { durationInFrames: 16 },
   bloom: { durationInFrames: 16 },
@@ -135,6 +140,15 @@ export const TRANSITION_DEFAULTS: Record<TransitionKind, { durationInFrames: num
   "clip-wipe": { durationInFrames: 14, dir: "rtl" },
   "light-scan": { durationInFrames: 16, dir: "rtl" },
   "hue-crossfade": { durationInFrames: 12 },
+  iris: { durationInFrames: 18 },
+  keyhole: { durationInFrames: 24 },
+  blinds: { durationInFrames: 24 },
+  "dot-zoom": { durationInFrames: 33 },
+  "zoom-through": { durationInFrames: 18 },
+  "paper-tear": { durationInFrames: 24 },
+  "page-turn": { durationInFrames: 24 },
+  "pen-dot-curtain": { durationInFrames: 66 },
+  "pixel-curtain": { durationInFrames: 24 },
 };
 const isEntrance = (kind: string) => (GRAPHICS_ENTRANCE_KINDS as readonly string[]).includes(kind);
 
@@ -143,10 +157,10 @@ function sceneStartFor(m: EditManifest, frame: number) {
   return m.scenes.find((s) => frame >= s.fromFrame && frame < sceneEnd(s)) ?? m.scenes.find((s) => s.fromFrame >= frame) ?? m.scenes.at(-1);
 }
 
-export type TransitionPatch = { atFrame?: number; durationInFrames?: number; kind?: TransitionKind; dir?: TransitionDir | null };
+export type TransitionPatch = { atFrame?: number; durationInFrames?: number; kind?: TransitionKind; dir?: TransitionDir | null; shape?:Transition['shape']|null; origin?:Transition['origin']|null };
 
 
-function shapeTransition(m: EditManifest, base: { atFrame: number; durationInFrames: number; kind: TransitionKind; dir?: TransitionDir }): { t: Transition; notes: string[] } | { error: string } {
+function shapeTransition(m: EditManifest, base: Transition): { t: Transition; notes: string[] } | { error: string } {
   const notes: string[] = [];
   const total = totalFrames(m);
   let at = Math.round(base.atFrame);
@@ -165,16 +179,20 @@ function shapeTransition(m: EditManifest, base: { atFrame: number; durationInFra
   }
   const t: Transition = { atFrame: at, durationInFrames: duration, kind: base.kind };
   if (base.dir && isEntrance(base.kind)) t.dir = base.dir;
+  if (['clip-wipe','iris','keyhole','dot-zoom'].includes(base.kind)) {
+    if (base.shape !== undefined) t.shape = base.shape;
+    if (base.origin !== undefined) t.origin = base.origin;
+  }
   return { t, notes };
 }
 
-export function addTransition(m: EditManifest, o: { atFrame: number; kind?: TransitionKind; durationInFrames?: number; dir?: TransitionDir }): OpResult<{ index: number }> {
+export function addTransition(m: EditManifest, o: { atFrame: number; kind?: TransitionKind; durationInFrames?: number; dir?: TransitionDir; shape?:Transition['shape']; origin?:Transition['origin'] }): OpResult<{ index: number }> {
   const kind = o.kind ?? "whiteout";
   if (!(TRANSITION_KINDS as readonly string[]).includes(kind)) return refuse(`نوع الـ transition لازم يكون واحد من: ${TRANSITION_KINDS.join(" / ")}.`);
   if (!finite(o.atFrame)) return refuse("الفريم لازم يبقى رقم.");
   if (o.dir !== undefined && !(TRANSITION_DIRS as readonly string[]).includes(o.dir)) return refuse(`الاتجاه لازم يكون واحد من: ${TRANSITION_DIRS.join(" / ")}.`);
   const d = TRANSITION_DEFAULTS[kind];
-  const shaped = shapeTransition(m, { atFrame: o.atFrame, kind, durationInFrames: o.durationInFrames ?? d.durationInFrames, dir: o.dir ?? d.dir });
+  const shaped = shapeTransition(m, { atFrame: o.atFrame, kind, durationInFrames: o.durationInFrames ?? d.durationInFrames, dir: o.dir ?? d.dir, shape:o.shape, origin:o.origin });
   if ("error" in shaped) return refuse(shaped.error);
   const [transitions, index] = insertSorted(m.transitions ?? [], shaped.t, (t) => t.atFrame);
   return finalize(m, { ...m, transitions }, { index }, shaped.notes);
@@ -191,7 +209,9 @@ export function updateTransition(m: EditManifest, index: number, patch: Transiti
   if (!finite(atFrame) || !finite(durationInFrames)) return refuse("القيمة لازم تبقى رقم.");
   let dir: TransitionDir | undefined = patch.dir === null ? undefined : (patch.dir ?? t.dir);
   if (dir === undefined && isEntrance(kind) && patch.kind && patch.kind !== t.kind) dir = TRANSITION_DEFAULTS[kind].dir;
-  const shaped = shapeTransition(m, { atFrame, durationInFrames, kind, dir });
+  const shape=patch.shape===null?undefined:patch.shape??(kind===t.kind?t.shape:undefined);
+  const origin=patch.origin===null?undefined:patch.origin??t.origin;
+  const shaped = shapeTransition(m, { atFrame, durationInFrames, kind, dir, shape, origin });
   if ("error" in shaped) return refuse(shaped.error);
   const rest = removeAt(list, index);
   const [transitions, at] = insertSorted(rest, shaped.t, (x) => x.atFrame);

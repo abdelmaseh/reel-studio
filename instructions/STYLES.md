@@ -11,27 +11,37 @@ Generated from the style registry (`engine/src/styles/registry.ts`) by `node scr
 <!-- styles:table:start -->
 | Style | Label | Best for | Brand colours | Own scenes |
 | --- | --- | --- | --- | --- |
-| <a id="split-canvas"></a>[`split-canvas`](styles/split-canvas.md) | Split canvas · شرح بصري | explainer, tutorial | profile colours | none |
 | <a id="section-deck"></a>[`section-deck`](styles/section-deck.md) | Section deck · خطوات منظمة | explainer, tutorial, comparison | profile colours | none |
 | <a id="kinetic-paper"></a>[`kinetic-paper`](styles/kinetic-paper.md) | Kinetic paper · ورق متحرك | explainer, comparison, tutorial | own palette | none |
-| <a id="calligraphic-receipts"></a>[`calligraphic-receipts`](styles/calligraphic-receipts.md) | Calligraphic receipts · أدلة وأرقام | case-study, story, opinion | own palette | none |
+| <a id="calligraphic-receipts"></a>[`calligraphic-receipts`](styles/calligraphic-receipts.md) | Calligraphic receipts · أدلة وأرقام | case-study, story, opinion | own palette | `claim-proof` |
 | <a id="paper-collage"></a>[`paper-collage`](styles/paper-collage.md) | Paper collage · كولاج | story, comparison, case-study | own palette | none |
-| <a id="judgment-board"></a>[`judgment-board`](styles/judgment-board.md) | Judgment board · مقارنة ورأي | comparison, opinion, case-study | own palette | none |
-| <a id="stepped-editorial"></a>[`stepped-editorial`](styles/stepped-editorial.md) | Stepped editorial · تحريري | opinion, case-study, story | own palette | none |
 | <a id="liquid-glass"></a>[`liquid-glass`](styles/liquid-glass.md) | Liquid glass · زجاج مضيء | explainer, tutorial, comparison | own palette | none |
-| <a id="campaign-tickets"></a>[`campaign-tickets`](styles/campaign-tickets.md) | Campaign tickets · تذاكر وحملات | explainer, case-study, story | own palette | none |
-| <a id="magazine-interview"></a>[`magazine-interview`](styles/magazine-interview.md) | Magazine interview · حوار مجلة | opinion, case-study, story | own palette | none |
-| <a id="scrapbook-route"></a>[`scrapbook-route`](styles/scrapbook-route.md) | Scrapbook route · رحلة على ورق | story, tutorial, case-study | own palette | none |
+| <a id="magazine-interview"></a>[`magazine-interview`](styles/magazine-interview.md) | Magazine interview · مجلة | opinion, case-study, story | own palette | `verdict` |
 | <a id="grid-glide"></a>[`grid-glide`](styles/grid-glide.md) | Grid glide · كلمات وكروت | explainer, tutorial, comparison | own palette | `glide-chapter`, `glide-card`, `glide-lines`, `glide-comment`, `glide-follow` |
 | <a id="one-shot"></a>[`one-shot`](styles/one-shot.md) | One shot · ونشوت | tutorial, explainer | own palette | `one-shot` |
 | <a id="cartoon"></a>[`cartoon`](styles/cartoon.md) | Cartoon · كارتون | explainer, tutorial, comparison | own palette | `cartoon`, `cartoon-ending` |
+| <a id="documentary"></a>[`documentary`](styles/documentary.md) | Documentary · وثائقي | explainer, case-study, story | own palette | `map-route`, `map-focus`, `cutout-card` |
+| <a id="layered-speaker"></a>[`layered-speaker`](styles/layered-speaker.md) | Layered speaker · حوالين المتكلم | opinion, story, explainer | own palette | `layered-speaker` |
 <!-- styles:table:end -->
 
 ## Choosing a style
 
 Apply the current request's delegated choices or directed overrides through [PRODUCTION-MANAGER.md](PRODUCTION-MANAGER.md). Preserve real review requirements and existing approvals; do not repeat settled aesthetic decisions.
 
-**split-canvas** and **section-deck** were refined on real footage first and are the proven styles. Every other style is newer: every edit still needs the creator's own creative approval, and a newer style that keeps its own palette adds a plan notice that brand colours do not apply. For a newer style always show the fast preview (`EDITING.md` step 5) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
+**section-deck** was refined on real footage first and are the proven styles. Every other style is newer: every edit still needs the creator's own creative approval, and a newer style that keeps its own palette adds a plan notice that brand colours do not apply. For a newer style always show the fast preview (`EDITING.md` step 5) first. If it shows clipped text, a broken layout or an unreadable frame, say so in one line and offer a proven style instead. Never deliver a style whose preview failed.
+
+## Looks
+
+A look is a finish over the whole picture, not a style. It is the root key `look` of the edit manifest and works over any style:
+
+| `look` | What it does |
+| --- | --- |
+| `{"kind":"riso"}` | Two-ink print: the footage and the scenes are separated into two inks with grain, a few pixels of plate misregistration and warm paper. Optional `inks`: two different `#RRGGBB` colours, the first carries lines and shadows, the second the warm tones (default blue and pink); the editor refuses a pair that is too close or too pale to read |
+| `{"kind":"blueprint"}` | Blue paper, white line work along every edge, a fine grid and drawing marks without any words or numbers |
+| `{"kind":"film"}` | The picture keeps its colours; a fine grain that changes every frame and slightly darker corners are laid over it. No options |
+| `{"kind":"paper"}` | The picture printed on a sheet: a still paper texture multiplied over it at half strength, so skin and type stay natural. No options |
+
+`riso` and `blueprint` recolour the footage and the scenes, the presenter included, so do not offer them when profile brand colours or natural skin tone must stay. `film` and `paper` keep the colours and only add one layer over the picture; paper can only darken. Review stills: grain and thin line work eat small text. Captions, transition overlays and sound are not filtered and are drawn on top; under `riso` and `blueprint` a caption that has no backing of its own (the minimal shape, and the transparent pills of `calligraphic-receipts` and `magazine-interview`) is drawn on a chip in the look's colours, so every caption stays readable; `film` and `paper` need no chip. Set it in the editor's «المظهر» tab, or put the same `look` object in the brief when the creator asks for it before planning; the planner copies it to the manifest. `riso` and `blueprint` add roughly a third of a second to each rendered frame and `film` about 0.12 to 0.18 s; `paper` costs a few seconds once, on the first frame. A look is never a saved preference. The backdrops `girih`, `sunburst` and `paper` are not looks: they are the `backdrop` option of an `arabic-type` scene ([MOTION-CHOICES.md](MOTION-CHOICES.md)). The `paper` backdrop is a light grain over the style's own ground and is barely visible on dark styles.
 
 ## Recipes
 

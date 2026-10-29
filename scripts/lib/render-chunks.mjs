@@ -10,15 +10,18 @@ export const CHUNK_POLICY={version:1,audio:'one-full-duration-track',scan:'decod
 export const chunkProfile=preset=>preset==='ultrafast'?'Constrained Baseline':'High';
 export const canonical=value=>JSON.stringify(value,(_key,item)=>item&&typeof item==='object'&&!Array.isArray(item)?Object.fromEntries(Object.entries(item).sort(([a],[b])=>a.localeCompare(b))):item);
 export async function contentHash(file){const hash=createHash('sha256');for await(const data of createReadStream(file))hash.update(data);return hash.digest('hex');}
-const referencedFiles=(props,engineRoot)=>{
+// A proof-screen scene names its camera move in data.path (tilt-in, glide, focus); that value is not a file.
+const MOVE_PATH_FAMILIES=new Set(['proof-screen']);
+export const referencedFiles=(props,engineRoot)=>{
   const files=[];
-  const collect=value=>{
+  const collect=(value,pathIsMove=false)=>{
     if(!value||typeof value!=='object')return;
     for(const [key,item]of Object.entries(value)){
       if(typeof item==='string'&&['src','path'].includes(key)){
+        if(key==='path'&&pathIsMove)continue;
         if(/^https?:|^data:/i.test(item))throw new Error('Chunk resume requires local, immutable media inputs.');
         files.push(path.isAbsolute(item)?item:key==='src'?path.join(engineRoot,'public',item):path.resolve(ROOT,item));
-      }else if(typeof item==='object')collect(item);
+      }else if(typeof item==='object')collect(item,key==='data'&&MOVE_PATH_FAMILIES.has(value.family));
     }
   };collect(props);return files;
 };

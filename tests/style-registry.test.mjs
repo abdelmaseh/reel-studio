@@ -4,13 +4,15 @@ import {promises as fs, readdirSync} from 'node:fs';
 import path from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {ROOT} from '../scripts/lib/project-paths.mjs';
+import {v4Baseline} from './helpers/v4-baseline.mjs';
 import * as registry from '../engine/src/styles/registry.ts';
 import {CAPTION_PRESENTATION, EDITOR_TONES, FONT_CHOICES, STYLE_USE_CASES} from '../engine/src/styles/types.ts';
 
 // The fixture holds the hand-written lists as they were before they moved into engine/src/styles/.
 // Later styles are appended to the registry, so every comparison is limited to the styles it recorded.
 const fixture = JSON.parse(await fs.readFile(path.join(ROOT, 'tests', 'fixtures', 'style-baselines.json'), 'utf8'));
-const {lists} = fixture;
+const v4Director = JSON.parse(await fs.readFile(path.join(ROOT, 'tests', 'fixtures', 'v4-director-tables.json'), 'utf8'));
+const {lists} = v4Baseline(fixture);
 const recorded = fixture.styles;
 const STYLES_DIR = path.join(ROOT, 'engine', 'src', 'styles');
 
@@ -18,6 +20,8 @@ const restrict = (record) => Object.fromEntries(Object.entries(record).filter(([
 const metaOf = (id) => registry.getStyleMeta(id);
 
 test('the registry keeps the recorded order, with unique ids', () => {
+  assert.deepEqual([...registry.STYLE_IDS], v4Director.styleIds);
+  assert.equal(registry.STYLE_IDS.length, 11);
   assert.deepEqual(registry.STYLE_IDS.slice(0, recorded.length), recorded);
   assert.deepEqual(registry.STYLE_IDS.slice(0, recorded.length), lists.styleIds);
   assert.equal(new Set(registry.STYLE_IDS).size, registry.STYLE_IDS.length);
@@ -62,11 +66,15 @@ test('PiP policy, brand styles, legacy styles and mix profiles equal the recorde
 
 test('purpose fit, tone fit and semantic eligibility equal the recorded director tables', () => {
   const purposes = registry.purposeFit(), tones = registry.toneFit();
+  assert.deepEqual(purposes, v4Director.purposeFit);
+  assert.deepEqual(tones, v4Director.toneFit);
+  assert.deepEqual(registry.semanticEligibility(), v4Director.eligibility);
   assert.deepEqual(Object.keys(purposes).sort(), [...STYLE_USE_CASES].sort());
   assert.deepEqual(Object.keys(tones).sort(), [...EDITOR_TONES].sort());
   for (const purpose of STYLE_USE_CASES) assert.deepEqual(restrict(purposes[purpose]), lists.purposeFit[purpose], purpose);
   for (const tone of EDITOR_TONES) assert.deepEqual(restrict(tones[tone]), lists.toneFit[tone], tone);
-  assert.deepEqual(restrict(registry.semanticEligibility()), lists.eligibility);
+  assert.deepEqual(Object.fromEntries(Object.entries(restrict(registry.semanticEligibility())).map(([id, families]) => [id, [...families].sort()])),
+    Object.fromEntries(Object.entries(restrict(v4Director.eligibility)).map(([id, families]) => [id, [...families].sort()])));
 });
 
 test('unknown ids keep the original fallbacks and error text', () => {
@@ -96,7 +104,7 @@ test('every meta stays inside the shared vocabulary', () => {
       assert.equal(registry.ownSceneStyle(family), meta.id);
     }
   }
-  assert.deepEqual(registry.STYLE_METAS.filter((meta) => meta.legacy).map((meta) => meta.id), ['split-canvas', 'section-deck']);
+  assert.deepEqual(registry.STYLE_METAS.filter((meta) => meta.legacy).map((meta) => meta.id), ['section-deck']);
 });
 
 test('the registry, the styles facade and the preference options load in plain Node with no packages', async (t) => {

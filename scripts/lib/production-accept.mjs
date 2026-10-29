@@ -1,7 +1,9 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {ROOT,readJson,atomicJson,relativePath} from './job-paths.mjs';
 import {checkText} from './text-check.mjs';
+import {checkArabic,installedFonts} from './arabic-check.mjs';
 import {loadSoundCatalog} from './job-sound.mjs';
 
 export const ACCEPT_ROLES=Object.freeze(['analysis','editorial','assets','sound','edit','qa','delivery']);
@@ -78,7 +80,7 @@ async function acceptEditorial({task}){
   const sameBeats=rows.map(row=>row[1]).join('\n')===plan.beats.map(beat=>beat.id).join('\n');
   checks.push(check('plan-table',sameBeats&&rows.every(row=>row.length>=13&&row.slice(1).every(cell=>cell.length>0)),`EDITORIAL_PLAN.md has one complete 13-column row per plan beat, same ids in the same order (${rows.length} rows, ${plan.beats.length} beats)`));
   const styleLine=/^Style: (\S+) — .+/m.exec(markdown);
-  checks.push(check('style-line',!!styleLine&&styleLine[1]===plan.style,`Style line names plan.style (${plan.style}) with a plain reason`));
+  checks.push(check('style-line',!!styleLine&&normalizeStyleId(styleLine[1])===normalizeStyleId(plan.style),`Style line names plan.style (${plan.style}) with a plain reason`));
   const kinds=['visual','evidence','text','presenter'];
   checks.push(check('beat-kinds',plan.beats.every(beat=>kinds.includes(beat.kind)),`each beat kind is one of ${kinds.join(', ')}`));
   let ordered=true,last=0;for(const beat of plan.beats){if(!(beat.fromSec>=last&&beat.toSec>beat.fromSec))ordered=false;last=beat.toSec;}
@@ -160,6 +162,10 @@ async function acceptEdit({task,project,transcript,deliver}){
   }
   const textResult=checkText(manifest,{transcriptWords,explanatoryText:report.explanatoryText??[],evidence:report.evidence??[]});
   checks.push(check('text-check',textResult.ok,textResult.ok?'on-screen text is spoken, listed or evidenced':textResult.problems.join('; ')));
+  // Broken Arabic joins and glyphs the font lacks stop here; the items that need eyes are decided later, in the QA report.
+  const arabic=checkArabic({manifest,fonts:installedFonts()});
+  checks.push(check('arabic-check',arabic.ok,arabic.ok?'no broken Arabic joins or missing glyphs':arabic.problems.filter(problem=>problem.level==='fail').map(problem=>`${problem.code} at ${problem.where}`).join('; ')));
+  if(arabic.counts.needsReview)checks.push(warn('arabic-review',`${arabic.counts.needsReview} Arabic item(s) need a written decision in the QA report: ${[...new Set(arabic.problems.filter(problem=>problem.level==='needs-review').map(problem=>problem.code))].join(', ')} (node scripts/arabic-check.mjs --manifest ${task}/edit.json)`));
   const minutes=editedMinutes(manifest),band=await bandFor({style:manifest.style,tone:brief.tone,override:report.band});
   const sounds=manifest.sounds??[];
   if(!sounds.length)checks.push(warn('cue-density','the candidate has no sound events'));
@@ -176,7 +182,7 @@ async function acceptEdit({task,project,transcript,deliver}){
   return checks;
 }
 
-async function acceptQa({task}){
+async function acceptQa({task,project}){
   const checks=[];
   const report=await exists(`${task}/QC_REPORT.md`)?await read(`${task}/QC_REPORT.md`):'';
   checks.push(check('report',report.length>0,'QC_REPORT.md present'));
@@ -186,6 +192,17 @@ async function acceptQa({task}){
   checks.push(check('safe-report',!!safe&&await exists(`${safe[1].replace(/\/summary\.md$/,'')}/summary.md`),'Safe zones cites a report folder with summary.md'));
   const needs=report.split('\n').filter(line=>/NEEDS-REVIEW/.test(line)).length,decisions=report.split('\n').filter(line=>/^\s*Decision:\s*\S/.test(line)).length;
   checks.push(check('needs-review-decided',decisions>=needs,`${needs} NEEDS-REVIEW line(s), ${decisions} Decision line(s)`));
+  // Arabic: a broken join in the live edit fails; every item that needs review needs its own written Decision line under "## Arabic".
+  const live=await load(`Projects/${project}/edit.json`,[]);
+  if(live){
+    const arabic=checkArabic({manifest:live,fonts:installedFonts()});
+    if(!arabic.ok)checks.push(check('arabic-clean',false,arabic.problems.filter(problem=>problem.level==='fail').map(problem=>`${problem.code} at ${problem.where}`).join('; ')));
+    if(arabic.counts.needsReview){
+      const section=/\n## Arabic\n([\s\S]*?)(?=\n## |$)/.exec(`\n${report.replace(/\r\n/g,'\n')}`);
+      const decided=section?(section[1].match(/^\s*Decision:\s*\S/gm)??[]).length:0;
+      checks.push(check('arabic-decided',decided>=arabic.counts.needsReview,`${arabic.counts.needsReview} Arabic item(s) to review, ${decided} Decision line(s) under ## Arabic`));
+    }
+  }
   checks.push(check('ig-check',await exists(`${task}/ig-check.json`),'ig-check.json present'));
   checks.push(check('no-acceptance-wording',!/(creator|المستخدم|صانع المحتوى)[^\n]{0,40}(accepted|approved|وافق|اعتمد)|(accepted|approved)\s+by\s+(the\s+)?creator/i.test(report),'no creator acceptance wording'));
   return checks;

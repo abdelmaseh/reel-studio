@@ -12,10 +12,26 @@ Reel Studio's own code is released under the MIT License (see `LICENSE`). The to
 | Chrome Headless Shell (used by Remotion to render) | 149.0.7790.0 | BSD-3-Clause (Chromium) and bundled third-party licenses | https://developer.chrome.com/blog/chrome-headless-shell |
 | MediaPipe face detector model `blazeface-short-range-float16-v1` | - | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector |
 | MediaPipe face detector model `blazeface-full-range-float16-v1` | - | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/face_detector |
+| MediaPipe selfie segmenter model `selfie-segmenter-float16-v1` (the person matte of the layered-speaker style) | - | Apache-2.0 | https://ai.google.dev/edge/mediapipe/solutions/vision/image_segmenter |
 
 ## Fonts
 
-Downloaded from Google Fonts under the SIL Open Font License 1.1: Cairo, El Messiri, IBM Plex Mono, IBM Plex Sans Arabic, Inter, Noto Kufi Arabic, Noto Naskh Arabic, Readex Pro, Source Serif 4, Tajawal.
+Downloaded from Google Fonts under the SIL Open Font License 1.1: Alexandria, Amiri, Aref Ruqaa, Aref Ruqaa Ink, Cairo, El Messiri, IBM Plex Mono, IBM Plex Sans Arabic, Inter, Lalezar, Marhey, Noto Kufi Arabic, Noto Naskh Arabic, Readex Pro, Reem Kufi, Source Serif 4, Tajawal.
+
+## Bundled sounds (provenance ledger)
+
+`Sound-Kits/cc0/` holds a small set of short recorded sounds. Every file is CC0 1.0 (public domain, no credit required) and none is music. `Sound-Kits/cc0/ledger.json` is the ledger: for each file it records where it came from, the source size and the SHA-256 of the file as shipped. A sound is added only with its ledger entry. All other sound effects are synthesized by `scripts/sfx.mjs`.
+
+## Animated icons and emoji
+
+Small curated files in `engine/public/stickers/`, played by `engine/src/core/lottie-icon.tsx`. The file lists, sizes and pinned source urls are in `third-party/icons/README.md` and `third-party/emoji/README.md`; each source keeps its license text in that folder.
+
+| Component | License | Source |
+|---|---|---|
+| useAnimations animated icons | MIT. Text: [license](third-party/icons/LICENSE-useanimations) | https://github.com/useanimations/react-useanimations |
+| Meteocons weather icons (Lottie, fill style) | MIT. Text: [license](third-party/icons/LICENSE-meteocons) | https://github.com/basmilius/meteocons |
+| Google Noto Animated Emoji | CC BY 4.0. Credit: "Animated Noto Emoji by Google, licensed under CC BY 4.0." See [notice](third-party/emoji/NOTICE-noto-animated-emoji.md) | https://googlefonts.github.io/noto-emoji-animation/ |
+| Microsoft Fluent Emoji (Color, SVG) | MIT. Text: [license](third-party/emoji/LICENSE-fluent-emoji) | https://github.com/microsoft/fluentui-emoji |
 
 ## Libraries and tools used by the engine
 

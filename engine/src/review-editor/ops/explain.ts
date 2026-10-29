@@ -23,7 +23,9 @@ const RULES: [RegExp, (m: RegExpExecArray) => string][] = [
   [/^(.+?): bar comparisons need at least two/, (m) => `المشهد "${m[1]}": مقارنة الـ bars محتاجة رقمين على الأقل.`],
   [/^(.+?): bar comparisons need a takeover/, (m) => `المشهد "${m[1]}": مقارنة الـ bars لازم تبقى takeover.`],
 
-  [/dir applies only to whip-pan/, () => "الاتجاه (dir) بيشتغل بس مع whip-pan و clip-wipe و light-scan."],
+  [/dir applies only to graphics entrances/, () => "الاتجاه (dir) بيشتغل بس مع مداخل الجرافيك."],
+  [/shape and origin apply only/, () => "شكل القناع ومكان بدايته متاحين للمسح والدائرة وثقب المفتاح وزووم النقطة."],
+  [/Unknown transition kind/, () => "نوع الانتقال مش مسجل؛ اختار نوع من القائمة."],
   [/^(\S+) at (\d+) must start on a scene's first frame/, (m) => `الـ ${m[1]} لازم يبدأ عند أول فريم في مشهد (فريم ${m[2]} مش بداية مشهد).`],
   [/^(\S+) at (\d+) is longer than scene (.+)\.$/, (m) => `الـ ${m[1]} أطول من المشهد "${m[3]}".`],
   [/^(\S+) cannot run on presenter scene (.+?):/, (m) => `الـ ${m[1]} مينفعش على مشهد presenter ("${m[2]}") عشان مبيتحركش حاجة فوق وشه.`],
@@ -42,6 +44,9 @@ const RULES: [RegExp, (m: RegExpExecArray) => string][] = [
   [/^Layout transition at (\d+): the frame before it must be in the (\w+) layout/, (m) => `الـ layout transition عند ${m[1]}: الفريم اللي قبله لازم يكون layout ${m[2]}.`],
   [/^Layout transition at (\d+): frame (\d+) is not in the (\w+) layout/, (m) => `الـ layout transition عند ${m[1]}: فريم ${m[2]} مش في layout ${m[3]}.`],
   [/^Layout transition at (\d+): the first frame after it must be in the (\w+) layout/, (m) => `الـ layout transition عند ${m[1]}: أول فريم بعده لازم يكون layout ${m[2]}.`],
+
+  [/^kashida-stretch stretches one word/, () => "حركة الكشيدة تمدّ كلمة واحدة فقط، وهذا النص فيه أكثر من كلمة. اكتب كلمة واحدة، أو اختر حركة أخرى للجملة."],
+  [/^kashida-stretch finds no place to stretch "(.*)": it needs/, (m) => `حركة الكشيدة لا تجد مكانًا للمدّ في «${m[1]}». تحتاج كلمة عربية من ثلاثة حروف أو أكثر فيها حرفان متصلان يمكن مدّ الوصلة بينهما، مثل «جميل». اختر كلمة أخرى، أو حركة أخرى.`],
 
   [/^Caption emphasis names word (\d+)/, (m) => `الـ emphasis بيشاور على كلمة #${Number(m[1]) + 1} مش موجودة.`],
   [/^Caption emphasis must be strictly ordered/, () => "الـ emphasis لازم يبقى مترتب بالكلمات، ونوع واحد لكل كلمة."],
@@ -63,6 +68,12 @@ const RULES: [RegExp, (m: RegExpExecArray) => string][] = [
   }],
   [/^(.+?): a B-roll scene shown with the presenter window cannot carry a label,/, (m) => `المشهد "${m[1]}": نافذة المتحدث الصغيرة تغطي ركن التسمية، فلا يجوز أن يحمل مشهد B-roll تسمية وهو يظهر معها. احذف التسمية أو أخرج المشهد من مشاهد نافذة المتحدث.`],
   [/^Only the B-roll look of screens supports the split layout/, () => "نصف الشاشة متاح لشكل B-roll وحده من مشهد الشاشات. اجعل المشهد بملء الشاشة أو بدّل شكله إلى B-roll."],
+
+  // Scene camera moves (engine/src/core/camera.ts `sceneCameraIssues`).
+  [/^(.+?): camera moves apply only to takeover/, (m) => `المشهد "${m[1]}": حركات الكاميرا متاحة لمشاهد takeover (الشاشة الكاملة) و split (نص الشاشة) بس. مشهد presenter ليه مسار الكاميرا بتاع الفيديو.`],
+  [/^(.+?): (.+?) already moves its own camera/, (m) => `المشهد "${m[1]}": ${m[2]} بيحرّك الكاميرا بنفسه، فمينفعش نزوّد عليه حركة كاميرا تانية.`],
+  [/^(.+?): the camera cue "at" applies only to snap-zoom/, (m) => `المشهد "${m[1]}": لحظة الضربة (at) بتخص الزووم السريع بس. شيلها أو اختار snap-zoom.`],
+  [/^(.+?): the snap-zoom cue must land inside its scene/, (m) => `المشهد "${m[1]}": لحظة الزووم السريع لازم تقع جوّه مدة المشهد.`],
 ];
 
 

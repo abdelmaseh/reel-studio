@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import path from 'node:path';
 import fs from 'node:fs/promises';
 import {createHash} from 'node:crypto';
@@ -34,8 +35,9 @@ export function validateProductionRequest(raw){
     const file=inputScope(item.path,id),key=file.toLowerCase();if(seenInputs.has(key))throw new Error('Input aliases/duplicates are not accepted.');seenInputs.add(key);return {...item};
   });
   if(raw.mode==='recording'&&inputs.filter(item=>item.role==='source').length!==1)throw new Error('Recording work needs exactly one named source input.');
-  const constraints=raw.constraints??{};
+  let constraints=raw.constraints??{};
   object(constraints,['style','fontFamily','captionsGrouping','captionsPresentation','writingStyle','layout','digits'],'constraints');
+  if(constraints.style!==undefined)constraints={...constraints,style:normalizeStyleId(constraints.style)};
   for(const [key,value]of Object.entries(constraints))text(value,`constraint ${key}`,100);
   if(constraints.digits!==undefined&&!['latin','arabic-indic'].includes(constraints.digits))throw new Error('constraint digits must be latin or arabic-indic.');
   const defaults=[['analysis','analysis',[]],['editorial','editorial',['analysis']],['edit','edit',['editorial']],['qa','qa',['edit']]]
@@ -158,7 +160,11 @@ async function validateChoices(state,choices){
   const editorial=await collectLibraryEditorial();
   for(const choice of choices){
     object(choice,['key','context','reason'],'library choice');text(choice.key,'library key',100);text(choice.reason,'choice reason');
-    for(const key of ['style','layout'])if(state.request.constraints[key]&&choice.context?.[key]!==state.request.constraints[key])throw new Error(`Library choice violates fixed ${key} constraint.`);
+    for(const key of ['style','layout']) {
+      const fixed=state.request.constraints[key], supplied=choice.context?.[key];
+      const normalize=value=>key==='style'?normalizeStyleId(value):value;
+      if(fixed&&normalize(supplied)!==normalize(fixed))throw new Error(`Library choice violates fixed ${key} constraint.`);
+    }
     if(choice.context?.mode!==state.request.mode)throw new Error('Library choice content mode disagrees with this run.');
     const result=recommendLibrary(editorial,{...choice.context,limit:20});
     if(!result.candidates.some(item=>item.key===choice.key))throw new Error(`Library choice is incompatible with supplied context: ${choice.key}`);

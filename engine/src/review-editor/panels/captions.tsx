@@ -1,6 +1,7 @@
+import {staticCaptionsFor} from "../../styles/style-compat.ts";
 import React, { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { SourceWord } from "../../prepared-edit/schema.ts";
-import { STATIC_CAPTION_STYLES, emphasisBySource, type CaptionEmphasisKind } from "../../prepared-edit/caption-emphasis.ts";
+import { emphasisBySource, type CaptionEmphasisKind } from "../../prepared-edit/caption-emphasis.ts";
 import { sourceMsToEditFrame } from "../../prepared-edit/timeline.ts";
 import type { PanelProps } from "../panels.ts";
 import * as ops from "../ops/index.ts";
@@ -13,6 +14,7 @@ const EMPHASIS: { kind: CaptionEmphasisKind; label: string; title: string }[] = 
   { kind: "accent", label: "لون", title: "تلوين الكلمة بلون الـ accent" },
   { kind: "underline", label: "خط", title: "خط تحت الكلمة" },
   { kind: "pop", label: "نبضة", title: "الكلمة بتنبض أول ما تظهر (pop)" },
+  { kind: "stretch", label: "كشيدة", title: "الكلمة العربية تتمدد على وصلاتها وترجع" },
 ];
 const PAGE = 60;
 const HIDDEN_PAGE = 40;
@@ -90,10 +92,10 @@ const WordRow = memo(function WordRow({ word, index, fps, emphasis, staticStyle,
       </div>
       <div className="cp-line cp-emph">
         {EMPHASIS.map((e) => {
-          const blocked = e.kind === "pop" && staticStyle;
+          const blocked = (e.kind === "pop" || e.kind === "stretch") && staticStyle;
           return (
             <button key={e.kind} type="button" className={`cp-chip${emphasis === e.kind ? " on" : ""}`} disabled={blocked}
-              title={blocked ? "الـ pop مش مسموح في الستايل ده (الكابشن فيه ثابت)" : e.title} aria-pressed={emphasis === e.kind}
+              title={blocked ? `الـ ${e.kind} مش مسموح في الستايل ده (الكابشن فيه ثابت)` : e.title} aria-pressed={emphasis === e.kind}
               onClick={() => run(`تأكيد كلمة #${index + 1}`, (m) => (emphasis === e.kind ? ops.clearEmphasis(m, index) : ops.setEmphasis(m, index, e.kind)), { coalesce: false })}>
               {e.label}
             </button>
@@ -163,7 +165,7 @@ export const CaptionsPanel: React.FC<PanelProps> = ({ manifest, apply, playhead,
   const fps = manifest.source.fps;
   const words = manifest.captions.words;
   const compiled = tryCompile(manifest);
-  const staticStyle = (STATIC_CAPTION_STYLES as readonly string[]).includes(manifest.style);
+  const staticStyle = staticCaptionsFor(manifest.style,manifest.styleAlias);
   const emphasis = useMemo(() => emphasisBySource(manifest.captions.emphasis), [manifest.captions.emphasis]);
   const q = query.trim().toLowerCase();
   const message = useCallback((text: string) => show({ kind: "error", text }), [show]);

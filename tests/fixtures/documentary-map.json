@@ -1,0 +1,1 @@
+{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"ADMIN":"Fixture A","name_ar":"مثال أ"},"geometry":{"type":"Polygon","coordinates":[[[0,0],[10,0],[10,10],[0,10],[0,0]]]}},{"type":"Feature","properties":{"ADMIN":"Fixture B","name_ar":"مثال ب"},"geometry":{"type":"Polygon","coordinates":[[[12,0],[22,0],[22,10],[12,10],[12,0]]]}}]}

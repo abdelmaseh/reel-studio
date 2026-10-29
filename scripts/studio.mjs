@@ -70,6 +70,7 @@ async function runWorker(stepIds, options = {}) {
     requiredIds: STEP_IDS,
   });
   if (final.status === 'done' && stepIds.length === STEP_IDS.length) await recordStudioEvent(ROOT, 'installed');
+  if (final.status === 'failed') await recordStudioEvent(ROOT, 'setup_failed', {detail: {step: final.step}});
   return describeSetup(final, {alive: false});
 }
 

@@ -4,7 +4,7 @@ import {mkdtemp, readFile, rm, writeFile} from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
 import {createSettingsServer} from '../scripts/lib/settings-server.mjs';
-import {DIGIT_LABELS_AR} from '../engine/src/core/preference-options.ts';
+import {CAPTION_SKINS, DIGIT_LABELS_AR} from '../engine/src/core/preference-options.ts';
 import {dialectIn} from './helpers/dialect.mjs';
 
 const example = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
@@ -19,6 +19,30 @@ async function instance(t) {
   return {root, server, api, save};
 }
 const fileProfile = async (root) => JSON.parse(await readFile(path.join(root, 'PROFILE.json'), 'utf8'));
+
+test('caption skin choices save as an optional preference and auto removes the key', async (t) => {
+  const {api, save} = await instance(t);
+  const catalog = await (await api('catalog')).json();
+  assert.deepEqual(catalog.choices.captionsSkin, [...CAPTION_SKINS]);
+  assert.equal(Object.hasOwn(catalog.defaults.preferences, 'captionsSkin'), false);
+  const first = await (await save({...example, preferences: {...example.preferences, captionsSkin: {mode: 'fixed', value: 'karaoke'}}}, null)).json();
+  assert.equal(first.profile.preferences.captionsSkin.value, 'karaoke');
+  const automatic = await (await save({...first.profile, preferences: {...first.profile.preferences, captionsSkin: {mode: 'auto', value: null}}}, first.etag)).json();
+  assert.equal(Object.hasOwn(automatic.profile.preferences, 'captionsSkin'), false);
+});
+
+test('the skin picker changes only its preference, resets to absence and offers every catalog skin', () => {
+  const start = app.indexOf('function setCaptionSkin('), end = app.indexOf('function captionSkinsSection(', start);
+  assert.ok(start >= 0 && end > start, 'the optional skin control exists');
+  const draft = {preferences: {captionsPresentation: {mode: 'fixed', value: 'minimal'}}};
+  const set = new Function('draft', 'changed', 'render', 'document', app.slice(start, end) + ';return setCaptionSkin;')(draft, () => {}, () => {}, {getElementById: () => ({focus() {}})});
+  set('paper-tag', 'skin-test');
+  assert.deepEqual(draft.preferences.captionsSkin, {mode: 'fixed', value: 'paper-tag'});
+  set('auto', 'skin-test');
+  assert.equal(Object.hasOwn(draft.preferences, 'captionsSkin'), false);
+  assert.equal(draft.preferences.captionsPresentation.value, 'minimal');
+  assert.ok(app.includes('...catalog.choices.captionsSkin'));
+});
 
 test('the catalog offers the digits choices, and the default profile has no digits key', async (t) => {
   const {api} = await instance(t);

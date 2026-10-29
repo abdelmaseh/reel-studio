@@ -4,7 +4,7 @@ import {promises as fs} from 'node:fs';
 import {scoreRun} from '../scripts/lib/agent-eval.mjs';
 
 const expected=JSON.parse(await fs.readFile(new URL('./fixtures/agent-eval/expected-sample.json',import.meta.url),'utf8'));
-const plan={version:1,style:'split-canvas',reason:'demo beside the speaker',beats:[{id:'b1',kind:'visual',fromSec:0,toSec:3,family:'intro'},{id:'b2',kind:'visual',fromSec:3,toSec:6,family:'proof'},{id:'b3',kind:'visual',fromSec:6,toSec:8,family:'comment'},{id:'b4',kind:'presenter',fromSec:8,toSec:10,family:'follow'}]};
+const plan={version:1,style:'section-deck',reason:'demo beside the speaker',beats:[{id:'b1',kind:'visual',fromSec:0,toSec:3,family:'intro'},{id:'b2',kind:'visual',fromSec:3,toSec:6,family:'proof'},{id:'b3',kind:'visual',fromSec:6,toSec:8,family:'comment'},{id:'b4',kind:'presenter',fromSec:8,toSec:10,family:'follow'}]};
 const candidate={signoffFromFrame:300,source:{fps:30,totalFrames:330},segments:[{fromFrame:0,toFrame:330}],scenes:[{id:'b3',family:'comment',fromFrame:180,durationInFrames:60,data:{keyword:'جديدة'}},{id:'b4',family:'follow',fromFrame:240,durationInFrames:60,data:{}}],sounds:[{atFrame:10,recipe:'soft-pop',gain:0.4}]};
 const cues={version:1,fps:30,sounds:[{atFrame:10,recipe:'soft-pop',gain:0.4}]};
 const cutRows=[['1','silence','2.1','3.0','0.9','none','auto'],['3','retake','8.0','9.5','1.5','«…»','question']];
@@ -40,7 +40,7 @@ test('missing artifacts are unknown, not misses',()=>{
 test('every row must be judged before a run passes; odd shapes score unknown instead of crashing',()=>{
   const noPlan=scoreRun({expected,plan:null,candidate,cues,cutRows,textCheck});
   assert.equal(noPlan.hardBreaks,0);assert.equal(noPlan.ok,false,'unknown soft rows block a pass');
-  const odd=scoreRun({expected,plan:{version:1,style:'split-canvas',reason:'demo'},candidate,cues:{version:1},cutRows,textCheck});
+  const odd=scoreRun({expected,plan:{version:1,style:'section-deck',reason:'demo'},candidate,cues:{version:1},cutRows,textCheck});
   assert.equal(odd.soft.find(item=>item.id==='hook-start').status,'unknown');
   assert.equal(odd.soft.find(item=>item.id==='no-whoosh').status,'unknown');
   const oddCandidate=scoreRun({expected,plan:{...plan,beats:[null,...plan.beats]},candidate:{...candidate,sounds:'x'},cues:{version:1,sounds:[null]},cutRows,textCheck});

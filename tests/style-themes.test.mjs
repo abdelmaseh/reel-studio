@@ -66,13 +66,13 @@ test('getSceneGeometry returns exactly the captured baseline for split and takeo
 
 test('the gallery cut table keeps the two original flashes and nothing else', () => {
   for (const id of STYLE_IDS) {
-    const expected = id === 'section-deck' ? 'flash-bloom' : id === 'split-canvas' ? 'leak-or-whiteout' : 'none';
+    const expected = id === 'section-deck' ? 'flash-bloom' : 'none';
     assert.equal(getGalleryCut(id), expected, id);
   }
 });
 
 test('the legacy token modules moved into their style folders and the hand tables are gone', async () => {
-  for (const id of ['split-canvas', 'section-deck']) {
+  for (const id of ['section-deck']) {
     assert.ok(existsSync(new URL(`../engine/src/styles/${id}/format.ts`, import.meta.url)), `${id}/format.ts`);
     assert.equal(existsSync(new URL(`../engine/src/style-${id}`, import.meta.url)), false, `style-${id} folder is removed`);
   }

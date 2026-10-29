@@ -9,6 +9,7 @@ import { assertProjectOutput } from './project-paths.mjs';
 import { checkedPath } from './job-paths.mjs';
 import { footageFrameState } from '../../engine/src/prepared-edit/footage.ts';
 import { footageVisibility, foregroundSourceFrame } from '../../engine/src/prepared-edit/visibility.ts';
+import { sceneForeground } from '../../engine/src/core/scene-media.ts';
 import {headInside} from '../../engine/src/core/pip.ts';
 
 export const HEAD_ENVELOPE_VERSION = 1;
@@ -219,7 +220,7 @@ export function manifestFrameState(edit, frame, { aspect, splitCanvasHeight = nu
   return {
     sceneId: active?.id ?? null, family: active?.family ?? null, layout: f.layout, geo: f.geo,
     visible: footageVisibility(edit, frame, true), sourceFrame: foregroundSourceFrame(edit, frame),
-    foregroundMatte: active?.family === 'kinetic-hook' && !!active.data?.foreground,
+    foregroundMatte: active !== null && sceneForeground(active) !== null,
   };
 }
 

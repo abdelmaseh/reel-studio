@@ -1,8 +1,7 @@
 import path from 'node:path';
-import fs from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
-import {scanPublicationFiles, scanPublicationFile} from './lib/publication-policy.mjs';
+import {scanPublicationFiles, scanPublicationFile, readWorkingTreePublicationFiles} from './lib/publication-policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const git = (args, options = {}) => {
@@ -44,8 +43,8 @@ if (process.argv.includes('--history')) {
     if (!email || !/^(?:[^@]+@users\.noreply\.github\.com|noreply@github\.com)$/.test(email)) extraIssues.push({file: 'history/tag-' + sha, line: 1, rule: 'personal tagger email'});
   }
 } else {
-  const paths = git(['ls-files', '-z'], {encoding: 'utf8'}).split('\0').filter(Boolean);
-  files = paths.map((relative) => ({path: relative, data: fs.readFileSync(path.join(root, relative))}));
+  const paths = git(['ls-files', '-z', '--cached', '--others', '--exclude-standard'], {encoding: 'utf8'}).split('\0').filter(Boolean);
+  files = readWorkingTreePublicationFiles(root, paths);
 }
 const issues = [...scanPublicationFiles(files), ...extraIssues];
 process.stdout.write(JSON.stringify({ok: issues.length === 0, files: files.length, issues}, null, 2) + '\n');

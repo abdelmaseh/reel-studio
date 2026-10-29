@@ -1,3 +1,4 @@
+import {ARABIC_TYPE_MOVES} from '../engine/src/arabic-type/schema.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {previewDefinitions, previewAssetFiles, previewFixtureIssues, getPreviewDefinition, previewAuthoredWords} from '../engine/src/library-preview/fixtures.ts';
@@ -27,7 +28,7 @@ test('message board sample keeps readable card boxes throughout scatter, gather 
 });
 
 test('latin emphasis uses an authored Latin token and every emphasis preset resolves', () => {
-  for (const preset of ['accent', 'latin', 'pop', 'underline', 'weight']) {
+  for (const preset of ['accent', 'latin', 'pop', 'underline', 'weight', 'stretch']) {
     const words = previewAuthoredWords(preset === 'latin');
     const tokens = tokenizeSpoken(words);
     assert.doesNotThrow(() => resolveEmphasis(tokens, [{sourceIndex: 1, kind: preset}]), preset);
@@ -44,7 +45,7 @@ test('every existing concept, scene, effect, recipe variant and style is explici
   const inventory = await collectLibraryInventory();
   const expected = inventory.items.filter(item => ['concept', 'scene', 'effect', 'style'].includes(item.kind) || item.layer === 'recipe-variant');
   assert.deepEqual(definitions.filter(item => !item.canonicalKey).map(item => item.key).sort(), expected.map(item => item.key).sort());
-  assert.deepEqual(definitions.filter(item => item.canonicalKey).map(item => item.key).sort(), ['preview:conditional-branching-false', 'preview:identity-filtering-all']);
+  assert.deepEqual(definitions.filter(item => item.canonicalKey).map(item => item.key).sort(), [...ARABIC_TYPE_MOVES.filter(move=>move!=='decrypt').map(move=>'preview:arabic-type-'+move),'preview:conditional-branching-false', 'preview:identity-filtering-all'].sort());
   for (const variant of definitions.filter(item => item.canonicalKey)) assert.ok(definitions.some(item => item.key === variant.canonicalKey && !item.canonicalKey));
   assert.equal(new Set(definitions.map(item => item.key)).size, definitions.length);
   assert.equal(new Set(definitions.map(item => item.slug)).size, definitions.length);

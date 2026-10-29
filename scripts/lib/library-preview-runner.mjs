@@ -4,6 +4,7 @@ import {createHash} from 'node:crypto';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {ROOT, assertProjectOutput} from './project-paths.mjs';
+import {renderChromiumOptions} from './render-gl.mjs';
 
 const run=promisify(execFile);
 const hash=value=>createHash('sha256').update(typeof value==='string'||Buffer.isBuffer(value)?value:JSON.stringify(value)).digest('hex');
@@ -129,7 +130,7 @@ export async function renderLibraryPreviews({out,keys=[],quality='draft',scale,c
     if(await fingerprint()!==sourceHash)throw new Error('Studio code changed during preview preparation; retry with the latest sources.');
   }
   const {openBrowser,selectComposition,renderMedia,renderStill}=requireFromEngine('@remotion/renderer');
-  const browser=await openBrowser('chrome',{logLevel:'warn'});
+  const browser=await openBrowser('chrome',{logLevel:'warn',chromiumOptions:renderChromiumOptions()});
   try{
     for(const definition of selected){
       const item=items.find(value=>value.key===definition.key);

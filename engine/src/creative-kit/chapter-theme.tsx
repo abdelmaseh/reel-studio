@@ -13,11 +13,17 @@ import { CanvasFill, FRAME } from "../core/safe";
 import { getSceneTheme, type SceneTheme } from "./primitives";
 import type { StyleFamily } from "./schema";
 import type {PreferredFont} from '../core/preference-options.ts';
+import {assertFamilyAvailable} from '../core/fonts';
 
 const ChapterCtx = React.createContext<ChapterPalette | null>(null);
 const TypographyCtx = React.createContext<PreferredFont | null>(null);
-export const TypographyProvider: React.FC<{fontFamily: PreferredFont | null; children?: React.ReactNode}> = ({fontFamily, children}) =>
-  <TypographyCtx.Provider value={fontFamily}>{children}</TypographyCtx.Provider>;
+export const TypographyProvider: React.FC<{fontFamily: PreferredFont | null; children?: React.ReactNode}> = ({fontFamily, children}) => {
+  if (fontFamily) assertFamilyAvailable(fontFamily);
+  return <TypographyCtx.Provider value={fontFamily}>{children}</TypographyCtx.Provider>;
+};
+
+/** The explicit saved font, before a scene chooses its own display fallback. */
+export const useTypographyFont = (): PreferredFont | null => React.useContext(TypographyCtx);
 
 const assertChapter = (chapter: ChapterPalette, where: string): void => {
   const verdict = validateChapter(chapter);

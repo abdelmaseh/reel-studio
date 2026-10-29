@@ -41,7 +41,8 @@ test('the lock pins Inter as one flat variable file and keeps every Plex Sans Ar
 });
 
 test('Grid Sans is a creator-selectable font that reaches the manifest', () => {
-  assert.deepEqual(FONT_CHOICES.slice(4), ['Grid Sans', 'Noto Kufi Arabic', 'Readex Pro', 'El Messiri']);
+  assert.deepEqual(FONT_CHOICES.slice(4, 8), ['Grid Sans', 'Noto Kufi Arabic', 'Readex Pro', 'El Messiri']);
+  assert.deepEqual(FONT_CHOICES.slice(8), ['Lalezar', 'Aref Ruqaa', 'Aref Ruqaa Ink', 'Reem Kufi', 'Amiri', 'Alexandria', 'Marhey'], 'the V4 families follow (tests/v4-fonts.test.mjs)');
   assert.ok(PREFERENCE_VALUES.font.includes('Grid Sans'));
   const preferences = {...defaultPreferences(), font: {mode: 'fixed', value: 'Grid Sans'}};
   assert.deepEqual(normalizePreferences(preferences).font, {mode: 'fixed', value: 'Grid Sans'});
@@ -100,7 +101,8 @@ test('the settings page previews the four earlier fonts exactly as before and bu
     'El Messiri|ElMessiri-arabic-400.woff2|400 700', 'El Messiri|ElMessiri-latin-400.woff2|400 700',
     'Noto Kufi Arabic|NotoKufiArabic-arabic-400.woff2|100 900', 'Noto Kufi Arabic|NotoKufiArabic-latin-400.woff2|100 900',
     'Readex Pro|ReadexPro-arabic-400.woff2|160 700', 'Readex Pro|ReadexPro-latin-400.woff2|160 700']);
-  assert.deepEqual(all.filter((item) => item.alias !== 'Grid Sans' && !added.includes(item.alias)).map(({alias, face, css}) => key({alias, file: face.file, css})).sort(), legacy.map(key).sort());
+  const v4 = ['Lalezar', 'Aref Ruqaa', 'Aref Ruqaa Ink', 'Reem Kufi', 'Amiri', 'Alexandria', 'Marhey']; // pinned later; tests/v4-fonts.test.mjs checks them
+  assert.deepEqual(all.filter((item) => item.alias !== 'Grid Sans' && !added.includes(item.alias) && !v4.includes(item.alias)).map(({alias, face, css}) => key({alias, file: face.file, css})).sort(), legacy.map(key).sort());
   assert.deepEqual(all.filter((item) => item.alias === 'Grid Sans').map(({face, css}) => [face.file, css]), [
     ['Inter-latin-var.woff2', '400'],
     ['Inter-latin-var.woff2', '500'],
@@ -111,7 +113,7 @@ test('the settings page previews the four earlier fonts exactly as before and bu
     ['IBMPlexSansArabic-arabic-600.woff2', '600'],
     ['IBMPlexSansArabic-arabic-700.woff2', '700'],
   ]);
-  assert.deepEqual(PREVIEW_FAMILIES.map((family) => family.alias), ['Cairo', 'Tajawal', 'Noto Naskh Arabic', 'Plex Display', 'Grid Sans', 'Noto Kufi Arabic', 'Readex Pro', 'El Messiri']);
+  assert.deepEqual(PREVIEW_FAMILIES.map((family) => family.alias), ['Cairo', 'Tajawal', 'Noto Naskh Arabic', 'Plex Display', 'Grid Sans', 'Noto Kufi Arabic', 'Readex Pro', 'El Messiri', ...v4]);
 });
 
 test('the settings server serves Grid Sans as one family and reports it ready only when both sources exist', async (t) => {

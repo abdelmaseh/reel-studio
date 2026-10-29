@@ -4,8 +4,9 @@ import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {kineticSceneSchema,kineticAssets} from '../../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneSchema,libraryAssets} from '../../engine/src/motion-library/schema.ts';
 import {semanticSceneSchema,semanticAssets} from '../../engine/src/creative-kit/semantic/schema.ts';
+import {proofScreenSceneSchema,proofScreenAssets} from '../../engine/src/creative-kit/proof-screen/schema.ts';
 import {styleSceneSchema,styleSceneAssets,styleSceneAssetClaims} from '../../engine/src/styles/scenes.ts';
-import {sceneClipClaims,sceneVideoSources} from '../../engine/src/core/scene-media.ts';
+import {sceneClipClaims,sceneForeground,sceneVideoSources} from '../../engine/src/core/scene-media.ts';
 import {captureWarnings} from '../../engine/src/motion-library/capture.ts';
 import {readJson,fileSnapshot,digest,checkedPath} from './job-paths.mjs';
 import {ffprobeJson,run} from './media.mjs';
@@ -47,10 +48,11 @@ export async function verifyKineticAssets(edit){
   const assets=new Map();
   for(const input of edit.scenes){
     const parsed=kineticSceneSchema.safeParse(input),library=librarySceneSchema.safeParse(input),semantic=semanticSceneSchema.safeParse(input),styled=styleSceneSchema.safeParse(input);
-    const custom=input.family==='project-scene';
-    if(!parsed.success && !library.success && !semantic.success && !styled.success && !custom)continue;
+    const custom=input.family==='project-scene',arabic=input.family==='arabic-type';
+    const proofScreen=proofScreenSceneSchema.safeParse(input);
+    if(!parsed.success && !library.success && !semantic.success && !styled.success && !proofScreen.success && !custom && !arabic)continue;
     const scene=parsed.success?parsed.data:library.success?library.data:semantic.success?semantic.data:styled.success?styled.data:input;
-    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):styled.success?styleSceneAssets(styled.data):[...projectSceneAssets({...edit,scenes:[input]}),...projectSceneClips({...edit,scenes:[input]})];
+    const sources=parsed.success?kineticAssets(parsed.data):library.success?libraryAssets(library.data):semantic.success?semanticAssets(semantic.data):styled.success?styleSceneAssets(styled.data):proofScreen.success?proofScreenAssets(proofScreen.data):arabic?(input.data.media?[input.data.media]:[]):[...projectSceneAssets({...edit,scenes:[input]}),...projectSceneClips({...edit,scenes:[input]})];
     for(const src of sources){
       if(!assets.has(src)){
         const file=`engine/public/${src}`,absolute=await checkedPath(file,{mustExist:true});
@@ -67,6 +69,26 @@ export async function verifyKineticAssets(edit){
       if(asset.sha256!==claim.sha256)throw new Error(`Scene clip bytes do not match the supplied hash: ${claim.src}`);
       if(asset.video.width!==claim.width || asset.video.height!==claim.height)throw new Error(`Scene clip dimensions disagree with its provided file: ${claim.src}`);
       await verifyClipMedia(asset,claim,{fps:edit.source.fps});
+    }
+    if(arabic&&input.data.media){
+      const video=assets.get(input.data.media).video;
+      if(STILL_CODECS.includes(video.codec_name))throw new Error('Arabic type media must contain a video clip.');
+      const available=Number(video.duration??video.tags?.DURATION?.split(':').reduce((a,n)=>a*60+Number(n),0));
+      if(!Number.isFinite(available)||available+1/edit.source.fps<input.durationInFrames/edit.source.fps)throw new Error('Arabic type source clip is too short for the scene.');
+    }
+    if(proofScreen.success)for(const src of proofScreenAssets(proofScreen.data)){
+      const asset=assets.get(src);
+      if(asset.video.codec_name==='svg'){
+        const svg=await readFile(asset.absolute,'utf8');
+        if(/<(?:animate\w*|set|script|foreignObject|style)\b|\bon\w+\s*=|(?:href|src)\s*=\s*["'](?!#)|\b(?:animation|transition)\s*:|url\s*\(/i.test(svg))throw new Error(`Proof Screen SVG must be static and self-contained: ${src}`);
+      }else{
+        if(!['png','mjpeg','webp'].includes(asset.video.codec_name))throw new Error(`Proof Screen image must be a single-frame still: ${src}`);
+        if(asset.frames===undefined){
+          const counted=await run('ffprobe',['-v','error','-select_streams','v:0','-read_intervals','%+#2','-count_frames','-show_entries','stream=nb_read_frames','-of','json',asset.absolute]);
+          asset.frames=Number(JSON.parse(counted.stdout).streams?.[0]?.nb_read_frames);
+        }
+        if(asset.frames!==1)throw new Error(`Proof Screen image must contain exactly one still frame: ${src}`);
+      }
     }
     if(scene.family==='evidence-wipe')for(const image of [scene.data.before,scene.data.after]){
       const asset=assets.get(image.src);
@@ -119,7 +141,7 @@ export async function verifyKineticAssets(edit){
       if(video.width!==step.sourceWidth || video.height!==step.sourceHeight)throw new Error(`Focus source dimensions disagree with the actual image: ${step.src}`);
     }
     if(scene.family==='screen-focus')for(const warning of captureWarnings(scene,edit.source.fps))console.warn(`screen-capture advisory: ${warning}`);
-    if(scene.family==='kinetic-hook' && scene.data.foreground){
+    if(sceneForeground(scene)!==null){
       const foreground=scene.data.foreground,asset=assets.get(foreground.src),v=asset.video;
       const [n,d]=(v.avg_frame_rate??v.r_frame_rate??'0/1').split('/').map(Number);
       if(Math.abs(n/d-edit.source.fps)>.001 || !Number.isFinite(n/d))throw new Error('Foreground cadence must match the source.');

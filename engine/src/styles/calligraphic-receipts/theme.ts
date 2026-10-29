@@ -14,10 +14,11 @@ export default {
     pill: "transparent",
     pillText: "#2E2019",
     ar: FAMILY.naskh,
-    display: FAMILY.latinSerif,
+    display: FAMILY.arefRuqaa,
     mono: FAMILY.plexMono,
     onAccent: "#FFFFFF",
   },
   layout: { kind: "adapted", seam: 1000, caption: 1260, title: 156, body: 218, titleTop: 38 },
+  caption: {takeoverCenter:1260, design:'ink'},
   galleryCut: "none",
 } satisfies StyleThemeModule;

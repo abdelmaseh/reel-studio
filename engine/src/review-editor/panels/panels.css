@@ -115,6 +115,9 @@ button.danger:hover:not(:disabled) { border-color: var(--bad); }
 .lk-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 6px 0; }
 .lk-row select { min-width: 190px; max-width: 100%; }
 .lk-note { margin: 4px 0; color: var(--warn); font-size: 12px; line-height: 1.6; }
+.lk-ink { display: inline-flex; align-items: center; gap: 6px; }
+.lk-ink input[type="color"] { width: 34px; height: 26px; padding: 0; border: 1px solid var(--border, #8884); background: none; }
+.lk-ink code { color: var(--muted); font-size: 12px; }
 
 /* ------------------------------------------------------------- schema form (sf-) */
 .sf { display: grid; gap: 8px; }

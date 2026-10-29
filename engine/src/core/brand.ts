@@ -13,10 +13,10 @@ import {
   type ChapterPalette,
   type ChapterThemeTokens,
 } from "./chapters.ts";
-import { brandStyles } from "../styles/registry.ts";
+import { brandStyles, normalizeStyleId } from "../styles/registry.ts";
 
 export type BrandColors = { primary: string; accent: string; background: string | null; text: string | null };
-export type BrandStyle = "split-canvas" | "section-deck";
+export type BrandStyle = "section-deck";
 // Which styles take brand colours is declared in engine/src/styles/<id>/meta.ts (`brand: true`);
 // the colour tokens each of them needs stay below.
 export const BRAND_STYLES = brandStyles() as readonly BrandStyle[];
@@ -24,12 +24,10 @@ export const BRAND_STYLES = brandStyles() as readonly BrandStyle[];
 
 
 export const BRAND_STYLE_BASES: Record<BrandStyle, ChapterThemeTokens> = {
-  "split-canvas": { background: "#F3EEE6", card: "#E8DECE", border: "#DED2BE", text: "#1F1E1D", dim: "#6B655B", accent: "#D97757", good: "#2F7D4F", bad: "#C0442E", pill: "rgba(28,27,26,0.84)", pillText: "#FFFFFF" },
   "section-deck": { background: "#0F1B33", card: "rgba(16,16,22,0.72)", border: "rgba(255,255,255,0.16)", text: "#FFFFFF", dim: "rgba(255,255,255,0.55)", accent: "#FF6B35", good: "#4FBF67", bad: "#FF5C5C", pill: "#FFFFFF", pillText: "#141414" },
 };
 
 export const BRAND_STYLE_DEFAULTS: Record<BrandStyle, { ground: string; ink: string }> = {
-  "split-canvas": { ground: "#F3EEE6", ink: "#1F1E1D" },
   "section-deck": { ground: "#0F1B33", ink: "#FFFFFF" },
 };
 
@@ -84,9 +82,7 @@ export function brandPalettes(style: BrandStyle, brand: BrandColors): BrandPlan 
   const ground = brand.background ?? BRAND_STYLE_DEFAULTS[style].ground;
   const ink = brand.text ?? BRAND_STYLE_DEFAULTS[style].ink;
   const specs =
-    style === "split-canvas"
-      ? [{ ground, accent: brand.primary }, { ground, accent: brand.accent }]
-      : [{ ground, accent: brand.primary }, { ground: deep(brand.primary), accent: brand.accent }, { ground: deep(brand.accent), accent: brand.primary }];
+    [{ ground, accent: brand.primary }, { ground: deep(brand.primary), accent: brand.accent }, { ground: deep(brand.accent), accent: brand.primary }];
   const palettes: ChapterPalette[] = [];
   let adjusted = 0;
   let refused = 0;
@@ -107,6 +103,7 @@ export type BrandableScene = { chapter?: ChapterPalette };
 
 
 export function applyBrandToScenes<S extends BrandableScene>(style: string, brand: BrandColors | null, scenes: readonly S[]): { brand: ChapterPalette | undefined; scenes: S[]; notices: string[] } {
+  style = normalizeStyleId(style);
   if (!brand) return { brand: undefined, scenes: [...scenes], notices: [] };
   if (!(BRAND_STYLES as readonly string[]).includes(style)) return { brand: undefined, scenes: [...scenes], notices: [`Brand colours apply to ${BRAND_STYLE_NAMES}; ${style} keeps its own colours.`] };
   const plan = brandPalettes(style as BrandStyle, brand);

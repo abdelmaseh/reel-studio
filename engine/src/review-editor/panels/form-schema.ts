@@ -1,3 +1,7 @@
+import {arabicTypeSceneVariants,ARABIC_TYPE_LABELS} from '../../arabic-type/schema.ts';
+import {figuresSceneVariants,FIGURE_LABELS} from '../../creative-kit/figures/schema.ts';
+import {chatThreadSceneVariants,CHAT_THREAD_LABELS} from '../../creative-kit/chat-thread/schema.ts';
+import {BACKDROP_LABEL} from '../../looks/index.ts';
 import { z } from "zod";
 import { introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema } from "../../creative-kit/schema.ts";
 import { kineticSceneVariants } from "../../creative-kit/kinetic/schema.ts";
@@ -5,7 +9,9 @@ import { librarySceneVariants } from "../../motion-library/schema.ts";
 import {semanticSceneVariants} from '../../creative-kit/semantic/schema.ts';
 import {screenRecordingVariants} from '../../screen-recording/schema.ts';
 import {styleSceneVariants} from '../../styles/scenes.ts';
+import {proofScreenSceneVariants} from '../../creative-kit/proof-screen/schema.ts';
 import { getIn, type Path } from "../ops/paths.ts";
+import { explainEnglish } from "../ops/explain.ts";
 import {PROJECT_SCENES} from '../../project-scenes/registry.ts';
 import {valuesSchema} from '../../project-scenes/schema.ts';
 
@@ -19,7 +25,7 @@ const FAMILY_DATA: Record<string, z.ZodType> = {
   comment: commentSchema,
   follow: followSchema,
 };
-for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...screenRecordingVariants,...styleSceneVariants]) {
+for (const variant of [...kineticSceneVariants, ...librarySceneVariants,...semanticSceneVariants,...arabicTypeSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...screenRecordingVariants,...styleSceneVariants,...proofScreenSceneVariants]) {
   const shape = (variant as any).shape;
   FAMILY_DATA[shape.family.value as string] = shape.data as z.ZodType;
 }
@@ -33,6 +39,11 @@ export const formFamilies = (): string[] => Object.keys(FAMILY_DATA);
 
 
 const LABELS: Record<string, string> = {
+  question:'السؤال', rows:'البنود', outOf:'الدرجة الكاملة', verdict:'الحكم', verdictFrame:'فريم ظهور الحكم',
+  claim:'كلمات الادعاء',keyIndex:'رقم الكلمة المميزة',diff:'الفرق',claimFrame:'بداية كتابة الادعاء',receiptFrame:'بداية طباعة الإيصال',totalFrame:'بداية عد المجموع',
+  move: "حركة الكتابة", font: "خط الكتابة", backdrop: "الخلفية",
+  bars: "الأعمدة", max: "أعلى قيمة للمقياس", messages: "الرسائل", app: "اسم التطبيق",
+  page:"شكل الصفحة",url:"الرابط (للعرض فقط)",blocks:"بلوكات الصفحة",path:"مسار الكاميرا",
   kicker: "السطر الصغير (kicker)", title: "العنوان", subtitle: "العنوان الفرعي", caption: "الكابشن", label: "التسمية", value: "الرقم", suffix: "اللاحقة",
   source: "المصدر", sourceNote: "ملاحظة المصدر", steps: "الخطوات", detail: "التفاصيل", beforeTitle: "عنوان «قبل»", beforeDetail: "تفاصيل «قبل»",
   afterTitle: "عنوان «بعد»", afterDetail: "تفاصيل «بعد»", keyword: "الكلمة المفتاحية", promise: "الوعد", handle: "الـ handle", message: "الرسالة",
@@ -44,6 +55,8 @@ const LABELS: Record<string, string> = {
   focusFrame: "فريم التركيز", settleFrames: "فريمات الاستقرار", moveFrames: "فريمات الحركة", keys: "مفاتيح الكاميرا", cursor: "مسار الماوس", callouts: "الإشارات",
   x: "x", y: "y", width: "العرض", height: "الارتفاع", text: "النص", untilFrame: "لحد فريم", click: "ضغطة", rect: "المستطيل", sourceSha256: "بصمة المصدر (sha256)",
   sourceFromFrame: "أول فريم في المصدر", frames: "عدد الفريمات",
+  lon: 'خط الطول', lat: 'خط العرض', country: 'الدولة', bounds: 'نطاق الخريطة: غرب، جنوب، شرق، شمال', borders: 'حدود الدول',
+  drawAt: 'فريم بداية المسار', drawDuration: 'مدة رسم المسار', focusAt: 'فريم بداية التركيز', focusDuration: 'مدة التركيز', credit: 'نسبة الصورة لصاحبها',
   initialTitle: "عنوان البداية", boardTitle: "عنوان اللوحة", focusTitle: "عنوان النتيجة", closingTitle: "عنوان النهاية",
   focusIndex: "العنصر المختار (0 هو الأول)", gatherFrame: "بداية التجميع", gatherDurationFrames: "مدة التجميع",
   focusDurationFrames: "مدة إبراز النتيجة", closingFrame: "بداية النهاية", concept: "فكرة الحركة", config: "تفاصيل الحركة",
@@ -65,24 +78,32 @@ const LABELS: Record<string, string> = {
   beforeLabel: "الاسم قبل", afterLabel: "الاسم بعد", equalsBefore: "يساوي قبل", equalsAfter: "يساوي بعد", morphAt: "لحظة التحول", oneAt: "لحظة الشكل الواحد",
   clip: "لقطة الشاشة", crop: "قص اللقطة (x, y, w)", w: "العرض المقصوص", places: "أماكن الشخصية", scale: "حجم الشخصية", gestures: "حركات الشخصية",
   arm: "الدراع", anchor: "الهدف", card: "الكارت", point: "النقطة", brow: "الحاجب", tilt: "ميل الراس", look: "النظرة", tail: "ذيل السلام",
-  character: "الشخصية", skin: "لون البشرة", hair: "الشعر", style: "الشكل", color: "اللون", headwear: "غطاء الرأس", beard: "الدقن", glasses: "النضارة",
+  place: "المكان حوالين الراس", mark: "علامة بخط اليد", character: "الشخصية", skin: "لون البشرة", hair: "الشعر", style: "الشكل", color: "اللون", headwear: "غطاء الرأس", beard: "الدقن", glasses: "النضارة",
   frame: "لون الإطار", eyes: "العينين", iris: "لون العين", outfit: "اللبس", base: "اللون التحتي",
   fromTheme: "خلفية القسم السابق", entrance: "مكان الدخول", comment: "كارت الكومنت", follow: "كارت المتابعة", tapAt: "لحظة الضغطة", shareAt: "لحظة المشاركة",
   sourceLabel: "عنوان البداية", retainedLabel: "عنوان القائمة النهائية", rejectedLabel: "عنوان المستبعد", cards: "الكروت بنفس الهوية", attributes: "خصائص الكارت", criteria: "شروط التصفية", field: "اسم الخاصية", op: "طريقة المقارنة",
+  sticker: "ملصق", id: "المعرّف",
 };
 
 
 const VARIANT_LABELS: Record<string, string> = {
+  ...Object.fromEntries(Object.entries({...FIGURE_LABELS,...CHAT_THREAD_LABELS}).map(([key,value])=>['|variant: '+key,value])),
   "enter|kind: cut": "قطع مباشر (cut)", "enter|kind: slide": "انزلاق من الجانب (slide)", "enter|kind: dip": "ضبابية وتعتيم (dip)",
   "exit|kind: cut": "قطع مباشر (cut)", "exit|kind: push": "دفع المشهد للخارج (push)", "exit|kind: dip": "ضبابية وتعتيم (dip)",
   "steps|kind: drop": "سحب ملف لمكان (drop)", "steps|kind: field": "كتابة طلب (field)", "steps|kind: toggle": "تشغيل اختيارات (toggle)",
   "steps|kind: stat": "رقم كبير (stat)", "steps|kind: work": "شغل بيخلص (work)",
   "condition|kind: boolean-equals": "اختيار صح أو غلط", "condition|kind: number-at-least": "رقم بحد أدنى", "|look: window": "نافذة لقطات الشاشة", "|look: broll": "لقطات فيديو (B-roll)",
 };
+const BACKDROP_OPTION_LABEL: Record<string,string> = {plain:'بدون خلفية', ...BACKDROP_LABEL};
+export const enumOptionLabel = (key:string,value:unknown):string => key==='move' ? (ARABIC_TYPE_LABELS as Record<string,string>)[String(value)] ?? String(value) : key==='backdrop' ? BACKDROP_OPTION_LABEL[String(value)] ?? String(value) : String(value);
 export const fieldLabel = (key: string): string => LABELS[key] ?? key;
 
 // A short note under a field whose rule the label does not say, keyed by `family.path`. Neutral Arabic.
 const HINTS: Record<string, string> = {
+  'map-route.places': 'أماكن المسار بإحداثيات مراجَعة. الاسم وحده يحتاج بيانات مدن مثبتة. المسار توضيحي وليس طريقًا مقاسًا.',
+  'map-route.borders': 'الحدود تحتاج ملف منظور جغرافي متحقق منه. اقفلها لاستخدام اليابسة والبحر بدون حدود دول.',
+  'map-focus.borders': 'الحدود تحتاج ملف منظور جغرافي متحقق منه. اختيار اسم دولة يحتاج بيانات مثبتة.',
+  'cutout-card.image': 'صورة مشروع سمّيتها أنت، ببصمتها وأبعادها؛ استبدل صورة المثال قبل التسليم.',
   "creator-cta.prompt": "اكتب {keyword} داخل الجملة ليظهر مكانه كلمة التعليق، أو اكتب الكلمة نفسها. التصدير النهائي يتطلب أحد الأمرين.",
 };
 export const fieldHint = (family: string, path: string): string | undefined => HINTS[`${family}.${path}`];
@@ -320,7 +341,8 @@ function translate(issue: any): string {
       return `حقل مش معروف: ${(issue.keys ?? []).join(", ")}.`;
     case "custom": {
       const custom = CUSTOM_AR.find(([rx]) => rx.test(String(issue.message)));
-      return custom ? custom[1] : String(issue.message);
+      // Scene rules the edit check already explains in Arabic read the same way in the form.
+      return custom ? custom[1] : explainEnglish(String(issue.message)) ?? String(issue.message);
     }
     default:
       return String(issue.message ?? "قيمة غير صالحة.");

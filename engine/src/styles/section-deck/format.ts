@@ -39,7 +39,7 @@ export const LAYOUT = {
   hidden: { windowTop: 1920, windowHeight: 0, videoWidth: 1080, videoLeft: 0, videoTop: -340 },
   captionY: {
     seam: 1056,
-    centerFull: 900,
+    centerFull: 1330,
   },
 } as const;
 

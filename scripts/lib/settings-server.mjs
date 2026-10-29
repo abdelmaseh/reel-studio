@@ -1,3 +1,4 @@
+import {styleAliasNotice} from '../../engine/src/styles/registry.ts';
 import http from 'node:http';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -64,7 +65,7 @@ export async function createSettingsServer({root, port = 0} = {}) {
     let value;
     try {value = JSON.parse(bytes.toString('utf8').replace(/^\ufeff/, ''));}
     catch {throw new HttpError(400, 'ملف PROFILE.json فيه مشكلة. خلي المساعد يراجعه؛ إعداداتك لسه محفوظة.');}
-    return {ok: true, profile: normalizeProfile(value), etag: hash(bytes), bytes};
+    return {ok: true, profile: normalizeProfile(value), notices: [styleAliasNotice(value.preferences?.style?.value, 'ar')].filter(Boolean), etag: hash(bytes), bytes};
   }
   async function save(payload) {
     if (!payload || typeof payload !== 'object' || Array.isArray(payload) || Object.keys(payload).some(key => !['profile', 'etag'].includes(key)) || !Object.hasOwn(payload, 'etag')) {

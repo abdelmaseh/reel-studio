@@ -1,0 +1,15 @@
+import {KashidaStretch} from './kashida-stretch';
+import {KufiTiles} from './kufi-tiles';
+import {LettersSnap} from './letters-snap';
+import {DotsDrop} from './dots-drop';
+import {VideoInLetters} from './video-in-letters';
+import {PenWrite} from './pen-write';
+import {WordMelt} from './word-melt';
+import {Unblur} from './unblur';
+import {RedactedStamp} from './redacted-stamp';
+import {EchoStack} from './echo-stack';
+import type {ComponentType} from 'react';
+import type {ArabicMoveProps} from '../types';
+import {Decrypt} from './decrypt';
+export const ARABIC_MOVE_COMPONENTS:Record<string,ComponentType<ArabicMoveProps>>={'echo-stack':EchoStack,'redacted-stamp':RedactedStamp,'unblur':Unblur,'word-melt':WordMelt,'pen-write':PenWrite,'video-in-letters':VideoInLetters,'dots-drop':DotsDrop,'letters-snap':LettersSnap,'kufi-tiles':KufiTiles,'kashida-stretch':KashidaStretch,decrypt:Decrypt};
+export type {ArabicMoveProps} from '../types';

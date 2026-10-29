@@ -200,7 +200,8 @@ test('the catalog carries the five recipes with their durations and valid hits',
   assert.equal((await soundRecipe('sub-boom')).hits[0].gain, 0.5);
   assert.deepEqual(catalog.sounds.map((sound) => sound.id).filter((id) => NEW_VOICES.includes(id)), NEW_VOICES);
   assert.equal(catalog.sounds.length, 20);
-  assert.equal(catalog.recipes.length, 25);
+  // Synthesized recipes only; the recorded CC0 recipes (cc0-*) are counted on their own page.
+  assert.equal(catalog.recipes.filter((recipe) => !recipe.id.startsWith('cc0-')).length, 25);
 });
 
 test('the Grid Glide palette validates and maps the contract kinds', async () => {

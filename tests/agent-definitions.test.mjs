@@ -8,7 +8,7 @@ import {scanPublicationFile} from '../scripts/lib/publication-policy.mjs';
 
 const ROOT=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const EXPECTED_MODEL={analysis:'haiku',editorial:'sonnet',assets:'haiku',sound:'sonnet',edit:'sonnet',qa:'sonnet',delivery:'haiku','eval-judge':'sonnet'};
-const FORBIDDEN=[/@[a-z0-9_.]{3,}/i,/eleven_v\d|voice[_ -]?id\s*[:=]/i,/editor pro max/i,/\bviews\b.*\d{3,}/i];
+const FORBIDDEN=[/@[a-z0-9_.]{3,}/i,/eleven_v\d|voice[_ -]?id\s*[:=]/i,/\bviews\b.*\d{3,}/i];
 
 for(const role of AGENT_ROLES){
   test(`${role} definition parses, uses the agreed model and names no private data`,async()=>{

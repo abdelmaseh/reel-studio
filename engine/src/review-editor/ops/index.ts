@@ -1,6 +1,7 @@
 export * from "./result.ts";
 export * from "./captions.ts";
 export * from "./scenes.ts";
+export * from "./scene-camera.ts";
 export * from "./broll.ts";
 export * from "./cuts.ts";
 export * from "./events.ts";

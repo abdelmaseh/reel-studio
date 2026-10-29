@@ -1,3 +1,4 @@
+import {styleAliasNotice} from '../styles/registry.ts';
 import React, { useCallback, useDeferredValue, useEffect, useMemo, useReducer, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Boundary } from "./Boundary";
@@ -182,11 +183,15 @@ const Shell: React.FC<{ initialProject: ProjectResponse }> = ({ initialProject }
   const answerDraft = (restore: boolean) => {
     const d = pendingRef.current;
     if (!d) return;
+    const parsed = restore ? parseManifest(d.manifest) : null;
+    if (restore && !parsed) return;
     pendingRef.current = null;
     setPendingDraft(null);
     writer.pause(false);
     if (restore) {
-      store.apply(d.manifest, "استرجاع مسودة", { coalesce: false });
+      const notice = styleAliasNotice(d.manifest.style, "ar");
+      if (notice) push("info", notice);
+      store.apply(parsed!, "استرجاع مسودة", { coalesce: false });
       store.select(null);
       push("ok", "المسودة اترجعت. اضغط حفظ لما تتأكد، أو Ctrl+Z ترجّع اللي كان.");
     } else {
@@ -322,6 +327,8 @@ const Shell: React.FC<{ initialProject: ProjectResponse }> = ({ initialProject }
       const { manifest: restored } = await client.restore(entry.file);
       const parsed = parseManifest(restored);
       if (!parsed) { push("error", "النسخة دي مش متوافقة مع الـ schema الحالي فمقدرتش أرجّعها."); return; }
+      const notice = styleAliasNotice(restored.style, "ar");
+      if (notice) push("info", notice);
       const at = Date.parse(entry.savedAt);
       store.apply(parsed, `استرجاع نسخة ${Number.isFinite(at) ? timeOfDay(at) : entry.file}`, { coalesce: false });
       store.select(null);

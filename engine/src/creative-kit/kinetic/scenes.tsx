@@ -8,6 +8,7 @@ import {FitText,fitTextLayout,type SceneTheme} from '../primitives';
 import {useSceneTheme} from '../chapter-theme';
 import {finalValueTemplate} from '../value-fit';
 import {displayDigits} from '../../core/digits.ts';
+import {isRtlDominant} from '../../core/type';
 import {useDigits,useDisplayText} from '../digits';
 import type {StyleFamily} from '../schema';
 import type {KineticScene} from './schema';
@@ -21,7 +22,7 @@ const Lift:React.FC<{at?:number;angle?:number;style?:React.CSSProperties;motion?
   const e=useEnterF(at,motion==='quiet'?'tight':motion==='stagger'?'snap':'land');
   return <div style={{...style,opacity:clamp01(e),transform:`translateY(${Math.round((1-e)*LIFT_TRAVEL[motion])}px) rotate(${angle}deg)`,transformOrigin:'50% 50%'}}>{children}</div>;
 };
-const Tag:React.FC<{text:string;theme:SceneTheme;dark?:boolean;width?:number}>=({text,theme,dark=false,width=260})=><div style={{display:'inline-block',border:`2px solid ${dark?theme.background:theme.text}`,borderRadius:40,padding:'10px 20px'}}>
+const Tag:React.FC<{text:string;theme:SceneTheme;dark?:boolean;width?:number;direction?:'rtl'|'ltr'}>=({text,theme,dark=false,width=260,direction})=><div style={{display:'inline-block',border:`2px solid ${dark?theme.background:theme.text}`,borderRadius:40,padding:'10px 20px',direction,unicodeBidi:direction?'isolate':undefined}}>
   <FitText text={text} theme={theme} role="label" width={width} height={35} size={24} min={16} lines={1} color={dark?theme.background:theme.text}/>
 </div>;
 const Title:React.FC<Common&{kicker:string;text:string;dark?:boolean}>=({theme,motion,kicker,text,dark=false})=><Lift motion={motion} style={{position:'absolute',left:90,top:285,width:890}}>
@@ -53,22 +54,26 @@ const ImageCompare:React.FC<Common&{data:Data<'image-compare'>}>=({theme,motion,
 const Checklist:React.FC<Common&{data:Data<'checklist'>}>=({theme,motion,data})=>{
   const {frame}=useClock();const dark=data.variant==='blueprint';
   const digits=useDigits();
+  const direction=isRtlDominant(data.items.flatMap(item=>[item.label,item.detail]).join(' '))?'rtl':'ltr';
+  const textDirection=(text:string):React.CSSProperties=>({direction:isRtlDominant(text)?'rtl':'ltr',unicodeBidi:'isolate'});
   const top=dark?510:650;
   const gap=dark?157:Math.min(185,570/data.items.length);
   const height=Math.min(dark?135:153,gap-18);
   const width=dark?620:735;
   return <><CanvasFill background={dark?theme.text:theme.background}/><Title theme={theme} motion={motion} kicker={data.kicker} text={data.title} dark={dark}/>
     {!dark && data.label?<div style={{position:'absolute',left:95,top:525,width:865,padding:'20px 28px',background:theme.text}}><FitText text={data.label} theme={theme} role="label" width={805} height={36} size={24} min={18} lines={1} color={theme.accent}/></div>:null}
-    {data.image?<div style={{position:'absolute',left:580,top:500,width:380,height:630,overflow:'hidden',opacity:.54,border:`2px solid ${theme.dim}`,transform:'rotate(3deg)'}}><Img src={staticFile(data.image)} style={{width:380}}/></div>:null}
+    {data.image?<div style={{position:'absolute',left:direction==='rtl'?120:580,top:500,width:380,height:630,overflow:'hidden',opacity:.54,border:`2px solid ${theme.dim}`,transform:direction==='rtl'?'rotate(-3deg)':'rotate(3deg)'}}><Img src={staticFile(data.image)} style={{width:380}}/></div>:null}
     {data.items.map((item,i)=>{
       const active=frame>=item.atFrame;
-      return <Lift key={i} at={dark?15+i*5:Math.min(50,Math.max(0,item.atFrame-42))} motion={motion} style={{position:'absolute',left:95,top:top+i*gap,width,height,padding:'16px 25px',background:active?theme.accent:dark?theme.text:'transparent',border:`${dark?2:3}px ${!active&&!dark?'dashed':'solid'} ${dark&&!active?theme.dim:theme.text}`,color:active||!dark?theme.text:theme.background,display:'flex',alignItems:'center',gap:24,boxShadow:dark?`8px 8px 0 ${theme.text}`:undefined}}>
-        <span style={{...mono(theme),...(digits==='arabic-indic'?{fontFamily:theme.ar}:{}),fontSize:32,opacity:.6,width:50,flexShrink:0}}>{displayDigits(String(i+1).padStart(2,'0'),digits)}</span>
-        <div style={{flex:1,minWidth:0}}>
-          {dark?<div style={{opacity:.7,marginBottom:5}}><FitText text={item.detail} theme={theme} role="label" width={380} height={26} size={18} min={14} lines={1} color={active?theme.text:theme.background}/></div>:null}
-          <FitText text={item.label} theme={theme} role="title" width={dark?380:330} height={height-(dark?65:35)} size={dark?42:59} min={25} lines={2} color={active||!dark?theme.text:theme.background}/>
+      const number=displayDigits(String(i+1).padStart(2,'0'),digits),detail=active?item.detail:cardLabel('missing',data);
+      // Align the detail to the card's outer edge: left in RTL rows, right in LTR rows.
+      return <Lift key={i} at={dark?15+i*5:Math.min(50,Math.max(0,item.atFrame-42))} motion={motion} style={{position:'absolute',left:95,top:top+i*gap,width,height,padding:'16px 25px',background:active?theme.accent:dark?theme.text:'transparent',border:`${dark?2:3}px ${!active&&!dark?'dashed':'solid'} ${dark&&!active?theme.dim:theme.text}`,color:active||!dark?theme.text:theme.background,display:'flex',alignItems:'center',gap:24,direction,boxShadow:dark?`8px 8px 0 ${theme.text}`:undefined}}>
+        <span style={{...mono(theme),...(digits==='arabic-indic'?{fontFamily:theme.ar}:{}),fontSize:32,opacity:.6,width:50,flexShrink:0,textAlign:direction==='rtl'?'right':undefined,...textDirection(number)}}>{number}</span>
+        <div style={{flex:1,minWidth:0,direction}}>
+          {dark?<div style={{opacity:.7,marginBottom:5,direction}}><FitText text={item.detail} theme={theme} role="label" width={380} height={26} size={18} min={14} lines={1} color={active?theme.text:theme.background} align={direction==='rtl'?'right':'left'} style={textDirection(item.detail)}/></div>:null}
+          <FitText text={item.label} theme={theme} role="title" width={dark?380:330} height={height-(dark?65:35)} size={dark?42:59} min={25} lines={2} color={active||!dark?theme.text:theme.background} align={direction==='rtl'?'right':'left'} style={textDirection(item.label)}/>
         </div>
-        {dark?<span style={{fontFamily:theme.display,fontSize:35,opacity:active?1:.12}}>✓</span>:<div style={{width:170,flexShrink:0,opacity:active?1:.35}}><FitText text={active?item.detail:cardLabel('missing',data)} theme={theme} role="label" width={170} height={55} size={19} min={14} lines={2} align="right"/></div>}
+        {dark?<span style={{fontFamily:theme.display,fontSize:35,opacity:active?1:.12,...textDirection('✓')}}>✓</span>:<div style={{width:170,flexShrink:0,opacity:active?1:.35,direction}}><FitText text={detail} theme={theme} role="label" width={170} height={55} size={19} min={14} lines={2} align={direction==='rtl'?'left':'right'} style={textDirection(detail)}/></div>}
       </Lift>;
     })}
   </>;
@@ -134,7 +139,8 @@ const Statement:React.FC<Common&{data:Data<'statement'>;head:HeadBoxPx|null}>=({
 
 const Outcome:React.FC<Common&{data:Data<'outcome'>;seam:number}>=({theme,motion,data,seam})=><>
   <CanvasFill background={theme.accent} style={{height:seam,bottom:'auto'}}/><Title theme={theme} motion={motion} kicker={data.kicker} text={data.title}/>
-  <Lift at={25} motion={motion} style={{position:'absolute',left:100,top:635,width:860,display:'flex',gap:14,flexWrap:'wrap'}}>{data.items.map(item=><Tag key={item} text={item} theme={theme} width={Math.min(230,Math.max(95,item.length*17))}/>)}</Lift>
+  {/* An Arabic row starts at the right edge and wraps from there, like the title above it. */}
+  <Lift at={25} motion={motion} style={{position:'absolute',left:100,top:635,width:860,display:'flex',gap:14,flexWrap:'wrap',direction:isRtlDominant(data.items.join(' '))?'rtl':'ltr'}}>{data.items.map(item=><Tag key={item} text={item} theme={theme} width={Math.min(230,Math.max(95,item.length*17))} direction={isRtlDominant(item)?'rtl':'ltr'}/>)}</Lift>
   <Lift at={50} motion={motion} style={{position:'absolute',left:100,top:820}}><FitText text={data.footer} theme={theme} role="label" width={800} height={40} size={24} min={18} lines={1}/></Lift>
 </>;
 

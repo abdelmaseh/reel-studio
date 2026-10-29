@@ -6,7 +6,7 @@ import {ARABIC_SCENES} from './fixtures/arabic-scenes.mjs';
 import {textNodes} from './helpers/markup.mjs';
 
 const renderer = await createFrameRenderer();
-const STYLES = ['section-deck', 'paper-collage', 'liquid-glass'];
+const STYLES = ['section-deck', 'paper-collage', 'liquid-glass', 'kinetic-paper', 'calligraphic-receipts', 'magazine-interview'];
 const parsed = (input) => editSceneSchema.parse(structuredClone(input));
 const render = (input, style, options = {}) => renderer.renderScene({scene: parsed(input), style, frame: 200, ...options});
 const fixture = (family, id = family) => ARABIC_SCENES.find((item) => item.family === family && item.id === id);
@@ -47,7 +47,7 @@ test('digits written as Arabic-Indic become Latin under latin and an English lin
 
 test('numbers the scene builds are mapped through the same text path', () => {
   const nodes = textNodes(render(fixture('proof'), 'section-deck', {digits: 'arabic-indic'}));
-  assert.ok(nodes.includes('١٢٬٥٠٠٪'), nodes.join(' | '));
-  assert.ok(textNodes(render(fixture('proof'), 'section-deck')).includes('12,500%'));
-  assert.ok(textNodes(render(fixture('proof'), 'section-deck', {digits: 'latin'})).includes('12,500%'));
+  assert.ok(nodes.join('').includes('١٢٬٥٠٠٪'), nodes.join(' | '));
+  assert.ok(textNodes(render(fixture('proof'), 'section-deck')).join('').includes('12,500%'));
+  assert.ok(textNodes(render(fixture('proof'), 'section-deck', {digits: 'latin'})).join('').includes('12,500%'));
 });

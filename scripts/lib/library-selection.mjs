@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -113,7 +114,8 @@ const assetSet=assets=>{
 
 /** A read-only shortlist. It never chooses new copy/assets, changes style or applies an edit. */
 export function recommendLibrary(data,input){
-  const context=validateContext(data,input),byKey=new Map(data.items.map(item=>[item.key,item]));
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new Error('Selection context must be an object.');
+  const context=validateContext(data,{...input,...(input?.style===undefined?{}:{style:normalizeStyleId(input.style)})}),byKey=new Map(data.items.map(item=>[item.key,item]));
   const style=data.styles.find(item=>item.nativeId===context.style);
   const candidates=[],excluded=[],assets=assetSet(context.assets);
   const output={version:1,context,decision:'shortlist',candidates,excluded,
@@ -146,10 +148,11 @@ export function recommendLibrary(data,input){
     if(context.mode==='graphics'&&context.layout&&context.layout!=='takeover')reasons.push('graphics-needs-takeover');
     const owner=item.ownerStyle??parent.ownerStyle;
     const candidateStyle=item.layer==='style'?item:owner?data.styles.find(entry=>entry.nativeId===owner):style;
-    if(context.requireBrandColors&&candidateStyle?.brand===false)reasons.push('profile-colours-not-supported');
+    if(context.requireBrandColors&&(candidateStyle?.brand===false||item.layer==='look'))reasons.push('profile-colours-not-supported');
+    if(style?.familiesOff?.includes(item.nativeId) || style?.familiesOff?.includes(parent.nativeId))reasons.push('family-not-supported');
     if(owner&&context.style&&owner!==context.style)reasons.push('owned-by-another-style');
     if(item.layer==='style'&&context.style&&item.nativeId!==context.style)reasons.push('fixed-style-preserved');
-    if(item.key==='caption-emphasis:pop'&&style?.defaults?.staticCaptions)reasons.push('static-caption-style');
+    if(['caption-emphasis:pop','caption-emphasis:stretch'].includes(item.key)&&style?.defaults?.staticCaptions)reasons.push('static-caption-style');
     if(context.durationSec!==undefined&&item.minDurationSec!==undefined&&context.durationSec+1e-9<item.minDurationSec)reasons.push('duration-below-minimum');
     if(context.assets!==undefined&&editorial.requires.some(asset=>!assets.has(asset)))reasons.push('assets-not-available');
     if(reasons.length){excluded.push({key:item.key,reasons:[...new Set(reasons)]});continue;}

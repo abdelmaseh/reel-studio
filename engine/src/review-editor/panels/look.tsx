@@ -1,9 +1,10 @@
 import React from "react";
+import type { LookKind } from "../../looks/index.ts";
 import type { PanelProps } from "../panels.ts";
 import * as ops from "../ops/index.ts";
 import { NoticeBar, Section, memoWithoutPlayhead, useNotice, useRunner } from "./kit.tsx";
 import {
-  DIGITS_VALUES, GROUPING_LABEL, LOOK_TEXT, PRESENTATION_LABEL, digitsLabel, digitsPatchValue, fontLabel, lookChange, lookReset, type LookCommand,
+  DIGITS_VALUES, GROUPING_LABEL, LOOK_EFFECT_LABEL, LOOK_TEXT, PRESENTATION_LABEL, SKIN_LABEL, digitsLabel, digitsPatchValue, fontLabel, inksWith, lookChange, lookReset, type LookCommand,
 } from "./look-state.ts";
 
 const LookPanelBody: React.FC<PanelProps> = ({ manifest, apply }) => {
@@ -57,7 +58,7 @@ const LookPanelBody: React.FC<PanelProps> = ({ manifest, apply }) => {
 
       <Section title={LOOK_TEXT.presentation}>
         <div className="lk-row">
-          <select aria-label={LOOK_TEXT.presentation} value={view.presentation.effective} disabled={captionNote !== null}
+          <select aria-label={LOOK_TEXT.presentation} value={view.presentation.effective} disabled={captionNote !== null || view.skin.value !== null}
             onChange={(e) => change("captionsPresentation", { captionsPresentation: e.target.value as ops.LookPatch["captionsPresentation"] })}>
             {ops.LOOK_OPTIONS.presentations.map((shape) => <option key={shape} value={shape}>{PRESENTATION_LABEL[shape]}</option>)}
           </select>
@@ -65,6 +66,18 @@ const LookPanelBody: React.FC<PanelProps> = ({ manifest, apply }) => {
             onClick={() => reset("captionsPresentation")}>{LOOK_TEXT.reset}</button>
         </div>
         {captionNote ? <p className="lk-note">{captionNote}</p> : null}
+      </Section>
+
+      <Section title={LOOK_TEXT.skin}>
+        <div className="lk-row">
+          <select aria-label={LOOK_TEXT.skin} value={view.skin.value ?? ''} disabled={captionNote !== null}
+            onChange={(e) => change('captionsSkin', {captionsSkin: (e.target.value || null) as ops.LookPatch['captionsSkin']})}>
+            <option value="">{LOOK_TEXT.reset}</option>
+            {ops.LOOK_OPTIONS.skins.map((skin) => <option key={skin} value={skin}>{SKIN_LABEL[skin]}</option>)}
+          </select>
+          <button type="button" aria-label={`${LOOK_TEXT.reset}: ${LOOK_TEXT.skin}`} disabled={captionNote !== null || view.skin.value === null} onClick={() => reset('captionsSkin')}>{LOOK_TEXT.reset}</button>
+        </div>
+        <p className="pk-muted">{captionNote ?? LOOK_TEXT.skinNote}</p>
       </Section>
 
       <Section title={LOOK_TEXT.digits}>
@@ -76,6 +89,35 @@ const LookPanelBody: React.FC<PanelProps> = ({ manifest, apply }) => {
             onClick={() => reset("digits")}>{LOOK_TEXT.resetDigits}</button>
         </div>
         <p className="pk-muted">{LOOK_TEXT.digitsNote}</p>
+      </Section>
+
+      <Section title={LOOK_TEXT.look}>
+        <div className="lk-row">
+          <select aria-label={LOOK_TEXT.look} value={view.look.kind ?? "none"}
+            onChange={(e) => { if (e.target.value === "none") reset("look"); else change("look", { look: { kind: e.target.value as LookKind } }); }}>
+            <option value="none">{LOOK_EFFECT_LABEL.none}</option>
+            {ops.LOOK_OPTIONS.looks.map((kind) => <option key={kind} value={kind}>{LOOK_EFFECT_LABEL[kind]}</option>)}
+          </select>
+          <button type="button" aria-label={`${LOOK_TEXT.lookOff}: ${LOOK_TEXT.look}`} disabled={view.look.value === null} onClick={() => reset("look")}>{LOOK_TEXT.lookOff}</button>
+        </div>
+        {view.look.kind === "riso" ? (
+          <div className="lk-row lk-inks">
+            {([0, 1] as const).map((index) => {
+              const name = index === 0 ? LOOK_TEXT.inkOne : LOOK_TEXT.inkTwo;
+              return (
+                <label key={index} className="lk-ink">
+                  <span>{name}</span>
+                  <input type="color" aria-label={name} value={view.look.inks[index]}
+                    onChange={(e) => change("look", { look: { kind: "riso", inks: inksWith(view.look.inks, index, e.target.value) } })} />
+                  <code dir="ltr">{view.look.inks[index]}</code>
+                </label>
+              );
+            })}
+            <button type="button" aria-label={`${LOOK_TEXT.inksDefault}`} disabled={!view.look.custom} onClick={() => change("look", { look: { kind: "riso" } })}>{LOOK_TEXT.inksDefault}</button>
+          </div>
+        ) : null}
+        {view.look.kind === "riso" ? <p className="pk-muted">{LOOK_TEXT.inksNote}</p> : null}
+        <p className="pk-muted">{LOOK_TEXT.lookNote}</p>
       </Section>
     </div>
   );

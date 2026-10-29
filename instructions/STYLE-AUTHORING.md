@@ -22,6 +22,8 @@ A style is a folder of data plus a theme. The registry derives every list that u
 - [ ] Keep the `fit` scores below the winners asserted in `tests/editorial-scenes.test.mjs`, `tests/styles-v2.test.mjs` and `tests/preferences.test.mjs`. List the style's own scene families in `fit.semanticBeats` so a brief that uses them can select it.
 - [ ] Set `defaults`: the font, the captions presentation, and whether clause captions and static captions are on.
 
+Shared scene families keep their data schemas. Register a style's drawing components in `engine/src/styles/family-designs.tsx`; prepared edits, the library preview and the creative gallery use that registry before the shared renderer. Use `familiesOff` in the style meta to refuse known families the style does not draw. It must not overlap `ownScenes`; validation, editor choices and motion catalogs honor it.
+
 ## 3. Theme and geometry
 
 - [ ] Create `engine/src/styles/<id>/theme.ts` with a default export `{theme, layout, galleryCut} satisfies StyleThemeModule`, and register it in `engine/src/styles/themes.ts`.

@@ -43,7 +43,7 @@ test('the -sweep twins keep the earlier sweeps byte for byte, for an explicit re
   }
   assert.deepEqual(catalog.sounds.map((sound) => sound.id).filter((id) => SWEEP_VOICES.includes(id)).sort(), [...SWEEP_VOICES].sort(), 'the sweep voices stay for old hits files');
   assert.equal(catalog.sounds.length, 20);
-  assert.equal(catalog.recipes.length, 25);
+  assert.equal(catalog.recipes.filter((entry) => !entry.id.startsWith('cc0-')).length, 25, 'the synthesized recipes; the cc0-* recipes come from Sound-Kits/cc0/ledger.json');
 });
 
 test('no style palette names a sweep: landings and pops only, twins never, landings with no lead', async () => {

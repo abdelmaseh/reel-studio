@@ -13,6 +13,7 @@ Choose the passage containing the difficult explanation or transition, not only 
 | Does the cue land? | The important change lands on the reviewed spoken cue, or at the authored reading moment |
 | Is the motion controlled? | No unintended teleport, spring wobble, clipping or abrupt crop; entrance and exit meet their neighbouring states |
 | Can the viewer read it? | Final state holds long enough; Arabic stays joined; mixed-language labels fit; contrast and density support the hierarchy |
+| Is the Arabic correct? | `node scripts/arabic-check.mjs --project <slug>` reports no `fail` (cut joins, characters the font does not draw); every `needs-review` item (mixed Arabic and Latin order, stacked harakat, digit style, long lines) was looked at on its own frame and has a written decision |
 | Does the layout serve the line? | Screens are legible, graphic-only passages have enough space, and visible hair/face/beard/baked subtitles remain clear |
 | Are claims honest? | Evidence is authentic; illustrations are identified; no invented result, number, testimonial or geographic boundary |
 | Does sound help? | Speech remains understandable; accents land on actions; important holds and endings are not crowded |

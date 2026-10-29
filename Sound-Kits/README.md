@@ -1,6 +1,6 @@
 # Reusable local sound recipes
 
-`catalog.json` describes the twenty deterministic sounds from `scripts/sfx.mjs` and twenty-five reusable recipes. These are synthesized locally at 48 kHz as stereo, 16-bit PCM WAV. They do not require samples, downloads, accounts or paid generation.
+`catalog.json` describes the twenty deterministic sounds from `scripts/sfx.mjs` and twenty-five reusable recipes. These are synthesized locally at 48 kHz as stereo, 16-bit PCM WAV. They do not require samples, downloads, accounts or paid generation. The catalog also holds twenty-eight recorded CC0 recipes (`cc0-<id>`), one short file each, listed in [cc0/README.md](cc0/README.md) with their ledger.
 
 ```powershell
 node scripts/sound-catalog.mjs list
@@ -68,6 +68,7 @@ Sounds can land on the frames an edit's scenes already declare instead of only a
 | `one-shot` | no scene-start cue; the take's own cues from its timeline: a swallow, circle or dive -> `transition`, a morph, pull back or swipe -> `swap`, a file landing -> `stamp`, a press -> `click`, typing -> `type`, a rolling figure -> `count`, a small arrival -> `reveal` |
 | `cartoon` | no scene-start cue; from its word-anchored timeline: each ground flip -> `transition`, a card landing (0.05 s in) or a picked grid cell or a single shape -> `reveal`, a stamp, a crossed block or a layer drop -> `stamp`, a link cable, an arrow, a morph or rings -> `swap`, a typed code line or command -> `type`, the seconds counter stopping -> `count`; nothing at or after the sign-off tail. `sceneCues` needs the compiled words (`editCues` passes them) |
 | `cartoon-ending` | its first frame (the reveal) -> `transition`; the comment and follow cards (0.1 s in) -> `reveal`; the follow tap -> `click` and `count`; nothing at or after the sign-off tail |
+| `layered-speaker` | the big word's `atFrame` -> `reveal`, each hand-drawn mark's `atFrame` -> `swap`; words beside the head and the bar growing add no cue. The scene-start `transition` is silent in this style's palette: the speaker is already on screen |
 | `kinetic-hook` | `swapFrame` -> `swap`, `stampFrame` -> `stamp` |
 | `kinetic-text` | its first frame -> `type`; the scene-start `transition` sits on the same frame with a higher priority, so this `type` cue always loses (`density`) whenever the palette has a transition recipe |
 | `checklist` | `items[].atFrame` -> `reveal` |
@@ -77,11 +78,19 @@ Sounds can land on the frames an edit's scenes already declare instead of only a
 | `message-board` | `gatherFrame` -> `reveal`, `focusFrame` -> `swap`, `closingFrame` (when set) -> `reveal` |
 | `evidence-wipe` | `revealFrame` -> `swap` |
 | `token-lens` | `groups[].atFrame` -> `reveal`, `lens.atFrame` -> `swap` |
+| `verdict` | `rows[].atFrame` -> `count`, `verdictFrame` -> `stamp` |
+| `claim-proof` | `receiptFrame` -> `reveal`, `totalFrame` -> `count`, `totalFrame + 36` -> `stamp` |
 | `meter-receipt` | `rows[].atFrame` -> `count` |
 | `ticket-offer` | `ticket.atFrame` -> `stamp` |
 | `comment-stack` | `comments[].atFrame` -> `reveal` |
 | `chapter-quote` | `quoteFrame` -> `reveal` |
 | `route-stops` | `stops[].atFrame` -> `reveal` |
+| `arabic-type` | by `move`: `letters-snap` -> `stamp` once the letters settle; `decrypt` -> `type` on its first frame and `reveal` when the last letter resolves; `pen-write`, `kufi-tiles` -> `type`; `dots-drop`, `kashida-stretch`, `video-in-letters` -> `reveal`; `word-melt` -> `swap`; `redacted-stamp` -> `reveal` per word and `stamp` when `stamp` is set; any other move -> `reveal` on its first frame |
+| `figures` | `bars` -> `count` per bar, 0.12 s apart; other variants -> `count` on the first frame |
+| `chat-thread` | each message -> `reveal` when it lands; the `typing` variant adds `type` when its dots start |
+| `proof-screen` | `reveal` one second in |
+| `map-route`, `map-focus` | no cue: geographic movement and city labels stay silent |
+| `cutout-card` | `at` (default 10) -> `reveal` |
 | `glide-chapter`, `glide-follow` | with a `pill`: `pillAt` (default `heroAt + 14.75 * fps / 30`) plus `5 * fps / 30` frames, rounded -> `click`; an explicit `pillAt` is in edit frames and is not scaled |
 | `glide-chapter`, `glide-card`, `glide-lines`, `glide-comment`, `glide-follow` | an `enter` of kind `dip` -> `stamp` on the scene's first frame, in place of the `transition`; words, lines, boxes, bullets and media changes add no cue |
 | `screens`, `screen-focus` | later steps -> `swap`; focus -> `reveal`; the focus click ring or explicit `cursor[].click` -> `click`; a `label` callout with text -> `type`, other callouts -> `reveal` |

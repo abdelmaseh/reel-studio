@@ -1,3 +1,11 @@
+import {STYLE_ALIASES} from '../styles/registry.ts';
+import {STYLE_ALIAS_IDS, normalizeManifestStyle} from '../styles/style-compat.ts';
+import {arabicTypeSceneVariants} from '../arabic-type/schema.ts';
+import {validateArabicTypeTiming} from '../arabic-type/timing.ts';
+import {figuresSceneVariants,figuresSceneSchema} from '../creative-kit/figures/schema.ts';
+import {validateFiguresTiming} from '../creative-kit/figures/timing.ts';
+import {chatThreadSceneVariants,chatThreadSceneSchema} from '../creative-kit/chat-thread/schema.ts';
+import {validateChatThreadTiming} from '../creative-kit/chat-thread/timing.ts';
 import {z} from "zod";
 import {creatorSchema} from "./creator.ts";
 import {introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema, styleSchema} from "../creative-kit/schema.ts";
@@ -7,15 +15,20 @@ import {librarySceneVariants,librarySceneSchema,validateLibraryTiming} from '../
 import {screenRecordingVariants,screenRecordingSceneSchema,screenRecordingIssues} from '../screen-recording/schema.ts';
 import {semanticSceneVariants,semanticSceneSchema,validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
 import {styleSceneVariants,styleSceneSchema,validateStyleSceneTiming,validateStyleSceneWords,styleSceneSequenceIssues} from '../styles/scenes.ts';
-import {ownSceneStyle} from '../styles/registry.ts';
+import {ownSceneStyle, familySupported} from '../styles/registry.ts';
 import {validateChapter,describeIssues,contrastRatio,relativeLuminance,mixToHex,CHAPTER_MIN_CONTRAST} from '../core/chapters.ts';
 import {pipAllowed,PIP_REACH} from '../core/pip.ts';
-import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues} from './graphics-transitions.ts';
+import {TRANSITION_KINDS,TRANSITION_DIRS,graphicsTransitionIssues,isCentredKind} from './graphics-transitions.ts';
+import {MASK_SHAPES} from '../core/mask-geo.ts';
 import {brollIssues} from './broll.ts';
 import {LAYOUT_TRANSITION_MIN_FRAMES,layoutTransitionIssues} from './footage.ts';
 import {CAPTION_EMPHASIS_KINDS,captionEmphasisIssues} from './caption-emphasis.ts';
 import {compileEdit} from './timeline.ts';
 import {projectSceneVariant,projectScenesMetadataSchema,projectSceneIssues} from '../project-scenes/schema.ts';
+import {SCENE_CAMERA_MOVES,SCENE_CAMERA_STRENGTHS,sceneCameraIssues} from '../core/camera.ts';
+import {proofScreenSceneVariants,proofScreenSceneSchema} from '../creative-kit/proof-screen/schema.ts';
+import {validateProofScreenTiming} from '../creative-kit/proof-screen/timing.ts';
+import {lookSchema} from '../looks/index.ts';
 
 const frame = z.number().int().min(0).max(4320000);
 const slug = z.string().regex(/^[a-z0-9][a-z0-9-]{0,63}$/);
@@ -53,11 +66,17 @@ const sceneUnion = z.discriminatedUnion("family",[
   ...librarySceneVariants,
   ...screenRecordingVariants,
   ...semanticSceneVariants,
+  ...arabicTypeSceneVariants,
+  ...figuresSceneVariants,
+  ...chatThreadSceneVariants,
   ...styleSceneVariants,
+  ...proofScreenSceneVariants,
   projectSceneVariant,
 ]);
 
-export const editSceneSchema = z.intersection(sceneUnion,z.object({chapter:chapterSchema.optional()}));
+// A camera move for a takeover scene (the whole frame) or a split scene (its graphics panel above the seam, clipped there); `at` is the scene frame a snap-zoom lands on. Presenter plates keep the camera[] track.
+export const sceneCameraSchema = z.object({move:z.enum(SCENE_CAMERA_MOVES),strength:z.enum(SCENE_CAMERA_STRENGTHS).optional(),at:frame.optional()}).strict();
+export const editSceneSchema = z.intersection(sceneUnion,z.object({chapter:chapterSchema.optional(),camera:sceneCameraSchema.optional()}));
 const windowGeometry=z.object({windowTop:frame.max(1920),windowHeight:frame.min(1).max(1920),videoWidth:z.number().int().min(1).max(4000),videoLeft:z.number().int().min(-4000).max(1920),videoTop:z.number().int().min(-8000).max(1920)}).strict();
 
 
@@ -74,7 +93,8 @@ export const cameraKeySchema = z.object({
   ease:z.enum(["smooth","bezierCam"]).optional(),
 }).strict();
 export const transitionSchema = z.object({atFrame:frame,durationInFrames:frame.min(1).max(120),
-  kind:z.enum(TRANSITION_KINDS).default('whiteout'),dir:z.enum(TRANSITION_DIRS).optional()}).strict();
+  kind:z.enum(TRANSITION_KINDS).default('whiteout'),dir:z.enum(TRANSITION_DIRS).optional(),shape:z.enum(MASK_SHAPES).optional(),
+  origin:z.object({x:z.number().min(0).max(1),y:z.number().min(0).max(1)}).strict().optional()}).strict();
 export const layoutTransitionSchema = z.object({atFrame:frame,durationInFrames:z.number().int().min(LAYOUT_TRANSITION_MIN_FRAMES).max(120),
   kind:z.enum(['curtain','window-morph']),from:z.enum(['presenter','split']),to:z.enum(['presenter','split'])}).strict();
 
@@ -85,15 +105,17 @@ export const captionEmphasisSchema = z.object({sourceIndex:z.number().int().min(
 
 
 const CAPTION_BAND_HALF=64;
-import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, WRITING_STYLES, DIGIT_CHOICES} from '../core/preference-options.ts';
-export const editManifestSchema = z.object({
+import {FONT_CHOICES, CAPTION_GROUPING, CAPTION_PRESENTATION, CAPTION_SKINS, WRITING_STYLES, DIGIT_CHOICES} from '../core/preference-options.ts';
+const manifestSchema = z.object({
   version:z.literal(1), id:slug, purpose:z.enum(["test","delivery"]),
   contentMode:z.literal('graphics').optional(),
   projectScenes:projectScenesMetadataSchema.optional(),
   style:styleSchema,
+  styleAlias:z.enum(STYLE_ALIAS_IDS).optional(),
   fontFamily:z.enum(FONT_CHOICES).optional(),
   digits:z.enum(DIGIT_CHOICES).optional(),
   writingStyle:z.enum(WRITING_STYLES).optional(),
+  look:lookSchema.optional(),
   creator:creatorSchema.optional(),
   brand:chapterSchema.optional(),
   source:z.object({
@@ -108,6 +130,7 @@ export const editManifestSchema = z.object({
     mode:z.enum(["words","phrases"]).optional(),
     grouping:z.enum(CAPTION_GROUPING).optional(),
     presentation:z.enum(CAPTION_PRESENTATION).optional(),
+    skin:z.enum(CAPTION_SKINS).optional(),
     words:z.array(z.object({
       text:z.string().min(1).max(200).regex(/\S/), startMs:z.number().finite().min(0),
       endMs:z.number().finite().min(0), confidence:z.number().min(0).max(1).nullable(),
@@ -124,6 +147,7 @@ export const editManifestSchema = z.object({
   layoutTransitions:z.array(layoutTransitionSchema).max(100).optional(),
 }).strict().superRefine((m,ctx)=>{
   const issue=(message:string)=>ctx.addIssue({code:"custom",message});
+  if(m.styleAlias && STYLE_ALIASES[m.styleAlias]!==m.style)issue('styleAlias must resolve to the manifest style. Remove it when choosing another style.');
   for(const message of projectSceneIssues(m))issue(message);
   let last=0,total=0;
   for(const s of m.segments){
@@ -145,9 +169,18 @@ export const editManifestSchema = z.object({
   }
   last=0; const ids=new Set<string>();
   for(const s of m.scenes){
+    if(!familySupported(m.style,s.family))issue(`Style ${m.style} does not support family ${s.family}.`);
     if(ids.has(s.id)) issue("Scene IDs must be unique."); ids.add(s.id);
     if(s.fromFrame<last || s.fromFrame+s.durationInFrames>total) issue("Visual scenes must be ordered, disjoint and inside the edit.");
     last=s.fromFrame+s.durationInFrames;
+    for(const message of sceneCameraIssues(s))issue(message);
+    if(s.family==='arabic-type')for(const message of validateArabicTypeTiming(s,m.source.fps))issue(message);
+    const figures=figuresSceneSchema.safeParse(s);
+    if(figures.success)for(const message of validateFiguresTiming(figures.data,m.source.fps))issue(message);
+    const chatThread=chatThreadSceneSchema.safeParse(s);
+    if(chatThread.success)for(const message of validateChatThreadTiming(chatThread.data,m.source.fps))issue(message);
+    const proofScreen=proofScreenSceneSchema.safeParse(s);
+    if(proofScreen.success)for(const message of validateProofScreenTiming(proofScreen.data,m.source.fps))issue(message);
     const semantic=semanticSceneSchema.safeParse(s);
     if(semantic.success){
       for(const message of validateSemanticTiming(semantic.data,m.source.fps))issue(message);
@@ -197,6 +230,15 @@ export const editManifestSchema = z.object({
         }
       }
     }
+    if(styled.success && styled.data.family==='layered-speaker' && styled.data.data.foreground){
+      // A layered-speaker matte follows the presenter's source frames exactly, like the kinetic hook's.
+      const foreground=styled.data.data.foreground;
+      if(s.fromFrame+s.durationInFrames<=total){
+        const expected=foregroundSourceFrame(m,s.fromFrame);
+        const lastSource=foregroundSourceFrame(m,s.fromFrame+s.durationInFrames-1);
+        if(foreground.sourceSha256!==m.source.sha256 || foreground.sourceFromFrame+foreground.trimBeforeFrame!==expected || lastSource!==expected+s.durationInFrames-1)issue('Foreground must match the same continuous source frames as the presenter.');
+      }
+    }
   }
   for(const message of styleSceneSequenceIssues(m.scenes))issue(message);
   if(m.signoffFromFrame!==undefined && m.signoffFromFrame>=total) issue("Signoff must start inside the edit.");
@@ -211,7 +253,7 @@ export const editManifestSchema = z.object({
   if(m.captions.status==="reviewed" && !m.captions.reviewer) issue("Reviewed captions need an explicit reviewer.");
   if(m.purpose==="delivery" && (m.captions.status!=="reviewed" || !m.scenes.length)) issue("Delivery requires reviewed captions and authored scenes.");
   for(const transition of m.transitions??[]){
-    const tail=transition.kind==='whiteout'?transition.durationInFrames/2:transition.durationInFrames;
+    const tail=isCentredKind(transition.kind)?transition.durationInFrames/2:transition.durationInFrames;
     if(transition.atFrame>=total || transition.atFrame+tail>(m.signoffFromFrame??total))issue('Transitions must finish before the signoff and edit end.');
   }
   if(m.footage){
@@ -223,9 +265,9 @@ export const editManifestSchema = z.object({
   for(const message of graphicsTransitionIssues(m.transitions??[],m.scenes,m.projectScenes))issue(message);
   for(const message of brollIssues(m))issue(message);
   for(const message of layoutTransitionIssues(m,total,m.signoffFromFrame))issue(message);
-  for(const message of captionEmphasisIssues(m.style,m.captions.words.length,m.captions.emphasis))issue(message);
+  for(const message of captionEmphasisIssues(m.style,m.captions.words.length,m.captions.emphasis,m.styleAlias))issue(message);
   if(m.footage?.pip){
-    const pip=m.footage.pip,policy=pipAllowed(m.style),aspect=m.source.height/m.source.width,p=pip.plate;
+    const pip=m.footage.pip,policy=pipAllowed(m.style,m.styleAlias),aspect=m.source.height/m.source.width,p=pip.plate;
     if(!policy.allowed)issue(`Picture-in-picture is not part of the ${m.style} style: ${policy.evidence}`);
     if(pip.x+pip.width>1080 || pip.y+pip.height>1920)issue('PiP window must stay inside the 1080x1920 frame.');
     if(pip.radius*2>Math.min(pip.width,pip.height)+1e-6)issue('PiP radius cannot exceed half the window.');
@@ -243,6 +285,9 @@ export const editManifestSchema = z.object({
     if(pipBottom>1370-CAPTION_BAND_HALF && pipTop<1370+CAPTION_BAND_HALF)issue('PiP window (with its ring/shadow reach) overlaps the caption band around y=1370; a caption could paint over his face. Use a top corner or a smaller window.');
   }
 });
+
+// Keep the existing partial-field validation API used by briefs and editor tools.
+export const editManifestSchema = Object.assign(z.preprocess(normalizeManifestStyle, manifestSchema), {shape: manifestSchema.shape});
 
 export type EditManifest = z.infer<typeof editManifestSchema>;
 export type EditScene = z.infer<typeof editSceneSchema>;

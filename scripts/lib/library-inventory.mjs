@@ -22,7 +22,11 @@ const SCENE_GROUPS = [
   ['engine/src/motion-library/schema.ts', 'librarySceneVariants'],
   ['engine/src/screen-recording/schema.ts', 'screenRecordingVariants'],
   ['engine/src/creative-kit/semantic/schema.ts', 'semanticSceneVariants'],
+  ['engine/src/arabic-type/schema.ts', 'arabicTypeSceneVariants'],
+  ['engine/src/creative-kit/figures/schema.ts', 'figuresSceneVariants'],
+  ['engine/src/creative-kit/chat-thread/schema.ts', 'chatThreadSceneVariants'],
   ['engine/src/styles/scenes.ts', 'styleSceneVariants'],
+  ['engine/src/creative-kit/proof-screen/schema.ts', 'proofScreenSceneVariants'],
   ['engine/src/project-scenes/schema.ts', 'projectSceneVariant'],
 ];
 const PRIMITIVE_FILES = [
@@ -84,7 +88,7 @@ export async function collectLibraryInventory({root = DEFAULT_ROOT} = {}) {
     if (/^[a-z0-9-]+$/.test(meta.id)) await read(metaPath);
     add('style', 'style', meta.id, [STYLE_REGISTRY, metaPath], {label: meta.label, summary: meta.description,
       tags: [...meta.useCases, ...Object.keys(meta.fit.tone)], brand: meta.brand, defaults: meta.defaults,
-      ownScenes: [...meta.ownScenes], reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
+      familiesOff: [...(meta.familiesOff ?? [])], ownScenes: [...meta.ownScenes], reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
   }
   const concepts = await load(CONCEPT_CATALOG);
   const conceptTypesPath = 'engine/src/motion-concepts/types.ts', conceptTimingPath = 'engine/src/motion-concepts/timeline.ts';
@@ -147,8 +151,20 @@ export async function collectLibraryInventory({root = DEFAULT_ROOT} = {}) {
   const captionPath = 'engine/src/prepared-edit/caption-emphasis.ts', captions = await load(captionPath);
   for (const id of captions?.CAPTION_EMPHASIS_KINDS ?? []) add('caption-emphasis', 'effect', id, [captionPath, SCHEMA], {
     reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
+  const looksPath = 'engine/src/looks/index.ts', looks = await load(looksPath);
+  for (const id of looks?.LOOK_KINDS ?? []) add('look', 'effect', id, [looksPath, SCHEMA], {role: 'whole-picture-look', reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
+  for (const id of looks?.BACKDROP_KINDS ?? []) add('backdrop', 'effect', id, [looksPath], {role: 'backdrop'});
+  const preferencePath = 'engine/src/core/preference-options.ts', preferences = await load(preferencePath);
+  for (const id of preferences?.CAPTION_PRESENTATION ?? []) add('caption-presentation', 'effect', id, [preferencePath, SCHEMA], {
+    reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
+  for (const id of preferences?.CAPTION_SKINS ?? []) add('caption-skin', 'effect', id, [preferencePath, SCHEMA], {
+    reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
   const cameraPath = 'engine/src/core/camera.ts', camera = await load(cameraPath);
   for (const id of camera?.PUNCH_KINDS ?? []) add('camera', 'effect', id, [cameraPath], {role: 'track-authoring-helper'});
+  const sceneCameraPath = 'engine/src/core/scene-camera.tsx';
+  await read(sceneCameraPath);
+  for (const id of camera?.SCENE_CAMERA_MOVES ?? []) add('camera', 'effect', id, [cameraPath, sceneCameraPath, SCHEMA], {role: 'scene-camera', layouts: ['split', 'takeover'],
+    reachability: {manifest: 'declared', editor: 'unverified', renderer: 'unverified'}});
   const recipes = await load(RECIPE_CATALOG);
   for (const recipe of recipes?.listMotionRecipes().recipes ?? []) {
     const layouts=typeof recipe.layout==='string'?recipe.layout.split(' or '):[];

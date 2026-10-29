@@ -13,7 +13,7 @@ const proposal={wordIndex:0,atFrame:180,kind:'punch-step',scale:1.05,anchor:{x:.
 const pip={x:50,y:100,width:260,height:260,radius:30,plate:{left:-50,top:-20,width:360,height:640},sceneIds:['hook']};
 const window={windowTop:0,windowHeight:1920,videoWidth:1080,videoLeft:0,videoTop:0};
 const brief=()=>({version:1,id:'performance-test',source:source.path,transcript:'Projects/performance-test/words.json',
-  ...profileToBrief(profile),purpose:'explainer',tone:'calm',style:'split-canvas',captionsReviewedBy:'Creator',
+  ...profileToBrief(profile),purpose:'explainer',tone:'calm',style:'kinetic-paper',captionsReviewedBy:'Creator',
   beats:[{id:'hook',fromSec:0,toSec:2,intent:'intro',layout:'takeover',data:{kicker:'Example',title:'One idea',subtitle:'Review',caption:'Example'}}]});
 const withEmphasis=()=>({...brief(),emphasisFile:'Projects/performance-test/emphasis.json',emphasisApprovedBy:'Creator'});
 

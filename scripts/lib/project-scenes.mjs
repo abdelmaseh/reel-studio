@@ -84,7 +84,8 @@ export async function projectSceneBuild(edit){
   const projectRoot=path.join(ROOT,'Projects',edit.id),packDir=path.posix.dirname(metadata.pack);
   // Registries a plate import pulls in. They stay importable, but every prepare or render of ANY project rewrites them, so they never take part in the identity (a prepared project would otherwise go stale whenever another project is prepared).
   const mutableRegistries=new Set([path.join(ENGINE,'proxies.json'),path.join(ENGINE,'plates.json')]);
-  const sharedMetadata=new Set([path.join(ENGINE,'public','fonts','manifest.json'),...mutableRegistries]);
+  // The font manifest and its tracked template are shared engine metadata that core/fonts.ts imports.
+  const sharedMetadata=new Set([path.join(ENGINE,'public','fonts','manifest.json'),path.join(ENGINE,'public','fonts','manifest.template.json'),...mutableRegistries]);
   const entryFiles=metadata.scenes.map(scene=>path.join(ROOT,packDir,scene.entry));
   const source=metadata.scenes.map((scene,index)=>`import Scene${index} from ${JSON.stringify(entryFiles[index].split(path.sep).join('/'))};`).join('\n')+`\nexport const PROJECT_SCENES = {${metadata.scenes.map((scene,index)=>`${JSON.stringify(scene.id)}:{Component:Scene${index},contract:${JSON.stringify(scene)}}`).join(',')}};\n`;
   const esbuild=engineRequire('esbuild');

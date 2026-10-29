@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto';
 import './lib/project-tmp.mjs';
 import { parseArgs, ROOT, writeJson } from './lib/media.mjs';
 import { getServeUrl, requireFromEngine } from './lib/bundle.mjs';
+import { renderChromiumOptions } from './lib/render-gl.mjs';
 import { SPEC, zone, zoneTests, profileIds } from './lib/ig.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
 
@@ -140,7 +141,7 @@ function analyse(a, b) {
 
 
 async function runCheck({ compId, extraProps, times, enforced, outDir, keepPngs }) {
-  const browser = await openBrowser('chrome', { logLevel: 'warn' });
+  const browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
   try {
     const compProbe = await selectComposition({ serveUrl, id: compId, inputProps: { ...extraProps, probe: PROBES[0] }, logLevel: 'warn', puppeteerInstance: browser });
     const fps = compProbe.fps;
@@ -252,7 +253,7 @@ const enforced = args.profile
   : [SPEC.defaultProfile, ...(args['strict-ads'] ? ['ig-reels-ads'] : [])];
 for (const pid of enforced) zone(pid);
 
-const compForTimes = await selectComposition({ serveUrl, id: compId, inputProps: { ...extraProps, probe: PROBES[0] }, logLevel: 'warn' });
+const compForTimes = await selectComposition({ serveUrl, id: compId, inputProps: { ...extraProps, probe: PROBES[0] }, logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
 const durationSec = compForTimes.durationInFrames / compForTimes.fps;
 let times;
 if (args.at) times = String(args.at).split(',').map(Number).filter((n) => !Number.isNaN(n));

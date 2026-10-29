@@ -1,26 +1,66 @@
-// Counts successful installs (a new version counts once) and daily use per version so the maintainer can see that updates arrive and work.
-// Each event carries only schema, installationId (a random UUID created here, not derived from the user or the machine),
-// event, version and occurredAt; never names, handles, media, files or paths. README (privacy) and the thank-you line at
-// the end of setup tell the user. Network or local-state failures never affect the studio.
-// REEL_STUDIO_STATS=off disables recording and sending absolutely; QA installs (verify-clean-install) set it so they are not counted.
-import {randomUUID} from 'node:crypto';
+// Counts successful installs (a new version counts once), daily use per version, finished videos and stopped installs so the
+// maintainer can see that updates arrive and work. Each event carries only schema, installationId (a random UUID created here,
+// not derived from the user or the machine), event, version and occurredAt. A stopped install adds `step` (one of STEP_IDS) and a
+// finished video adds `style` (a style id, or "other"); never names, handles, media, files or paths. The key that stops one
+// finished file from counting twice is a local hash kept in state/studio-stats.json and is never sent.
+// README (privacy) and the thank-you line at the end of setup tell the user. Network or local-state failures never affect the studio.
+// REEL_STUDIO_STATS accepts off, 0, false or no (trimmed, case-insensitive) to disable recording and sending completely.
+// QA installs (verify-clean-install) set it to off so they are not counted.
+import {createHash, randomUUID} from 'node:crypto';
 import {promises as fs} from 'node:fs';
 import path from 'node:path';
+import {STEP_IDS} from './studio-state.mjs';
 
 const ENDPOINT = 'https://store.pyraai.cloud/wp-json/reel-studio-stats/v1/events';
 const MAX_AGE = 30 * 86400000;
+const MAX_DELIVERED = 1000;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/;
 const VERSION = /^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$/;
-const enabled = options => process.env.REEL_STUDIO_STATS !== 'off' && (options.endpoint || !(process.env.CI || process.env.NODE_TEST_CONTEXT));
+const SLUG = /^[a-z][a-z0-9-]{0,39}$/;
+const BASE_KEYS = ['schema', 'installationId', 'event', 'version', 'occurredAt'];
+// The one extra key each event may carry.
+const DETAIL_KEY = {installed: null, studio_used: null, setup_failed: 'step', reel_delivered: 'style'};
+const enabled = options => !['off', '0', 'false', 'no'].includes(process.env.REEL_STUDIO_STATS?.trim().toLowerCase()) && (options.endpoint || !(process.env.CI || process.env.NODE_TEST_CONTEXT));
 const nowOf = options => options.now ? options.now() : new Date();
-const keyOf = event => `${event.event}:${event.version}:${event.occurredAt}`;
+const keyOf = event => `${event.event}:${event.version}:${event.occurredAt}:${event.step ?? event.style ?? ''}`;
 const fileOf = root => path.join(root, 'state/studio-stats.json');
 const readJson = async(file) => JSON.parse(await fs.readFile(file, 'utf8'));
+const isKind = event => typeof event === 'string' && Object.hasOwn(DETAIL_KEY, event);
+
+function detailFits(event) {
+  const field = DETAIL_KEY[event.event];
+  const extra = Object.keys(event).filter(key => !BASE_KEYS.includes(key));
+  if (field === null) return extra.length === 0;
+  return extra.length === 1 && extra[0] === field && typeof event[field] === 'string' && SLUG.test(event[field])
+    && (field !== 'step' || STEP_IDS.includes(event[field]));
+}
+
+function payloadOf(event) {
+  const field = DETAIL_KEY[event.event];
+  return {schema: 1, installationId: event.installationId, event: event.event, version: event.version, occurredAt: event.occurredAt, ...(field ? {[field]: event[field]} : {})};
+}
+
+// What an event needs before it is queued, or null when it must not be recorded at all.
+function detailOf(event, detail) {
+  if (event === 'setup_failed') return typeof detail?.step === 'string' && STEP_IDS.includes(detail.step) ? {step: detail.step} : null;
+  if (event !== 'reel_delivered') return {};
+  if (typeof detail?.output !== 'string' || detail.output === '') return null;
+  const resolved = path.resolve(detail.output);
+  const file = createHash('sha256').update(process.platform === 'win32' ? resolved.toLowerCase() : resolved).digest('hex');
+  return {style: typeof detail.style === 'string' && SLUG.test(detail.style) ? detail.style : 'other', file};
+}
+
+function markerOf(state, kind, version, day, detail) {
+  if (kind === 'installed') return [state.installed, version];
+  if (kind === 'studio_used') return [state.used, `${version}:${day}`];
+  if (kind === 'setup_failed') return [state.failed, `${version}:${detail.step}:${day}`];
+  return [state.delivered, detail.file];
+}
 
 function retainOutbox(state, retained) {
   const remaining = new Set(retained);
   for (const event of state.outbox) {
-    if (!remaining.has(event) && event.event === 'installed' && state.installed[event.version] === event.occurredAt) {
+    if (!remaining.has(event) && event?.event === 'installed' && state.installed[event.version] === event.occurredAt) {
       delete state.installed[event.version]; // A dropped unsent install can be observed again; acknowledged installs stay marked.
     }
   }
@@ -53,15 +93,18 @@ async function changeState(root, now, change) {
   try {
     const state = await readJson(file).catch(error => {
       if (error.code !== 'ENOENT') throw error;
-      return {schema: 1, installationId: randomUUID(), installed: {}, used: {}, outbox: []};
+      return {schema: 1, installationId: randomUUID(), installed: {}, used: {}, failed: {}, delivered: {}, outbox: []};
     });
     if (state.schema !== 1 || !UUID.test(state.installationId) || !Array.isArray(state.outbox)) return null;
-    state.installed ??= {}; state.used ??= {};
-    retainOutbox(state, state.outbox.filter(event => event.schema === 1 && event.installationId === state.installationId
-      && ['installed', 'studio_used'].includes(event.event) && VERSION.test(event.version ?? '')
+    state.installed ??= {}; state.used ??= {}; state.failed ??= {}; state.delivered ??= {};
+    retainOutbox(state, state.outbox.filter(event => event && typeof event === 'object' && event.schema === 1 && event.installationId === state.installationId
+      && isKind(event.event) && detailFits(event) && VERSION.test(event.version ?? '')
       && event.version.length <= 64 && Number.isFinite(Date.parse(event.occurredAt)) && now - Date.parse(event.occurredAt) <= MAX_AGE).slice(-64));
-    state.used = Object.fromEntries(Object.entries(state.used).filter(([, stamp]) => now - Date.parse(stamp) <= MAX_AGE));
+    const fresh = markers => Object.fromEntries(Object.entries(markers).filter(([, stamp]) => now - Date.parse(stamp) <= MAX_AGE));
+    state.used = fresh(state.used); state.failed = fresh(state.failed);
     await change(state);
+    state.delivered = Object.fromEntries(Object.entries(state.delivered).filter(([, stamp]) => Number.isFinite(Date.parse(stamp)))
+      .sort(([, a], [, b]) => Date.parse(b) - Date.parse(a)).slice(0, MAX_DELIVERED));
     await fs.writeFile(temporary, `${JSON.stringify(state)}\n`, 'utf8');
     await fs.rename(temporary, file);
     return state;
@@ -73,17 +116,20 @@ async function changeState(root, now, change) {
 
 export async function recordStudioEvent(root, event, options = {}) {
   try {
-    if (!enabled(options) || !['installed', 'studio_used'].includes(event)) return;
+    if (!enabled(options) || !isKind(event)) return;
+    const detail = detailOf(event, options.detail);
+    if (!detail) return;
     const now = nowOf(options), version = (await readJson(path.join(root, 'versions.lock.json'))).edition;
     if (!VERSION.test(version ?? '') || version.length > 64) return;
     const ready = event === 'studio_used' && (await readJson(path.join(root, 'state/setup.json')).catch(() => null))?.status === 'done';
     await changeState(root, now, state => {
+      const day = now.toISOString().slice(0, 10);
       for (const kind of ready ? ['installed', event] : [event]) {
-        const markers = kind === 'installed' ? state.installed : state.used;
-        const key = kind === 'installed' ? version : `${version}:${now.toISOString().slice(0, 10)}`;
+        const [markers, key] = markerOf(state, kind, version, day, detail);
         if (markers[key]) continue;
         const occurredAt = now.toISOString(); markers[key] = occurredAt;
-        state.outbox.push({schema: 1, installationId: state.installationId, event: kind, version, occurredAt});
+        const field = DETAIL_KEY[kind];
+        state.outbox.push({schema: 1, installationId: state.installationId, event: kind, version, occurredAt, ...(field ? {[field]: detail[field]} : {})});
       }
       retainOutbox(state, state.outbox.slice(-64));
     });
@@ -102,17 +148,28 @@ export async function flushStudioEvents(root, options = {}) {
     if (!state?.outbox.length) return;
     const signal = AbortSignal.timeout(Math.max(1, Math.min(1000, options.timeoutMs ?? 1000)));
     const sent = new Set();
+    const dropped = new Set();
     for (const pending of state.outbox.slice(0, 4)) {
-      const payload = {schema: 1, installationId: pending.installationId, event: pending.event, version: pending.version, occurredAt: pending.occurredAt};
-      const body = JSON.stringify(payload);
+      const body = JSON.stringify(payloadOf(pending));
       if (Buffer.byteLength(body) > 1024) continue;
       try {
         const response = await fetch(options.endpoint ?? ENDPOINT, {method: 'POST', headers: {'content-type': 'application/json'}, body, signal, redirect: 'error'});
         await response.body?.cancel();
-        if (!response.ok) break;
+        if (!response.ok) {
+          // Proxy authentication (407) and misdirected routing (421) can recover without changing the event, so retain both.
+          // Fetch retries a 421 without its body, so the status observed here comes from that retry.
+          if (response.status >= 400 && response.status < 500 && ![407, 408, 421, 429].includes(response.status)) {
+            dropped.add(keyOf(pending));
+            continue;
+          }
+          break;
+        }
         sent.add(keyOf(pending));
       } catch { break; }
     }
-    if (sent.size) await changeState(root, nowOf(options), latest => {latest.outbox = latest.outbox.filter(event => !sent.has(keyOf(event)));});
+    if (sent.size || dropped.size) await changeState(root, nowOf(options), latest => {
+      retainOutbox(latest, latest.outbox.filter(event => !dropped.has(keyOf(event))));
+      latest.outbox = latest.outbox.filter(event => !sent.has(keyOf(event)));
+    });
   } catch {} finally { await release?.().catch(() => {}); }
 }

@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
+import {readFileSync, mkdtempSync, writeFileSync, rmSync} from 'node:fs';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
-import {scanPublicationFile} from '../scripts/lib/publication-policy.mjs';
+import {scanPublicationFile, readWorkingTreePublicationFiles} from '../scripts/lib/publication-policy.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = file => readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n');
@@ -89,11 +89,27 @@ test('NOTICE lists the Inter font', () => {
 });
 
 test('the Sound-Kits README counts and recipe table match the catalog', () => {
-  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four', 'twenty-five'];
+  const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four', 'twenty-five', 'twenty-six', 'twenty-seven', 'twenty-eight'];
   const catalog = JSON.parse(read('Sound-Kits/catalog.json')), text = read('Sound-Kits/README.md');
   assert.match(text, new RegExp(`${words[catalog.sounds.length]} deterministic sounds`));
-  assert.match(text, new RegExp(`${words[catalog.recipes.length]} reusable (?:multi-hit )?recipes`));
-  for (const recipe of catalog.recipes) assert.ok(text.includes(`\`${recipe.id}\``), `${recipe.id} is listed`);
+  // Synthesized recipes are listed here; the recorded cc0-* recipes are listed on Sound-Kits/cc0/README.md, without the prefix.
+  const recorded = catalog.recipes.filter((recipe) => recipe.id.startsWith('cc0-')), synthesized = catalog.recipes.filter((recipe) => !recipe.id.startsWith('cc0-'));
+  assert.match(text, new RegExp(`${words[synthesized.length]} reusable (?:multi-hit )?recipes`));
+  assert.match(text, new RegExp(`${words[recorded.length]} recorded CC0 recipes`));
+  for (const recipe of synthesized) assert.ok(text.includes(`\`${recipe.id}\``), `${recipe.id} is listed`);
+  const cc0 = read('Sound-Kits/cc0/README.md');
+  for (const recipe of recorded) assert.ok(cc0.includes(`\`${recipe.id.slice(4)}\``), `${recipe.id} is listed on the CC0 page`);
+});
+
+test('publication working-tree reads skip deleted tracked paths and include new files', () => {
+  const folder = mkdtempSync(path.join(root, 'state', 'publication-test-'));
+  try {
+    writeFileSync(path.join(folder, 'retained.txt'), 'retained');
+    writeFileSync(path.join(folder, 'new file.txt'), 'new');
+    writeFileSync(path.join(folder, 'removed-parent'), 'no longer a directory');
+    const files = readWorkingTreePublicationFiles(folder, ['deleted-style/theme.ts', 'retained.txt', 'new file.txt', 'retained.txt', 'removed-parent/child.ts']);
+    assert.deepEqual(files.map(file => [file.path, file.data.toString()]), [['retained.txt','retained'],['new file.txt','new']]);
+  } finally {rmSync(folder, {recursive:true, force:true});}
 });
 
 test('the release files pass the publication policy', () => {

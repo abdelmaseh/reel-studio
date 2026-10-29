@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import { STYLE_IDS } from '../../engine/src/creative-kit/styles.ts';
 import { CUE_KINDS, sortCues } from './scene-cues.mjs';
 
@@ -75,6 +76,7 @@ export function validatePalettes(palettes, catalog) {
 
 
 export function resolvePalette(palettes, catalog, styleId, {sweeps = false} = {}) {
+  styleId = normalizeStyleId(styleId);
   validatePalettes(palettes, catalog);
   if (!STYLE_IDS.includes(styleId)) fail(`Unknown style ${JSON.stringify(styleId)}. Choose one of: ${STYLE_IDS.join(', ')}.`);
   if (typeof sweeps !== 'boolean') fail('sweeps must be true or false.');

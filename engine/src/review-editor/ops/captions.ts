@@ -1,5 +1,6 @@
+import {staticCaptionsFor} from "../../styles/style-compat.ts";
 import type { EditManifest } from "../../prepared-edit/schema.ts";
-import { CAPTION_EMPHASIS_KINDS, STATIC_CAPTION_STYLES, type CaptionEmphasis, type CaptionEmphasisKind } from "../../prepared-edit/caption-emphasis.ts";
+import { CAPTION_EMPHASIS_KINDS, type CaptionEmphasis, type CaptionEmphasisKind } from "../../prepared-edit/caption-emphasis.ts";
 import { finalize, refuse, unchanged, type OpResult } from "./result.ts";
 import { ceil3, clamp, floor3, frameMs, removeAt, replaceAt, round3, sourceTotalMs, type Word } from "./util.ts";
 
@@ -223,7 +224,7 @@ export function deleteWord(m: EditManifest, index: number): OpResult {
 export function setEmphasis(m: EditManifest, index: number, kind: CaptionEmphasisKind): OpResult {
   if (!m.captions.words[index]) return noWord(index);
   if (!(CAPTION_EMPHASIS_KINDS as readonly string[]).includes(kind)) return refuse(`نوع الـ emphasis لازم يكون واحد من: ${CAPTION_EMPHASIS_KINDS.join(" / ")}.`);
-  if (kind === "pop" && (STATIC_CAPTION_STYLES as readonly string[]).includes(m.style)) return refuse(`الـ pop مش مسموح في ستايل ${m.style}: الكابشن فيه ثابت.`);
+  if ((kind === "pop" || kind === "stretch") && staticCaptionsFor(m.style,m.styleAlias)) return refuse(`الـ ${kind} مش مسموح في ستايل ${m.style}: الكابشن فيه ثابت.`);
   const list = m.captions.emphasis ?? [];
   const at = list.findIndex((e) => e.sourceIndex >= index);
   if (at >= 0 && list[at].sourceIndex === index) {

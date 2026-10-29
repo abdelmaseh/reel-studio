@@ -1,4 +1,5 @@
 import './project-tmp.mjs';
+import {normalizeManifestStyle} from '../../engine/src/styles/style-compat.ts';
 import path from 'node:path';
 import {promises as fs, readFileSync} from 'node:fs';
 import {editManifestSchema} from '../../engine/src/prepared-edit/schema.ts';
@@ -16,6 +17,7 @@ import {projectSceneBuild} from './project-scenes.mjs';
 
 
 export function assertEditionManifest(manifest){
+  manifest = normalizeManifestStyle(manifest);
   if(!EDITION_STYLE_IDS.includes(manifest.style)) throw new Error(`style must be one of ${EDITION_STYLE_IDS.join(', ')}.`);
   return manifest;
 }
@@ -43,9 +45,9 @@ export async function inspectEditSource(source){
 }
 
 export async function initEditProject({id,source,style='section-deck',creator}){
-  slug(id); relativePath(source); assertEditionManifest({style});
+  slug(id); relativePath(source); const migrated = assertEditionManifest({style}); style = migrated.style;
   const info=await inspectEditSource(source);
-  const manifest=editManifestSchema.parse({version:1,id,purpose:'test',style,...(creator===undefined?{}:{creator:normalizeCreatorProfile(creator)}),source:info.source,
+  const manifest=editManifestSchema.parse({version:1,id,purpose:'test',style,...(migrated.styleAlias?{styleAlias:migrated.styleAlias}:{}),...(creator===undefined?{}:{creator:normalizeCreatorProfile(creator)}),source:info.source,
     segments:[{fromFrame:0,toFrame:info.source.totalFrames}],captions:{status:'draft',words:[]},scenes:[],sounds:[],camera:[]});
   const file=`Projects/${id}/edit.json`;
   return withFileLock(`Projects/${id}/edit.lock`,{project:id},async()=>{

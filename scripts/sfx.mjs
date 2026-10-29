@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { parseArgs } from './lib/media.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
 import { GLIDE_LAYERS, GLIDE_CLICK, GLIDE_VOICES } from './lib/sfx-glide-tables.mjs';
+import { SAMPLE_PREFIX, cc0Sample } from './lib/cc0-sounds.mjs';
 
 const SR = 48000;
 
@@ -282,6 +283,8 @@ const SOUNDS = {
 };
 
 const render = (name, opts = {}) => {
+  // `sample:<id>` plays a bundled CC0 recording from Sound-Kits/cc0 (lib/cc0-sounds.mjs); every other name is a synthesized voice.
+  if (typeof name === 'string' && name.startsWith(SAMPLE_PREFIX)) return cc0Sample(name.slice(SAMPLE_PREFIX.length));
   switch (name) {
     case 'whoosh': return SOUNDS.whoosh(opts.dur ?? 0.38, opts.seed ?? 11, opts.lo ?? 380, opts.hi ?? 5200);
     case 'whooshSoft': return SOUNDS.whooshSoft(opts.seed ?? 23);

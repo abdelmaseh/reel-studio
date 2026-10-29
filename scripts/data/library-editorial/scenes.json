@@ -53,7 +53,7 @@
       "evidence": [
         {
           "path": "engine/src/motion-library/catalog.ts",
-          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+          "sha256": "afa8f279a800613ce682b2432a9c880c1670212a0f00fabf467e7975ad30af94"
         },
         {
           "path": "engine/src/motion-library/schema.ts",
@@ -117,7 +117,7 @@
       "evidence": [
         {
           "path": "engine/src/motion-library/catalog.ts",
-          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+          "sha256": "afa8f279a800613ce682b2432a9c880c1670212a0f00fabf467e7975ad30af94"
         },
         {
           "path": "engine/src/motion-library/schema.ts",
@@ -182,7 +182,7 @@
       "evidence": [
         {
           "path": "engine/src/motion-library/catalog.ts",
-          "sha256": "f312703bb3cb18599da93497cb3ea55a30ef2478b57c3015385c33975e2d5de3"
+          "sha256": "afa8f279a800613ce682b2432a9c880c1670212a0f00fabf467e7975ad30af94"
         },
         {
           "path": "engine/src/motion-library/schema.ts",
@@ -199,7 +199,7 @@
       "role": "explanation",
       "labelAr": "فصل واقتباس منسوب",
       "explains": "Introduces a chapter and gives a supplied quotation clear speaker attribution.",
-      "action": "The chapter heading holds, then the quotation reveals; an optional approved magazine foreground appears before the quote.",
+      "action": "A supplied chapter introduces an attributed quote; V4 magazine-interview uses a navy magazine page with the quote, speaker and role. Optional approved cover foreground remains subject to its schema and asset contract.",
       "useWhen": [
         "A real quotation or interview statement anchors a new section.",
         "A reflective passage needs space for the speaker's exact attributed words."
@@ -235,7 +235,8 @@
       "requirements": [
         "Supply chapter, title, quote, speaker, role and a quoteFrame inside the scene; quote copy is independently authored and must be verified.",
         "Optional cover foreground requires a supplied transparent PNG, hash, dimensions and safe placement; it is available only in magazine-interview with takeover and a positive quoteFrame.",
-        "Without a cover, split or takeover is available; no automatic source word-index dependency exists."
+        "Without a cover, split or takeover is available; no automatic source word-index dependency exists.",
+        "Backlog placement: existing chronology coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيفتح فصل باقتباس واضح وصاحبه معروف.",
@@ -245,7 +246,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -253,7 +254,11 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/styles/magazine-interview/designs/chapter-quote.tsx",
+          "sha256": "c5d41d7452a5d5703d70710cce55e5218386b78e6a7494b89c45d2a361ae52cb"
         }
       ]
     },
@@ -311,7 +316,7 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         }
       ]
     },
@@ -363,7 +368,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -376,7 +381,7 @@
       "role": "explanation",
       "labelAr": "أسئلة وتعليقات متجمعة",
       "explains": "Collects a few supplied audience comments or questions and connects them to an approved response prompt.",
-      "action": "One to three author-labelled comment cards reveal in order above the keyword and prompt.",
+      "action": "One to three attributed comment cards reveal in order; V4 kinetic-paper prints their sequence numbers above the approved keyword and response prompt.",
       "useWhen": [
         "Answering real audience questions or grouping a small discussion.",
         "An approved comment request follows the displayed context."
@@ -412,7 +417,8 @@
       "requirements": [
         "Supply one to three short comments, their actual attribution and strictly ordered cues.",
         "Use the approved keyword and prompt; clearly identify illustrative comments when they are not real audience evidence.",
-        "This is a visual discussion summary, without live social-network access."
+        "This is a visual discussion summary, without live social-network access.",
+        "Backlog placement: existing grouping/reveal coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيجمع شوية أسئلة أو تعليقات مع طلب الرد.",
@@ -422,11 +428,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/kinetic-paper/designs/comment-stack.tsx",
+          "sha256": "a9f0a4db8d8796ba1ec0259b9dba3875323fcf56539210b32e78cc0f1e0846a6"
         }
       ]
     },
@@ -479,7 +489,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -542,11 +552,11 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -601,7 +611,7 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         }
       ]
     },
@@ -677,7 +687,7 @@
       "role": "explanation",
       "labelAr": "قبل وبعد بمسح الصورة",
       "explains": "Reveals the visible difference between two supplied before/after images in one comparison window.",
-      "action": "A reading-direction wipe replaces the before image with the after image while labels and an explanatory footer stay available.",
+      "action": "The supplied before image gives way to the after image with a directional wipe; V4 paper-collage uses a paper flap, retaining the real image pair, labels and footer.",
       "useWhen": [
         "The same subject has comparable before and after views.",
         "The viewer should inspect evidence rather than read a verbal claim."
@@ -716,7 +726,8 @@
       "requirements": [
         "Supply two local images, their actual dimensions, labels and a truthful footer; the renderer uses contain fitting.",
         "Author revealFrame, duration and rtl/ltr direction so the wipe finishes inside the scene and the final image can be read.",
-        "Both split and takeover are available; graphics use takeover."
+        "Both split and takeover are available; graphics use takeover.",
+        "Backlog placement: existing comparison/evidence coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيكشف الفرق بين قبل وبعد في نفس النافذة.",
@@ -726,7 +737,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -735,6 +746,10 @@
         {
           "path": "engine/src/creative-kit/compare.tsx",
           "sha256": "edd2a9bf3780bae8022728ba040104519755daa7ce9b9c247a17f8fb8728d589"
+        },
+        {
+          "path": "engine/src/styles/paper-collage/designs/evidence-wipe.tsx",
+          "sha256": "94320381de453a0246f2b5ecd086b177ea6308dff50268ea8fb9f6dbc8642a99"
         }
       ]
     },
@@ -787,7 +802,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -862,7 +877,7 @@
         },
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         }
       ]
     },
@@ -925,11 +940,11 @@
         },
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         },
         {
           "path": "engine/src/styles/scene-renderers.tsx",
-          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+          "sha256": "245311e7dee71d3c153f193579552a73df11e65eee034de6cfb809c550a7696f"
         }
       ]
     },
@@ -991,7 +1006,7 @@
         },
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         }
       ]
     },
@@ -1053,7 +1068,7 @@
         },
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         }
       ]
     },
@@ -1122,7 +1137,7 @@
         },
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         }
       ]
     },
@@ -1182,7 +1197,7 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         }
       ]
     },
@@ -1236,7 +1251,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -1244,7 +1259,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -1301,11 +1316,11 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -1361,7 +1376,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -1369,7 +1384,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -1378,7 +1393,7 @@
       "role": "explanation",
       "labelAr": "من رسايل كتير لنتيجة واحدة",
       "explains": "Organizes the same supplied message cards into a board, then focuses one useful result.",
-      "action": "Three to six identified cards start scattered, gather into order and resolve into a focused card, with optional closing state.",
+      "action": "Three to six stable card IDs start scattered, gather into a board, focus the selected supplied item, and optionally close; V4 paper-collage keeps those messages on cut-paper cards.",
       "useWhen": [
         "Showing how several inputs become organized and one result is chosen.",
         "The identity of the same messages must remain visible through the explanation."
@@ -1414,7 +1429,8 @@
       "requirements": [
         "Takeover only; supply three to six unique card IDs and a focusIndex that selects an existing card.",
         "Hold initial cards at least 0.6 seconds, the organized board at least 0.75 seconds, and the focused result at least one second.",
-        "If using closingFrame, leave at least one second before closing and one second for the closing state."
+        "If using closingFrame, leave at least one second before closing and one second for the closing state.",
+        "Backlog placement: existing grouping coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بينظّم نفس الرسايل وبيركّز على نتيجة منها.",
@@ -1424,7 +1440,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/MessageBoard.tsx",
@@ -1433,6 +1449,10 @@
         {
           "path": "engine/src/creative-kit/semantic/message-board.ts",
           "sha256": "ad093a0ec1e005f909dd0fa9af8cdab2e6867e871a89c85dc3519d4fd2a0d803"
+        },
+        {
+          "path": "engine/src/styles/paper-collage/designs/message-board.tsx",
+          "sha256": "9220cebdece623d3e9cc5141c1b7d9e0e4a00df60262f2f8ee7bcda86b9c6fd7"
         }
       ]
     },
@@ -1441,7 +1461,7 @@
       "role": "explanation",
       "labelAr": "مقياسين بنفس الوحدة",
       "explains": "Compares exactly two supplied quantities against one declared maximum and common unit.",
-      "action": "Two labelled receipt rows appear in order and their meters fill proportionally to the shared maximum.",
+      "action": "The shared renderer reveals two proportional rows; V4 liquid-glass fills two vials with a shared ruler and signed delta, while calligraphic-receipts prints the amounts and their absolute difference.",
       "useWhen": [
         "A two-option numeric difference should be understood at a glance.",
         "The scale ceiling itself is meaningful and can be stated honestly."
@@ -1477,9 +1497,11 @@
         "data"
       ],
       "requirements": [
-        "Exactly two non-negative values with up to two decimals, one positive maximum, one unit and source text are required.",
+        "Exactly two non-negative values with at most two decimals, a positive maximum <= 999999, one unit and a real source are required.",
         "Neither value may exceed the maximum; reveal rows in strictly increasing order.",
-        "Leave time for each meter's 18-frame fill and final comparison hold."
+        "Timing depends on the selected drawing: allow the shared 18-frame fill, the glass 36-frame vial fill and delta, or receipt printing and its 22-frame difference count to settle.",
+        "The numerical comparison does not establish a causal claim or validate the supplied source.",
+        "Backlog placement: existing comparison/scale coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيقارن قيمتين على نفس السقف والوحدة.",
@@ -1489,11 +1511,19 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/calligraphic-receipts/designs/meter-receipt.tsx",
+          "sha256": "2e4a47d6efbacb91002fc4bb60d4f39492549368656f23a24e867f7afe0027c9"
+        },
+        {
+          "path": "engine/src/styles/liquid-glass/designs/meter-receipt.tsx",
+          "sha256": "4e56ff8cebbcbf187c3496f1e7842452cf5c9c41af8d204823304c4a562594a7"
         }
       ]
     },
@@ -1552,7 +1582,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -1560,7 +1590,7 @@
         },
         {
           "path": "engine/src/motion-concepts/catalog.ts",
-          "sha256": "213bd69bc46ea1a36689e3bb4ace71d9fde18692e3a308860d0cb5d30a612af7"
+          "sha256": "d725987052cde4dad8f170fcb148089b7429b7c339a46c7d6851c160daa3ccbd"
         },
         {
           "path": "engine/src/motion-concepts/timeline.ts",
@@ -1631,23 +1661,23 @@
         },
         {
           "path": "engine/src/styles/one-shot/scenes/math.ts",
-        "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
+          "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
         },
         {
           "path": "engine/src/styles/one-shot/scenes/worlds.tsx",
-        "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
+          "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
         },
         {
           "path": "engine/src/styles/one-shot/meta.ts",
-          "sha256": "b237bf17a2bee56ba7590b988b41e1d1e555d0f6ed7ca650f1b5cb3e62432e51"
+          "sha256": "aea5b7840f914bdba7c0b73b61b02472a0b3576999dc5a4f8e9d0ac56a3e120c"
         },
         {
           "path": "engine/src/styles/scenes.ts",
-          "sha256": "6894ae3a6e1b23e4f569e4e5783b8764567842ae336ca50175c1dfc180277bb0"
+          "sha256": "a21826d23b56e8404669b5992d64d55d1ae67fc6893ab97b3be0ecd6ce1803ee"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         }
       ]
     },
@@ -1708,7 +1738,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/cartoon/meta.ts",
-          "sha256": "6e1a94a0452f3c061a4b10dc7719a5935ce97d6959b216b659c64f0e01851554"
+          "sha256": "23fab67c3ff9955fb3ba1cc6b557e8f08c50a2f84bcea616a7151d9618d2b6dd"
         },
         {
           "path": "engine/src/styles/cartoon/scenes/schema.ts",
@@ -1724,11 +1754,11 @@
         },
         {
           "path": "engine/src/styles/scenes.ts",
-          "sha256": "6894ae3a6e1b23e4f569e4e5783b8764567842ae336ca50175c1dfc180277bb0"
+          "sha256": "a21826d23b56e8404669b5992d64d55d1ae67fc6893ab97b3be0ecd6ce1803ee"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         }
       ]
     },
@@ -1849,11 +1879,11 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -1906,7 +1936,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -1985,7 +2015,7 @@
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/clip.tsx",
@@ -2046,7 +2076,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/schema.ts",
-          "sha256": "626c7d560bc46c93d637fc0dc4079df0e8ab5d8422f5e07f0632ca728ca7fadf"
+          "sha256": "90e542aa6b469cdc6e6e02fa7efcf1a965bab5a486083f32a622ac2b6b8ebec1"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -2104,7 +2134,7 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -2237,7 +2267,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -2301,7 +2331,7 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         },
         {
           "path": "engine/src/prepared-edit/broll.ts",
@@ -2369,7 +2399,7 @@
         },
         {
           "path": "engine/src/creative-kit/kinetic/scenes.tsx",
-          "sha256": "1ba1323524d02458f9995346d3bfe29ef9893d23954299c414e9d49720c22241"
+          "sha256": "ca55a06bdf506b8593a6e7efdc1eda9421af754d130a0038688896efe19f6204"
         }
       ]
     },
@@ -2378,7 +2408,7 @@
       "role": "explanation",
       "labelAr": "عرض في شكل تذكرة",
       "explains": "Makes one real invitation or offer concrete through its label, value and short conditions.",
-      "action": "A ticket-shaped card reveals its offer while a footer carries the actual conditions.",
+      "action": "A ticket card reveals an authored invitation; V4 kinetic-paper stamps the offer body and stub, with the footer retaining the supplied conditions.",
       "useWhen": [
         "An approved session, resource or invitation benefits from one tangible offer card."
       ],
@@ -2412,7 +2442,8 @@
       "requirements": [
         "Supply the actual ticket label, value, detail and footer; the value is text rather than a computed price.",
         "Place the ticket activation inside the scene and hold its conditions long enough to read.",
-        "No booking or commerce action occurs in this renderer."
+        "No booking or commerce action occurs in this renderer.",
+        "Backlog placement: existing reveal coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيقدّم عرض حقيقي في شكل تذكرة.",
@@ -2422,11 +2453,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/kinetic-paper/designs/ticket-offer.tsx",
+          "sha256": "0fb111c0edebb99bdc8175fc07e1b8e3350e3c142e35d358e71b7612c6e9aa3f"
         }
       ]
     },
@@ -2435,7 +2470,7 @@
       "role": "explanation",
       "labelAr": "مجموعات وعدسة على جزء",
       "explains": "Divides an idea into labelled token groups and magnifies one chosen piece.",
-      "action": "Token groups reveal in order, then one real token is highlighted and repeated inside a lens.",
+      "action": "Labelled token groups reveal in order, then the chosen supplied token is focused; V4 liquid-glass uses the moving lens over the same group drawing.",
       "useWhen": [
         "Explaining parts of a short phrase, category or structured input.",
         "One element deserves attention within a visible group."
@@ -2471,7 +2506,8 @@
       "requirements": [
         "Supply one to three groups with one to six short tokens per group; lens indices must point to a supplied token.",
         "The lens cue cannot precede its group's reveal; group cues are strictly ordered.",
-        "These are authored explanatory tokens, without a recording-word dependency."
+        "These are authored explanatory tokens, without a recording-word dependency.",
+        "Backlog placement: existing grouping coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
       ],
       "display": {
         "explains": "بيقسّم الفكرة لأجزاء ويكبّر جزء محدد.",
@@ -2481,11 +2517,783 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/liquid-glass/designs/token-lens.tsx",
+          "sha256": "a8072f3a78180116130a1cc6cb861de8c29aa2d5c30249430fad0ae59ba541fe"
+        }
+      ]
+    },
+    {
+      "key": "scene:map-route",
+      "role": "explanation",
+      "labelAr": "مسار على الخريطة",
+      "explains": "Draw a supplied illustrative route between named places.",
+      "action": "The red polyline draws on and a dot follows the projected path; endpoint labels retain their identity.",
+      "useWhen": [
+        "The creator supplied the places, meaning or named image used in the explanation."
+      ],
+      "avoidWhen": [
+        "Geography, image provenance or historical meaning has not been verified."
+      ],
+      "intents": [
+        "focus",
+        "chronology",
+        "evidence"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Requires documentary style; owned scenes are takeover only. Preserve joined Arabic and authored factual meaning.",
+        "The installed map is public-domain Natural Earth, checked by eye: land and sea, and country borders from the Palestine point of view (Palestine a separate state labelled «فلسطين», the Golan part of Syria). Border-free mode draws land, sea, the route and city dots only.",
+        "The installed map has no named cities: every place is an authored {name, lon, lat} with reviewed coordinates. The route is illustrative, never a measured road or border; illustration placeholders must be replaced before delivery."
+      ],
+      "display": {
+        "explains": "خط أحمر بيترسم على الخريطة بين أماكن إنت سمّيتها.",
+        "useWhen": "لما تكون إنت محدد الأماكن والمعنى أو الصورة المسمّاة.",
+        "avoidWhen": "لو الجغرافيا أو مصدر الصورة أو المعنى التاريخي لسه مش متأكد منه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/documentary/scenes/schema.ts",
+          "sha256": "01ea1cc8398d5883ba74d90b7656431d24e67259562d5ff2d5b2ae99c77ba863"
+        },
+        {
+          "path": "engine/src/maps/project.ts",
+          "sha256": "9261afe8af39adc6e3dd4e75c6f239f85af25baa4ed477f66bb8f840e435d390"
+        },
+        {
+          "path": "engine/src/maps/draw.tsx",
+          "sha256": "2b52bb5fb30c643c8ebf75cd0c9990c9412d569768b499771e4b06be4a487c5d"
+        },
+        {
+          "path": "instructions/styles/documentary.md",
+          "sha256": "1583428c01423d8a34655681f8e26dcf72aa2efa332de4fd9f73b4c23e18d072"
+        },
+        {
+          "path": "engine/src/styles/documentary/scenes/map-route.tsx",
+          "sha256": "ba25b42193399cb80a94b39bbe727eba5f678dde2d3bac272a71522225f6ca44"
+        }
+      ]
+    },
+    {
+      "key": "scene:map-focus",
+      "role": "explanation",
+      "labelAr": "تركيز على مكان في الخريطة",
+      "explains": "Focus the geographic viewport on a supplied city or installed country.",
+      "action": "Interpolate the viewport bounds while the Arabic place label keeps a constant readable size.",
+      "useWhen": [
+        "The creator supplied the places, meaning or named image used in the explanation."
+      ],
+      "avoidWhen": [
+        "Geography, image provenance or historical meaning has not been verified."
+      ],
+      "intents": [
+        "focus",
+        "chronology",
+        "evidence"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Requires documentary style; owned scenes are takeover only. Preserve joined Arabic and authored factual meaning.",
+        "The installed map is public-domain Natural Earth, checked by eye: land and sea, and country borders from the Palestine point of view (Palestine a separate state labelled «فلسطين», the Golan part of Syria). Border-free mode draws land, sea, the route and city dots only.",
+        "The installed map has no named cities: every place is an authored {name, lon, lat} with reviewed coordinates. The route is illustrative, never a measured road or border; illustration placeholders must be replaced before delivery."
+      ],
+      "display": {
+        "explains": "الخريطة بتقرّب على مدينة أو دولة إنت محددها.",
+        "useWhen": "لما تكون إنت محدد الأماكن والمعنى أو الصورة المسمّاة.",
+        "avoidWhen": "لو الجغرافيا أو مصدر الصورة أو المعنى التاريخي لسه مش متأكد منه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/documentary/scenes/schema.ts",
+          "sha256": "01ea1cc8398d5883ba74d90b7656431d24e67259562d5ff2d5b2ae99c77ba863"
+        },
+        {
+          "path": "engine/src/maps/project.ts",
+          "sha256": "9261afe8af39adc6e3dd4e75c6f239f85af25baa4ed477f66bb8f840e435d390"
+        },
+        {
+          "path": "engine/src/maps/draw.tsx",
+          "sha256": "2b52bb5fb30c643c8ebf75cd0c9990c9412d569768b499771e4b06be4a487c5d"
+        },
+        {
+          "path": "instructions/styles/documentary.md",
+          "sha256": "1583428c01423d8a34655681f8e26dcf72aa2efa332de4fd9f73b4c23e18d072"
+        },
+        {
+          "path": "engine/src/styles/documentary/scenes/map-focus.tsx",
+          "sha256": "ce9a458be4e40da90b25dedc42e9a9d8b96ccbd196ecd72dca1b42ad2b9542cc"
+        }
+      ]
+    },
+    {
+      "key": "scene:cutout-card",
+      "role": "explanation",
+      "labelAr": "صورة على ورق مقصوص",
+      "explains": "Give a creator-named project image one paper card and its authored explanation.",
+      "action": "A torn paper card lands with a restrained tilt, image fit and optional supplied credit.",
+      "useWhen": [
+        "The creator supplied the places, meaning or named image used in the explanation."
+      ],
+      "avoidWhen": [
+        "Geography, image provenance or historical meaning has not been verified."
+      ],
+      "intents": [
+        "focus",
+        "chronology",
+        "evidence"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "image"
+      ],
+      "requirements": [
+        "Requires documentary style; owned scenes are takeover only. Preserve joined Arabic and authored factual meaning.",
+        "The installed map is public-domain Natural Earth, checked by eye: land and sea, and country borders from the Palestine point of view (Palestine a separate state labelled «فلسطين», the Golan part of Syria). Border-free mode draws land, sea, the route and city dots only.",
+        "The installed map has no named cities: every place is an authored {name, lon, lat} with reviewed coordinates. The route is illustrative, never a measured road or border; illustration placeholders must be replaced before delivery."
+      ],
+      "display": {
+        "explains": "صورة من مشروعك على كارت ورق ومعاها شرحك المكتوب.",
+        "useWhen": "لما تكون إنت محدد الأماكن والمعنى أو الصورة المسمّاة.",
+        "avoidWhen": "لو الجغرافيا أو مصدر الصورة أو المعنى التاريخي لسه مش متأكد منه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/documentary/scenes/schema.ts",
+          "sha256": "01ea1cc8398d5883ba74d90b7656431d24e67259562d5ff2d5b2ae99c77ba863"
+        },
+        {
+          "path": "engine/src/maps/project.ts",
+          "sha256": "9261afe8af39adc6e3dd4e75c6f239f85af25baa4ed477f66bb8f840e435d390"
+        },
+        {
+          "path": "engine/src/maps/draw.tsx",
+          "sha256": "2b52bb5fb30c643c8ebf75cd0c9990c9412d569768b499771e4b06be4a487c5d"
+        },
+        {
+          "path": "instructions/styles/documentary.md",
+          "sha256": "1583428c01423d8a34655681f8e26dcf72aa2efa332de4fd9f73b4c23e18d072"
+        },
+        {
+          "path": "engine/src/styles/documentary/scenes/cutout-card.tsx",
+          "sha256": "2bb7f160b26be500b38df5fb5ed6c2db451accee47652317f17613c78eea6bf2"
+        }
+      ]
+    },
+    {
+      "key": "scene:proof-screen",
+      "role": "explanation",
+      "labelAr": "صفحة بتفصيلة واضحة",
+      "explains": "Rebuilds a page from authored blocks and directs attention to one supplied detail.",
+      "action": "A crisp RTL web, chat or dashboard page tilts in, glides or zooms toward its selected block; a highlight settles with the camera.",
+      "useWhen": [
+        "An approved brief supplies the exact page copy and one detail worth inspecting."
+      ],
+      "avoidWhen": [
+        "A real capture is needed as documentary evidence.",
+        "The brief does not supply the copy, figures or named images."
+      ],
+      "intents": [
+        "evidence",
+        "focus"
+      ],
+      "moods": [
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Takeover only; 1-10 authored blocks, valid focus index and at least two seconds including a one-second settled hold.",
+        "Images are named local still assets under projects/<project-id>/ and are verified during preparation. No remote page is loaded.",
+        "The displayed URL is text only. The layout supplies no brand, sender, timestamp, testimonial or factual result.",
+        "Use screen-recording or screen-focus for authentic captures. This family rebuilds an illustration from authored blocks."
+      ],
+      "display": {
+        "explains": "صفحة مبنية من كلامك والكاميرا بتبرز تفصيلة فيها.",
+        "useWhen": "لما البريف فيه النص والصور والتفصيلة المطلوبة.",
+        "avoidWhen": "لو محتاج تعرض تسجيل حقيقي كدليل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/proof-screen/schema.ts",
+          "sha256": "0255b18e0942f0528a00984b120a5688fa7e72472e3a2f9874b5e2fb6a09020c"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/timing.ts",
+          "sha256": "16f2c1e647154735a0d6f07236907098b52d47872277004e6afa591d584ff7eb"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/scene.tsx",
+          "sha256": "d91a6a94033df0a0dabc1273b68e791031d572b4f398e31c5f57aa9d0ede7255"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/layouts/geometry.ts",
+          "sha256": "7794873e829225f46241cbc2fe828a2b4805f360f40fb7842c244a041397e1dd"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/layouts/web.tsx",
+          "sha256": "875305f0a86d2db3741f5df048ae5853feb820eb87266b1404e82f883bcaeda8"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/layouts/chat.tsx",
+          "sha256": "7a0720bbbae91d22b550f8b835a0fa73032d3229a96be9269329a91c5e9cc2df"
+        },
+        {
+          "path": "engine/src/creative-kit/proof-screen/layouts/dashboard.tsx",
+          "sha256": "3203412caa9056c9cb35aca791609903290b1bd6a42f35c312e6b8d1c237466a"
+        }
+      ]
+    },
+    {
+      "key": "scene:figures",
+      "role": "explanation",
+      "labelAr": "أرقام ورسوم: عدّاد وسلوت وأعمدة ودايرة",
+      "explains": "Emphasizes a supplied quantity or compares up to six authored values on one zero-based scale.",
+      "action": "Counter eases to its target; digit reels stop right to left; bars grow in RTL order; a ring fills to value/max.",
+      "useWhen": [
+        "A sourced quantity needs a dominant reveal or a small comparable set shares one unit."
+      ],
+      "avoidWhen": [
+        "Do not infer missing results, percentages or denominators, and do not mix units on the same chart."
+      ],
+      "intents": [
+        "scale",
+        "comparison",
+        "evidence"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [
+        "data"
+      ],
+      "requirements": [
+        "Takeover only. Counter and slot require value; slot is a non-negative integer of at most nine digits.",
+        "Bars require one to six labelled non-negative values. An explicit max cannot be below a value. Ring requires 0 <= value <= max and max > 0.",
+        "Unit and label are authored copy. Provide the source in the editorial plan; templates carrying 987654 are blocked at delivery. Animation plus final hold must fit."
+      ],
+      "display": {
+        "explains": "أرقام ورسوم: عدّاد وسلوت وأعمدة ودايرة",
+        "useWhen": "لرقم موثّق أو مقارنة قيم بنفس الوحدة.",
+        "avoidWhen": "لو المقياس أو مصدر الأرقام مش واضح."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/figures/schema.ts",
+          "sha256": "415fe46c230cc079ff92a926c7f3003034ab71e2fc7c240aee7e24d7ca8b64de"
+        },
+        {
+          "path": "engine/src/creative-kit/figures/timing.ts",
+          "sha256": "3b30e135cf3c800d557c550e986eb6771efbccc2af85919bcbd16081c52677b4"
+        },
+        {
+          "path": "engine/src/creative-kit/figures/scene.tsx",
+          "sha256": "3674d26cb56b0b11c187f1753e2c0f347e19319c7d26fbe00a00a34db8e31783"
+        },
+        {
+          "path": "engine/src/creative-kit/numbers.tsx",
+          "sha256": "5de08f995c4a31682bd90d5a07e518a2e06855f7ff3721f2e121f08a9d48e6ca"
+        }
+      ]
+    },
+    {
+      "key": "scene:chat-thread",
+      "role": "explanation",
+      "labelAr": "شات وإشعارات: رسائل مكتوبة بتظهر على وقتها",
+      "explains": "Stages an authored conversation or notification sequence without inventing an app identity or customer exchange.",
+      "action": "Complete joined messages appear in sided bubbles, with optional 0.8-second typing dots, or enter a five-card notification stack.",
+      "useWhen": [
+        "A supplied or clearly illustrative exchange explains a question, answer or ordered message flow."
+      ],
+      "avoidWhen": [
+        "Do not present fabricated customer messages, testimonials, accounts or social proof."
+      ],
+      "intents": [
+        "question",
+        "chronology",
+        "text"
+      ],
+      "moods": [
+        "calm",
+        "technical",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Takeover only. Provide one to eight authored messages with from:me|them and nonblank text. Optional app and title are authored.",
+        "at is a scene-local frame; omitted times are deterministic and scale with fps. Times must increase, remain inside the scene and leave a final readable hold.",
+        "Typing needs 0.8 seconds before each bubble. me is on the right and them on the left. Notifications keep the latest five visible. Template text is blocked at delivery."
+      ],
+      "display": {
+        "explains": "شات وإشعارات: رسائل مكتوبة بتظهر على وقتها",
+        "useWhen": "لرسائل مكتوبة أو من المصدر، ومثال واضح إنه توضيحي.",
+        "avoidWhen": "من غير رسائل عملاء أو هويات متخيلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/chat-thread/schema.ts",
+          "sha256": "4239136a526fef6fed765121db5de338b5279e14e58d894d3048e685889d1ccb"
+        },
+        {
+          "path": "engine/src/creative-kit/chat-thread/timing.ts",
+          "sha256": "c4e60d0fe693061dd1af9c1653dae98282dc3eef6830561a719ff53c9839f5ff"
+        },
+        {
+          "path": "engine/src/creative-kit/chat-thread/scene.tsx",
+          "sha256": "b53c0b4cf8a965d9ebedfc28b58fa1f81a7c251fee392bea67e03cc31c26ff98"
+        },
+        {
+          "path": "engine/src/creative-kit/ui-chat.tsx",
+          "sha256": "ce76bc4e9e48194b8ed078f714a634607a9da2a7f35945faac5f5d85a4e505c8"
+        }
+      ]
+    },
+    {
+      "key": "scene:arabic-type",
+      "role": "explanation",
+      "labelAr": "حركات كتابة عربي متصلة",
+      "explains": "Gives one short authored Arabic phrase a selected typographic reveal while preserving its shaped word image.",
+      "action": "Choose dot landing, pen writing, joined bitmap snap, Kufic tiles, legal kashida, decryption, seven-row echoes, redaction with an optional authored stamp, liquid word replacement, named-video glyph fill or word unblur.",
+      "useWhen": [
+        "A short supplied phrase needs a deliberate typographic reveal or emphasis, with enough time for its chosen move."
+      ],
+      "avoidWhen": [
+        "The text is a Quran verse, long body copy, unreviewed speech or needs per-letter DOM transforms.",
+        "No named source clip is available for video-in-letters, or no destination copy is supplied for word-melt."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis",
+        "reveal",
+        "transform"
+      ],
+      "moods": [
+        "editorial",
+        "energetic",
+        "playful"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Takeover only. Letter moves are limited to 40 characters and three words, and kashida-stretch takes exactly one Arabic word with a joint it can lengthen (not ورد or a Latin word); validate the selected move duration at the project fps.",
+        "word-melt requires to; video-in-letters requires a named project video, checked for decodability and scene coverage at prepare time.",
+        "All text is authored copy. The computed decrypt percentage is reveal progress, never a performance claim.",
+        "Arabic letter-level movement uses raster masks, never isolated-character DOM. A scene font names any installed family, the display fonts included; a family that is not installed falls back to Cairo. kufi-tiles starts from Noto Kufi Arabic and pen-write from Noto Naskh Arabic.",
+        "backdrop takes plain (default), girih, sunburst or paper and draws behind the letters; one optional sticker sits at the family spot. Both are decoration only and disappear under the safe-zone probe."
+      ],
+      "display": {
+        "explains": "جملة عربي قصيرة بتظهر بحركة كتابة مختارة مع الحفاظ على وصلات الحروف.",
+        "useWhen": "للتأكيد على كلمة أو جملة مكتوبة ومراجعة، مع وقت كفاية للحركة.",
+        "avoidWhen": "للنص الطويل أو الآيات أو فيديو مش متوفر كمصدر مسمّى."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/arabic-type/canvas.ts",
+          "sha256": "725e88d974f83be37e2b081dc1d3c283486f1b5478500a762397053ad3ef38bc"
+        },
+        {
+          "path": "engine/src/arabic-type/font-ready.ts",
+          "sha256": "7d730b3420d423e47f938bf81bb41dd6ae24a4cf9ed45c4fa6ee1a749b08c876"
+        },
+        {
+          "path": "engine/src/arabic-type/math.ts",
+          "sha256": "f30e8a071657263a5a668beb195a4ecc2412c2070ba6dd7c91f8fe15e116fe63"
+        },
+        {
+          "path": "engine/src/arabic-type/scene.tsx",
+          "sha256": "9cda85e5aee91804ae056c5ee0f047f97b31cc21057d2bf6a25c556d6dc90451"
+        },
+        {
+          "path": "engine/src/arabic-type/schema.ts",
+          "sha256": "ccf187f8c7e8580143b4c82611f24f8ae96b5fa243755a4fd04174edcbf8479c"
+        },
+        {
+          "path": "engine/src/arabic-type/timing.ts",
+          "sha256": "0dc1c8bf44bd7dcd1de2e28412c2cfae344039c8255822e368ad03096b9da66d"
+        },
+        {
+          "path": "engine/src/arabic-type/types.ts",
+          "sha256": "6e63190d0bea0b2c50d188f912931f465a4f847c5c300f6ee3e8b9fb5c2989b3"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/decrypt.tsx",
+          "sha256": "7b196181b0f473ae34062f95c3b8515c857f1494bb3dc4a4c8d85a8ecc7d7721"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/dots-drop.tsx",
+          "sha256": "5942cddfed5e36e9feb0fa0f8de18f94afaedce71fcaf96f9521c6e3aa17e211"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/echo-stack.tsx",
+          "sha256": "18655f69ab663e5aa6b16dd1b99a3a73e27a9e9be756f80c9440c2aeba3202d4"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/index.ts",
+          "sha256": "d666e4d6e415758e47e4357b2cf97548332c272d907e4b81a1f4f55173d82c0d"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/kashida-stretch.tsx",
+          "sha256": "8f3df80848b8867d9db85c994907a8dae3cb465ab61810e8d20e334985b0d231"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/kufi-tiles.tsx",
+          "sha256": "404563f51609f5bb9b8947c69b4394a56c59c4771a29c9546786e1d9dfe7be50"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/letters-snap.tsx",
+          "sha256": "b9f29dc33a899144a169b29706f00af735dfd42b084266986b49dc011e3d8190"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/pen-write.tsx",
+          "sha256": "9d500693a86b29950a87042650aa4c941f9a69a8543a4ceda83cb0191f51dc2e"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/redacted-stamp.tsx",
+          "sha256": "8ebd077feadc1d965acde204abf642c59d857f50a72301134b508644584cb6d9"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/unblur.tsx",
+          "sha256": "87b0b0fee8c03bf778e611396c05bf0894aaf48cf51cee45c23d1fbba7bdcdc4"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/video-in-letters.tsx",
+          "sha256": "68f2711215d131453f0bcef1868b97531de2730b5e4af2ae9d75b4aa0053a252"
+        },
+        {
+          "path": "engine/src/arabic-type/moves/word-melt.tsx",
+          "sha256": "030deafcf58e154d561f32d49109853f764a5689e9346bf484513825ed7da8ab"
+        }
+      ]
+    },
+    {
+      "key": "scene:layered-speaker",
+      "role": "emphasis",
+      "labelAr": "كلمات كبيرة ورا المتكلم وحواليه",
+      "explains": "Lays one to four key words around the on-camera speaker: a big stretched word whose bar passes behind the head, words beside or above it and a hand-drawn mark, with the speaker cut out in front of the big word.",
+      "action": "The big word lands and its kashida bar grows behind the head while the speaker matte hides it; words rise in beside the head and a seeded hand draws a circle, band, strike, arrow or underline on the key word.",
+      "useWhen": [
+        "A presenter-led claim, turn or hook where one to three words should read like a poster around the speaker.",
+        "A cut-out of the speaker (a matte) can be made from the source, or the big word can sit above the head instead."
+      ],
+      "avoidWhen": [
+        "There is no presenter recording, or the speaker is far from the camera, half out of frame or constantly crossing it.",
+        "The point needs a sentence, a number or a claim the recording does not say: the words are the creator’s own key words."
+      ],
+      "intents": [
+        "claim",
+        "reveal",
+        "word-emphasis",
+        "question"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter"
+      ],
+      "requires": [],
+      "requirements": [
+        "Presenter layout only and owned by the layered-speaker style: one word per place (behind, above, left, right), at most four words and two hand-drawn marks.",
+        "The big word is one Arabic word of three to twelve letters with a connection that can stretch; without a matte it sits above the head, so a second line above is refused.",
+        "The optional foreground matte must come from the same source frames as the presenter (node scripts/matte.mjs make and attach); the head check reports behind-subject-matte for a human look at the edges.",
+        "Prepare measures the head box for this family; words stay above y 1100 inside the Reels safe area, and a word or mark that cannot fit around the head stops the render.",
+        "It is a newer style: show the fast preview first and have the creator play the delivered video with sound."
+      ],
+      "display": {
+        "explains": "كلمة كبيرة ورا راسك وكلمات حواليك وعلامة بخط اليد.",
+        "useWhen": "لفكرة بتتقال بوشك وتستاهل كلمتين أو تلاتة بارزين.",
+        "avoidWhen": "لو مفيش متكلم قدام الكاميرا أو الجملة طويلة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/layered-speaker/meta.ts",
+          "sha256": "8680a3f63f2ae203448d6e28ee40af6877dc66e165484670a5f0c943b1618f91"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/schema.ts",
+          "sha256": "42af141bd6e7b868f9209d51d2cf69be910c247c3aa900e1e97e390579e77bde"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/math.ts",
+          "sha256": "f5e07ef0c61eebd64542f67eaa61d73cde3fcdc6d3e6e5ba50c43cc3f3f5ef4b"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/scene.tsx",
+          "sha256": "e73a4b78dca384293913467ddf9c2de1fd663dd624edb584a864cd3ef36a10b4"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/hero.tsx",
+          "sha256": "28157c985640b3b568f3f9cd4ffe848840c2fe5e8003a3ebea8556750be254e2"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/stretch.ts",
+          "sha256": "7706f01a55588f9a47865f314379c6b2e006b9517e1705696400a9d02149ff82"
+        },
+        {
+          "path": "engine/src/creative-kit/marks/rough.ts",
+          "sha256": "9b19beffed96c999e256acc3afbf8b79b2f1079fe989d5c26afa9556aafd0e11"
+        },
+        {
+          "path": "engine/src/styles/scenes.ts",
+          "sha256": "a21826d23b56e8404669b5992d64d55d1ae67fc6893ab97b3be0ecd6ce1803ee"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
+        }
+      ]
+    },
+    {
+      "key": "scene:verdict",
+      "role": "explanation",
+      "labelAr": "حكم بأرقام المبدع",
+      "explains": "Compares two to four supplied scores against their individual outOf values, then reveals an authored verdict.",
+      "action": "On a cream magazine page, score rows count and their bars fill at ordered cues; a framed gold verdict follows the last row.",
+      "useWhen": [
+        "A reviewed evaluation has two to four named scores and an explicitly supplied conclusion.",
+        "The audience should inspect the scores before reading the final judgement."
+      ],
+      "avoidWhen": [
+        "The scores or verdict have not been supplied and reviewed.",
+        "The comparison needs a common quantitative scale: each row has its own outOf denominator.",
+        "The presenter or source evidence must remain visible throughout; this family is takeover-only."
+      ],
+      "intents": [
+        "comparison",
+        "evidence"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by magazine-interview; supply question, two to four rows, and verdict.",
+        "Each row requires finite non-negative value and outOf, with value <= outOf. A zero outOf permits only a zero value.",
+        "Row activations and verdictFrame must be strictly increasing and inside the scene; allow the score fills and verdict to settle before ending.",
+        "Template scores are illustrative placeholders, not measured product performance.",
+        "Backlog placement: existing comparison/scale coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
+      ],
+      "display": {
+        "explains": "حكم بأرقام المبدع بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/magazine-interview/scenes/schema.ts",
+          "sha256": "e97e2984a944f9c2d0caf156d9ce4b9a90a1e38ae165a79e345166d766ce3050"
+        },
+        {
+          "path": "engine/src/styles/magazine-interview/scenes/templates.ts",
+          "sha256": "8bb8b70a9f6a65a08281955ddcaeb689159a1856e51af287aed31e09154f8bf3"
+        },
+        {
+          "path": "engine/src/styles/magazine-interview/designs/verdict.tsx",
+          "sha256": "49330bb1a2f550797c010d3ea22915bbe01ac08e40208bc70e9d342ba4d40109"
+        },
+        {
+          "path": "engine/src/styles/scenes.ts",
+          "sha256": "a21826d23b56e8404669b5992d64d55d1ae67fc6893ab97b3be0ecd6ce1803ee"
+        }
+      ]
+    },
+    {
+      "key": "scene:claim-proof",
+      "role": "explanation",
+      "labelAr": "ادعاء وإيصال",
+      "explains": "Connects one highlighted whole word in a supplied claim to two receipt amounts and their exact absolute difference.",
+      "action": "Whole claim words write on parchment; a receipt prints its two rows, the difference counts, a brush loop connects the key word to the total, and a seal lands.",
+      "useWhen": [
+        "Two reviewed non-negative amounts in one unit substantiate a short claim about their difference.",
+        "A visible link from the exact claim word to the receipt total explains the reasoning."
+      ],
+      "avoidWhen": [
+        "The claimed benefit is unsupported by the supplied rows or depends on a percentage or signed change.",
+        "The claim needs more than four whole words, more than two rows, negative amounts, or an unrelated unit.",
+        "A presenter must remain visible: this family is takeover-only."
+      ],
+      "intents": [
+        "comparison",
+        "evidence"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Owned by calligraphic-receipts; supply one to four whole claim words, a valid keyIndex, exactly two rows, a diff label/value, unit and note.",
+        "Amounts must be non-negative, at most 999999 and have at most two decimals; diff.value must equal the absolute difference in integer hundredths.",
+        "Receipt cannot precede the claim; totalFrame must leave 24 frames after receiptFrame.",
+        "Fit the word writes, receipt printing, total, connector, seal and at least 0.6 seconds of resolved hold inside the scene.",
+        "Backlog placement: existing evidence coverage. Source declaration still requires actual motion review; it is not a missing mechanism."
+      ],
+      "display": {
+        "explains": "ادعاء وإيصال بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/calligraphic-receipts/scenes/schema.ts",
+          "sha256": "6accdcca4cc892fcb95902d95a609c42a285e2349f7a181efb3881f49c8a1581"
+        },
+        {
+          "path": "engine/src/styles/calligraphic-receipts/scenes/templates.ts",
+          "sha256": "adacb271d1fa2a7abcda79fbab3a62cfaf2dc55e5ae454f8c3aaaaf01271a043"
+        },
+        {
+          "path": "engine/src/styles/calligraphic-receipts/designs/claim-proof.tsx",
+          "sha256": "cec25ec555b7a9ea83651186d9f55b84c57c126f87338188206af0cb1415ff22"
+        },
+        {
+          "path": "engine/src/styles/scenes.ts",
+          "sha256": "a21826d23b56e8404669b5992d64d55d1ae67fc6893ab97b3be0ecd6ce1803ee"
         }
       ]
     }

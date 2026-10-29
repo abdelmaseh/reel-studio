@@ -19,7 +19,7 @@ export type PreviewDefinition = {
   scope: string;
   notes: string[];
   props: LibraryPreviewProps;
-  status: 'supported' | 'requires-project-pack';
+  status: 'supported' | 'requires-project-pack' | 'unsupported';
   reason?: string;
   fixture: Record<string, any>;
 };

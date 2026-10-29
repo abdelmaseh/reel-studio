@@ -10,6 +10,7 @@ export const CARD_LABELS = Object.freeze({
   board: {en: 'THE COMPARISON BOARD', ar: 'لوحة المقارنة'},
   sideBySide: {en: 'SIDE BY SIDE', ar: 'جنبًا إلى جنب'},
   comment: {en: 'ADD A COMMENT', ar: 'اكتب تعليقك'},
+  commentBadge: {en: 'COMMENT', ar: 'تعليق'},
   template: {en: 'WANT THE TEMPLATE?', ar: 'احصل على القالب'},
   templateLine: {en: 'Leave the keyword below.', ar: 'اكتب الكلمة في التعليقات'},
   follow: {en: 'FOLLOW FOR MORE', ar: 'تابعني للمزيد'},
@@ -20,6 +21,34 @@ export const CARD_LABELS = Object.freeze({
   source: {en: 'SOURCE CAPTURE', ar: 'لقطة من المصدر'},
   missing: {en: 'MISSING', ar: 'ناقص'},
   chapter: {en: 'CHAPTER', ar: 'الفصل'},
+} as const);
+
+// Identical fixed copy used by two or more V4 styles. Case-specific alternatives stay local.
+export const SHARED_STYLE_WORDS = Object.freeze({
+  "example": {
+    "ar": "مثال",
+    "en": "Example"
+  },
+  "missingTitle": {
+    "ar": "ناقص",
+    "en": "Missing"
+  },
+  "commentWord": {
+    "ar": "تعليق",
+    "en": "Comment"
+  },
+  "commentPrompt": {
+    "ar": "اكتب الكلمة في التعليقات",
+    "en": "Write the word in the comments"
+  },
+  "followWord": {
+    "ar": "متابعة",
+    "en": "Follow"
+  },
+  "followingWord": {
+    "ar": "تمت المتابعة",
+    "en": "Following"
+  }
 } as const);
 
 export type CardLabelKey = keyof typeof CARD_LABELS;

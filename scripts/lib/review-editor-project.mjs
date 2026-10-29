@@ -1,3 +1,4 @@
+import {styleAliasNotice} from '../../engine/src/styles/registry.ts';
 import './project-tmp.mjs';
 import path from 'node:path';
 import { promises as fs } from 'node:fs';
@@ -112,14 +113,16 @@ export async function listStaticFiles({ max = 5000 } = {}) {
 
 export async function loadReviewProject(manifestRel) {
   const manifestText = await fs.readFile(await checkedPath(manifestRel, { mustExist: true }), 'utf8');
-  const parsed = editManifestSchema.safeParse(JSON.parse(manifestText.replace(/^\uFEFF/, '')));
+  const raw = JSON.parse(manifestText.replace(/^\uFEFF/, ''));
+  const aliasNotice = styleAliasNotice(raw.style, 'ar');
+  const parsed = editManifestSchema.safeParse(raw);
   if (!parsed.success) {
     const first = parsed.error.issues.slice(0, 5).map((i) => `${i.path.join('.') || '(root)'}: ${i.message}`).join('; ');
     throw new Error(`${manifestRel} is not a valid edit manifest: ${first}`);
   }
   const manifest = parsed.data;
   const dir = path.posix.dirname(manifestRel);
-  const warnings = [];
+  const warnings = aliasNotice ? [aliasNotice] : [];
   if (!manifestRel.startsWith(`Projects/${manifest.id}/`)) warnings.push(`Manifest id "${manifest.id}" does not match its folder: prepare/export will refuse it (the pipeline needs Projects/${manifest.id}/).`);
   const { plate, needsPrepare, needsPrepareReason } = await findPlate(manifest, manifestRel);
   const motionPlanPath = (await exists(path.join(ROOT, dir, 'motion-plan.json'))) ? `${dir}/motion-plan.json` : null;

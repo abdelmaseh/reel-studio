@@ -27,6 +27,18 @@ test('every registered visual item has source-current, specific selection guidan
   }
 });
 
+test('V4 families explain their actual action, limits and existing backlog placement', async () => {
+  const data = await catalog();
+  for (const family of ['verdict', 'claim-proof', 'meter-receipt', 'ticket-offer', 'comment-stack', 'message-board', 'token-lens', 'evidence-wipe', 'chapter-quote']) {
+    const guidance = data.items.find(item => item.key === `scene:${family}`).editorial;
+    assert.equal(guidance.assessment, 'current');
+    assert.ok(guidance.requirements.some(text => text.startsWith('Backlog placement: existing ')), family);
+    assert.ok(guidance.useWhen.every(text => text !== 'The supplied content needs this visible change.'), family);
+    assert.ok(guidance.avoidWhen.every(text => text !== 'Continuous visibility of speech or evidence is required.'), family);
+    assert.ok(guidance.evidence.some(item => item.path.includes(`/designs/${family}.tsx`)), family);
+  }
+});
+
 test('a calm split explanation keeps the selected identity and chooses an actual process',async()=>{
   const {recommendLibrary}=await api(),data=await catalog(),input=context(),before=JSON.stringify(input);
   const result=recommendLibrary(data,input);
@@ -82,7 +94,7 @@ test('graphics cannot fabricate recording words or presenter camera tracks',asyn
   const {recommendLibrary}=await api(),data=await catalog();
   for(const [intent,role] of [['text','explanation'],['word-emphasis','emphasis'],['focus','camera']]){
     const result=recommendLibrary(data,context({intent,role,mode:'graphics',sourceKind:'none',layout:'takeover',assets:['reviewed-words']}));
-    assert.ok(!result.candidates.some(item=>item.key==='scene:kinetic-text'||item.layer==='caption-emphasis'||item.layer==='camera'));
+    assert.ok(!result.candidates.some(item=>item.key==='scene:kinetic-text'||item.layer==='caption-emphasis'||(item.layer==='camera'&&item.role==='track-authoring-helper')));
   }
 });
 

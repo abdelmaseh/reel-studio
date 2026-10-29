@@ -1,3 +1,8 @@
+import {RECEIPTS_FAMILIES} from '../../engine/src/styles/calligraphic-receipts/scenes/schema.ts';
+import {MAGAZINE_FAMILIES} from '../../engine/src/styles/magazine-interview/scenes/schema.ts';
+import {arabicTypeSceneVariants} from '../../engine/src/arabic-type/schema.ts';
+import {figuresSceneVariants} from '../../engine/src/creative-kit/figures/schema.ts';
+import {chatThreadSceneVariants} from '../../engine/src/creative-kit/chat-thread/schema.ts';
 import './project-tmp.mjs';
 import path from 'node:path';
 import {promises as fs} from 'node:fs';
@@ -10,13 +15,15 @@ import {screenRecordingVariants} from '../../engine/src/screen-recording/schema.
 import {semanticSceneVariants} from '../../engine/src/creative-kit/semantic/schema.ts';
 import {styleSceneVariants} from '../../engine/src/styles/scenes.ts';
 import {GRID_GLIDE_FAMILIES} from '../../engine/src/styles/grid-glide/scenes/schema.ts';
-import {ownSceneStyle} from '../../engine/src/styles/registry.ts';
+import {ownSceneStyle, familySupported, normalizeStyleId, STYLE_ALIASES} from '../../engine/src/styles/registry.ts';
 import {editManifestSchema, editSceneSchema} from '../../engine/src/prepared-edit/schema.ts';
 import {compileEdit} from '../../engine/src/prepared-edit/timeline.ts';
 import {ROOT, atomicJson, checkedPath, ensureOutput, readJson, relativePath, slug, object, finite, digest, fileSnapshot, withFileLock} from './job-paths.mjs';
 import {inspectEditSource, importEditCaptions, loadEditProject, prepareEditProject} from './edit-project.mjs';
 import {attachPreparedMouth} from './mouth-table.mjs';
 import {CARTOON_FAMILIES, CARTOON_SOURCE_KIND} from '../../engine/src/styles/cartoon/scenes/math.ts';
+import {DOCUMENTARY_FAMILIES} from '../../engine/src/styles/documentary/scenes/schema.ts';
+import {LAYERED_FAMILIES} from '../../engine/src/styles/layered-speaker/scenes/math.ts';
 // A cartoon or a screen-recording source has no presenter on screen: the manifest says presenter false and delivery exempts the motion check.
 const SOURCE_KINDS=['presenter','screen',CARTOON_SOURCE_KIND];
 const noPresenter=kind=>kind==='screen' || kind===CARTOON_SOURCE_KIND;
@@ -43,12 +50,14 @@ import {SAMPLE_NUMBER, manifestSampleNumbers} from '../../engine/src/prepared-ed
 import {sceneDemoFields} from '../../engine/src/review-editor/ops/demo.ts';
 import {isKitFamily} from '../../engine/src/review-editor/ops/templates.ts';
 import {isBrollScene} from '../../engine/src/prepared-edit/broll.ts';
+import {checkArabic,installedFonts,arabicFailureMessage} from './arabic-check.mjs';
 
 export const EDITOR_PURPOSES = Object.freeze(['explainer','case-study','tutorial','comparison','opinion','story']);
 export const EDITOR_TONES = Object.freeze(['energetic','calm','editorial']);
 export const EDITOR_SOUND_MODES = Object.freeze(['auto','recipes','none']);
 export const DEFAULT_SOUND_MODE='auto';
-const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...styleSceneVariants].map(schema=>[schema.shape.family.value,schema]));
+import {proofScreenSceneVariants} from '../../engine/src/creative-kit/proof-screen/schema.ts';
+const KINETIC_SCHEMAS=Object.fromEntries([...kineticSceneVariants,...librarySceneVariants,...screenRecordingVariants,...semanticSceneVariants,...figuresSceneVariants,...chatThreadSceneVariants,...styleSceneVariants,...arabicTypeSceneVariants,...proofScreenSceneVariants].map(schema=>[schema.shape.family.value,schema]));
 export const BEAT_FAMILIES = Object.freeze({hook:'intro',intro:'intro',evidence:'proof',proof:'proof',steps:'process',process:'process',
   comparison:'comparison',comment:'comment','comment-cta':'comment',follow:'follow','follow-cta':'follow','project-scene':'project-scene',
   ...Object.fromEntries(Object.keys(KINETIC_SCHEMAS).map(family=>[family,family]))});
@@ -66,12 +75,14 @@ const glideWatermark=brief=>brief.watermark===false?undefined:typeof brief.water
 // Editorial points per purpose and tone come from each style's meta (`fit`); a style that is not listed scores 4 content and 0 tone points.
 const PURPOSE_FIT = purposeFit();
 const TONE_FIT = toneFit();
-const SOUND_FOR_FAMILY = {intro:'soft-transition',proof:'counter-accent',process:'paper-reveal',comparison:'paper-reveal',comment:'ui-confirmation',follow:'soft-transition',
+const SOUND_FOR_FAMILY = {verdict:'restrained-reveal','claim-proof':'restrained-reveal',figures:'counter-accent','chat-thread':'ui-confirmation',intro:'soft-transition',proof:'counter-accent',process:'paper-reveal',comparison:'paper-reveal',comment:'ui-confirmation',follow:'soft-transition',
+  'proof-screen':'highlight-swipe',
   'token-lens':'highlight-swipe','meter-receipt':'counter-accent','ticket-offer':'restrained-reveal','comment-stack':'ui-confirmation','chapter-quote':'chapter-shift','route-stops':'paper-reveal',
-  'kinetic-text':'restrained-reveal','evidence-wipe':'paper-reveal','motion-concept':'restrained-reveal','message-board':'paper-reveal',
+  'arabic-type':'restrained-reveal','kinetic-text':'restrained-reveal','evidence-wipe':'paper-reveal','motion-concept':'restrained-reveal','message-board':'paper-reveal',
   'kinetic-hook':'restrained-reveal','image-compare':'paper-reveal',checklist:'highlight-swipe',count:'counter-accent',screens:'soft-transition',
   statement:'soft-transition',outcome:'ui-confirmation','creator-cta':'ui-confirmation','screen-focus':'soft-transition','screen-recording':'soft-transition','data-story':'counter-accent',
-  'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump',cartoon:'soft-pop','cartoon-ending':'cartoon-flip'};
+  'glide-chapter':'sub-thump','glide-card':'sub-thump','glide-lines':'sub-thump','glide-comment':'sub-thump','glide-follow':'sub-thump',cartoon:'soft-pop','cartoon-ending':'cartoon-flip',
+  'map-route':null,'map-focus':null,'cutout-card':'paper-reveal',[LAYERED_FAMILIES[0]]:'soft-pop'};
 /** The recipe "recipes" sound mode places at a scene's start. B-roll plays silently under the voice, so it gets none. */
 export const soundCandidateFor=scene=>isBrollScene(scene)?undefined:SOUND_FOR_FAMILY[scene.family];
 const text = (value,label,max=200) => {
@@ -105,7 +116,12 @@ export function listEditorStyles() {
 }
 
 export function validateEditorBrief(raw) {
-  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','preferences','fontFamily','digits','captionsGrouping','captionsPresentation','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','sweeps','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
+  const originalStyle=raw?.style ?? (raw?.preferences?.style?.mode==='fixed'?raw.preferences.style.value:undefined);
+  if(typeof originalStyle==='string' && Object.hasOwn(STYLE_ALIASES,originalStyle))raw={...raw,styleAlias:originalStyle};
+  raw = {...raw, ...(raw?.style === undefined ? {} : {style: normalizeStyleId(raw.style)}),
+    ...(raw?.recentStyles === undefined ? {} : {recentStyles: Array.isArray(raw.recentStyles) ? raw.recentStyles.map(id=>normalizeStyleId(id)) : raw.recentStyles}),
+    ...(raw?.preferences === undefined ? {} : {preferences: normalizePreferences(raw.preferences)})};
+  object(raw,['version','id','source','sourceKind','transcript','creator','brand','purpose','tone','style','styleAlias','preferences','fontFamily','digits','look','captionsGrouping','captionsPresentation','captionsSkin','captionsVisible','writingStyle','recentStyles','captionsReviewedBy','captionsMode','signoffFromSec','endAtSec','beats','footage','transitions','sound','sweeps','segments','emphasisFile','emphasisApprovedBy','projectScenePack','projectScenes','watermark'],'editor brief');
   if(raw.version!==1) throw new Error('Editor brief version must be 1.');
   slug(raw.id); const creator=normalizeCreatorProfile(raw.creator);
   if(raw.projectScenePack!==undefined){relativePath(raw.projectScenePack);if(!raw.projectScenePack.startsWith(`Projects/${raw.id}/`))throw new Error('Project scene pack must belong to its project');}
@@ -113,12 +129,15 @@ export function validateEditorBrief(raw) {
   validateEditorSource({source:raw.source,transcript:raw.transcript}); relativePath(raw.source); relativePath(raw.transcript);
   choice(raw.purpose,EDITOR_PURPOSES,'purpose');choice(raw.tone,EDITOR_TONES,'tone');
   if(raw.style!==undefined) style(raw.style);
-  if(raw.preferences!==undefined) normalizePreferences(raw.preferences);
+  if(raw.styleAlias!==undefined)editManifestSchema.shape.styleAlias.parse(raw.styleAlias);
+  // Saved preferences were normalized before validation.
   if(raw.fontFamily!==undefined) editManifestSchema.shape.fontFamily.parse(raw.fontFamily);
   if(raw.digits!==undefined) editManifestSchema.shape.digits.parse(raw.digits);
+  if(raw.look!==undefined) editManifestSchema.shape.look.parse(raw.look);
   if(raw.writingStyle!==undefined) editManifestSchema.shape.writingStyle.parse(raw.writingStyle);
   if(raw.captionsGrouping!==undefined) editManifestSchema.shape.captions.shape.grouping.parse(raw.captionsGrouping);
   if(raw.captionsPresentation!==undefined) editManifestSchema.shape.captions.shape.presentation.parse(raw.captionsPresentation);
+  if(raw.captionsSkin!==undefined) editManifestSchema.shape.captions.shape.skin.parse(raw.captionsSkin);
   if(raw.captionsVisible!==undefined) editManifestSchema.shape.captions.shape.visible.parse(raw.captionsVisible);
   if(raw.recentStyles!==undefined) {
     if(!Array.isArray(raw.recentStyles) || raw.recentStyles.length>50) throw new Error('recentStyles must be an array, newest first (maximum 50).');
@@ -185,9 +204,11 @@ export function recommendEditorStyle(raw) {
     if(semanticScore)reasons.push(`Authored ${eligibility[id].join('/')} beats qualify this visual grammar (${semanticScore} points).`);
     if(repetitionPenalty) reasons.push(`Used recently at position ${recentIndex+1}; subtract ${repetitionPenalty} points to reduce repetition.`);
     return {style:id,score:contentScore+toneScore+semanticScore-repetitionPenalty,contentScore,toneScore,...(semanticScore?{semanticScore}:{}),repetitionPenalty,reasons,index};
-  }).sort((a,b)=>b.score-a.score || a.index-b.index).map(({index:_,...candidate})=>candidate);
+  }).filter(candidate=>brief.beats.every(beat=>familySupported(candidate.style, BEAT_FAMILIES[beat.intent]))).sort((a,b)=>b.score-a.score || a.index-b.index).map(({index:_,...candidate})=>candidate);
   const savedStyle=brief.preferences?.style.mode==='fixed'?brief.preferences.style.value:undefined;
-  const selected=brief.style??savedStyle??candidates[0].style;
+  const selected=brief.style??savedStyle??candidates[0]?.style;
+  if(!selected)throw new Error('No style supports the authored beat families.');
+  for(const beat of brief.beats)if(!familySupported(selected, BEAT_FAMILIES[beat.intent]))throw new Error(`Style ${selected} does not support family ${BEAT_FAMILIES[beat.intent]}.`);
   const reasons=brief.style?[`Explicit style ${selected} is pinned; content scores and recent use do not override it.`]
     :savedStyle?[`Saved style ${selected} is pinned; this video can override it explicitly.`]:candidates[0].reasons;
   return {method:'deterministic-rules-v1',style:selected,explicit:brief.style!==undefined||savedStyle!==undefined,reasons,candidates,profile:getStyleProfile(selected)};
@@ -201,7 +222,7 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     if(owner!==undefined && owner!==selection.style) throw new Error(`Beat ${beat.id} uses ${beat.intent}, a scene that only exists in the ${owner} style, but this edit resolves to ${selection.style}. Pin style "${owner}" in the brief or in the saved style preference, or choose another beat intent.`);
   }
   const defaults=brief.preferences?resolvePreferences(brief.preferences,{purpose:brief.purpose,tone:brief.tone,style:selection.style}):{};
-  const preferences={...defaults,...Object.fromEntries(['fontFamily','writingStyle','captionsGrouping','captionsPresentation','digits'].filter(key=>brief[key]!==undefined).map(key=>[key,brief[key]]))};
+  const preferences={...defaults,...Object.fromEntries(['fontFamily','writingStyle','captionsGrouping','captionsPresentation','captionsSkin','digits'].filter(key=>brief[key]!==undefined).map(key=>[key,brief[key]]))};
   if(source.path!==brief.source) throw new Error('Inspected source path disagrees with the named brief source.');
   const duration=source.totalFrames/source.fps;
   if(brief.endAtSec!==undefined && brief.endAtSec>duration+1e-7) throw new Error('endAtSec exceeds the inspected source duration.');
@@ -260,15 +281,17 @@ export function buildEditorPlan(raw,source,captions,{delivery=false,emphasis}={}
     camera=emphasisCameraKeys(approved,{fps:source.fps,limitFrame:signoffFromFrame??editFrames,anchored:brief.footage!==undefined,segments});
     emphasisRecord={file:brief.emphasisFile,approvedBy:brief.emphasisApprovedBy,proposals:approved.length,keys:camera.length};
   }
-  const manifest=editManifestSchema.parse({version:1,id:brief.id,purpose:delivery?'delivery':'test',style:selection.style,creator:ending.creator,...(branded.brand?{brand:branded.brand}:{}),source,
+  const manifest=editManifestSchema.parse({version:1,id:brief.id,purpose:delivery?'delivery':'test',style:selection.style,...(brief.styleAlias?{styleAlias:brief.styleAlias}:{}),creator:ending.creator,...(branded.brand?{brand:branded.brand}:{}),source,
     ...(brief.projectScenes?{projectScenes:brief.projectScenes}:{}),
     ...(preferences.fontFamily===undefined?{}:{fontFamily:preferences.fontFamily}),
     ...(preferences.digits===undefined?{}:{digits:preferences.digits}),
+    ...(brief.look===undefined?{}:{look:brief.look}),
     ...(preferences.writingStyle===undefined?{}:{writingStyle:preferences.writingStyle}),
     segments,captions:{status:brief.captionsReviewedBy?'reviewed':'draft',
       ...(brief.captionsVisible===undefined?{}:{visible:brief.captionsVisible}),
       ...(preferences.captionsGrouping===undefined?{}:{grouping:preferences.captionsGrouping}),
       ...(preferences.captionsPresentation===undefined?{}:{presentation:preferences.captionsPresentation}),
+      ...(preferences.captionsSkin===undefined?{}:{skin:preferences.captionsSkin}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
       ...(brief.captionsReviewedBy?{reviewer:brief.captionsReviewedBy}:{}),words},scenes:branded.scenes,sounds:[],camera,
     ...(signoffFromFrame===undefined?{}:{signoffFromFrame}),...(noPresenter(brief.sourceKind)?{presenter:false}:{}),
@@ -305,7 +328,15 @@ export function assertDeliveryReady(manifest) {
   if(endingProblems.length) throw new Error(`Delivery ending: ${endingProblems.join(' ')}`);
   assertNoSampleNumbers(m);
   assertNoSampleText(m);
+  assertArabicClean(m);
   return {ok:true,captionStatus:m.captions.status,reviewer:m.captions.reviewer,signoffFromFrame:signoff};
+}
+
+// Arabic that would draw broken (cut joins, presentation forms, a character the chosen font lacks) must never reach a delivered video.
+// Items that only need eyes (mixed direction, stacked harakat, digit style, long lines) do not stop delivery: node scripts/arabic-check.mjs lists them for the QA report.
+export function assertArabicClean(manifest) {
+  const result=checkArabic({manifest,fonts:installedFonts()});
+  if(!result.ok) throw new Error(arabicFailureMessage(result));
 }
 
 // A kit number template carries the figure 987654 until the creator writes a real one; that figure must never reach a delivered video.
@@ -317,8 +348,8 @@ export function assertNoSampleNumbers(manifest) {
 // A kit template carries placeholder words (such as "write the title" in Arabic) until the creator writes the real ones; they must never reach a delivered video.
 // The editor flags the same fields (engine/src/review-editor/validate.ts) through the same detection, sceneDemoFields.
 export function assertNoSampleText(manifest) {
-  // Kit templates and cartoon templates carry placeholder copy that must never reach delivery unchanged.
-  const hits=manifest.scenes.filter(scene=>isKitFamily(scene.family) || CARTOON_FAMILIES.includes(scene.family)).map(scene=>({id:scene.id,fields:sceneDemoFields(scene)})).filter(hit=>hit.fields.length);
+  // Kit templates, cartoon and documentary templates and the layered-speaker starter carry placeholder copy that must never reach delivery unchanged.
+  const hits=manifest.scenes.filter(scene=>isKitFamily(scene.family) || CARTOON_FAMILIES.includes(scene.family) || DOCUMENTARY_FAMILIES.includes(scene.family) || RECEIPTS_FAMILIES.includes(scene.family) || MAGAZINE_FAMILIES.includes(scene.family) || LAYERED_FAMILIES.includes(scene.family)).map(scene=>({id:scene.id,fields:sceneDemoFields(scene)})).filter(hit=>hit.fields.length);
   if(hits.length) throw new Error(`Delivery sample text: ${hits.map(hit=>`scene ${hit.id} still holds the template words at ${hit.fields.map(field=>`data.${field}`).join(', ')}`).join('; ')}. Write the real words in those fields before delivery.`);
 }
 
@@ -524,6 +555,7 @@ export async function planEditorBrief(briefPath,{out,delivery=false,replace=fals
       ...(plan.manifest.captions.visible===undefined?{}:{visible:plan.manifest.captions.visible}),
       ...(plan.manifest.captions.grouping===undefined?{}:{grouping:plan.manifest.captions.grouping}),
       ...(plan.manifest.captions.presentation===undefined?{}:{presentation:plan.manifest.captions.presentation}),
+      ...(plan.manifest.captions.skin===undefined?{}:{skin:plan.manifest.captions.skin}),
       ...(brief.captionsMode===undefined?{}:{mode:brief.captionsMode}),
       ...(brief.captionsReviewedBy?{status:'reviewed',reviewer:brief.captionsReviewedBy}:{})}});
     const after=await Promise.all(before.map(snapshot=>fileSnapshot(snapshot.path)));

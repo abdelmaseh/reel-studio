@@ -16,6 +16,7 @@ export type SceneTheme = {
   display: string;
   mono: string;
 
+  sectionDeck?: {grounds: [string, string][]; faint: string};
   grammar?: StyleGrammar;
   accentInk?: string;
   onAccent?: string;
@@ -41,4 +42,5 @@ export type StyleThemeModule = {
   theme: Omit<SceneTheme, "grammar">;
   layout: StyleLayout;
   galleryCut: GalleryCut;
+  caption?: {takeoverCenter:number; design?:'ink'|'magazine'};
 };

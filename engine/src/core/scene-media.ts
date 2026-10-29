@@ -2,6 +2,13 @@ import {styleSceneVideoSources} from '../styles/media.ts';
 import {projectSceneClipValues} from '../project-scenes/schema.ts';
 
 type SceneLike = {family: string; data?: unknown};
+/** Scene families whose data may carry a `foreground` alpha video of the speaker, drawn above the scene's own layer. */
+export const FOREGROUND_FAMILIES: readonly string[] = ['kinetic-hook', 'layered-speaker'];
+/** The `foreground` of a scene that takes one, or null. */
+export function sceneForeground(scene: SceneLike): {src: string} | null {
+  const foreground = (scene.data as {foreground?: {src?: unknown}} | null | undefined)?.foreground;
+  return FOREGROUND_FAMILIES.includes(scene.family) && typeof foreground?.src === 'string' ? (foreground as {src: string}) : null;
+}
 type StepLike = {kind?: unknown; src?: unknown};
 /** The `projectScenes` contracts an edit carries; project scenes need them to say which of their fields are clips. */
 export type ProjectScenes = Parameters<typeof projectSceneClipValues>[0]['projectScenes'];
@@ -18,16 +25,18 @@ export type MovingSources = {foreground: string[]; captures: string[]};
  * function, so a family that adds moving footage adds it here. Node-safe duck typing: no React.
  */
 export function sceneMovingSources(scene: SceneLike, projectScenes?: ProjectScenes): MovingSources {
-  const data = scene.data as {foreground?: {src?: unknown}; steps?: unknown; look?: unknown} | null | undefined;
+  const data = scene.data as {foreground?: {src?: unknown}; steps?: unknown; look?: unknown; move?: unknown; media?: unknown} | null | undefined;
   const foreground: string[] = [];
   const captures: string[] = [];
-  if (scene.family === 'kinetic-hook' && typeof data?.foreground?.src === 'string') foreground.push(data.foreground.src);
+  const matte = sceneForeground(scene);
+  if (matte !== null) foreground.push(matte.src);
   if (scene.family === 'screens' || scene.family === 'screen-focus') {
     const steps = Array.isArray(data?.steps) ? (data?.steps as StepLike[]) : [];
     // In the broll look every step is a clip; in the window look only the steps declared as video are.
     const everyStep = scene.family === 'screens' && data?.look === 'broll';
     for (const step of steps) if ((everyStep || step?.kind === 'video') && typeof step?.src === 'string') captures.push(step.src);
   }
+  if(scene.family==='arabic-type'&&data?.move==='video-in-letters'&&typeof data.media==='string')captures.push(data.media);
   captures.push(...styleSceneVideoSources(scene));
   if (scene.family === 'project-scene' && projectScenes !== undefined) {
     for (const use of projectSceneClipValues({projectScenes, scenes: [scene as {family: string; data: unknown}]})) captures.push(use.clip.src);

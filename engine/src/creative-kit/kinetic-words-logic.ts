@@ -3,6 +3,7 @@
 import type { MappedWord } from "../prepared-edit/timeline.ts";
 import { EASE, clamp01, toFrame } from "../core/motion.ts";
 import type { SpringPreset } from "../core/motion.ts";
+import { stretchWord } from "../arabic/kashida.ts";
 
 export type TranscriptLanguage = "ar" | "en";
 export type LineDirection = "rtl" | "ltr";
@@ -56,6 +57,8 @@ export type WordToken = {
   text: string;
 
   enterFrame: number;
+  /** Last frame of the token's spoken window, in the same time base as enterFrame (never before it). */
+  endFrame: number;
   sourceIndex: number;
   part: number;
 
@@ -97,16 +100,27 @@ export const tokenizeSpoken = (words: readonly SpokenWord[], opts: TokenizeOptio
     const span = word.toFrame - word.fromFrame;
     let before = 0;
     pieces.forEach((piece, part) => {
+      // The piece is spoken until the next piece begins, or until the word ends.
+      const spokenUntil =
+        part + 1 < pieces.length ? word.fromFrame + Math.floor((span * (before + counts[part])) / total) - origin - lead : word.toFrame - origin - lead;
       if (part === 0 && continuation) {
         const prev = tokens[tokens.length - 1];
         prev.text += piece;
         prev.parts.push({ sourceIndex: word.sourceIndex, part: 0 });
+        prev.endFrame = Math.max(prev.endFrame, spokenUntil);
       } else {
 
         const onset = word.fromFrame + Math.floor((span * before) / total) - origin - lead;
         const enterFrame = Math.max(onset, lastEnter);
         lastEnter = enterFrame;
-        tokens.push({ text: piece, enterFrame, sourceIndex: word.sourceIndex, part, parts: [{ sourceIndex: word.sourceIndex, part }] });
+        tokens.push({
+          text: piece,
+          enterFrame,
+          endFrame: Math.max(spokenUntil, enterFrame),
+          sourceIndex: word.sourceIndex,
+          part,
+          parts: [{ sourceIndex: word.sourceIndex, part }],
+        });
       }
       before += counts[part];
     });
@@ -114,7 +128,7 @@ export const tokenizeSpoken = (words: readonly SpokenWord[], opts: TokenizeOptio
   return tokens;
 };
 
-export const EMPHASIS_KINDS = ["accent", "latin", "pop", "underline", "weight"] as const;
+export const EMPHASIS_KINDS = ["accent", "latin", "pop", "underline", "weight", "stretch"] as const;
 export type EmphasisKind = (typeof EMPHASIS_KINDS)[number];
 export type EmphasisSpec = { sourceIndex: number; part?: number; kind: EmphasisKind };
 
@@ -169,6 +183,69 @@ export const tokenTypeStyle = (
   fontSize,
   fontWeight: kinds.includes("weight") ? opts.heavyWeight : base.fontWeight,
 });
+
+// Living kashida: an emphasised Arabic word grows along its connections while it is spoken and then relaxes. The word stays
+// one string (tatweel characters added at its best slot, see arabic/kashida.ts), never split into letters. A word that has
+// no legal slot, or is not Arabic, is left as it is.
+export const STRETCH_PEAK = 6;
+export const STRETCH_IN_SEC = 0.35;
+export const STRETCH_OUT_SEC = 0.25;
+
+/**
+ * How far the word has stretched at `frame`, as a continuous number of tatweels: 0, a rise to the peak over 0.35 s from the word's
+ * onset (ease-out), a hold through the spoken word, then a relax over 0.25 s. It is not rounded and has no steps; `stretchCount` is
+ * the whole number of tatweels the word is drawn with, and `stretchRoom` turns this amount into the width the word takes in its line.
+ */
+export const stretchAmount = (frame: number, enterFrame: number, endFrame: number, fps: number, peak: number = STRETCH_PEAK): number => {
+  const top = Math.max(0, Math.floor(peak));
+  if (top === 0 || frame < enterFrame) return 0;
+  const rise = Math.max(1, toFrame(STRETCH_IN_SEC, fps));
+  const relax = Math.max(1, toFrame(STRETCH_OUT_SEC, fps));
+  const full = enterFrame + rise;
+  if (frame < full) return top * EASE.land((frame - enterFrame) / rise);
+  const hold = Math.max(full, endFrame);
+  if (frame <= hold) return top;
+  return top * (1 - EASE.inOut((frame - hold) / relax));
+};
+
+/** Tatweels carried by the word at `frame`: the stretch amount rounded to a whole number. */
+export const stretchCount = (frame: number, enterFrame: number, endFrame: number, fps: number, peak: number = STRETCH_PEAK): number =>
+  Math.round(stretchAmount(frame, enterFrame, endFrame, fps, peak));
+
+/** The word as it is drawn at `frame`. */
+export const stretchedText = (text: string, frame: number, enterFrame: number, endFrame: number, fps: number, peak: number = STRETCH_PEAK): string =>
+  stretchWord(text, stretchCount(frame, enterFrame, endFrame, fps, peak));
+
+/** The longest form of the word. The line is fitted and wrapped with it, so the line breaks never change while the word stretches. */
+export const reservedText = (text: string, kinds: readonly EmphasisKind[], peak: number = STRETCH_PEAK): string =>
+  kinds.includes("stretch") ? stretchWord(text, peak) : text;
+
+/**
+ * The measured width of the word with 0, 1, 2 ... `peak` tatweels. `widthOf` measures one form of the word. A width never shrinks as
+ * a tatweel is added, whatever the measure says, and a word that cannot stretch has the same width at every count.
+ */
+export const stretchWidths = (text: string, widthOf: (form: string) => number, peak: number = STRETCH_PEAK): number[] => {
+  const top = Math.max(0, Math.floor(peak));
+  const widths: number[] = [];
+  for (let count = 0; count <= top; count += 1) {
+    const width = widthOf(stretchWord(text, count));
+    widths.push(count === 0 ? width : Math.max(width, widths[count - 1]));
+  }
+  return widths;
+};
+
+/**
+ * The room a stretching word takes in its line at a continuous stretch amount: the measured width at a whole count, and a straight
+ * line between two counts. It follows the word's real width, so the neighbours glide apart without jumping in tatweel steps.
+ */
+export const stretchRoom = (widths: readonly number[], amount: number): number => {
+  if (widths.length === 0) throw new Error("kinetic-words: stretchRoom needs the measured width of at least the plain word.");
+  const top = widths.length - 1;
+  const at = Math.min(Math.max(Number.isFinite(amount) ? amount : 0, 0), top);
+  const whole = Math.floor(at);
+  if (whole >= top) return widths[top];
+  return widths[whole] + (widths[whole + 1] - widths[whole]) * (at - whole);
+};
 
 export type Pose = { opacity: number; rise: number; scale: number };
 export const ENTERED: Pose = { opacity: 1, rise: 0, scale: 1 };

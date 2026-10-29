@@ -1,0 +1,125 @@
+{
+  "styleIds": [
+    "section-deck",
+    "kinetic-paper",
+    "calligraphic-receipts",
+    "paper-collage",
+    "liquid-glass",
+    "magazine-interview",
+    "grid-glide",
+    "one-shot",
+    "cartoon",
+    "documentary",
+    "layered-speaker"
+  ],
+  "purposeFit": {
+    "explainer": {
+      "section-deck": 16,
+      "kinetic-paper": 12,
+      "grid-glide": 11,
+      "one-shot": 8,
+      "cartoon": 7,
+      "documentary": 6,
+      "layered-speaker": 4
+    },
+    "case-study": {
+      "section-deck": 12,
+      "calligraphic-receipts": 18,
+      "paper-collage": 9,
+      "documentary": 6
+    },
+    "tutorial": {
+      "section-deck": 16,
+      "kinetic-paper": 12,
+      "calligraphic-receipts": 8,
+      "grid-glide": 11,
+      "one-shot": 10,
+      "cartoon": 6
+    },
+    "comparison": {
+      "section-deck": 12,
+      "paper-collage": 10,
+      "grid-glide": 8,
+      "cartoon": 5
+    },
+    "opinion": {
+      "kinetic-paper": 10,
+      "calligraphic-receipts": 8,
+      "layered-speaker": 7
+    },
+    "story": {
+      "kinetic-paper": 13,
+      "calligraphic-receipts": 10,
+      "paper-collage": 18,
+      "documentary": 6,
+      "layered-speaker": 7
+    }
+  },
+  "toneFit": {
+    "energetic": {
+      "kinetic-paper": 6,
+      "paper-collage": 4,
+      "one-shot": 1,
+      "cartoon": 2,
+      "layered-speaker": 3
+    },
+    "calm": {
+      "section-deck": 4,
+      "calligraphic-receipts": 3,
+      "paper-collage": 2,
+      "grid-glide": 2,
+      "documentary": 1
+    },
+    "editorial": {
+      "calligraphic-receipts": 4,
+      "paper-collage": 2,
+      "documentary": 2
+    }
+  },
+  "eligibility": {
+    "kinetic-paper": [
+      "kinetic-text",
+      "ticket-offer",
+      "comment-stack"
+    ],
+    "calligraphic-receipts": [
+      "meter-receipt",
+      "claim-proof"
+    ],
+    "paper-collage": [
+      "evidence-wipe",
+      "message-board"
+    ],
+    "liquid-glass": [
+      "token-lens",
+      "meter-receipt"
+    ],
+    "magazine-interview": [
+      "chapter-quote",
+      "verdict"
+    ],
+    "grid-glide": [
+      "glide-chapter",
+      "glide-card",
+      "glide-lines",
+      "glide-comment",
+      "glide-follow"
+    ],
+    "one-shot": [
+      "one-shot"
+    ],
+    "cartoon": [
+      "cartoon",
+      "cartoon-ending"
+    ],
+    "documentary": [
+      "map-route",
+      "map-focus",
+      "cutout-card",
+      "route-stops"
+    ],
+    "layered-speaker": [
+      "layered-speaker"
+    ]
+  }
+}

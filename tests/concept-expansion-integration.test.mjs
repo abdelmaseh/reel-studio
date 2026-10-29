@@ -181,6 +181,7 @@ test('new canonical previews and explicit alternate examples retain their native
   assert.ok(branch.fixture.data.input.value < branch.fixture.data.condition.threshold);
   assert.deepEqual(branch.fixture.data.branches, getPreviewDefinition('concept:conditional-branching').fixture.data.branches);
   assert.ok(filtering.fixture.data.criteria.length >= 2);
-  assert.equal(definitions.filter(item => item.canonicalKey).length, 2);
+  // Concept alternates only; arabic-type carries one alternate preview per move (tests/arabic-type-registration.test.mjs).
+  assert.equal(definitions.filter(item => item.canonicalKey?.startsWith('concept:')).length, 2);
   assert.equal(new Set(definitions.map(item => item.slug)).size, definitions.length);
 });

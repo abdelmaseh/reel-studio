@@ -67,7 +67,7 @@ test('a broll scene gets no automatic sound cue at all, while the window look ke
 
 const manifestWith = (scenes, change = {}) => {
   const m = reviewManifest('broll-manifest');
-  m.style = 'split-canvas';
+  m.style = 'section-deck';
   m.source.totalFrames = 900;
   m.segments = [{fromFrame: 0, toFrame: 900}];
   m.scenes = scenes;
@@ -122,10 +122,10 @@ test('prepare verifies broll clips against the real files, step by step', async 
 test('prepare measures a split B-roll scene against the style seam when the manifest has no footage', async (t) => {
   const {clip: real} = await realClip(t, {name: 'broll-split-prepare'});
   const split = (steps, extra = {}) => broll(steps, {layout: 'split', ...extra});
-  const edit = (scenes, change = {}) => ({style: 'split-canvas', source, scenes, ...change});
+  const edit = (scenes, change = {}) => ({style: 'section-deck', source, scenes, ...change});
   const tooSmall = stepOf({src: 'projects/none/small.mp4', sha256: 'c'.repeat(64)}, {width: 540, height: 960});
-  // The split-canvas seam is 768, so the box above it is 1080x768. The refusal comes before any file is read.
-  await assert.rejects(verifyKineticAssets(edit([split([tooSmall])])), /broll-1 step 1: the clip would be enlarged 2\.00x in its 1080x768 box \(limit 1\.25x\); use fit "contain" or a larger clip\./);
+  // The section-deck seam is 1056, so the box above it is 1080x1056. The refusal comes before any file is read.
+  await assert.rejects(verifyKineticAssets(edit([split([tooSmall])])), /broll-1 step 1: the clip would be enlarged 2\.00x in its 1080x1056 box \(limit 1\.25x\); use fit "contain" or a larger clip\./);
   await assert.rejects(verifyKineticAssets(edit([split([tooSmall]), split([tooSmall], {id: 'broll-2', fromFrame: 100})])), (error) => /broll-1 step 1/.test(error.message) && /broll-2 step 1/.test(error.message), 'every scene is reported');
   assert.deepEqual((await verifyKineticAssets(edit([split([stepOf(real)])]))).map((asset) => asset.sha256), [real.sha256], 'a portrait clip fills the box and is accepted');
   const other = await verifyKineticAssets(edit([split([stepOf(real)])], {style: 'section-deck'}));

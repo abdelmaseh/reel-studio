@@ -1,6 +1,6 @@
 import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { layoutTransitionIssues } from "../../prepared-edit/footage.ts";
-import { graphicsTransitionIssues } from "../../prepared-edit/graphics-transitions.ts";
+import { graphicsTransitionIssues, isCentredKind } from "../../prepared-edit/graphics-transitions.ts";
 import { segmentEditedRanges, totalFrames, tryCompile } from "../time.ts";
 import { dropForegrounds, isSceneAnchoredKind, repairForegrounds, sceneTimingIssues } from "./anchors.ts";
 import { explainEnglish } from "./explain.ts";
@@ -71,7 +71,7 @@ function ripple(m: EditManifest, delta: Delta, segments: Segments, options: CutO
     }
     const next = from === s.fromFrame && duration === s.durationInFrames ? s : ({ ...s, fromFrame: from, durationInFrames: duration } as Scene);
     if (duration !== s.durationInFrames) {
-      if (sceneTimingIssues(next).length && !sceneTimingIssues(s).length) {
+      if (sceneTimingIssues(next,m.source.fps).length && !sceneTimingIssues(s,m.source.fps).length) {
         dropped.push({ kind: "scene", label: sceneLabel(s.id), why: `توقيتاته الداخلية مش هتلحق في ${duration} فريم` });
         continue;
       }
@@ -134,7 +134,7 @@ function ripple(m: EditManifest, delta: Delta, segments: Segments, options: CutO
   for (const t of m.transitions ?? []) {
     const kind = t.kind ?? "whiteout";
     const label = `الـ transition ${kind} @${t.atFrame}`;
-    const tail = (duration: number) => (kind === "whiteout" ? duration / 2 : duration);
+    const tail = (duration: number) => (isCentredKind(kind) ? duration / 2 : duration);
     const old = startsScene(t.atFrame);
     if (old) {
       const ns = survivor.get(old.id);

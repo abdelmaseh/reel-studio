@@ -1,3 +1,6 @@
+import {transitionUsesOutgoing} from '../../prepared-edit/graphics-transitions.ts';
+import {RECEIPTS_FAMILIES} from '../../styles/calligraphic-receipts/scenes/schema.ts';
+import {MAGAZINE_FAMILIES} from '../../styles/magazine-interview/scenes/schema.ts';
 import type { EditManifest } from "../../prepared-edit/schema.ts";
 import { editSceneSchema } from "../../prepared-edit/schema.ts";
 import { ENDING_FAMILIES } from "../../prepared-edit/broll.ts";
@@ -9,8 +12,11 @@ import {glideWords} from '../../styles/grid-glide/scenes/text.ts';
 import {ONE_SHOT_FAMILIES} from '../../styles/one-shot/scenes/schema.ts';
 import {oneShotTemplateFrames} from '../../styles/one-shot/scenes/templates.ts';
 import {CARTOON_FAMILIES} from '../../styles/cartoon/scenes/math.ts';
+import {DOCUMENTARY_FAMILIES} from '../../styles/documentary/scenes/schema.ts';
 import {cartoonEndingTemplate, cartoonTemplate, cartoonTemplateFrames} from '../../styles/cartoon/scenes/templates.ts';
-import {ownSceneStyle} from '../../styles/registry.ts';
+import {LAYERED_FAMILIES} from '../../styles/layered-speaker/scenes/math.ts';
+import {layeredTemplateFrames} from '../../styles/layered-speaker/scenes/templates.ts';
+import {ownSceneStyle, familySupported, normalizeStyleId} from '../../styles/registry.ts';
 import {compileEdit} from '../../prepared-edit/timeline.ts';
 import {minFramesAtFps} from '../../motion-concepts/timeline.ts';
 import {getCatalogEntry,catalogDemo} from '../../motion-concepts/catalog.ts';
@@ -34,7 +40,7 @@ export type SceneLayout = (typeof LAYOUTS)[number];
 export type SceneMotion = (typeof MOTIONS)[number];
 
 
-export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...KIT_TEMPLATE_FAMILIES,...GRID_GLIDE_FAMILIES,...ONE_SHOT_FAMILIES,...CARTOON_FAMILIES];
+export const TEMPLATE_FAMILIES = [...sceneFamilies,...semanticFamilies,...KIT_TEMPLATE_FAMILIES,...GRID_GLIDE_FAMILIES,...ONE_SHOT_FAMILIES,...CARTOON_FAMILIES,...DOCUMENTARY_FAMILIES,...LAYERED_FAMILIES,...MAGAZINE_FAMILIES,...RECEIPTS_FAMILIES];
 
 // ENDING_FAMILIES (imported above) is the one list of scene families that count as the video's ending: the delivery gate (scripts/lib/endings.mjs) allows only one.
 const NO_ROOM_AFTER_LAST = "لا توجد مساحة بعد آخر مشهد وقبل نهاية الفيديو. قصّر المشهد الأخير أولًا.";
@@ -66,7 +72,9 @@ function kitRefusal(m: EditManifest, family: KitTemplateFamily): string | null {
 
 /** The families the picker offers: own-style families only for their style and, when the edit is given, only the kit templates it can take. */
 export function templateFamiliesFor(style: string, m?: EditManifest): string[] {
+  style = normalizeStyleId(style);
   return TEMPLATE_FAMILIES.filter((family) => {
+    if (!familySupported(style, family)) return false;
     const owner = ownSceneStyle(family);
     if (owner !== undefined && owner !== style) return false;
     return !(m !== undefined && isKitFamily(family) && kitRefusal(m, family) !== null);
@@ -174,9 +182,9 @@ export function deleteScene(m: EditManifest, id: string): OpResult {
   const s = m.scenes[i];
   const notes: string[] = [];
   let next: EditManifest = { ...m, scenes: removeAt(m.scenes, i) };
-  const gone = m.transitions?.filter((t) => t.atFrame === s.fromFrame).length ?? 0;
+  const gone = m.transitions?.filter((t) => t.atFrame === s.fromFrame || transitionUsesOutgoing(t,s)).length ?? 0;
   if (gone) {
-    next = { ...next, transitions: m.transitions!.filter((t) => t.atFrame !== s.fromFrame) };
+    next = { ...next, transitions: m.transitions!.filter((t) => t.atFrame !== s.fromFrame && !transitionUsesOutgoing(t,s)) };
     notes.push(`اتشال ${gone} transition كان على أول المشهد.`);
   }
   const goneLayout = m.layoutTransitions?.filter((t) => t.atFrame === s.fromFrame).length ?? 0;
@@ -304,13 +312,17 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
   const glide = (GRID_GLIDE_FAMILIES as readonly string[]).includes(family);
   const oneShot = (ONE_SHOT_FAMILIES as readonly string[]).includes(family);
   const cartoon = (CARTOON_FAMILIES as readonly string[]).includes(family);
-  const defaultFrames=glide?gridGlideTemplateFrames(family,m.source.fps):oneShot?oneShotTemplateFrames(m.source.fps):cartoon?cartoonTemplateFrames(m.source.fps):family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
-    ?minFramesAtFps(getCatalogEntry((data as {concept:string}).concept).defaultFrames,m.source.fps):DEFAULT_SCENE_FRAMES;
+  const documentary = (DOCUMENTARY_FAMILIES as readonly string[]).includes(family);
+  const magazine = (MAGAZINE_FAMILIES as readonly string[]).includes(family);
+  const receipts = (RECEIPTS_FAMILIES as readonly string[]).includes(family);
+  const layered = (LAYERED_FAMILIES as readonly string[]).includes(family);
+  const defaultFrames=magazine?150:receipts?Math.max(120,95+Math.ceil(.6*m.source.fps)):glide?gridGlideTemplateFrames(family,m.source.fps):oneShot?oneShotTemplateFrames(m.source.fps):cartoon?cartoonTemplateFrames(m.source.fps):layered?layeredTemplateFrames(m.source.fps):family==='message-board'?minFramesAtFps(180,m.source.fps):family==='motion-concept'
+    ?minFramesAtFps(getCatalogEntry((data as {concept:string}).concept).defaultFrames,m.source.fps):documentary?Math.ceil(6*m.source.fps):DEFAULT_SCENE_FRAMES;
   const wanted = Math.round(options.durationInFrames ?? defaultFrames);
   if (!(wanted >= 1)) return refuse("مدة المشهد لازم تبقى فريم واحد على الأقل.");
   // Fixed-cue templates need their whole duration; concepts may shrink only to their native
   // fps-scaled choreography floor. Short ordinary scenes keep their existing gap behaviour.
-  const minRoom = glide || oneShot || cartoon ? wanted : family === 'motion-concept'
+  const minRoom = glide || oneShot || cartoon || documentary || magazine || receipts || layered ? wanted : family === 'motion-concept'
     ? minFramesAtFps(getCatalogEntry((data as {concept: string}).concept).minFrames, m.source.fps)
     : Math.min(MIN_SCENE_FRAMES, wanted);
   const slot = freeRoomAt(m, options.atFrame ?? 0, limitFrame(m), minRoom);
@@ -325,11 +337,21 @@ export function addSceneFromTemplate(m: EditManifest, family: string, options: {
     motion: creativeGalleryDefaults.motion,
     data: glide ? gridGlideTemplate(family, m.source.fps) : structuredClone(data),
   } as Scene;
+  if(magazine){scene.layout='takeover';scene.motion='quiet';}
+  if(receipts){scene.layout='takeover';scene.motion='quiet';}
+  if(documentary){
+    scene.layout='takeover';scene.motion='quiet';
+    if(scene.family==='map-route'){scene.data.drawAt=Math.round(15*m.source.fps/30);scene.data.drawDuration=Math.round(75*m.source.fps/30);}
+    if(scene.family==='map-focus'){scene.data.focusAt=Math.round(15*m.source.fps/30);scene.data.focusDuration=Math.round(60*m.source.fps/30);}
+    if(scene.family==='cutout-card')scene.data.at=Math.round(10*m.source.fps/30);
+  }
   // The Grid Glide ending scenes say the creator's own words: the CTA keyword and the profile handle. A profile that has none
   // (or a CTA of more than three words, which a keyword scene cannot hold) keeps the template placeholder.
   const cta=m.creator?.ending.cta;
   if(scene.family==='glide-comment' && typeof cta==='string' && glideWords(cta).length<=3)scene.data.keyword=cta;
   if(scene.family==='glide-follow' && m.creator?.handle)scene.data.handle=m.creator.handle;
+  // A layered-speaker scene sits on the speaker's own picture: it is always the presenter layout.
+  if(layered)scene.layout='presenter';
   if(cartoon){
     // A cartoon scene is built over the reviewed words inside its own window: its sentences, cards and flips are word anchors.
     let compiled:ReturnType<typeof compileEdit>;

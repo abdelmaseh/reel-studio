@@ -3,7 +3,7 @@ import { EASE, clamp01, envF, mix } from "./motion.ts";
 
 
 export type Dir = "rtl" | "ltr" | "up" | "down";
-export type MaskShape = "inset" | "circle" | "polygon";
+export type MaskShape = "inset" | "circle" | "polygon" | "keyhole";
 export type MaskMode = "in" | "out";
 
 export type Rect = { x: number; y: number; width: number; height: number };
@@ -32,7 +32,7 @@ export type ClipSpec = {
 };
 
 export const DIRS: readonly Dir[] = ["rtl", "ltr", "up", "down"];
-export const MASK_SHAPES: readonly MaskShape[] = ["inset", "circle", "polygon"];
+export const MASK_SHAPES = ["inset", "circle", "polygon", "keyhole"] as const;
 export const PRESENTATION_NAMES: readonly PresentationName[] = ["slide", "wipe", "flip", "clockWipe", "iris", "fade"];
 
 
@@ -168,6 +168,19 @@ export const polygonClip = (spec: ClipSpec): string => {
   return `polygon(${pts.map(([x, y]) => `${pct(x)} ${pct(y)}`).join(", ")})`;
 };
 
+// One polygon combines a round head and a tapered stem. Grow about a normalized origin.
+export const keyholeClip = (spec: ClipSpec): string => {
+  const o=spec.origin??{x:.5,y:.5},cx=o.x*spec.width,cy=o.y*spec.height;
+  const q=(spec.mode??'in')==='out'?1-clamp01(spec.p):clamp01(spec.p);
+  const r=coverRadius(cx,cy,spec.width,spec.height)*q*3;
+  const pts:Pt[]=Array.from({length:29},(_,i)=>{
+    const a=Math.PI*.25-i*Math.PI*1.5/28;
+    return [cx+Math.cos(a)*r,cy+Math.sin(a)*r-r*.65];
+  });
+  pts.push([cx-r*.72,cy+r*1.5],[cx+r*.72,cy+r*1.5]);
+  return `polygon(${pts.map(([x,y])=>`${pxs(x)} ${pxs(y)}`).join(', ')})`;
+};
+
 export const clipPathAt = (spec: ClipSpec): string => {
   switch (spec.shape) {
     case "inset":
@@ -176,6 +189,8 @@ export const clipPathAt = (spec: ClipSpec): string => {
       return circleClip(spec);
     case "polygon":
       return polygonClip(spec);
+    case "keyhole":
+      return keyholeClip(spec);
     default:
       throw new Error(`core/mask-geo: unknown shape ${JSON.stringify(spec.shape)} — use ${MASK_SHAPES.join(" | ")}`);
   }

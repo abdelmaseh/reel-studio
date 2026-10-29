@@ -2,7 +2,7 @@
 
 ## Look
 
-Dark aurora, translucent cards, bright rims and a detail lens.
+Dark aurora with real translucent glass, bright lens rims and a magnified copy of the selected graphics inside the lens. Grid Sans headlines, Plex Display figures and IBM Plex Mono measurements; saved headline fonts take precedence.
 
 ## Best for
 
@@ -21,9 +21,9 @@ Uses the shared `split` and `takeover` layouts. [MOTION-CHOICES.md](../MOTION-CH
 **Direction:** inspect a selected part of a system
 
 - **Decision:** Choose it when a grouping, measurement or focused detail benefits from isolation. Identify what the lens reveals and how that detail belongs to the whole.
-- **Composition/material:** Use a dark aurora, translucent panels and a bright rim. Keep enough opaque/contrasting support for text; glass is a graphic material, not a filter over the presenter or factual screen detail.
-- **Timing/action:** Establish the whole, select a group or value, magnify/emphasize the meaningful part and hold the resulting explanation. Keep selection and the wider context visible where possible.
-- **Transition/sound:** Continue the selected object through the focus move. A soft selection/settling cue can help; avoid adding a shiny sweep with no state change. Effects follow [SOUND.md](../SOUND.md).
+- **Composition/material:** Build aurora, glass and a real magnified graphics layer. token-lens groups supplied words; meter-receipt compares supplied values on their maximum with unit and source.
+- **Timing/action:** Keep the fixed pilot cues and lens trajectory. Do not magnify presenter footage or factual source pixels; impossible head clearance suppresses the statement with a warning.
+- **Transition/sound:** Prefer the signature `lens-zoom` between compatible adjacent takeover scenes. This is a director choice: the code preserves authored transitions and does not propose them automatically. Follow its layout and two-scene contract in [MOTION-CHOICES.md](../MOTION-CHOICES.md); sound follows [SOUND.md](../SOUND.md).
 - **Application/review:** `token-lens` supports labelled grouping; `meter-receipt` supports two values on one positive maximum. Illustrative groups are not real tokenizer output unless supplied evidence establishes that. Review contrast, lens targets, units and glow that may obscure type.
 
 ## Style-owned scenes

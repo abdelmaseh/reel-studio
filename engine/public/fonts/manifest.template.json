@@ -1,5 +1,117 @@
 [
   {
+    "family": "Alexandria",
+    "file": "Alexandria-arabic-var.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 31348
+  },
+  {
+    "family": "Alexandria",
+    "file": "Alexandria-latin-var.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 30140
+  },
+  {
+    "family": "Amiri",
+    "file": "Amiri-arabic-400.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 108560
+  },
+  {
+    "family": "Amiri",
+    "file": "Amiri-arabic-700.woff2",
+    "subset": "arabic",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 99968
+  },
+  {
+    "family": "Amiri",
+    "file": "Amiri-latin-400.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 19544
+  },
+  {
+    "family": "Amiri",
+    "file": "Amiri-latin-700.woff2",
+    "subset": "latin",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 20300
+  },
+  {
+    "family": "Aref Ruqaa",
+    "file": "ArefRuqaa-arabic-400.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 38132
+  },
+  {
+    "family": "Aref Ruqaa",
+    "file": "ArefRuqaa-arabic-700.woff2",
+    "subset": "arabic",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 45936
+  },
+  {
+    "family": "Aref Ruqaa",
+    "file": "ArefRuqaa-latin-400.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 14660
+  },
+  {
+    "family": "Aref Ruqaa",
+    "file": "ArefRuqaa-latin-700.woff2",
+    "subset": "latin",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 14492
+  },
+  {
+    "family": "Aref Ruqaa Ink",
+    "file": "ArefRuqaaInk-arabic-400.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 57828
+  },
+  {
+    "family": "Aref Ruqaa Ink",
+    "file": "ArefRuqaaInk-arabic-700.woff2",
+    "subset": "arabic",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 65564
+  },
+  {
+    "family": "Aref Ruqaa Ink",
+    "file": "ArefRuqaaInk-latin-400.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 15636
+  },
+  {
+    "family": "Aref Ruqaa Ink",
+    "file": "ArefRuqaaInk-latin-700.woff2",
+    "subset": "latin",
+    "weight": 700,
+    "style": "normal",
+    "bytes": 15548
+  },
+  {
     "family": "Cairo",
     "file": "Cairo-arabic-400.woff2",
     "subset": "arabic",
@@ -184,6 +296,38 @@
     "bytes": 72920
   },
   {
+    "family": "Lalezar",
+    "file": "Lalezar-arabic-400.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 52128
+  },
+  {
+    "family": "Lalezar",
+    "file": "Lalezar-latin-400.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 16572
+  },
+  {
+    "family": "Marhey",
+    "file": "Marhey-arabic-var.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 26876
+  },
+  {
+    "family": "Marhey",
+    "file": "Marhey-latin-var.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 26276
+  },
+  {
     "family": "Noto Kufi Arabic",
     "file": "NotoKufiArabic-arabic-400.woff2",
     "subset": "arabic",
@@ -324,6 +468,22 @@
     "weight": 700,
     "style": "normal",
     "bytes": 31428
+  },
+  {
+    "family": "Reem Kufi",
+    "file": "ReemKufi-arabic-var.woff2",
+    "subset": "arabic",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 12348
+  },
+  {
+    "family": "Reem Kufi",
+    "file": "ReemKufi-latin-var.woff2",
+    "subset": "latin",
+    "weight": 400,
+    "style": "normal",
+    "bytes": 20356
   },
   {
     "family": "Source Serif 4",

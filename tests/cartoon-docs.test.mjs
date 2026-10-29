@@ -1,3 +1,4 @@
+import {STYLE_IDS} from '../engine/src/styles/registry.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
@@ -21,9 +22,8 @@ test('the shared documents name the style and the counts moved', () => {
   const readme = read('README.md');
   assert.match(readme, /كارتون/);
   assert.match(readme, /style-cartoon\.jpg/);
-  assert.match(readme, /الاثنا عشر التانيين/);
-  assert.match(readme, /الـ١٤ ستايل/);
-  assert.doesNotMatch(readme, /الـ١٣ ستايل|١٣ ستايل/);
+  const count = String(STYLE_IDS.length).replace(/\d/g, digit => '٠١٢٣٤٥٦٧٨٩'[digit]);
+  assert.ok(readme.includes(`## شوف الـ${count} ستايل`), 'README heading follows the live registry count');
   assert.match(read('docs/media/README.md'), /style-cartoon/);
   assert.match(read('CHANGELOG.md'), /كارتون/);
   assert.match(read('Sound-Kits/README.md'), /twenty-five reusable/);

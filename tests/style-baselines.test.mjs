@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {v4Baseline} from './helpers/v4-baseline.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {BASELINE_FILE, BASELINE_SECTIONS, captureStyleBaselines} from '../scripts/capture-style-baselines.mjs';
@@ -7,8 +8,18 @@ import {BASELINE_FILE, BASELINE_SECTIONS, captureStyleBaselines} from '../script
 // engine/src/styles/. Everything below recomputes it from the code as it is now.
 // One deliberate exception (2026-10-18): the palettes, resolvedPalettes and soundPlans sections were
 // re-recorded when the sound policy replaced the sweep recipes with soft landings (instructions/SOUND.md).
-// Every other section is still the original capture.
-const fixture = JSON.parse(await readFile(BASELINE_FILE, 'utf8'));
+// A second one (2026-10-28): kinetic:outcome and kinetic:checklist markup was re-recorded
+// for Arabic row order and isolated text directions. See tests/outcome-direction.test.mjs
+// and tests/checklist-direction.test.mjs.
+// 2026-10-28: section-deck theme, takeover geometry and affected markup keys were re-recorded
+// for the fixed chapter-deck designs, including gallery dispatch (2026-10-28).
+// Other styles retain their historical captures.
+// V4 gate: re-record only rebuilt styles and existing markup keys; all other sections stay intact.
+// See state/v4-gate-baseline-changes.json for each old/new hash.
+// 2026-10-28: section-deck kinetic:checklist/count/statement markup was re-recorded
+// for English labels, direction and display type; Arabic pilot markup stays identical.
+// 2026-10-28: five approved V4 style ports re-record only their existing keys; see state/v4-five-styles-baseline-changes.json.
+const fixture = v4Baseline(JSON.parse(await readFile(BASELINE_FILE, 'utf8')));
 // The recorded example files are passed back, so an example added to instructions/examples later changes nothing.
 const recordedExamples = Object.keys(fixture.parses).filter((key) => key.startsWith('example:')).map((key) => key.slice('example:'.length));
 const actual = historicalSnapshot(await captureStyleBaselines({styles: fixture.styles, examples: recordedExamples}), fixture);
@@ -51,9 +62,9 @@ test('historical comparison still detects changed or missing original markup and
   ]) assert.ok(differences(historicalSnapshot(changed, recorded), recorded).length > 0);
 });
 
-test('the fixture records the eleven styles and every section', () => {
+test('the fixture records the six surviving historical styles and every section', () => {
   assert.equal(fixture.version, 1);
-  assert.equal(fixture.styles.length, 11);
+  assert.equal(fixture.styles.length, 6);
   assert.deepEqual(Object.keys(fixture).sort(), ['styles', 'version', ...BASELINE_SECTIONS].sort());
   assert.deepEqual(Object.keys(fixture.markup), fixture.styles);
   for (const style of fixture.styles) assert.ok(Object.keys(fixture.markup[style]).length >= 50, `${style} must cover every scene family and concept`);

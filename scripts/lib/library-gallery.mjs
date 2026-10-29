@@ -12,7 +12,7 @@ const LAYERS = {
   'camera-punch': 'حركة كاميرا', 'text-entrance': 'دخول نص',
   camera:'حركة كاميرا','graphics-transition':'انتقال جرافيكس','layout-transition':'تقسيمة الشاشة',
   'word-entrance':'دخول الكلمات','scene-entrance':'دخول العناصر','caption-emphasis':'تأكيد الكابشن',
-  'kinetic-emphasis':'تأكيد الكلام الحركي','recipe-variant':'نسخة من مشهد',
+  'kinetic-emphasis':'تأكيد الكلام الحركي','recipe-variant':'نسخة من مشهد',look:'تأثير على شكل الفيديو',backdrop:'خلفية متحركة',
 };
 
 function text(value) {

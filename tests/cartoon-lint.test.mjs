@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readdir, readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {perLetterSourceLint} from '../engine/src/arabic/lint.ts';
 
 const folder = fileURLToPath(new URL('../engine/src/styles/cartoon/', import.meta.url));
 const walk = async (directory) => (await Promise.all((await readdir(directory, {withFileTypes: true})).map(async (entry) => entry.isDirectory() ? walk(path.join(directory, entry.name)) : [path.join(directory, entry.name)]))).flat();
@@ -14,11 +15,8 @@ const code = sources.filter((s) => /\.(ts|tsx)$/.test(s.file) && !s.file.startsW
 const stripComments = (text) => text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|[^:'"`])\/\/.*$/gm, '$1');
 
 test('Arabic is animated by whole word, never split into characters, and never letter-spaced without an Arabic check', () => {
-  for (const {file, text} of code) {
-    const source = stripComments(text);
-    for (const pattern of [/\.split\(\s*(?:''|""|``)\s*\)/, /Intl\.Segmenter/, /Array\.from\(\s*[\w.]*(?:text|word|label|line|title|str)\w*\s*[,)]/i]) assert.equal(pattern.test(source), false, `${file}: ${pattern}`);
-    if (/letter-?spacing/i.test(source)) assert.match(source, /isArabic|\\u0600|dir="ltr"/, `${file} sets letter-spacing without guarding Arabic`);
-  }
+  // The shared per-letter lint (engine/src/arabic/lint.ts) holds the patterns and the letter-spacing guard.
+  for (const {file, text} of code) assert.deepEqual(perLetterSourceLint(text), [], file);
 });
 
 test('renders are deterministic and load nothing: no randomness, clocks, timers, CSS animation, fetch or binary assets', () => {

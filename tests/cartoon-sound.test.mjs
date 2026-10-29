@@ -13,7 +13,8 @@ const peakOf = (voice) => {
 test('the cartoon flip and stamp recipes exist, are single deterministic hits and keep the catalog counts', async () => {
   const catalog = await loadSoundCatalog();
   assert.equal(catalog.sounds.length, 20);
-  assert.equal(catalog.recipes.length, 25);
+  // Synthesized recipes only; the recorded CC0 recipes (cc0-*) are counted on their own page.
+  assert.equal(catalog.recipes.filter((recipe) => !recipe.id.startsWith('cc0-')).length, 25);
   const flip = await soundRecipe('cartoon-flip');
   assert.equal(flip.duration, 0.4);
   // A soft pass of air, not a sweep voice: style palettes may not name whoosh/swipe voices (scripts/lib/sfx-events.mjs).

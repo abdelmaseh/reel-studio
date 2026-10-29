@@ -14,8 +14,11 @@ function readBase128(bytes, at) {
   throw new Error('WOFF2 table directory has an over-long length.');
 }
 
-/** Variation axes of a WOFF2 font as `[{tag, min, default, max}]`; empty for a static font. */
-export function woff2Axes(buffer) {
+/**
+ * The tables of a WOFF2 font as a `Map` of tag to bytes. Tables the format stores transformed (glyf, loca, hmtx) are returned as stored;
+ * cmap, fvar and the other plain tables are the real table bytes.
+ */
+export function woff2Tables(buffer) {
   const bytes = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength);
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
   if (bytes.length < 48 || String.fromCharCode(...bytes.subarray(0, 4)) !== 'wOF2') throw new Error('Not a WOFF2 font.');
@@ -34,19 +37,25 @@ export function woff2Axes(buffer) {
     tables.push({tag, stored: transformed ? readBase128(bytes, at) : original});
   }
   const data = brotliDecompressSync(bytes.subarray(at.offset, at.offset + compressedSize));
+  const out = new Map();
   let start = 0;
   for (const table of tables) {
-    if (table.tag === 'fvar') {
-      const fvar = new DataView(data.buffer, data.byteOffset + start, table.stored);
-      const first = fvar.getUint16(4), count = fvar.getUint16(8), size = fvar.getUint16(10);
-      return Array.from({length: count}, (_, i) => {
-        const record = first + i * size;
-        const fixed = (offset) => fvar.getInt32(record + offset) / 65536;
-        const tag = String.fromCharCode(fvar.getUint8(record), fvar.getUint8(record + 1), fvar.getUint8(record + 2), fvar.getUint8(record + 3));
-        return {tag, min: fixed(4), default: fixed(8), max: fixed(12)};
-      });
-    }
+    out.set(table.tag, data.subarray(start, start + table.stored));
     start += table.stored;
   }
-  return [];
+  return out;
+}
+
+/** Variation axes of a WOFF2 font as `[{tag, min, default, max}]`; empty for a static font. */
+export function woff2Axes(buffer) {
+  const table = woff2Tables(buffer).get('fvar');
+  if (!table) return [];
+  const fvar = new DataView(table.buffer, table.byteOffset, table.byteLength);
+  const first = fvar.getUint16(4), count = fvar.getUint16(8), size = fvar.getUint16(10);
+  return Array.from({length: count}, (_, i) => {
+    const record = first + i * size;
+    const fixed = (offset) => fvar.getInt32(record + offset) / 65536;
+    const tag = String.fromCharCode(fvar.getUint8(record), fvar.getUint8(record + 1), fvar.getUint8(record + 2), fvar.getUint8(record + 3));
+    return {tag, min: fixed(4), default: fixed(8), max: fixed(12)};
+  });
 }

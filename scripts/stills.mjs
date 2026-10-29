@@ -5,6 +5,7 @@ import { parseArgs, ROOT } from './lib/media.mjs';
 import { getServeUrl, requireFromEngine } from './lib/bundle.mjs';
 import {readRenderProps} from './lib/render-props.mjs';
 import {assertProjectOutput} from './lib/project-paths.mjs';
+import { renderChromiumOptions } from './lib/render-gl.mjs';
 
 const args = parseArgs(process.argv.slice(2), { scale: '0.5' });
 const { renderStill, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
@@ -20,7 +21,7 @@ const outDir = assertProjectOutput(args.out ?? path.join(ROOT, 'engine', 'out', 
 await fs.mkdir(outDir, { recursive: true });
 
 const { serveUrl } = await getServeUrl({ force: !!args['force-bundle'], edit:inputProps?.edit });
-let browser = await openBrowser('chrome', { logLevel: 'warn' });
+let browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
 const written = [];
 try {
   for (const id of comps) {
@@ -36,7 +37,7 @@ try {
 
         process.stderr.write(`still ${id} @${t}s failed (${String(err.message).split('\n')[0]}) — reopening browser\n`);
         await browser.close({ silent: true }).catch(() => {});
-        browser = await openBrowser('chrome', { logLevel: 'warn' });
+        browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
         await renderStill({ ...opts, puppeteerInstance: browser });
       }
       written.push({ id, t, frame, output });

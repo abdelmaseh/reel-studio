@@ -8,9 +8,22 @@ export function captionOverlayVisible(edit:{contentMode?:string;captions:{visibl
   return edit.contentMode!=='graphics' && edit.captions.visible!==false;
 }
 
+/** Style-owned scene families that sit on the speaker's picture and leave the caption on screen: their words are a few key words, not the speech. */
+const CAPTION_KEEPING_FAMILIES:readonly string[]=['layered-speaker'];
+
+/**
+ * Generic takeover families laid out over the whole frame (their content runs from about y 320 to y 1320). Under a recording the caption
+ * leaves the style's takeover line, which would cross that content, and sits on the presenter caption line below it instead.
+ */
+export const LOW_CAPTION_FAMILIES:readonly string[]=['arabic-type','figures','chat-thread','proof-screen'];
+
+export function captionLoweredByScene(scene:{family:string}|undefined):boolean{
+  return scene!==undefined && LOW_CAPTION_FAMILIES.includes(scene.family);
+}
+
 /** A style-owned takeover scene draws its own words; the recorded-caption pill must not paint over them. */
 export function captionHiddenByScene(scene:{family:string}|undefined):boolean{
-  return scene!==undefined && ownSceneStyle(scene.family)!==undefined;
+  return scene!==undefined && ownSceneStyle(scene.family)!==undefined && !CAPTION_KEEPING_FAMILIES.includes(scene.family);
 }
 
 

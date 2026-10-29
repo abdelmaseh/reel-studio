@@ -52,8 +52,8 @@ test('fixed defaults reach the actual manifest and a one-video override wins', (
   assert.equal(plan.manifest.captions.presentation, 'minimal');
   assert.equal(plan.manifest.writingStyle, 'short');
   assert.equal(compileEdit(plan.manifest).captionGroups.length, 8);
-  const override = buildEditorPlan(brief(p, {style: 'split-canvas', fontFamily: 'Cairo', captionsGrouping: 'compact', writingStyle: 'educational'}), source, words);
-  assert.equal(override.manifest.style, 'split-canvas');
+  const override = buildEditorPlan(brief(p, {style: 'section-deck', fontFamily: 'Cairo', captionsGrouping: 'compact', writingStyle: 'educational'}), source, words);
+  assert.equal(override.manifest.style, 'section-deck');
   assert.equal(override.manifest.fontFamily, 'Cairo');
   assert.equal(override.manifest.writingStyle, 'educational');
   assert.equal(compileEdit(override.manifest).captionGroups.length, 2);
@@ -67,7 +67,7 @@ test('automatic decisions follow video content and remain in the proven automati
   assert.equal(tutorial.style, 'section-deck');
   assert.equal(tutorial.captions.grouping, 'clauses');
   assert.equal(tutorial.writingStyle, 'educational');
-  assert.equal(comparison.style, 'split-canvas');
+  assert.equal(comparison.style, 'paper-collage');
   assert.equal(comparison.captions.grouping, 'compact');
   assert.equal(comparison.writingStyle, 'short');
   assert.equal(recommendEditorStyle(brief(p)).explicit, false);

@@ -8,7 +8,7 @@ try {
   if (args.help) console.log(`Usage: node scripts/mix.mjs --video in.mp4 [--sfx effects.wav] --out final.mp4 [options]
   --style <id>                     Accept a registered visual style; mastering targets stay unchanged.
     ${STYLE_IDS.join('|')}
-    Legacy section-deck/split-canvas full DNA slugs also remain accepted.
+    The section-deck full DNA slug remains accepted.
     Only those two measured audio profiles have an LRA reference upper bound.
   --under 7 --lufs -14 --tp -1      Effects peak 7 dB under the voice peak (9 to 10 for dense effects or music); delivery targets unchanged.
   --ceilPad 0.8                    Sample-peak headroom below the true-peak target.

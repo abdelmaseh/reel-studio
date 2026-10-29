@@ -20,7 +20,7 @@ const entry = (extra = {}) => ({id: 'clip-0a1b2c3d', label: 'Desk', src: 'projec
   window: {fromSec: 0.5, toSec: 3}, source: {path: 'Raw/desk.mp4', sha256: 'b'.repeat(64)}, licence: 'creator-supplied (own footage)', hadAudio: false, addedAt: '2026-10-20T00:00:00.000Z', ...extra});
 const manifest = (change = {}) => {
   const m = reviewManifest('broll-editor-manifest');
-  m.style = 'split-canvas';
+  m.style = 'section-deck';
   m.source.totalFrames = 900;
   m.segments = [{fromFrame: 0, toFrame: 900}];
   m.scenes = [];
@@ -78,15 +78,15 @@ const brollMessages = () => {
   const splitBox = {split: {windowTop: 800}};
   return {
     style: brollIssues({style: 'cartoon', scenes: [brollScene()]}),
-    signoff: brollIssues({style: 'split-canvas', signoffFromFrame: 100, scenes: [brollScene()]}),
-    ending: brollIssues({style: 'split-canvas', scenes: [comment, brollScene()]}),
-    presenterless: brollIssues({style: 'split-canvas', presenter: false, scenes: [brollScene({layout: 'split'})]}),
-    cover: brollIssues({style: 'split-canvas', scenes: [brollScene({}, {width: 1920, height: 1080})]}),
-    contained: brollIssues({style: 'split-canvas', scenes: [brollScene({}, {width: 540, height: 960, fit: 'contain'})]}),
-    splitCover: brollIssues({style: 'split-canvas', footage: splitBox, scenes: [brollScene({layout: 'split'}, {width: 540, height: 960})]}),
-    splitContained: brollIssues({style: 'split-canvas', footage: splitBox, scenes: [brollScene({layout: 'split'}, {width: 300, height: 400, fit: 'contain'})]}),
-    noSplit: brollIssues({style: 'split-canvas', presenter: false, scenes: [brollScene({}, {width: 1920, height: 1080})]}),
-    label: brollIssues({style: 'split-canvas', footage: {...splitBox, pip: {sceneIds: ['broll-7']}}, scenes: [brollScene({}, {label: 'Desk'})]}),
+    signoff: brollIssues({style: 'section-deck', signoffFromFrame: 100, scenes: [brollScene()]}),
+    ending: brollIssues({style: 'section-deck', scenes: [comment, brollScene()]}),
+    presenterless: brollIssues({style: 'section-deck', presenter: false, scenes: [brollScene({layout: 'split'})]}),
+    cover: brollIssues({style: 'section-deck', scenes: [brollScene({}, {width: 1920, height: 1080})]}),
+    contained: brollIssues({style: 'section-deck', scenes: [brollScene({}, {width: 540, height: 960, fit: 'contain'})]}),
+    splitCover: brollIssues({style: 'section-deck', footage: splitBox, scenes: [brollScene({layout: 'split'}, {width: 540, height: 960})]}),
+    splitContained: brollIssues({style: 'section-deck', footage: splitBox, scenes: [brollScene({layout: 'split'}, {width: 300, height: 400, fit: 'contain'})]}),
+    noSplit: brollIssues({style: 'section-deck', presenter: false, scenes: [brollScene({}, {width: 1920, height: 1080})]}),
+    label: brollIssues({style: 'section-deck', footage: {...splitBox, pip: {sceneIds: ['broll-7']}}, scenes: [brollScene({}, {label: 'Desk'})]}),
   };
 };
 
@@ -124,7 +124,7 @@ test('the editor and the manifest rule agree on which scenes are endings', async
     m.creator = {...m.creator, handle: '@reel.studio', ending: {cta: 'دليل', followCard: true, signOff: null}};
     m.scenes = [sceneOf(family, 'end-1', 0)];
     const editorSeesAnEnding = (creatorCtaIssue(m) ?? '').includes('مشهد ختام موجود بالفعل');
-    const ruleSeesAnEnding = brollIssues({style: 'split-canvas', scenes: [sceneOf(family, 'end-1', 0), brollScene({fromFrame: 90})]}).some((message) => /cannot sit on or after the ending scenes/.test(message));
+    const ruleSeesAnEnding = brollIssues({style: 'section-deck', scenes: [sceneOf(family, 'end-1', 0), brollScene({fromFrame: 90})]}).some((message) => /cannot sit on or after the ending scenes/.test(message));
     assert.deepEqual([family, editorSeesAnEnding, ruleSeesAnEnding], [family, isEnding, isEnding]);
   }
   assert.doesNotMatch(await fs.readFile(path.join(ROOT, 'engine', 'src', 'review-editor', 'ops', 'scenes.ts'), 'utf8'), /const ENDING_FAMILIES/, 'the editor reads the one list instead of keeping its own');

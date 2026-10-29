@@ -13,7 +13,7 @@ const pip = {x: 50, y: 100, width: 260, height: 260, radius: 30, plate: {left: -
 const step = {atFrame: 0, src: 'projects/example/a.mp4', sha256: 'a'.repeat(64), width: 1080, height: 1920, trimBeforeFrame: 0, fit: 'cover'};
 const brief = (extra = {}) => ({
   version: 1, id: 'broll-pip-test', source: source.path, transcript: 'Projects/broll-pip-test/words.json', ...profileToBrief(profile),
-  purpose: 'explainer', tone: 'calm', style: 'split-canvas', captionsReviewedBy: 'Creator',
+  purpose: 'explainer', tone: 'calm', style: 'kinetic-paper', captionsReviewedBy: 'Creator',
   beats: [{id: 'clip', fromSec: 0, toSec: 2, intent: 'screens', data: {look: 'broll', steps: [step]}}],
   footage: {full: geometry, split: {...geometry, windowTop: 800, windowHeight: 1120}, pip}, ...extra,
 });

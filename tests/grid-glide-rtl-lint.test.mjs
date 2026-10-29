@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readdir, readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {perLetterSourceLint} from '../engine/src/arabic/lint.ts';
 
 // Static guard over everything under engine/src/styles/grid-glide/. The rendering tests
 // (grid-glide-kit.test.mjs) prove the behaviour; this keeps later edits from reintroducing the
@@ -22,24 +23,12 @@ test('the Grid Glide folder has the math module and the kit to scan', () => {
 });
 
 test('Arabic is animated by whole word or line, never split into characters', () => {
-  const patterns = [
-    /\.split\(\s*(?:''|""|``|\/\(\?:\)\/u?|\/\/u?)\s*\)/,
-    /\[\s*\.\.\.\s*[\w.]*(?:text|word|label|line|title|str)[\w.]*\s*\]/i,
-    /Array\.from\(\s*[\w.]*(?:text|word|label|line|title|str)\w*\s*[,)]/i,
-    /Intl\.Segmenter/,
-  ];
-  for (const {file, text} of sources) {
-    const code = stripComments(text);
-    for (const pattern of patterns) assert.equal(pattern.test(code), false, `${file} splits text into characters (${pattern})`);
-  }
+  // The shared per-letter lint (engine/src/arabic/lint.ts) holds the patterns; this test applies it to every file of the style.
+  for (const {file, text} of sources) assert.deepEqual(perLetterSourceLint(text, {only: 'split'}), [], `${file} splits text into characters`);
 });
 
 test('Arabic is never letter-spaced: any file that sets tracking also detects Arabic', () => {
-  for (const {file, text} of sources) {
-    const code = stripComments(text);
-    if (!/letter-?spacing/i.test(code)) continue;
-    assert.match(code, /isArabic/, `${file} sets letter-spacing without checking for Arabic`);
-  }
+  for (const {file, text} of sources) assert.deepEqual(perLetterSourceLint(text, {only: 'spacing', guard: /isArabic/}), [], `${file} sets letter-spacing without checking for Arabic`);
 });
 
 test('renders are deterministic: no randomness, clocks, timers or CSS animation', () => {

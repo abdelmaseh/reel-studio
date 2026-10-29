@@ -1,15 +1,28 @@
+import {magazineTemplateData} from '../styles/magazine-interview/scenes/templates.ts';
+import {receiptsTemplateData} from '../styles/calligraphic-receipts/scenes/templates.ts';
+import {ARABIC_TYPE_MOVES,ARABIC_TYPE_LABELS,arabicTypeSceneSchema} from '../arabic-type/schema.ts';
+import {validateArabicTypeTiming} from '../arabic-type/timing.ts';
+import {figuresSceneSchema} from '../creative-kit/figures/schema.ts';
+import {validateFiguresTiming} from '../creative-kit/figures/timing.ts';
+import {chatThreadSceneSchema} from '../creative-kit/chat-thread/schema.ts';
+import {validateChatThreadTiming} from '../creative-kit/chat-thread/timing.ts';
 import {CATALOG, catalogDemo, catalogSchema} from '../motion-concepts/catalog.ts';
-import {STYLE_METAS, ownSceneStyle, type StyleId} from '../styles/registry.ts';
+import {STYLE_METAS, familySupported, ownSceneStyle, type StyleId} from '../styles/registry.ts';
 import {introSchema, proofSchema, processSchema, comparisonSchema, commentSchema, followSchema} from '../creative-kit/schema.ts';
 import {kineticSceneSchema, validateKineticTiming} from '../creative-kit/kinetic/schema.ts';
 import {semanticSceneSchema, validateSemanticTiming} from '../creative-kit/semantic/schema.ts';
+import {proofScreenSceneSchema} from '../creative-kit/proof-screen/schema.ts';
+import {validateProofScreenTiming} from '../creative-kit/proof-screen/timing.ts';
 import {librarySceneSchema, validateLibraryTiming} from '../motion-library/schema.ts';
 import {styleSceneSchema, validateStyleSceneTiming, validateStyleSceneWords} from '../styles/scenes.ts';
 import {oneShotMinFrames} from '../styles/one-shot/scenes/math.ts';
 import {DEFAULT_CHARACTER} from '../styles/cartoon/scenes/character.ts';
+import {documentaryTemplateData} from '../styles/documentary/scenes/templates.ts';
 import {screenRecordingSceneSchema, screenRecordingIssues} from '../screen-recording/schema.ts';
 import type {MappedWord} from '../prepared-edit/timeline.ts';
 import type {PreviewDefinition} from './types.ts';
+import {CAPTION_SKINS,CAPTION_PRESENTATION} from '../core/preference-options.ts';
+import {BACKDROP_LABEL} from '../looks/index.ts';
 
 const SAMPLE = 'ILLUSTRATION · SAMPLE DATA. No real result, testimonial, identity or recorded speech is claimed.';
 const TIMING = 'Renderer-only authored timing demonstration. These tokens are explanatory copy, not a fabricated recorded transcript or a production-manifest verification.';
@@ -48,13 +61,17 @@ const creativeData: Record<string, unknown> = {
   follow: {handle: '@sample', message: 'حساب توضيحي للمعاينة', caption: 'الاسم ده توضيحي'},
 };
 const labels: Record<string, string> = {
+  verdict:'حكم بأرقام المبدع','claim-proof':'ادعاء وإيصال',
+  'arabic-type': 'حركات الكتابة العربي', figures: 'أرقام ورسوم', 'chat-thread': 'شات وإشعارات',
+  'proof-screen':'صفحة بتفصيلة واضحة',
   intro: 'افتتاحية', proof: 'عرض رقم موثق', process: 'خطوات', comparison: 'مقارنة', comment: 'طلب تعليق', follow: 'كارت متابعة',
   'kinetic-hook': 'عنوان بيتبدل', 'image-compare': 'مقارنة صور', checklist: 'قائمة مراجعة', count: 'عداد', screens: 'عرض شاشات', statement: 'جملة أساسية', outcome: 'نتيجة مختصرة', 'creator-cta': 'دعوة للتفاعل',
   'message-board': 'تجميع الأفكار', 'kinetic-text': 'كلمات متحركة', 'evidence-wipe': 'كشف المقارنة', 'motion-concept': 'حاوية مفهوم متحرك', 'token-lens': 'تركيز على عنصر', 'meter-receipt': 'مقارنة بمقياس', 'ticket-offer': 'تذكرة عرض', 'comment-stack': 'كروت تعليقات', 'chapter-quote': 'اقتباس فصل', 'route-stops': 'محطات رحلة',
   'screen-focus': 'تركيز على شاشة', 'data-story': 'حكاية بيانات', 'screen-recording': 'حركة على تسجيل شاشة', 'project-scene': 'مشهد خاص بالمشروع',
   'glide-chapter': 'عنوان فصل منزلق', 'glide-card': 'كارت ميديا منزلق', 'glide-lines': 'سطور منزلقة', 'glide-comment': 'تعليق منزلق', 'glide-follow': 'متابعة منزلقة',
-  'one-shot': 'شرح بلقطة واحدة',
+  'one-shot': 'شرح بلقطة واحدة', 'layered-speaker': 'كلمات حوالين المتكلم',
   cartoon: 'شخصية كارتون تشرح', 'cartoon-ending': 'نهاية كارتون',
+  'map-route': 'مسار على الخريطة', 'map-focus': 'تركيز على مكان', 'cutout-card': 'صورة على ورق مقصوص',
   'source-focus': 'تركيز على المصدر', 'metric-count': 'كشف قيمة', 'data-bars': 'مقارنة أعمدة',
   'button-to-window': 'من زرار لنافذة', 'prompt-to-results': 'من أمر لنتائج', 'brief-to-workspace': 'من بريف لمساحة عمل', 'department-tabs': 'تبويبات الأقسام', 'data-morph': 'من أعمدة لخط', 'kpi-zoom': 'تكبير مؤشر', 'tool-stack-spread': 'فرد كروت الأدوات', 'magnetic-dock': 'شريط أدوات متفاعل', 'keyword-reveal': 'كشف كلمة', 'headline-to-system': 'من فكرة لنظام محتوى', 'panel-reveal': 'كشف بلوحات', 'system-layers': 'طبقات نظام', 'glass-lens': 'عدسة تركيز', 'automation-flow': 'مسار أتمتة', 'chaos-to-brand': 'من فوضى لشعار',
   'conditional-branching': 'الشرط بيحدد المسار', 'identity-filtering': 'تصفية بنفس هوية الكروت',
@@ -84,6 +101,13 @@ const ONE_SHOT_FRAMES = oneShotMinFrames(oneShotSample as never, 30);
 const CARTOON_TEXT = ['فكرة', 'واحدة', 'بسيطة', 'وواضحة', 'كل', 'جملة', 'لها', 'صورة', 'والشخصية', 'تشير', 'إلى', 'الكارت', 'وهنا', 'أدوات', 'توضيحية', 'كثيرة', 'في', 'النهاية'];
 const cartoonWords = (count: number, shift = 0) => Array.from({length: count}, (_, i) => ({text: CARTOON_TEXT[i % CARTOON_TEXT.length], sourceIndex: i, fromFrame: shift + i * 15, toFrame: shift + i * 15 + 9}));
 const CARTOON_FRAMES = 270, CARTOON_ENDING_FRAMES = 150;
+/** Neutral sample words around an abstract speaker; the preview draws a stand-in for the matte, so no person or footage is claimed. */
+const LAYERED_FRAMES = 120;
+const layeredSample = {words: [
+  {place: 'behind', text: 'كبير', atFrame: 8},
+  {place: 'right', text: 'فكرة واحدة', atFrame: 36, mark: {kind: 'circle', atFrame: 48}},
+  {place: 'left', text: 'واضحة', atFrame: 56},
+]};
 const cartoonSample = {
   character: DEFAULT_CHARACTER,
   acts: [{theme: 'light', sentence: 0, tag: '// 01 — مثال'}, {theme: 'dark', sentence: 2, tag: '// 02 — توضيح'}],
@@ -101,10 +125,14 @@ const cartoonEndingSample = {
 
 function sceneFixtures(): Array<{family: string; kind: string; data: unknown; layout?: string; duration?: number; words?: unknown[]}> {
   return [
+    {family:'arabic-type',kind:'arabic-type',duration:240,data:{text:'الحقيقة',move:'decrypt'}},
+    {family:'proof-screen',kind:'proof-screen',data:{page:'web',title:'صفحة توضيحية',url:'موقعك.com',blocks:[{kind:'heading',text:'فكرة واحدة في صفحة'},{kind:'text',text:'شرح مكتوب للتوضيح فقط'},{kind:'row',text:'تفصيلة تختارها من البريف'},{kind:'button',text:'راجع التفاصيل'}],focus:2,path:'focus'}},
     ...Object.entries(creativeData).map(([family, data]) => ({family, kind: 'creative', data})),
     {family: 'kinetic-hook', kind: 'kinetic', layout: 'presenter', data: {label: 'مثال عنوان', firstTitle: 'فكرة', secondTitle: 'صورة', swapFrame: 45, stamp: 'توضيح بصري', stampFrame: 80}},
     {family: 'image-compare', kind: 'kinetic', data: {...heading, images: [{src: A, label: 'توضيح أ'}, {src: B, label: 'توضيح ب'}], stamp: 'نفس الفكرة'}},
     {family: 'checklist', kind: 'kinetic', data: {...heading, variant: 'blueprint', items: [{label: 'حدد الفكرة', detail: 'خطوة أولى', atFrame: 15},{label: 'رتب العناصر', detail: 'خطوة تانية', atFrame: 45},{label: 'راجع النتيجة', detail: 'خطوة أخيرة', atFrame: 75}]}},
+    {family: 'figures', kind: 'figures', data: {variant:'counter',value:42,label:'قيمة توضيحية',unit:'وحدة'}},
+    {family: 'chat-thread', kind: 'chat-thread', data: {variant:'bubbles',title:'محادثة توضيحية',messages:[{from:'them',text:'نبدأ بفكرة واحدة؟',at:20},{from:'me',text:'نرتبها في خطوتين',at:65},{from:'them',text:'ونراجع الصورة',at:110}]}},
     {family: 'count', kind: 'kinetic', layout: 'split', data: {...heading, value: 42, suffix: '×', unit: 'قيمة توضيحية', rollFrame: 24, rollDuration: 40, unitFrame: 70, badge: 'مثال', badgeFrame: 90}},
     {family: 'screens', kind: 'kinetic', data: {kicker: 'شاشات توضيحية', steps: [{atFrame: 0, title: 'الصورة العامة', src: SCREEN, kind: 'image', fit: 'contain', trimBeforeFrame: 0},{atFrame: 75, title: 'نفس الفكرة بشكل مختلف', src: B, kind: 'image', fit: 'contain', trimBeforeFrame: 0}]}},
     {family: 'statement', kind: 'kinetic', layout: 'presenter', data: {...heading}},
@@ -131,27 +159,44 @@ function sceneFixtures(): Array<{family: string; kind: string; data: unknown; la
     {family: 'one-shot', kind: 'style-scene', duration: ONE_SHOT_FRAMES, data: oneShotSample},
     {family: 'cartoon', kind: 'style-scene', duration: CARTOON_FRAMES, data: cartoonSample, words: cartoonWords(18)},
     {family: 'cartoon-ending', kind: 'style-scene', duration: CARTOON_ENDING_FRAMES, data: cartoonEndingSample, words: cartoonWords(10, 9)},
+    {family:'verdict',kind:'style-scene',duration:150,data:magazineTemplateData.verdict},
+    {family:'claim-proof',kind:'style-scene',duration:150,data:receiptsTemplateData['claim-proof']},
+    ...Object.entries(documentaryTemplateData).map(([family,data]) => ({family, kind: 'style-scene', data})),
+    {family: 'layered-speaker', kind: 'style-scene', layout: 'presenter', duration: LAYERED_FRAMES, data: layeredSample},
   ];
 }
 
 const EFFECTS: Record<string, string[]> = {
-  camera: ['punch-step', 'slow-push', 'snap-in'], 'caption-emphasis': ['accent', 'pop', 'underline'],
-  'graphics-transition': ['clip-wipe', 'hue-crossfade', 'light-scan', 'whip-pan'],
-  'kinetic-emphasis': ['accent', 'latin', 'pop', 'underline', 'weight'],
-  'layout-transition': ['curtain', 'window-morph'], overlay: ['bloom', 'burn', 'leak', 'whiteout'],
+  backdrop: ['girih', 'paper', 'sunburst'],
+  camera: ['dolly', 'handheld', 'orbit', 'punch-step', 'slow-push', 'snap-in', 'snap-zoom'], 'caption-emphasis': ['accent', 'pop', 'underline', 'stretch'],
+  'caption-skin': [...CAPTION_SKINS], 'caption-presentation': [...CAPTION_PRESENTATION],
+  'graphics-transition': ['clip-wipe', 'hue-crossfade', 'light-scan', 'whip-pan', 'iris', 'keyhole', 'blinds', 'dot-zoom', 'zoom-through','ink-slab','lens-zoom','paper-pull'],
+  'kinetic-emphasis': ['accent', 'latin', 'pop', 'underline', 'weight', 'stretch'],
+  'layout-transition': ['curtain', 'window-morph'], look: ['blueprint', 'film', 'paper', 'riso'], overlay: ['bloom', 'burn', 'leak', 'whiteout', 'paper-tear', 'page-turn', 'pen-dot-curtain', 'pixel-curtain','magazine-flip','paper-swap'],
   'scene-entrance': ['land', 'quiet', 'stagger'], 'word-entrance': ['fade', 'pop', 'rise'],
 };
 const effectLayerLabels: Record<string, string> = {
+  backdrop: 'خلفية', look: 'تأثير المظهر',
   camera: 'كاميرا', 'caption-emphasis': 'تأكيد الكابشن', 'graphics-transition': 'انتقال الجرافيك',
+  'caption-skin': 'سكين الكابشن', 'caption-presentation': 'شكل الكابشن',
   'kinetic-emphasis': 'تأكيد الكلمة', 'layout-transition': 'تغيير التخطيط', overlay: 'طبقة انتقال',
   'scene-entrance': 'دخول المشهد', 'word-entrance': 'دخول الكلمة',
 };
 const effectLabels: Record<string, string> = {
+  'ink-slab':'لوح حبر','magazine-flip':'قلب صفحة مجلة','lens-zoom':'عدسة','paper-pull':'سحب الورقة','paper-swap':'تبديل الورقة',
   'punch-step': 'تكبير بقطعة', 'slow-push': 'اقتراب بطيء', 'snap-in': 'تكبير سريع',
-  accent: 'لون مميز', pop: 'نبضة تكبير', underline: 'خط تحت النص', latin: 'خط لاتيني', weight: 'وزن أثقل',
+  'snap-zoom': 'ضربة زووم', orbit: 'دوران حوالين المشهد', dolly: 'اقتراب سينمائي', handheld: 'كاميرا في الإيد',
+  accent: 'لون مميز', pop: 'نبضة تكبير', underline: 'خط تحت النص', latin: 'خط لاتيني', weight: 'وزن أثقل', stretch: 'كشيدة متحركة',
+  'spoken-box': 'صندوق الكلمة المنطوقة', karaoke: 'كاريوكي', 'bold-outline': 'حدود عريضة', 'soft-shadow': 'ظل ناعم', 'paper-tag': 'قصاصة ورق',
+  pill: 'كبسولة', minimal: 'نص بلا خلفية', 'ink-strip': 'شريط داكن',
   'clip-wipe': 'كشف بمسح', 'hue-crossfade': 'تدرج لون الفصل', 'light-scan': 'مسح ضوئي', 'whip-pan': 'دفعة جانبية',
+  iris:'دايرة',keyhole:'ثقب مفتاح',blinds:'شرايح','dot-zoom':'زووم في النقطة','zoom-through':'زووم من خلال',
+  'paper-tear':'تقطيع ورق','page-turn':'قلب صفحة','pen-dot-curtain':'ستارة نقطة الحبر','pixel-curtain':'ستارة بكسلات',
   curtain: 'نزول ستارة', 'window-morph': 'تحويل النافذة', bloom: 'ومضة مضيئة', burn: 'حرق فيلم', leak: 'تسريب ضوء', whiteout: 'بياض كامل',
   land: 'دخول ثابت', quiet: 'دخول هادي', stagger: 'دخول متتابع', fade: 'ظهور تدريجي', rise: 'طلوع تدريجي',
+  blueprint: 'مخطط هندسي', riso: 'طباعة ريزو', film: 'حبيبات فيلم', ...BACKDROP_LABEL,
+  // The look and the backdrop share the id `paper`: the more specific `layer:id` entry wins.
+  'look:paper': 'ورق',
 };
 
 const define = (key: string, fixture: Record<string, any>, options: Partial<PreviewDefinition> = {}): PreviewDefinition => {
@@ -164,8 +209,10 @@ const define = (key: string, fixture: Record<string, any>, options: Partial<Prev
 
 /** The scene a style that owns scene families shows as its own card, with the law that makes it that style. */
 function ownStyleScene(id: string) {
+  if (id === 'documentary') return {scope: 'Illustrative route with authored city coordinates; no installed geography or real journey is claimed.', scene: baseScene('map-route', documentaryTemplateData['map-route'], 'takeover')};
   if (id === 'grid-glide') return {scope: 'Owned Grid Glide scene with its canonical motion law.', scene: baseScene('glide-lines', {...gridMotion, lines: [line(['فكرة', 'واحدة']), line(['صورة', 'واضحة'], 'hero', 40)], box: {text: 'مثال على الستايل', at: 80}, grid: true})};
   if (id === 'one-shot') return {scope: 'Owned One Shot chain: one unbroken take in which every step grows out of the one before it.', scene: baseScene('one-shot', oneShotSample, 'takeover', ONE_SHOT_FRAMES)};
+  if (id === 'layered-speaker') return {scope: 'Owned layered-speaker scene: a big stretched word behind an abstract speaker, words beside the head and a hand-drawn circle. The speaker is a drawn stand-in for the matte.', scene: baseScene('layered-speaker', layeredSample, 'presenter', LAYERED_FRAMES)};
   if (id === 'cartoon') return {scope: 'Owned cartoon body: an illustrated narrator over flipping grounds with a headline built on the recorded words (neutral synthetic words here).', scene: baseScene('cartoon', cartoonSample, 'takeover', CARTOON_FRAMES), words: cartoonWords(18)};
   return null;
 }
@@ -180,9 +227,15 @@ export function previewDefinitions(): PreviewDefinition[] {
     ...(item.family === 'kinetic-text' ? {scope: 'Renderer-only authored timing demonstration of the existing kinetic-text component.', notes: [SAMPLE, TIMING]} : {}),
     ...(item.family === 'screen-recording' ? {notes: [SAMPLE, 'Canonical screen-recording renderer on a silent video carrier made from an original synthetic illustration. No real software capture is claimed.']} : {}),
   }));
+  for(const move of ARABIC_TYPE_MOVES.filter(move=>move!=='decrypt')){
+    const text=move==='kufi-tiles'?'كوفي':move==='kashida-stretch'?'جميل':move==='letters-snap'?'مستقبل':move==='video-in-letters'?'شوف':move==='word-melt'?'خوف':move==='echo-stack'?'اسمع':move==='pen-write'?'اكتب بالقلم':move==='unblur'?'كل كلمة بتوضح':move==='redacted-stamp'?'فكرة واضحة':'بتنزل النقط';
+    scenes.push(define('preview:arabic-type-'+move,{kind:'arabic-type',scene:baseScene('arabic-type',{text,move,...(move==='word-melt'?{to:'ثقة'}:{}),...(move==='redacted-stamp'?{stamp:'مثال'}:{}),...(move==='video-in-letters'?{media:PREVIEW_SCREEN_VIDEO}:{})},'takeover',240)},
+      {canonicalKey:'scene:arabic-type',labelAr:ARABIC_TYPE_LABELS[move],durationInFrames:240,scope:'Authored Arabic type illustration. The video fill uses only the named synthetic test clip.'}));
+  }
   scenes.push(define('scene:project-scene', {kind: 'unsupported'}, {status: 'requires-project-pack', reason: 'This is an extension point. A named project scene pack is required; no shipped animation exists to preview.', scope: 'Extension contract only; no invented project scene.', durationInFrames: 120}));
   const effects = Object.entries(EFFECTS).flatMap(([layer, ids]) => ids.map(id => define(`${layer}:${id}`, {kind: 'effect', layer, preset: id}, {
-    labelAr: `${effectLayerLabels[layer]} · ${effectLabels[id]}`,
+    labelAr: `${effectLayerLabels[layer]} · ${effectLabels[`${layer}:${id}`] ?? effectLabels[id]}`,
+    ...(layer === 'caption-emphasis' && id === 'stretch' ? {style: 'paper-collage' as const} : {}),
     scope: `${layer === 'caption-emphasis' || layer === 'kinetic-emphasis' || layer === 'word-entrance' ? 'Renderer-only authored timing demonstration' : 'Existing mechanism'} on neutral graphics.`,
     notes: [SAMPLE, ...(layer.includes('emphasis') || layer === 'word-entrance' ? [TIMING] : [])],
   })));
@@ -215,7 +268,11 @@ export function previewDefinitions(): PreviewDefinition[] {
       scope: 'All-survivor edge example in Paper Collage using two supplied numeric predicates; every original card keeps its identity.',
     }),
   ];
-  return [...concepts, ...scenes, ...effects, ...styles, ...recipes, ...variants];
+  return [...concepts, ...scenes, ...effects, ...styles, ...recipes, ...variants].map(definition => {
+    const family = definition.fixture.scene?.family ?? (definition.fixture.kind === 'concept' ? 'motion-concept' : undefined);
+    return family && !familySupported(definition.style, family) ? {...definition, status: 'unsupported' as const,
+      reason: `Style ${definition.style} does not support family ${family}.`, fixture: {kind: 'unsupported'}} : definition;
+  });
 }
 
 let definitionByKey: ReadonlyMap<string, PreviewDefinition> | undefined;
@@ -236,9 +293,13 @@ export function previewFixtureIssues(definition: PreviewDefinition): string[] {
     if (fixture.kind === 'concept') {catalogSchema(fixture.concept).parse(fixture.data); return [];}
     const input = fixture.scene;
     if (fixture.kind === 'creative') {({intro: introSchema, proof: proofSchema, process: processSchema, comparison: comparisonSchema, comment: commentSchema, follow: followSchema} as Record<string, any>)[input.family].parse(input.data); return [];}
+    if (fixture.kind === 'figures') return validateFiguresTiming(figuresSceneSchema.parse(input),definition.fps);
+    if (fixture.kind === 'chat-thread') return validateChatThreadTiming(chatThreadSceneSchema.parse(input),definition.fps);
     if (fixture.kind === 'kinetic') return validateKineticTiming(kineticSceneSchema.parse(input));
+    if (fixture.kind === 'arabic-type') return validateArabicTypeTiming(arabicTypeSceneSchema.parse(input),definition.fps);
     if (fixture.kind === 'semantic') return validateSemanticTiming(semanticSceneSchema.parse(input), definition.fps);
     if (fixture.kind === 'library') return validateLibraryTiming(librarySceneSchema.parse(input));
+    if (fixture.kind === 'proof-screen') return validateProofScreenTiming(proofScreenSceneSchema.parse(input),definition.fps);
     if (fixture.kind === 'style-scene') {
       const parsed = styleSceneSchema.parse(input);
       return [...validateStyleSceneTiming(parsed, definition.fps), ...(fixture.words ? validateStyleSceneWords(parsed, fixture.words, definition.fps) : [])];

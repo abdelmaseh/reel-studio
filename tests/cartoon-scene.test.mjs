@@ -5,9 +5,11 @@ import {STYLE_IDS, STYLE_METAS, getStyleMeta, ownSceneStyle} from '../engine/src
 
 const meta = () => getStyleMeta('cartoon');
 
-test('cartoon is the last registered style and owns its two families', () => {
-  assert.equal(STYLE_IDS.at(-1), 'cartoon');
-  assert.equal(STYLE_METAS.length, 14);
+test('cartoon keeps its place in the registry (after one-shot) and owns its two families', () => {
+  // V4 removes five merged styles; cartoon follows one-shot and precedes documentary.
+  assert.equal(STYLE_IDS[8], 'cartoon');
+  assert.equal(STYLE_IDS[7], 'one-shot');
+  assert.equal(STYLE_METAS.length, 11);
   assert.deepEqual([...meta().ownScenes], ['cartoon', 'cartoon-ending']);
   assert.equal(ownSceneStyle('cartoon'), 'cartoon');
   assert.equal(ownSceneStyle('cartoon-ending'), 'cartoon');

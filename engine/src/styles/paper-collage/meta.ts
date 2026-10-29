@@ -9,8 +9,10 @@ export default defineStyle({
   legacy: false,
   brand: false,
   pip: {allowed: true, basis: 'inference', evidence: 'See the style guide and review this layout with the creator.'},
-  defaults: {font: 'Tajawal', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
+  defaults: {font: 'Reem Kufi', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {'case-study': 9, comparison: 10, story: 18}, tone: {energetic: 4, calm: 2, editorial: 2}, semanticBeats: ['evidence-wipe', 'message-board']},
+  familiesOff: [],
   ownScenes: [],
+  signatureTransition: 'paper-swap',
   since: '1.8.6',
 });

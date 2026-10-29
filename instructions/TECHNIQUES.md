@@ -19,7 +19,7 @@ Use `EDITORIAL.md` to design the explanation, `MOTION-CHOICES.md` to select a su
 - **Scene families** (`engine/src/creative-kit/scenes.tsx` and `engine/src/creative-kit/kinetic/`): hook, proof, three-step process, comparison, comment CTA, follow card, kinetic hook, image comparison, checklist, counter, screens, statement, outcome and data story.
 - **Screen recordings** (`engine/src/screen-recording/`): the `screen-recording` family for a screen-recording source (camera keys, click ripples at the real pointer, pinned callouts); `screen-focus` (`engine/src/motion-library/`) for a separate capture inside a presenter video.
 - **Curtain and image focus** (`engine/src/techniques/`): the full-to-split curtain move and image shrink/zoom/focus.
-- **Brand colours** (`engine/src/core/brand.ts`): profile colours become readable per-scene palettes for split-canvas and section-deck; graphics only.
+- **Brand colours** (`engine/src/core/brand.ts`): profile colours become readable per-scene palettes for section-deck; graphics only.
 - **Endings** (`scripts/lib/endings.mjs`): the profile's CTA, follow card and recorded sign-off, per video, in a fixed order.
 - **Source intake** (`scripts/intake.mjs`): HDR/HLG to BT.709 SDR, variable to constant frame rate, real motion rate by mpdecimate, delivery at 30 fps or more.
 - **Privacy blur** (`scripts/redact.mjs`): blur or pixelate confirmed private regions of a screen recording into a new plate before anything previews it. The assistant proposes the regions from stills; the creator confirms them.

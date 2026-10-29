@@ -5,11 +5,13 @@ import { spawn } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { parseArgs, ROOT, run, writeJson } from './lib/media.mjs';
 import { getServeUrl, requireFromEngine } from './lib/bundle.mjs';
+import { renderChromiumOptions } from './lib/render-gl.mjs';
 import { readRenderProps } from './lib/render-props.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
 import { editManifestSchema } from '../engine/src/prepared-edit/schema.ts';
 import { compileEdit } from '../engine/src/prepared-edit/timeline.ts';
 import { foregroundSourceFrame } from '../engine/src/prepared-edit/visibility.ts';
+import { sceneForeground } from '../engine/src/core/scene-media.ts';
 import {
   HEAD_CHECK_DEFAULTS, HEAD_EXIT, MANIFEST_GEOMETRY_COMPS, buildHeadEnvelope, headBoxAt, mapHeadRect, headWindowCut,
   manifestFrameState, normalizeGeometryFile, headCheckLandings, probeFrameStats, probeDiffInRect, classifyHeadFrame,
@@ -163,7 +165,7 @@ async function checkComposition(comp) {
 
   const { serveUrl, hash: engineHash } = await getServeUrl({ edit, log });
   const { renderFrames, renderStill, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
-  const browser = await openBrowser('chrome', { logLevel: 'warn' });
+  const browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
   try {
     const select = (inputProps) => selectComposition({ serveUrl, id: comp, inputProps, logLevel: 'warn', puppeteerInstance: browser });
     const meta = await select({ ...renderProps, probe: PROBES[0] });
@@ -197,7 +199,7 @@ async function checkComposition(comp) {
       if (sourceFrame === null) return { geometryReason: 'no-source-frame' };
       const scene = sceneAt(frame);
       return { sceneId: scene?.id ?? null, family: scene?.family ?? null, layout: 'file', geo: entry.geo, visible: entry.geo !== null, sourceFrame,
-        foregroundMatte: scene?.family === 'kinetic-hook' && !!scene.data?.foreground };
+        foregroundMatte: !!scene && sceneForeground(scene) !== null };
     };
     const rows = frames.map((frame) => {
       const state = frameState(frame);

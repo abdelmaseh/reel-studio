@@ -3,36 +3,62 @@
 // Node-safe: loads in plain Node with type stripping before `npm ci`. Keep explicit `.ts` import
 // extensions, no JSX, no packages. Add a style by creating engine/src/styles/<id>/meta.ts and
 // appending it to STYLE_METAS; instructions/STYLE-AUTHORING.md lists the remaining steps.
-import splitCanvas from './split-canvas/meta.ts';
 import sectionDeck from './section-deck/meta.ts';
 import kineticPaper from './kinetic-paper/meta.ts';
 import calligraphicReceipts from './calligraphic-receipts/meta.ts';
 import paperCollage from './paper-collage/meta.ts';
-import judgmentBoard from './judgment-board/meta.ts';
-import steppedEditorial from './stepped-editorial/meta.ts';
 import liquidGlass from './liquid-glass/meta.ts';
-import campaignTickets from './campaign-tickets/meta.ts';
 import magazineInterview from './magazine-interview/meta.ts';
-import scrapbookRoute from './scrapbook-route/meta.ts';
 import gridGlide from './grid-glide/meta.ts';
 import oneShot from './one-shot/meta.ts';
 import cartoon from './cartoon/meta.ts';
-import {EDITOR_TONES, STYLE_USE_CASES} from './types.ts';
+import documentary from './documentary/meta.ts';
+import layeredSpeaker from './layered-speaker/meta.ts';
+import {EDITOR_TONES, STYLE_USE_CASES, SHARED_SCENE_FAMILIES} from './types.ts';
 import type {CaptionPresentation, EditorPurpose, EditorTone, MixProfile, PipPolicy, PreferredFont, StyleMeta} from './types.ts';
 
 // Registry order is the old STYLE_IDS order: recommendation ties follow it, so a new style goes last.
 export const STYLE_METAS = [
-  splitCanvas, sectionDeck, kineticPaper, calligraphicReceipts, paperCollage, judgmentBoard,
-  steppedEditorial, liquidGlass, campaignTickets, magazineInterview, scrapbookRoute, gridGlide, oneShot, cartoon,
+  sectionDeck, kineticPaper, calligraphicReceipts, paperCollage, liquidGlass,
+  magazineInterview, gridGlide, oneShot, cartoon, documentary, layeredSpeaker,
 ] as const;
 
 type Meta = (typeof STYLE_METAS)[number];
 export type StyleId = Meta['id'];
 export const STYLE_IDS = STYLE_METAS.map((meta) => meta.id) as unknown as readonly [StyleId, ...StyleId[]];
 
+export const STYLE_ALIASES = Object.freeze({
+  'split-canvas': 'section-deck',
+  'scrapbook-route': 'documentary',
+  'stepped-editorial': 'magazine-interview',
+  'judgment-board': 'magazine-interview',
+  'campaign-tickets': 'kinetic-paper',
+} as const satisfies Record<string, StyleId>);
+
+/** Only own keys are aliases. Unknown ids remain unknown, including prototype names. */
+export function normalizeStyleId<T>(id: T, notice: (message: string) => void = console.warn): T | StyleId {
+  if (typeof id !== 'string' || !Object.hasOwn(STYLE_ALIASES, id)) return id;
+  const replacement = STYLE_ALIASES[id as keyof typeof STYLE_ALIASES];
+  notice(styleAliasNotice(id)!);
+  return replacement;
+}
+
+export function styleAliasNotice(id: unknown, language: 'en' | 'ar' = 'en'): string | null {
+  if (typeof id !== 'string' || !Object.hasOwn(STYLE_ALIASES, id)) return null;
+  const replacement = STYLE_ALIASES[id as keyof typeof STYLE_ALIASES];
+  return language === 'ar' ? `الستايل ده اتدمج في ${replacement}.` : `Style "${id}" was merged into "${replacement}".`;
+}
+
 const METAS: readonly StyleMeta[] = STYLE_METAS;
 const BY_ID = new Map<string, Meta>(STYLE_METAS.map((meta) => [meta.id, meta] as const));
 if (BY_ID.size !== STYLE_METAS.length) throw new Error('styles/registry: two styles share an id.');
+
+export const SCENE_FAMILIES: readonly string[] = [...SHARED_SCENE_FAMILIES, ...METAS.flatMap(meta => meta.ownScenes)];
+const knownFamilies = new Set(SCENE_FAMILIES);
+for (const meta of METAS) for (const family of meta.familiesOff ?? []) {
+  if (!knownFamilies.has(family)) throw new Error(`styles/registry: ${meta.id} familiesOff contains unknown family ${family}.`);
+  if (meta.ownScenes.includes(family)) throw new Error(`styles/registry: ${meta.id} familiesOff overlaps ownScenes: ${family}.`);
+}
 
 const idsWhere = (test: (meta: StyleMeta) => boolean): StyleId[] => METAS.filter(test).map((meta) => meta.id as StyleId);
 const forEachStyle = <T>(read: (meta: StyleMeta) => T): Record<StyleId, T> =>
@@ -43,7 +69,7 @@ export function isStyleId(id: string): id is StyleId {
 }
 
 export function getStyleMeta(id: string): Meta {
-  const meta = BY_ID.get(id);
+  const meta = BY_ID.get(normalizeStyleId(id));
   if (!meta) throw new Error(`Unknown style ${JSON.stringify(id)}. Choose one of: ${STYLE_IDS.join(', ')}.`);
   return meta;
 }
@@ -55,13 +81,13 @@ export function styleLabels(): Record<StyleId, {label: string; description: stri
 
 /** Unknown styles fall back to the original defaults (Cairo, pill, no clause grouping). */
 export function defaultFontFor(style: string): PreferredFont {
-  return BY_ID.get(style)?.defaults.font ?? 'Cairo';
+  return BY_ID.get(normalizeStyleId(style))?.defaults.font ?? 'Cairo';
 }
 export function defaultCaptionsFor(style: string): CaptionPresentation {
-  return BY_ID.get(style)?.defaults.captionsPresentation ?? 'pill';
+  return BY_ID.get(normalizeStyleId(style))?.defaults.captionsPresentation ?? 'pill';
 }
 export function clauseCaptionsDefault(style: string): boolean {
-  return BY_ID.get(style)?.defaults.clauseCaptions ?? false;
+  return BY_ID.get(normalizeStyleId(style))?.defaults.clauseCaptions ?? false;
 }
 
 /** Styles whose caption pills stay static, so the animated `pop` emphasis is refused. */
@@ -74,7 +100,7 @@ export type LegacyStyleId = Extract<Meta, {readonly legacy: true}>['id'];
 
 /** Legacy styles keep their own token module and are not themed through the adapted-style table. */
 export function isLegacyStyle(style: string): style is LegacyStyleId {
-  return BY_ID.get(style)?.legacy ?? false;
+  return BY_ID.get(normalizeStyleId(style))?.legacy ?? false;
 }
 
 /** Styles that take the creator's brand colours. */
@@ -114,6 +140,11 @@ export function semanticEligibility(): Partial<Record<StyleId, string[]>> {
 /** The style that owns a scene family, or undefined when the family is shared. */
 export function ownSceneStyle(family: string): StyleId | undefined {
   return METAS.find((meta) => meta.ownScenes.includes(family))?.id as StyleId | undefined;
+}
+
+/** A style may opt out of a shared or owned family without changing its data schema. */
+export function familySupported(style: string, family: string): boolean {
+  return !((getStyleMeta(style) as StyleMeta).familiesOff ?? []).includes(family);
 }
 
 /** Measured loudness-range profiles; only styles with a recorded reference have one. */

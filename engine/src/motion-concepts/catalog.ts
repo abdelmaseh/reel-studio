@@ -1,3 +1,4 @@
+import {familySupported,normalizeStyleId} from '../styles/registry.ts';
 import type { ZodType } from "zod";
 import { getStyleProfile, STYLE_IDS, type StyleId } from "../creative-kit/styles.ts";
 import {
@@ -493,6 +494,7 @@ export type ListOptions = { query?: string; style?: string; family?: string };
 
 
 export const listMotionConcepts = ({ query = "", style, family }: ListOptions = {}) => {
+  if (style !== undefined) style = normalizeStyleId(style);
   const profile = style === undefined ? null : getStyleProfile(style);
   if (family !== undefined && !(CONCEPT_FAMILIES as readonly string[]).includes(family)) {
     throw new Error(`Unknown motion concept family: ${family}. Choose one of: ${CONCEPT_FAMILIES.join(", ")}.`);
@@ -501,6 +503,7 @@ export const listMotionConcepts = ({ query = "", style, family }: ListOptions = 
   const terms = searchKey(query).split(/\s+/u).filter(Boolean);
   const scored: { entry: ConceptCatalogEntry; score: number; order: number }[] = [];
   CATALOG.forEach((entry, order) => {
+    if (style !== undefined && !familySupported(style,'motion-concept')) return;
     if (family !== undefined && entry.family !== family) return;
     const tags = entry.tags.map(searchKey);
     const plain = searchKey(`${entry.id} ${entry.title} ${entry.message}`);
@@ -518,11 +521,11 @@ export const listMotionConcepts = ({ query = "", style, family }: ListOptions = 
   return {
     ok: true as const,
     version: 1,
-    selection: "Authored motion scenes; demo data is SAMPLE and claims nothing. Every concept renders in all seven approved style directions.",
+    selection: "Authored motion scenes; demo data is SAMPLE and claims nothing. Compatible styles follow their family policies; each edit needs creative review.",
     style: profile,
     concepts: scored.map(({ entry }) => ({
       ...entry,
-      compatibleStyles: [...STYLE_IDS] as StyleId[],
+      compatibleStyles: STYLE_IDS.filter(id => familySupported(id,'motion-concept')) as StyleId[],
       styleFit: "supported" as const,
     })),
   };

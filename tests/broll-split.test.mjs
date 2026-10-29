@@ -32,7 +32,7 @@ const profile = JSON.parse(await readFile(new URL('../PROFILE.example.json', imp
 const source = {path: 'Raw/synthetic.mp4', sha256: 'a'.repeat(64), fps: 30, width: 1080, height: 1920, totalFrames: 720};
 const words = [{text: '12', startMs: 6000, endMs: 6400, confidence: 1}];
 const brief = (beat = {}) => ({version: 1, id: 'broll-split-test', source: source.path, transcript: 'Projects/broll-split-test/words.json', ...profileToBrief(profile),
-  purpose: 'explainer', tone: 'calm', style: 'split-canvas', captionsReviewedBy: 'Creator',
+  purpose: 'explainer', tone: 'calm', style: 'section-deck', captionsReviewedBy: 'Creator',
   beats: [{id: 'clip', fromSec: 0, toSec: 2, intent: 'screens', data: {look: 'broll', steps: [{atFrame: 0, ...clip()}]}, ...beat}]});
 
 test('a screens beat without a layout stays full screen, and may ask for split', () => {
@@ -44,7 +44,7 @@ const geometry = {windowTop: 0, windowHeight: 1920, videoWidth: 1080, videoLeft:
 const footage = {defaultLayout: 'split', full: geometry, split: {...geometry, windowTop: 800, windowHeight: 1120}};
 const manifestWith = (scenes, change = {}) => {
   const m = reviewManifest('broll-split-manifest');
-  m.style = 'split-canvas';
+  m.style = 'section-deck';
   m.source.totalFrames = 900;
   m.segments = [{fromFrame: 0, toFrame: 900}];
   m.scenes = scenes;

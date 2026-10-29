@@ -22,10 +22,20 @@ const layoutRow = <R extends object>(t: LayoutTransition, i: number, fn: (m: Edi
 
 const isEntrance = (kind: string) => (GRAPHICS_ENTRANCE_KINDS as readonly string[]).includes(kind);
 const KIND_HINT: Record<string, string> = {
+  'ink-slab':'لوح حبر بيكشف المشهد التالي من اليمين للشمال',
+  'magazine-flip':'الصفحة الخارجة بتتقلب فوق الصفحة الجديدة',
+  'lens-zoom':'عدسة بتكبر المشهد السابق وتفتح على اللي بعده',
+  'paper-pull':'سحب ورقة الإيصال لأعلى وكشف الورقة الجديدة',
+  'paper-swap':'ورقة تركواز بتغطي القطع وبتكشف المشهد الجديد',
   whiteout: "وميض أبيض على الفيديو كله", leak: "تسريب ضوء", bloom: "توهّج", burn: "احتراق فيلم",
   "whip-pan": "سحب سريع للجرافيك (على أول المشهد)", "clip-wipe": "مسح بقناع للجرافيك (على أول المشهد)", "light-scan": "شعاع ضوء يمسح الجرافيك (على أول المشهد)",
   "hue-crossfade": "تحويل لون بين مشهدين (محتاج chapter على الاتنين)",
+  iris: "دائرة بتكشف الجرافيك من المركز", keyhole: "ثقب مفتاح بيكبر ويكشف الجرافيك", blinds: "ست شرايح أفقية بتفتح من اليمين",
+  "dot-zoom": "زووم خارج من نقطة حبر على أول المشهد", "zoom-through": "الجرافيك بيبدأ مكبّر ومغبّش وبعدين يستقر",
+  "paper-tear": "ورقة بتغطي القطع وتتشق", "page-turn": "قلب صفحة عربي من الشمال لليمين", "pen-dot-curtain": "نقطة حبر بتقفل بمعينات وتفتح من المركز",
+  "pixel-curtain": "مربعات صغيرة بتغطي الشاشة كلها وبعدين بتتفكك وتكشف اللي بعدها",
 };
+const V4_LABEL:Record<string,string>={'ink-slab':'لوح حبر','magazine-flip':'قلب صفحة مجلة','lens-zoom':'عدسة','paper-pull':'سحب الورقة','paper-swap':'تبديل الورقة',iris:'دايرة',keyhole:'ثقب مفتاح',blinds:'شرايح','dot-zoom':'زووم في النقطة','zoom-through':'زووم من خلال','paper-tear':'تقطيع ورق','page-turn':'قلب صفحة','pen-dot-curtain':'ستارة نقطة الحبر','pixel-curtain':'ستارة بكسلات'};
 
 const EffectsPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selection, select, project }) => {
   const { notice, show, clear } = useNotice();
@@ -120,7 +130,7 @@ const EffectsPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selecti
         actions={
           <span className="fx-add" dir="ltr">
             <select value={kind} onChange={(e) => setKind(e.target.value as TransitionKind)} aria-label="نوع الـ transition" title={KIND_HINT[kind]}>
-              {TRANSITION_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}
+              {TRANSITION_KINDS.map((k) => <option key={k} value={k}>{V4_LABEL[k]??k}</option>)}
             </select>
             <button type="button" className="primary" onClick={() => {
               const at = getPlayhead();
@@ -136,7 +146,7 @@ const EffectsPanelBody: React.FC<PanelProps> = ({ manifest, apply, seek, selecti
             <button type="button" className="fx-when" onClick={() => go("transition", i, t.atFrame)} title="روح للحظة دي">{formatTimecode(t.atFrame, fps)}</button>
             <select value={t.kind ?? "whiteout"} aria-label="نوع الـ transition"
               onChange={(e) => { const r = run(`نوع الـ transition #${i + 1}`, transitionRow(t, i, (m, j) => ops.updateTransition(m, j, { kind: e.target.value as TransitionKind })), { coalesce: false }); if (r.ok) select({ kind: "transition", index: r.index }); }}>
-              {TRANSITION_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}
+              {TRANSITION_KINDS.map((k) => <option key={k} value={k}>{V4_LABEL[k]??k}</option>)}
             </select>
             <span className="fx-at">@</span>
             <NumInput value={t.atFrame} min={0} width={60} label="فريم الـ transition" onCommit={(n) => {

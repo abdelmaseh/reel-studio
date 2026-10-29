@@ -143,6 +143,9 @@ export type ChatMessage = {
 
   typing?: boolean;
 
+  /** Keep authored Arabic copy in one text node instead of word reveal spans. */
+  wholeText?: boolean;
+
   reveal: ChatReveal;
 
 
@@ -163,6 +166,8 @@ export type ChatWindowProps = {
   dir?: "ltr" | "rtl";
 
   fontSize?: number;
+  typingFrames?: number;
+  typingFollowsSender?: boolean;
   style?: React.CSSProperties;
 };
 
@@ -232,7 +237,7 @@ const TypingDots: React.FC<{ left: number; top: number; fromF: number; toF: numb
   const { frame, fps } = useClock();
   const local = (frame - fromF) / fps;
   return (
-    <div
+    <div data-chat-typing={onRight ? "right" : "left"}
       style={{
         position: "absolute",
         left,
@@ -317,14 +322,14 @@ const ChatBubble: React.FC<{
         transformOrigin: onRight ? "100% 0%" : "0% 0%",
       }}
     >
-      <RevealedLines
+      {message.wholeText ? <div style={{...measured.fit.style,whiteSpace:'normal',direction:measured.rtl?'rtl':'ltr',color:isUser?colors.userText:colors.aiText}}>{message.text}</div> : <RevealedLines
         fit={measured.fit}
         rtl={measured.rtl}
         parts={splitReveal(lines, count, "word")}
         keepLayout
         clip={clip}
         color={isUser ? colors.userText : colors.aiText}
-      />
+      />}
     </div>
   );
 };
@@ -343,6 +348,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   title,
   dir = "ltr",
   fontSize = 32,
+  typingFrames,
+  typingFollowsSender = false,
   style,
 }) => {
   const { frame, fps } = useClock();
@@ -354,7 +361,7 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
   const viewportH = height - 2 * CHAT.border - headerH;
   const contentW = innerW - 2 * CHAT.padX;
   const maxText = Math.floor(contentW * CHAT.bubbleMax) - 2 * (CHAT.bubblePadX + CHAT.bubbleBorder);
-  const dotsF = framesFor(UI_TIMING.dotsSec, fps);
+  const dotsF = typingFrames ?? framesFor(UI_TIMING.dotsSec, fps);
   const measured = React.useMemo(() => {
     assertFontsReady();
     return messages.map((message, i) => measureMessage(message, i, theme, fontSize, maxText));
@@ -433,8 +440,8 @@ export const ChatWindow: React.FC<ChatWindowProps> = ({
                   left={onRight ? contentW - m.width : 0}
                   onRight={onRight}
                   dotsFrom={plan.dotsFrom[i]}
-                  dotsLeft={aiOnRight ? contentW - CHAT.dotsW : 0}
-                  dotsOnRight={aiOnRight}
+                  dotsLeft={(typingFollowsSender ? onRight : aiOnRight) ? contentW - CHAT.dotsW : 0}
+                  dotsOnRight={typingFollowsSender ? onRight : aiOnRight}
                   colors={colors}
                 />
               );

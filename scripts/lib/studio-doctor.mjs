@@ -17,6 +17,7 @@ export const CHECK_LABELS = Object.freeze({
   browser: 'متصفح الرندر',
   ffmpeg: 'FFmpeg',
   fonts: 'الخطوط',
+  glyphs: 'تغطية حروف الخطوط العربية',
   models: 'موديلات كشف الوش',
   transcription: 'أداة التفريغ الصوتي',
   profile: 'البروفايل (PROFILE.json)',
@@ -47,6 +48,30 @@ export async function checkEditor(root, {buildEditor = null} = {}) {
   }
 }
 
+/**
+ * Do the installed Arabic font files draw the Arabic alphabet, its digits, the tatweel and the harakat? Reads the cmap of every Arabic-subset file the lock pins.
+ * A warning only: a font that lacks a glyph is a gap in the design, and running setup again cannot repair it. A file that is not installed is the fonts check's job.
+ */
+export async function checkFontGlyphs(root, lock, {required} = {}) {
+  // Loaded on demand: setup imports this module before anything else is installed, and the font reader is not needed until the fonts exist.
+  const {REQUIRED_ARABIC_CODE_POINTS, fontCoverage} = await import('./font-coverage.mjs');
+  const wanted = required ?? REQUIRED_ARABIC_CODE_POINTS;
+  const seen = new Set(), missing = [], unreadable = [];
+  for (const font of lock.fonts) {
+    const key = font.sha256 ?? font.file;
+    if (font.subset !== 'arabic' || seen.has(key)) continue;
+    seen.add(key);
+    try {
+      const covered = await fontCoverage(path.join(root, 'engine', 'public', 'fonts', font.file));
+      const absent = wanted.filter((code) => !covered.has(code));
+      if (absent.length) missing.push({family: font.family, file: font.file, count: absent.length, first: absent.slice(0, 8).map((code) => `U+${code.toString(16).toUpperCase().padStart(4, '0')}`)});
+    } catch (error) {
+      if (error.code !== 'ENOENT') unreadable.push(font.file);
+    }
+  }
+  return {ok: missing.length === 0 && unreadable.length === 0, warnOnly: true, missing, unreadable};
+}
+
 export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = toolRuns, locationProblem = browserHomeProblem, buildEditor = null}) {
   const at = (relative) => path.join(root, ...relative.split('/'));
   const [major, minor] = process.versions.node.split('.').map(Number);
@@ -63,6 +88,7 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
     browser: {ok: (await exists(at(`engine/node_modules/.remotion/${lock.browser.exe}`))) && (await exists(at(`.remotion/${lock.browser.exe}`)))},
     ffmpeg: {ok: runsTool(at('Tools/bin/ffmpeg.exe')) && runsTool(at('Tools/bin/ffprobe.exe'))},
     fonts: {ok: false, missing: []},
+    glyphs: {ok: true, warnOnly: true, skipped: true, missing: [], unreadable: []},
     models: {ok: false, missing: []},
     transcription: {ok: false, missing: []},
     profile: {ok: false, error: null},
@@ -72,6 +98,7 @@ export async function quickChecks(root, {lock, gitExe, readProfile, runsTool = t
   checks.editor = checks.packages.ok ? await checkEditor(root, {buildEditor}) : {ok: false, skipped: true, error: 'Engine packages are incomplete.'};
   for (const font of lock.fonts) if (!(await exists(at(`engine/public/fonts/${font.file}`)))) checks.fonts.missing.push(font.file);
   checks.fonts.ok = checks.fonts.missing.length === 0 && (await exists(at('engine/public/fonts/manifest.json')));
+  if (checks.fonts.ok) checks.glyphs = await checkFontGlyphs(root, lock);
   for (const model of lock.models) if (!(await exists(at(model.path)))) checks.models.missing.push(model.path);
   checks.models.ok = checks.models.missing.length === 0;
   for (const file of ['Tools/whisper-runtime.json', lock.transcription.model.path, lock.transcription.vad.path]) if (!(await exists(at(file)))) checks.transcription.missing.push(file);

@@ -1,5 +1,6 @@
 import type { EditManifest, EditScene } from "../../prepared-edit/schema.ts";
 import type { SelectionTarget } from "../types.ts";
+import { isCentredKind, isOverlayKind, TRANSITION_RULES } from "../../prepared-edit/graphics-transitions.ts";
 import { formatSeconds, formatTimecode, segmentEditedRanges, totalFrames } from "../time.ts";
 
 
@@ -207,7 +208,9 @@ export function sceneMinDuration(m: Pick<EditManifest, "transitions" | "scenes">
   const s = m.scenes[index];
   let min = 1;
   for (const t of m.transitions ?? []) {
-    if (t.atFrame === s.fromFrame && !["whiteout", "leak", "bloom", "burn"].includes(t.kind)) min = Math.max(min, t.durationInFrames);
+    const policy=TRANSITION_RULES[t.kind];
+    if (t.atFrame === s.fromFrame && (!isOverlayKind(t.kind)||policy.lead||policy.needsOutgoing)) min = Math.max(min, t.durationInFrames,policy.tail??0);
+    if(t.atFrame===s.fromFrame+s.durationInFrames && policy.lead)min=Math.max(min,policy.lead);
   }
   return min;
 }
@@ -223,7 +226,7 @@ export function sceneMaxStart(m: Pick<EditManifest, "transitions" | "scenes" | "
   let max = Infinity;
   for (const t of m.transitions ?? []) {
     if (t.atFrame !== s.fromFrame) continue;
-    const tail = t.kind === "whiteout" ? t.durationInFrames / 2 : t.durationInFrames;
+    const tail = isCentredKind(t.kind) ? t.durationInFrames / 2 : t.durationInFrames;
     max = Math.min(max, Math.floor(cap - tail), totalFrames(m) - 1);
   }
   return max;

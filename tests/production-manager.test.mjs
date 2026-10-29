@@ -205,3 +205,14 @@ test('acceptance is bound to the claim basis and dropped when the task goes stal
   assert.equal(stale.state,'stale');
   assert.equal(stale.acceptance.ok,false);
 });
+
+test('fixed style constraints accept equivalent alias ids in worker contexts',async t=>{
+  for(const [fixed,supplied] of [['split-canvas','section-deck'],['section-deck','split-canvas'],['stepped-editorial','magazine-interview'],['magazine-interview','stepped-editorial']]) {
+    const f=await fixture(t,{constraints:{style:fixed,layout:'takeover'},tasks:[{id:'analyse',role:'editorial',objective:'Choose an action for supplied values.',dependsOn:[]}]});
+    const p=await need('createProductionPlan')(f.file),c=await need('claimProductionTask')(p.plan,{task:'analyse',agent:'codex-analysis'});
+    const context={intent:'filtering',mode:'graphics',sourceKind:'none',style:supplied,layout:'takeover',durationSec:11,assets:['data'],role:'explanation'};
+    const r=await receipt({...f,c},undefined,undefined,{choices:[{key:'concept:identity-filtering',context,reason:'Keep candidates visible through both criteria.'}]});
+    await need('submitProductionTask')(p.plan,{task:'analyse',agent:'codex-analysis',result:r.file});
+    assert.equal((await need('productionStatus')(p.plan)).tasks[0].state,'completed');
+  }
+});

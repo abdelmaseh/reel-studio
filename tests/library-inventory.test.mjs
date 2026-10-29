@@ -13,7 +13,7 @@ const cli = (...args) => spawnSync(process.execPath, ['scripts/library.mjs', ...
   cwd: ROOT, encoding: 'utf8', windowsHide: true,
 });
 const inventory = async (options) => (await import(moduleUrl)).collectLibraryInventory(options);
-const sha = (text) => createHash('sha256').update(text).digest('hex');
+const sha = (text) => createHash('sha256').update(String(text).replace(/\r\n/g, '\n')).digest('hex');
 
 test('inventory enumerates production contracts without conflating styles, concepts and scenes', async () => {
   const result = await inventory();
@@ -67,10 +67,10 @@ test('recipe variants retain their scene identity while sound recipes and genera
 
 test('caption and kinetic emphasis retain distinct manifest identities from entrances and sounds', async () => {
   const result = await inventory();
-  assert.deepEqual(result.items.filter((item) => item.layer === 'caption-emphasis').map((item) => item.nativeId), ['accent', 'pop', 'underline']);
-  assert.deepEqual(result.items.filter((item) => item.layer === 'kinetic-emphasis').map((item) => item.nativeId), ['accent', 'latin', 'pop', 'underline', 'weight']);
-  assert.equal(result.countsByLayer['caption-emphasis'], 3);
-  assert.equal(result.countsByLayer['kinetic-emphasis'], 5);
+  assert.deepEqual(result.items.filter((item) => item.layer === 'caption-emphasis').map((item) => item.nativeId), ['accent', 'pop', 'stretch', 'underline']);
+  assert.deepEqual(result.items.filter((item) => item.layer === 'kinetic-emphasis').map((item) => item.nativeId), ['accent', 'latin', 'pop', 'stretch', 'underline', 'weight']);
+  assert.equal(result.countsByLayer['caption-emphasis'], 4);
+  assert.equal(result.countsByLayer['kinetic-emphasis'], 6);
   for (const key of ['caption-emphasis:pop', 'kinetic-emphasis:pop', 'word-entrance:pop', 'sound-generator:pop']) {
     assert.ok(result.items.some((item) => item.key === key), key);
   }
@@ -96,11 +96,11 @@ test('transition subsets count once and source evidence is portable and reproduc
   const first = await inventory();
   const second = await inventory();
   assert.deepEqual(first, second);
-  for (const [layer, count] of Object.entries({overlay: 4, 'graphics-transition': 4, 'layout-transition': 2,
-    'scene-entrance': 3, 'word-entrance': 3, camera: 3})) assert.equal(first.countsByLayer[layer], count, layer);
+  for (const [layer, count] of Object.entries({overlay: 10, 'graphics-transition': 12, 'layout-transition': 2,
+    'scene-entrance': 3, 'word-entrance': 3, camera: 7})) assert.equal(first.countsByLayer[layer], count, layer);
   assert.equal(first.items.filter((item) => item.nativeId === 'whip-pan').length, 1);
   const source = first.sources.find((item) => item.path === 'engine/src/styles/registry.ts');
-  assert.equal(source.sha256, sha(await fs.readFile(path.join(ROOT, source.path))));
+  assert.equal(source.sha256, sha((await fs.readFile(path.join(ROOT, source.path),'utf8')).replace(/\r\n/g,'\n')));
   for (const item of first.sources) {
     assert.equal(path.isAbsolute(item.path), false);
     assert.doesNotMatch(item.path, /^(Raw|Projects|Outputs|PROFILE\.json)(?:\/|$)/i);

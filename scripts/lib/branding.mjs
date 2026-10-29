@@ -1,4 +1,5 @@
 import {promises as fs} from 'node:fs';
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import path from 'node:path';
 import {PREFERENCE_VALUES, defaultPreferences} from '../../engine/src/core/preference-options.ts';
 import {characterIssues, normalizeCharacter} from '../../engine/src/styles/cartoon/scenes/character.ts';
@@ -87,7 +88,7 @@ export function normalizeProfile(value) {
 
 // Keys a saved file may leave out. A missing key and {mode: 'auto'} both mean "as it is today", so neither is written back.
 // `character` is the cartoon narrator the creator assembled from presets; it is checked by the same Node-safe module the scenes use.
-export const OPTIONAL_PREFERENCES = Object.freeze(['digits', 'character']);
+export const OPTIONAL_PREFERENCES = Object.freeze(['digits', 'character', 'captionsSkin']);
 
 export function normalizePreferences(value) {
   const preferences = record(value, 'اختيارات المونتاج', 'preferences');
@@ -96,7 +97,8 @@ export function normalizePreferences(value) {
   exactKeys(preferences, expected, 'اختيارات المونتاج', 'preferences');
   const character = Object.hasOwn(preferences, 'character') ? normalizeCharacterPreference(preferences.character) : null;
   const entries = Object.entries(PREFERENCE_VALUES).filter(([key]) => expected.includes(key)).map(([key, values]) => {
-    const preference = record(preferences[key], key, key);
+    const original = record(preferences[key], key, key);
+    const preference = key === 'style' && original.mode === 'fixed' ? {...original, value: normalizeStyleId(original.value)} : original;
     exactKeys(preference, ['mode', 'value'], key, key);
     if (!['auto', 'fixed'].includes(preference.mode) ||
       (preference.mode === 'auto' ? preference.value !== null : !values.includes(preference.value))) {

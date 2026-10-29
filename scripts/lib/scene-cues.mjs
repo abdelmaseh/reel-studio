@@ -1,5 +1,8 @@
+import {arabicTypeCues} from '../../engine/src/arabic-type/timing.ts';
+import {chatMessageFrames,chatTypingFrames} from '../../engine/src/creative-kit/chat-thread/timing.ts';
 import { oneShotCues } from '../../engine/src/styles/one-shot/scenes/math.ts';
 import { CARTOON_FAMILIES, cartoonCues } from '../../engine/src/styles/cartoon/scenes/math.ts';
+import { layeredCues } from '../../engine/src/styles/layered-speaker/scenes/math.ts';
 import { compileEdit } from '../../engine/src/prepared-edit/timeline.ts';
 import { isBrollScene } from '../../engine/src/prepared-edit/broll.ts';
 
@@ -57,12 +60,33 @@ export function sceneCues(scene, fps = 30, { words = [] } = {}) {
   // B-roll plays silently under the voice: it gets no cue, neither at its start nor at a clip change.
   if (!isBrollScene(scene) && scene.family !== 'one-shot' && scene.family !== CARTOON_FAMILIES[0]) add(0, dipEntrance ? 'stamp' : 'transition');
   switch (scene.family) {
+    case 'figures':
+      if(data.variant==='bars')list(data.bars).forEach((_,i)=>add(Math.round(i*.12*fps),'count'));
+      else add(0,'count');
+      break;
+    case 'chat-thread':
+      chatMessageFrames({...data,messages:list(data.messages)},fps).forEach(at=>{if(data.variant==='typing')add(at-chatTypingFrames(fps),'type');add(at,'reveal');});
+      break;
+    case 'proof-screen':add(Math.ceil(fps),'reveal');break;
+    case 'verdict': for(const row of list(data.rows))add(row?.atFrame,'count'); add(data.verdictFrame,'stamp'); break;
+    case 'claim-proof': add(data.receiptFrame,'reveal');add(data.totalFrame,'count');add(data.totalFrame+36,'stamp');break;
+    case 'map-route':
+    case 'map-focus':
+      break; // Geographic movement and city labels stay silent.
+    case 'cutout-card':
+      add(data.at ?? 10, 'reveal');
+      break;
     case CARTOON_FAMILIES[0]:
     case CARTOON_FAMILIES[1]:
       if (words.length && Number.isInteger(fps) && fps > 0) for (const cue of cartoonCues(scene, words, fps)) add(cue.frame, cue.kind);
       break;
     case 'one-shot':
       for (const cue of oneShotCues(data, fps)) add(cue.frame, cue.kind);
+      break;
+    case 'arabic-type':
+      for(const cue of arabicTypeCues(data,fps))add(cue.frame,cue.kind);break;
+    case 'layered-speaker': // The big word landing and a hand-drawn mark touching down; the speaker is already on screen at the scene start.
+      for (const cue of layeredCues(data, fps)) add(cue.frame, cue.kind);
       break;
     case 'message-board':
       add(data.gatherFrame,'reveal');add(data.focusFrame,'swap');if(data.closingFrame!==undefined)add(data.closingFrame,'reveal');break;

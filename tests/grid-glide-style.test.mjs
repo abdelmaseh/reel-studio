@@ -1,4 +1,5 @@
 import test from 'node:test';
+import {v4Baseline} from './helpers/v4-baseline.mjs';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {
@@ -17,13 +18,13 @@ import {loadStylePalettes, resolvePalette, validatePalettes} from '../scripts/li
 import {captureRecommendations} from '../scripts/capture-style-baselines.mjs';
 
 const GLIDE_FAMILIES = ['glide-chapter', 'glide-card', 'glide-lines', 'glide-comment', 'glide-follow'];
-const EARLIER = ['split-canvas', 'section-deck', 'kinetic-paper', 'calligraphic-receipts', 'paper-collage', 'judgment-board', 'stepped-editorial',
-  'liquid-glass', 'campaign-tickets', 'magazine-interview', 'scrapbook-route'];
+const EARLIER = ['section-deck', 'kinetic-paper', 'calligraphic-receipts', 'paper-collage', 'liquid-glass', 'magazine-interview'];
 const profile = JSON.parse(await readFile(new URL('../PROFILE.example.json', import.meta.url), 'utf8'));
 
-test('Grid Glide follows the earlier eleven and One Shot follows it, so every earlier tie-break keeps its order', () => {
-  assert.deepEqual([...STYLE_IDS], [...EARLIER, 'grid-glide', 'one-shot', 'cartoon']);
-  assert.equal(STYLE_METAS.at(-3), gridGlide);
+test('Grid Glide follows the earlier surviving six and One Shot follows it, so every earlier tie-break keeps its order', () => {
+  // Styles registered after cartoon (layered-speaker, and any after it) do not move the earlier ones.
+  assert.deepEqual([...STYLE_IDS].slice(0, EARLIER.length + 3), [...EARLIER, 'grid-glide', 'one-shot', 'cartoon']);
+  assert.equal(STYLE_METAS[EARLIER.length], gridGlide);
   assert.deepEqual([...EDITION_STYLE_IDS], [...STYLE_IDS]);
   assert.ok(isStyleId('grid-glide'));
 });
@@ -91,8 +92,8 @@ test('Grid Glide never wins on fit alone and every earlier automatic winner is u
     explainer: {energetic: 'kinetic-paper', calm: 'section-deck', editorial: 'section-deck'},
     'case-study': {energetic: 'calligraphic-receipts', calm: 'calligraphic-receipts', editorial: 'calligraphic-receipts'},
     tutorial: {energetic: 'kinetic-paper', calm: 'section-deck', editorial: 'section-deck'},
-    comparison: {energetic: 'split-canvas', calm: 'split-canvas', editorial: 'split-canvas'},
-    opinion: {energetic: 'judgment-board', calm: 'judgment-board', editorial: 'judgment-board'},
+    comparison: {energetic: 'paper-collage', calm: 'section-deck', editorial: 'section-deck'},
+    opinion: {energetic: 'kinetic-paper', calm: 'calligraphic-receipts', editorial: 'calligraphic-receipts'},
     story: {energetic: 'paper-collage', calm: 'paper-collage', editorial: 'paper-collage'},
   };
   for (const [purpose, tones] of Object.entries(winners)) {
@@ -109,16 +110,16 @@ test('Grid Glide never wins on fit alone and every earlier automatic winner is u
 // leaders were used recently the repetition penalty can lower them below its score, and then it may legitimately win a
 // live recommendation. The baseline harness takes the winner from the recorded styles only, so the record stays comparable.
 test('after recent use of the leaders Grid Glide may win live while the baseline keeps its recorded winner', async () => {
-  const fixture = JSON.parse(await readFile(new URL('./fixtures/style-baselines.json', import.meta.url), 'utf8'));
+  const fixture = v4Baseline(JSON.parse(await readFile(new URL('./fixtures/style-baselines.json', import.meta.url), 'utf8')));
   assert.ok(!fixture.styles.includes('grid-glide'), 'the record names only the eleven earlier styles');
-  const live = recommendEditorStyle({...brief('explainer', 'calm'), recentStyles: ['section-deck', 'split-canvas', 'kinetic-paper']});
+  const live = recommendEditorStyle({...brief('explainer', 'calm'), recentStyles: ['section-deck', 'section-deck', 'kinetic-paper']});
   assert.equal(live.style, 'grid-glide', 'the live recommendation may choose the new style');
   assert.equal(live.candidates.find((candidate) => candidate.style === 'section-deck').score, 8, 'the recent leader dropped below the new style');
   const recordedOnly = live.candidates.filter((candidate) => fixture.styles.includes(candidate.style));
-  assert.equal(recordedOnly[0].style, 'stepped-editorial', 'among the recorded styles the winner is unchanged');
+  assert.equal(recordedOnly[0].style, 'section-deck', 'the surviving recorded candidates retain their scores');
 
   const cases = await captureRecommendations(fixture.styles);
-  assert.equal(cases.recent.style, 'stepped-editorial');
+  assert.equal(cases.recent.style, 'section-deck');
   assert.deepEqual(cases.recent.reasons, recordedOnly[0].reasons);
   assert.ok(!cases.recent.candidates.some((candidate) => candidate.style === 'grid-glide'), 'the record lists recorded styles only');
   assert.deepEqual(cases, fixture.recommendations, 'every recorded recommendation is reproduced exactly');

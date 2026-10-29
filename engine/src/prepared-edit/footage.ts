@@ -14,7 +14,7 @@ export type FootageEdit={
   footage?:{defaultLayout:'presenter'|'split';full:Geo;split:Geo};
   layoutTransitions?:readonly LayoutTransition[];
 };
-export type FootageFrameOptions={aspect:number;canvasHeight:number;probe?:boolean};
+export type FootageFrameOptions={aspect:number;canvasHeight:number;probe?:boolean;layoutFrame?:number};
 export type LayoutTransitionState={geo:Geo;seamY:number;lower:number;upper:number;contentShift:number};
 export type FootageFrameState={layout:SceneLayoutName;geo:Geo;seam:number;transition:LayoutTransition|null;
   lower:number;upper:number;clipTop:number|null;contentShift:number};
@@ -71,7 +71,8 @@ export function layoutTransitionState(t:LayoutTransition,frame:number,geos:{pres
 }
 
 export function footageFrameState(edit:FootageEdit,frame:number,o:FootageFrameOptions):FootageFrameState{
-  const layout=footageLayoutAt(edit,frame);
+  // A drawing handover may retain the outgoing layout; the footage camera always uses the current frame.
+  const layout=footageLayoutAt(edit,o.layoutFrame??frame);
   const camera=cameraAtFrame(edit.camera,frame);
   const seam=edit.footage?.split.windowTop??o.canvasHeight;
   const transition=activeLayoutTransition(edit.layoutTransitions,frame);

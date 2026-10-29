@@ -9,8 +9,10 @@ export default defineStyle({
   legacy: false,
   brand: false,
   pip: {allowed: false, basis: 'inference', evidence: 'Use the split presenter window; glass detail panels reserve the takeover canvas.'},
-  defaults: {font: 'Cairo', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
+  defaults: {font: 'Grid Sans', captionsPresentation: 'pill', clauseCaptions: false, staticCaptions: false},
   fit: {purpose: {}, tone: {}, semanticBeats: ['token-lens', 'meter-receipt']},
+  familiesOff: [],
   ownScenes: [],
+  signatureTransition: 'lens-zoom',
   since: '2.0.0',
 });

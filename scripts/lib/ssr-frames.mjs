@@ -52,6 +52,13 @@ export const fillTextBox = ({maxBoxWidth, maxLines}) => {
 };
 `;
 
+// Stand-in for @remotion/lottie, which scenes reach through stickers: its lottie-web needs a real browser document and a frame never loads a file here.
+const LOTTIE_STUB = `
+import React from 'react';
+export const Lottie = ({animationData, loop, playbackRate}) =>
+  React.createElement('svg', {'data-lottie-player': String(animationData?.fr ?? ''), 'data-loop': String(Boolean(loop)), 'data-rate': String(playbackRate ?? 1)});
+`;
+
 const ENTRY = `
 import React from 'react';
 import {renderToStaticMarkup} from 'react-dom/server';
@@ -118,7 +125,9 @@ export async function createFrameRenderer() {
       name: 'frame-renderer',
       setup(builder) {
         builder.onResolve({filter: /^@remotion\/layout-utils$/}, () => ({path: 'layout-utils', namespace: 'frame-renderer'}));
-        builder.onLoad({filter: /.*/, namespace: 'frame-renderer'}, () => ({contents: LAYOUT_UTILS, loader: 'js'}));
+        builder.onResolve({filter: /^@remotion\/lottie$/}, () => ({path: 'lottie-stub', namespace: 'frame-renderer'}));
+        builder.onLoad({filter: /^layout-utils$/, namespace: 'frame-renderer'}, () => ({contents: LAYOUT_UTILS, loader: 'js'}));
+        builder.onLoad({filter: /^lottie-stub$/, namespace: 'frame-renderer'}, () => ({contents: LOTTIE_STUB, loader: 'js', resolveDir: path.join(ROOT, 'engine')}));
         // Fonts only load in a browser. Replace only the isolated font gate; keep every provider, theme and layout calculation real.
         builder.onLoad({filter: /creative-kit[\\/]primitives\.tsx$/}, ({path: file}) => {
           const source = readFileSync(file, 'utf8');

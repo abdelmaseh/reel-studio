@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../engine/src/styles/registry.ts';
 import './lib/project-tmp.mjs';
 import path from 'node:path';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, rmSync, statSync } from 'node:fs';
@@ -7,6 +8,7 @@ import { ENGINE, requireFromEngine } from './lib/bundle.mjs';
 import { PROJECT_TMP } from './lib/project-tmp.mjs';
 import { assertProjectOutput } from './lib/project-paths.mjs';
 import { profileIds } from './lib/ig.mjs';
+import { renderChromiumOptions } from './lib/render-gl.mjs';
 
 
 
@@ -47,7 +49,7 @@ export function resolveConcepts(spec) {
 
 export function resolveStyles(spec) {
   const wanted = list(spec ?? 'kinetic-paper');
-  const ids = wanted.includes('all') ? [...STYLE_IDS] : wanted;
+  const ids = wanted.includes('all') ? [...STYLE_IDS] : wanted.map(id=>normalizeStyleId(id));
   for (const id of ids) if (!STYLE_IDS.includes(id)) throw new Error(`Unknown style "${id}". Styles: ${STYLE_IDS.join(', ')}`);
   return STYLE_IDS.filter((id) => ids.includes(id));
 }
@@ -226,7 +228,7 @@ export function neededFontFiles() {
 const USAGE = `Usage:
   node scripts/concept-stills.mjs --concept <id|a,b|all> [--at 0.5f,settled] [--style <id|a,b|all>] [--mode once|loop]
        [--guides [--guides-profile ig-reels-organic,ig-reels-ads]] [--caption "text"] [--scale 0.5] [--png] [--assets a.png,b.png] [--out Projects/motion-concepts/stills]
-  node scripts/concept-stills.mjs --list [--query dashboard] [--family data] [--style split-canvas]
+  node scripts/concept-stills.mjs --list [--query dashboard] [--family data] [--style section-deck]
 Concepts: ${CONCEPT_IDS.join(', ')}
 Styles:   ${STYLE_IDS.join(', ')}`;
 
@@ -335,7 +337,7 @@ async function main() {
 
     const { renderStill, renderMedia, selectComposition, openBrowser } = requireFromEngine('@remotion/renderer');
     mkdirSync(outDir, { recursive: true });
-    browser = await openBrowser('chrome', { logLevel: 'warn' });
+    browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
     const tRender = performance.now();
     for (const concept of concepts) {
       for (const style of styles) {
@@ -375,7 +377,7 @@ async function main() {
 
             process.stderr.write(`still ${concept} ${style} f${frame} failed (${String(err.message).split('\n')[0]}), reopening browser\n`);
             await browser.close({ silent: true }).catch(() => {});
-            browser = await openBrowser('chrome', { logLevel: 'warn' });
+            browser = await openBrowser('chrome', { logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
             await renderStill({ ...opts, puppeteerInstance: browser });
           }
           const ms = Math.round(performance.now() - tStill);

@@ -63,7 +63,7 @@ const PINS = [
   ['a B-roll scene shown with the presenter window carries no label', 'instructions/EDITING.md', /A B-roll scene named in `footage\.pip\.sceneIds` carries no `label`: the presenter window covers the label's corner/],
   ['the placement guide repeats that the presenter window and a label do not go together', 'instructions/EDITORIAL.md', /shown with that window carries no `label`, because the window covers the label's corner/],
   ['captions are checked on the still of each B-roll scene', 'instructions/EDITORIAL.md', /look at the still of each B-roll scene with its captions/],
-  ['the caption styles without a backing are named from their themes', 'instructions/EDITORIAL.md', /whose pill is transparent \(`calligraphic-receipts`, `judgment-board` and `magazine-interview`/],
+  ['the caption styles without a backing are named from their themes', 'instructions/EDITORIAL.md', /whose pill is transparent \(`calligraphic-receipts` and `magazine-interview`/],
   ['a caption without a backing gets a proposed presentation, never an override', 'instructions/EDITORIAL.md', /propose `captionsPresentation: "ink-strip"` for this video to the creator.*never override a `captionsPresentation` the creator fixed/],
   ['a hand-written clip value in a project scene starts at the inFrame', 'instructions/PROJECT-SCENES.md', /set `trimBeforeFrame` to the clip record's `inFrame`/],
   ['two decodes can be slower, not always', 'instructions/PERFORMANCE.md', /decodes two videos and can be slower than a plain full-screen takeover B-roll scene/],
@@ -81,11 +81,11 @@ test('guide pin: the PERFORMANCE guide does not state a slowdown it never measur
 
 test('guide pin: the caption styles without a backing really have a transparent pill and the presentation names are real', async () => {
   const transparent = [];
-  for (const style of ['calligraphic-receipts', 'judgment-board', 'magazine-interview', 'split-canvas', 'paper-collage']) {
+  for (const style of ['calligraphic-receipts', 'magazine-interview', 'section-deck', 'paper-collage']) {
     if (/pill:\s*["']transparent["']/.test(await read(`engine/src/styles/${style}/theme.ts`))) transparent.push(style);
   }
-  assert.deepEqual(transparent, ['calligraphic-receipts', 'judgment-board', 'magazine-interview'], 'the guide names exactly these');
-  assert.match(await read('engine/src/styles/types.ts'), /CAPTION_PRESENTATION = \['pill', 'minimal', 'ink-strip'\]/, 'ink-strip is a real captionsPresentation value');
+  assert.deepEqual(transparent, ['calligraphic-receipts', 'magazine-interview'], 'the guide names exactly these');
+  assert.match(await read('engine/src/styles/types.ts'), /CAPTION_PRESENTATION\s*=\s*\[[^\]]*'pill'[^\]]*'minimal'[^\]]*'ink-strip'[^\]]*\]/, 'ink-strip is a real captionsPresentation value');
 });
 
 test('guide pin: the intake links land on a heading that exists', async () => {

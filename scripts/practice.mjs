@@ -5,6 +5,7 @@ import {ROOT} from './lib/project-paths.mjs';
 import {assertProjectOutput} from './lib/project-paths.mjs';
 import {getServeUrl,requireFromEngine} from './lib/bundle.mjs';
 import {ffprobeJson,summarizeProbe} from './lib/media.mjs';
+import {renderChromiumOptions} from './lib/render-gl.mjs';
 
 const args=process.argv.slice(2),outIndex=args.indexOf('--out');
 if(args.length && (outIndex<0 || args.length!==2))throw new Error('Usage: node scripts/practice.mjs [--out Projects/practice/renders/practice.mp4]');
@@ -13,8 +14,8 @@ if(path.isAbsolute(relative)||!relative.replaceAll('\\','/').startsWith('Project
 const output=assertProjectOutput(path.join(ROOT,relative));await fs.mkdir(path.dirname(output),{recursive:true});
 const {serveUrl}=await getServeUrl({log:message=>process.stderr.write(`[practice] ${message}\n`)});
 const {selectComposition,renderMedia}=requireFromEngine('@remotion/renderer');
-const composition=await selectComposition({serveUrl,id:'Practice',inputProps:{},logLevel:'warn'});
-await renderMedia({composition,serveUrl,codec:'h264',outputLocation:output,inputProps:{},overwrite:true,concurrency:2,crf:28,x264Preset:'veryfast',imageFormat:'png',pixelFormat:'yuv420p',logLevel:'warn'});
+const composition=await selectComposition({serveUrl,id:'Practice',inputProps:{},logLevel:'warn',chromiumOptions:renderChromiumOptions()});
+await renderMedia({composition,serveUrl,codec:'h264',outputLocation:output,inputProps:{},overwrite:true,concurrency:2,crf:28,x264Preset:'veryfast',imageFormat:'png',pixelFormat:'yuv420p',logLevel:'warn',chromiumOptions:renderChromiumOptions()});
 const probe=await ffprobeJson(output),summary=summarizeProbe(output,probe);
 const ok=summary.width===360&&summary.height===640&&Math.abs(summary.fps-30)<.01&&summary.durationSec>=2.9&&summary.durationSec<=3.2;
 const report={ok,kind:'source-free-synthetic-practice',output:path.relative(ROOT,output).split(path.sep).join('/'),summary,creativeApproval:'This checks the shipped practice path. It is not approval of a customer edit.'};

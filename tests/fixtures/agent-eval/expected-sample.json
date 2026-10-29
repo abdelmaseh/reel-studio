@@ -2,7 +2,7 @@
   "version": 1,
   "recording": "synthetic graphics sample (no recording)",
   "reviewedBy": "fixture",
-  "style": {"id": "split-canvas", "reasonContains": ["demo"]},
+  "style": {"id": "section-deck", "reasonContains": ["demo"]},
   "hook": {"maxStartSec": 4, "visualOnFrame0": true},
   "beats": {"min": 3, "max": 12},
   "clauses": [

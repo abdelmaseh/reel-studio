@@ -43,6 +43,19 @@ test('backlog separates new mechanisms, internal wiring, actual review and unsup
   assert.equal(report.gaps.find((gap) => gap.id === 'semantic-feedback').reason, 'missing', 'playback loop is not a semantic return edge');
 });
 
+test('V4 families occupy their existing explanatory backlog categories', async () => {
+  const report = analyze(await inventory());
+  for (const [category, family] of [
+    ['comparison', 'verdict'], ['evidence', 'claim-proof'], ['scale', 'meter-receipt'],
+    ['reveal', 'ticket-offer'], ['grouping', 'comment-stack'], ['grouping', 'message-board'],
+    ['grouping', 'token-lens'], ['comparison', 'evidence-wipe'], ['chronology', 'chapter-quote'],
+  ]) {
+    const coverage = report.coverage.find(item => item.id === category);
+    assert.equal(coverage.status, 'declared');
+    assert.ok(coverage.existingCandidates.some(item => item.key === `scene:${family}`), `${category}: ${family}`);
+  }
+});
+
 test('ranking has source evidence and explicit subjective factors, and does not mutate or depend on inventory order', async () => {
   const input = await inventory();
   const before = JSON.stringify(input);

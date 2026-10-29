@@ -52,7 +52,7 @@ test('a label sits on a solid chip, and without a label there is no chip', () =>
 
 test('the label chip ink reads on the accent in every style that can host B-roll', () => {
   const rows = mod.chipStyles();
-  for (const id of ['paper-collage', 'section-deck', 'split-canvas']) assert.ok(rows.some((r) => r.id === id), `${id} can host B-roll`);
+  for (const id of ['paper-collage', 'section-deck', 'section-deck']) assert.ok(rows.some((r) => r.id === id), `${id} can host B-roll`);
   for (const row of rows) assert.ok(row.ratio >= 4.5, `${row.id}: ${row.ink} on ${row.accent} is ${row.ratio.toFixed(2)}:1, below 4.5:1`);
   assert.ok(!rows.some((r) => ['cartoon', 'one-shot', 'grid-glide'].includes(r.id)), 'styles that refuse B-roll are not checked');
 });
@@ -67,12 +67,12 @@ test('the chip ink is the style onAccent, else the best of text, background, whi
 test('the rendered label chip uses that ink for its text and its border', () => {
   const labelled = scene([{atFrame: 0, ...clip(), label: 'Office desk'}]);
   const collage = at(0, labelled, 1920, 'paper-collage');
-  assert.match(collage, /background:#1E6470;border:3px solid #FFFFFF/, 'paper-collage: white on its teal accent, not the dark text colour');
-  assert.match(collage, /width:\d+px;color:#FFFFFF/);
+  assert.match(collage, /background:#1E6470;border:3px solid #FFFEF7/, 'paper-collage: V4 light ink on its teal accent');
+  assert.match(collage, /width:\d+px;color:#FFFEF7/);
   assert.doesNotMatch(collage, /#28322E/, 'the style text colour is no longer used on the chip');
   const deck = at(0, labelled, 1920, 'section-deck');
-  assert.match(deck, /background:#FF6B35;border:3px solid #111111/, 'section-deck has no onAccent: the best-reading candidate is used');
-  assert.match(deck, /width:\d+px;color:#111111/);
+  assert.match(deck, /background:#FF6B35;border:3px solid #1A0A03/, 'section-deck: V4 explicitly supplies its onAccent ink');
+  assert.match(deck, /width:\d+px;color:#1A0A03/);
 });
 
 test('a broll clip that would be enlarged too much fails the render instead of going soft', () => {

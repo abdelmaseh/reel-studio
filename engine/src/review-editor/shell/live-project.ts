@@ -1,3 +1,4 @@
+import {styleAliasNotice} from '../../styles/registry.ts';
 import type {EditManifest} from "../../prepared-edit/schema.ts";
 import type {EditorStore} from "../store.ts";
 import type {ProjectResponse} from "../types.ts";
@@ -16,7 +17,7 @@ function changesBetween(before: ProjectResponse, next: ProjectResponse): ChangeK
   if (changed(a.scenes, b.scenes)) changes.push("scenes");
   if (changed([a.camera, a.transitions], [b.camera, b.transitions])) changes.push("motion");
   if (changed(a.sounds, b.sounds)) changes.push("sound");
-  if (changed([a.style, a.brand, a.fontFamily, a.digits, a.footage], [b.style, b.brand, b.fontFamily, b.digits, b.footage])) changes.push("style");
+  if (changed([a.style, a.brand, a.fontFamily, a.digits, a.footage, a.look], [b.style, b.brand, b.fontFamily, b.digits, b.footage, b.look])) changes.push("style");
   if (!next.needsPrepare && changed(before.plate, next.plate)) changes.push("preview");
   return changes;
 }
@@ -52,8 +53,11 @@ export function createProjectFollower(options: {
   }
   return {
     receive(next: ProjectResponse) {
-      if (next.manifestPath !== baseline.manifestPath || next.slug !== baseline.slug || !parseManifest(next.manifest)) return;
-      accept(next);
+      if (next.manifestPath !== baseline.manifestPath || next.slug !== baseline.slug) return;
+      const manifest = parseManifest(next.manifest);
+      if (!manifest) return;
+      const notice = styleAliasNotice(next.manifest.style, 'ar');
+      accept({...next, manifest, warnings: notice ? [...new Set([...next.warnings, notice])] : next.warnings});
     },
     setEnabled(enabled: boolean) {notify({enabled}); if (enabled && latest) accept(latest);},
 

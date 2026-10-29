@@ -202,7 +202,9 @@ test('a dip exit is followed contiguously by a dip enter', () => {
 });
 
 test('the aggregate matches the style registry and stays disjoint from other families', () => {
-  assert.deepEqual([...styleSceneFamilies], [...GRID_GLIDE_FAMILIES, 'one-shot', 'cartoon', 'cartoon-ending']);
+  // Families of styles registered later (layered-speaker, and any after it) follow the three owned by the earlier styles.
+  assert.deepEqual([...styleSceneFamilies].slice(0, GRID_GLIDE_FAMILIES.length + 3), [...GRID_GLIDE_FAMILIES, 'one-shot', 'cartoon', 'cartoon-ending']);
+  assert.ok(styleSceneFamilies.includes('layered-speaker'));
   for (const family of GRID_GLIDE_FAMILIES) assert.equal(ownSceneStyle(family), 'grid-glide', family);
   assert.equal(ownSceneStyle('one-shot'), 'one-shot');
   assert.deepEqual(STYLE_METAS.flatMap((meta) => [...meta.ownScenes]).sort(), [...styleSceneFamilies].sort(),

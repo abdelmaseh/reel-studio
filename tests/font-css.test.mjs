@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {existsSync, readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {
-  DECLARED_FONTS, cssRequestUrl, fontFileName, lockEntriesFromManifest, manifestWeight, matchesWeight, parseFaces, slug,
+  DECLARED_FONTS, V4_FONT_FAMILIES, cssRequestUrl, fontFileName, lockEntriesFromManifest, manifestWeight, matchesWeight, parseFaces, slug,
   upsertLockFonts, upsertTemplateFonts,
 } from '../scripts/lib/font-css.mjs';
 import {woff2Axes} from '../scripts/lib/woff2-axes.mjs';
@@ -128,7 +128,10 @@ test('recording a font in the template changes only its own family and is repeat
 });
 
 test('every declared family is pinned in the lock and no pinned family is undeclared', () => {
-  for (const spec of DECLARED_FONTS) {
+  // The V4 families may be declared before the owner approves their download (tests/v4-fonts.test.mjs checks the rest).
+  const pinnedFamilies = new Set(lock.fonts.map((font) => font.family));
+  const awaitingPins = (family) => V4_FONT_FAMILIES.includes(family) && !pinnedFamilies.has(family);
+  for (const spec of DECLARED_FONTS.filter((item) => !awaitingPins(item.family))) {
     for (const subset of spec.subsets) {
       for (const weight of spec.weights) {
         const hit = lock.fonts.find((font) => font.family === spec.family && font.subset === subset && font.weight === weight);
@@ -137,7 +140,7 @@ test('every declared family is pinned in the lock and no pinned family is undecl
       }
     }
   }
-  assert.deepEqual([...new Set(lock.fonts.map((font) => font.family))].sort(), DECLARED_FONTS.map((spec) => spec.family).sort());
+  assert.deepEqual([...new Set(lock.fonts.map((font) => font.family))].sort(), DECLARED_FONTS.map((spec) => spec.family).filter((family) => !awaitingPins(family)).sort());
 });
 
 test('woff2Axes reads the variation axes of real fonts and refuses other data', {skip: !existsSync(fontFile('Cairo-latin-400.woff2'))}, () => {

@@ -6,7 +6,8 @@ import path from 'node:path';
 import {ROOT} from '../lib/project-paths.mjs';
 import {STEP_IDS} from '../lib/studio-state.mjs';
 
-test('a warm partial setup keeps its original done result without counting a new full install', async t => {
+// Copies what setup needs into a temp tree and replaces the counter with a stub that writes what it was asked to record.
+async function stage(t) {
   const base = path.join(ROOT, 'state/tmp'); await fs.mkdir(base, {recursive: true});
   const root = await fs.mkdtemp(path.join(base, 'stats-setup-test-'));
   t.after(async() => {assert.equal(path.dirname(root), base); await fs.rm(root, {recursive: true, force: true});});
@@ -22,12 +23,28 @@ test('a warm partial setup keeps its original done result without counting a new
     await fs.copyFile(path.join(ROOT, file), path.join(root, file));
   }
   await fs.writeFile(path.join(root, 'scripts/lib/studio-stats.mjs'),
-    "import {writeFile} from 'node:fs/promises'; import path from 'node:path'; export async function recordStudioEvent(root,event){await writeFile(path.join(root,'state/captured-stats.json'),JSON.stringify({event}));} export async function flushStudioEvents(){}\n");
+    "import {writeFile} from 'node:fs/promises'; import path from 'node:path'; export async function recordStudioEvent(root,event,options){await writeFile(path.join(root,'state/captured-stats.json'),JSON.stringify({event,detail:options?.detail??null}));} export async function flushStudioEvents(){}\n");
   await fs.mkdir(path.join(root, 'state'), {recursive: true});
+  return root;
+}
+const setup = (root, ...args) => spawnSync(process.execPath, ['scripts/studio.mjs', 'setup', '--foreground', ...args], {cwd: root, encoding: 'utf8', windowsHide: true});
+const lastJson = command => JSON.parse(command.stdout.trim().split(/\r?\n/).at(-1));
+const captured = async root => JSON.parse(await fs.readFile(path.join(root, 'state/captured-stats.json'), 'utf8').catch(() => 'null'));
+
+test('a warm partial setup keeps its original done result without counting a new full install', async t => {
+  const root = await stage(t);
   const steps = Object.fromEntries(STEP_IDS.map(id => [id, {ok: true, key: 'previous-install'}]));
   await fs.writeFile(path.join(root, 'state/setup.json'), JSON.stringify({schema: 1, status: 'done', steps}));
-  const command = spawnSync(process.execPath, ['scripts/studio.mjs', 'setup', '--foreground', '--steps', 'folders'], {cwd: root, encoding: 'utf8', windowsHide: true});
+  const command = setup(root, '--steps', 'folders');
   assert.equal(command.status, 0, command.stderr || command.stdout);
-  assert.equal(JSON.parse(command.stdout.trim().split(/\r?\n/).at(-1)).status, 'done', 'setup behavior stays unchanged');
-  assert.equal(await fs.stat(path.join(root, 'state/captured-stats.json')).catch(() => null), null, 'unverified prior tools cannot produce a full-install statistic');
+  assert.equal(lastJson(command).status, 'done', 'setup behavior stays unchanged');
+  assert.equal(await captured(root), null, 'unverified prior tools cannot produce a full-install statistic');
+});
+
+test('a setup that stops at a step reports only that step id', async t => {
+  const root = await stage(t);
+  await fs.writeFile(path.join(root, 'Raw'), 'a file where the Raw folder belongs');
+  const command = setup(root, '--steps', 'folders');
+  assert.equal(lastJson(command).status, 'failed', command.stderr || command.stdout);
+  assert.deepEqual(await captured(root), {event: 'setup_failed', detail: {step: 'folders'}});
 });

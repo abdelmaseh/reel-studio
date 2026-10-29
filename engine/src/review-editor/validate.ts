@@ -4,6 +4,8 @@ import { tryCompile } from "./time.ts";
 import { sceneDemoFields } from "./ops/demo.ts";
 import { explainEnglish } from "./ops/explain.ts";
 import { isKitFamily } from "./ops/templates.ts";
+import { arabicIssueMessage, manifestFindings } from "../core/arabic-check.ts";
+import { LAYERED_FAMILIES } from "../styles/layered-speaker/scenes/math.ts";
 import spec from "../core/platform/instagram-reels.json" with { type: "json" };
 import type { Issue, IssueSeverity, IssueStage, ValidationResult } from "./types.ts";
 
@@ -52,6 +54,7 @@ const KNOWN: [RegExp, string][] = [
   [/^PiP window .*caption band/, "شباك الـ PiP بيلمس مكان الكابشن، ممكن الكابشن يغطي وشه. حطه في ركن فوق أو صغّره."],
   [/^Layout transition at (\d+)/, "الـ layout transition عند فريم $1 مش مظبوط."],
   [/^Chapter palette fails contrast/, "ألوان الـ chapter مش واضحة كفاية (contrast ضعيف)."],
+  [/^(The two inks|Both inks|A riso look|Ink \d|Inks apply)/, "حبرين تأثير الريزو مش مناسبين: لازم لونين مختلفين ومتباعدين، وواحد منهم غامق كفاية يتقرأ على الورق."],
 ];
 
 const TYPE_AR: Record<string, string> = { string: "نص", number: "رقم", int: "رقم صحيح", boolean: "true أو false", array: "قايمة", object: "object", null: "null" };
@@ -109,7 +112,7 @@ function delivery(m: EditManifest, compiledIssues: number): Issue[] {
       `Delivery sample number: scene ${hit.sceneId} still shows the template figure ${SAMPLE_NUMBER} at data.${hit.path}.`));
   }
   m.scenes.forEach((scene, index) => {
-    const fields = isKitFamily(scene.family) ? sceneDemoFields(scene) : [];
+    const fields = isKitFamily(scene.family) || (LAYERED_FAMILIES as readonly string[]).includes(scene.family) ? sceneDemoFields(scene) : [];
     if (fields.length) {
       out.push(issue(m, ["scenes", index, "data"], `المشهد «${scene.id}» ما زال يحمل نصًا تجريبيًا في ${fields.length} حقل. بدّله بكلامك قبل التصدير النهائي.`, "delivery", "delivery:sample-text", "error",
         `Delivery sample text: scene ${scene.id} still holds the template words at ${fields.map((field) => `data.${field}`).join(", ")}.`));
@@ -120,6 +123,11 @@ function delivery(m: EditManifest, compiledIssues: number): Issue[] {
         ["scenes", index, "data", "prompt"], `The creator CTA scene ${scene.id} never shows the comment keyword ${scene.data.keyword}: write {keyword} in its prompt, or the keyword itself.`);
     }
   });
+  // Arabic correctness (core/arabic-check.ts, the rules the delivery gate runs): a broken join is a delivery error, anything that needs eyes is a warning.
+  // The editor has no font files, so the missing-glyph check belongs to the Node gates (assertDeliveryReady, render --deliver).
+  for (const found of manifestFindings(m).findings) {
+    out.push(issue(m, found.path, arabicIssueMessage(found.code, found.text), "delivery", `delivery:arabic-${found.code}`, found.level === "fail" ? "error" : "warning", found.detail));
+  }
 
   return out;
 }

@@ -1,0 +1,21 @@
+import {LOADED_FAMILIES} from '../core/fonts';
+import {resolveArabicFont} from './font-ready';
+import React from 'react';
+import {useCurrentFrame,useVideoConfig} from 'remotion';
+import {CanvasFill} from '../core/safe';
+import {useSceneTheme,useTypographyFont} from '../creative-kit/chapter-theme';
+import {useStatDigits} from '../creative-kit/digits';
+import {displayDigits} from '../core/digits.ts';
+import type {StyleFamily} from '../creative-kit/schema';
+import {arabicTypeSceneSchema,type ArabicTypeScene} from './schema';
+import {ARABIC_MOVE_COMPONENTS} from './moves';
+import {Backdrop} from '../looks/backdrop';
+import {SceneStickerSlot} from '../creative-kit/sticker-view';
+export const ArabicTypeSceneView:React.FC<{scene:ArabicTypeScene;style?:StyleFamily}>=({scene:input,style='section-deck'})=>{
+  const scene=arabicTypeSceneSchema.parse(input),frame=useCurrentFrame(),{fps,width,height}=useVideoConfig(),theme=useSceneTheme(style),digits=useStatDigits(),preferred=useTypographyFont();
+  const {sticker,...moveData}=scene.data,Component=ARABIC_MOVE_COMPONENTS[scene.data.move];
+  if(!Component)throw new Error('Arabic type move '+scene.data.move+' has no renderer');
+  const text=displayDigits(scene.data.text,digits),to=scene.data.to?displayDigits(scene.data.to,digits):undefined,stamp=scene.data.stamp?displayDigits(scene.data.stamp,digits):undefined;
+  const font=resolveArabicFont(scene.data.font,preferred,scene.data.move,LOADED_FAMILIES);
+  return <CanvasFill background={theme.background}>{scene.data.backdrop&&scene.data.backdrop!=='plain'?<Backdrop kind={scene.data.backdrop} colour={theme.accent} ground={theme.background}/>:null}<Component key={scene.id+'|'+font+'|'+text} {...moveData} text={text} to={to} stamp={stamp} font={font} accent={scene.data.accent??theme.accent} ink={theme.text} digits={digits} frame={frame} fps={fps} width={width} height={height} durationInFrames={scene.durationInFrames}/><SceneStickerSlot host="arabic-type" sticker={sticker} ink={theme.text}/></CanvasFill>;
+};

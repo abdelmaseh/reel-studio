@@ -6,7 +6,8 @@ const steps = ['بياناتك', 'ستايل الفيديو', 'الكلام عل
 const labels = {
   captionsGrouping: {compact: 'كلمات قصيرة', clauses: 'جُمل هادية', single: 'كلمة في كل مرة'},
   captionsPresentation: {pill: 'كبسولة واضحة', minimal: 'كلام من غير خلفية', 'ink-strip': 'شريط غامق'},
-  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display', 'Grid Sans': 'Grid Sans', 'Noto Kufi Arabic': 'كوفي', 'Readex Pro': 'Readex', 'El Messiri': 'المسيري'},
+  captionsSkin: {'spoken-box': 'صندوق الكلمة المنطوقة', karaoke: 'كاريوكي', 'bold-outline': 'حدود عريضة', 'soft-shadow': 'ظل ناعم', 'paper-tag': 'قصاصة ورق'},
+  font: {Cairo: 'Cairo', Tajawal: 'Tajawal', 'Noto Naskh Arabic': 'نسخ عربي', 'Plex Display': 'Plex Display', 'Grid Sans': 'Grid Sans', 'Noto Kufi Arabic': 'كوفي', 'Readex Pro': 'Readex', 'El Messiri': 'المسيري', Lalezar: 'لالزار', 'Aref Ruqaa': 'عارف رقعة', 'Aref Ruqaa Ink': 'عارف رقعة حبر', 'Reem Kufi': 'ريم كوفي', Amiri: 'أميري', Alexandria: 'الإسكندرية', Marhey: 'مرحي'},
   writingStyle: {short: 'مختصر ومباشر', educational: 'شرح ونقط عملية', storytelling: 'حكاية قصيرة'},
 };
 const sampleWriting = {
@@ -82,6 +83,21 @@ function digitsSection() {
   return [el('h3', 'شكل الأرقام على الشاشة', {class: 'section-title'}), row, sample,
     note('هذا الاختيار يغيّر شكل الأرقام على الشاشة وفي الكابشن أيضًا. «كما هو» يترك كل مشهد كما كان.')];
 }
+function setCaptionSkin(value, focusId) {
+  if (value === 'auto') delete draft.preferences.captionsSkin; else draft.preferences.captionsSkin = {mode: 'fixed', value};
+  changed(); render(); document.getElementById(focusId)?.focus();
+}
+function captionSkinsSection() {
+  const current = draft.preferences.captionsSkin;
+  const state = current?.mode === 'fixed' ? current.value : 'auto';
+  const row = el('div', null, {class: 'radio-options', role: 'group', 'aria-label': 'سكين الكابشن'});
+  for (const value of ['auto', ...catalog.choices.captionsSkin]) {
+    const id = `caption-skin-${value}`;
+    row.append(button(value === 'auto' ? 'الشكل الأساسي' : prefLabel('captionsSkin', value), 'option-pill', () => setCaptionSkin(value, id), {id, 'aria-pressed': String(state === value)}));
+  }
+  return [el('h3', 'سكين الكابشن', {class: 'section-title'}), row,
+    note('السكين يحدد رسم الكابشن بدل الشكل الأساسي. «الشكل الأساسي» يرجع لاختيارك أعلاه.')];
+}
 function field(labelText, key, value, callback, {hint, max = 80, dir} = {}) {
   const label = el('label', null, {class: 'field', for: key}); label.append(el('span', labelText));
   const input = el('input', null, {id: key, type: 'text', maxlength: max, ...(dir ? {dir} : {})}); input.value = value ?? '';
@@ -133,15 +149,45 @@ function stylePage() {
     if (selected) card.append(el('span', '✓', {class: 'selected', 'aria-hidden': 'true'})); grid.append(card);
   }
   content.append(grid, el('p', 'دي رسومات توضيحية للستايلات. المونتاج النهائي بيتصمم على محتوى فيديوك.', {class: 'sample-note'}), note('الاختيار التلقائي يبدأ بالستايلين الأساسيين، ويضيف الستايلات الجديدة لما مشاهد فيديوك تناسبها. تقدر تختار أي ستايل بنفسك.'));
+  content.append(looksPreview());
+}
+// Four whole-video looks, drawn with CSS only. They are illustrations: a look is chosen for one video (editor tab «المظهر» or a request to the assistant) and is never saved here.
+const lookCards = [
+  ['riso', 'طباعة ريزو', 'حبران وحبيبات وورق دافئ، كأن الفيديو مطبوع.'],
+  ['blueprint', 'مخطط هندسي', 'ورق أزرق وخطوط بيضاء وشبكة، كأنه رسم تقني.'],
+  ['film', 'حبيبات فيلم', 'حبيبات خفيفة تتحرك وتعتيم لطيف على الأطراف، كأنه شريط سينمائي.'],
+  ['paper', 'ورق مطبوع', 'ملمس ورق دافئ فوق الصورة، كأن الفيديو مطبوع على ورقة.'],
+];
+function looksPreview() {
+  const box = el('div', null, {class: 'look-previews'});
+  box.append(el('h3', 'تأثير اختياري على الفيديو كله', {class: 'section-title'}));
+  const row = el('div', null, {class: 'look-grid'});
+  for (const [id, label, description] of lookCards) {
+    const card = el('div', null, {class: 'look-card'});
+    const art = el('div', null, {class: `look-art ${id}`, 'aria-hidden': 'true'});
+    art.append(el('b', 'فكرة واضحة'), el('i'));
+    const copy = el('div', null, {class: 'card-copy'});
+    copy.append(el('strong', label), el('small', description));
+    card.append(art, copy); row.append(card);
+  }
+  box.append(row, note('هذا شكل توضيحي. تختار التأثير لفيديو واحد من تبويب «المظهر» في المحرر أو بطلبك من المساعد، ولا يُحفظ ضمن إعداداتك. الكابشن يبقى فوق التأثير وواضحًا.'));
+  return box;
 }
 function captionsPage() {
   title('الكلام اللي بيظهر مع صوتك.', 'شكل وترتيب الكلام على الفيديو. الكلام المسجّل نفسه بيتحافظ عليه.');
   content.append(el('h3', 'كم كلمة تظهر مع بعض؟', {class: 'section-title'}), modeChoice('captionsGrouping'), pills('captionsGrouping'),
     el('h3', 'وشكلها يبقى إيه؟', {class: 'section-title'}), modeChoice('captionsPresentation'), pills('captionsPresentation'));
   const sample = el('div', null, {class: 'caption-preview', 'aria-label': 'مثال توضيحي للكابشن'});
+  content.append(...captionSkinsSection());
   const grouping = draft.preferences.captionsGrouping.value ?? 'compact'; const presentation = draft.preferences.captionsPresentation.value ?? 'pill';
   const text = grouping === 'single' ? 'فكرتك' : grouping === 'clauses' ? 'فكرتك تستاهل تتشاف بوضوح' : 'فكرتك تستاهل تتشاف';
-  const caption = el('span', text, {class: `caption-sample ${presentation}`}); caption.style.fontFamily = draft.preferences.font.value ?? 'Cairo'; sample.append(caption);
+  const skin = draft.preferences.captionsSkin?.mode === 'fixed' ? draft.preferences.captionsSkin.value : null;
+  const caption = el('span', skin ? null : text, {class: `caption-sample ${skin ?? presentation}`});
+  if (skin) text.split(' ').forEach((word, index) => {
+    if (index) caption.append(document.createTextNode(' '));
+    caption.append(el('span', word, {class: index === 0 ? 'spoken' : ''}));
+  });
+  caption.style.fontFamily = draft.preferences.font.value ?? 'Cairo'; sample.append(caption);
   content.append(sample, el('p', 'مثال توضيحي. التوقيت بيتظبط على صوتك، والاختيار التلقائي بيتغيّر حسب الفيديو.', {class: 'sample-note'}));
 }
 function fontsPage() {
@@ -197,6 +243,7 @@ function summaryPage() {
     ['ستايل الفيديو', draft.preferences.style.mode === 'auto' ? 'تلقائي لكل فيديو' : prefLabel('style', draft.preferences.style.value), 1],
     ['ترتيب الكابشن', draft.preferences.captionsGrouping.mode === 'auto' ? 'تلقائي لكل فيديو' : prefLabel('captionsGrouping', draft.preferences.captionsGrouping.value), 2],
     ['شكل الكابشن', draft.preferences.captionsPresentation.mode === 'auto' ? 'تلقائي لكل فيديو' : prefLabel('captionsPresentation', draft.preferences.captionsPresentation.value), 2],
+    ['سكين الكابشن', draft.preferences.captionsSkin?.mode === 'fixed' ? prefLabel('captionsSkin', draft.preferences.captionsSkin.value) : 'الشكل الأساسي', 2],
     ['الخط', draft.preferences.font.mode === 'auto' ? 'تلقائي حسب الستايل' : prefLabel('font', draft.preferences.font.value), 3],
     ['الأرقام', digitLabels[draft.preferences.digits?.mode === 'fixed' ? draft.preferences.digits.value : 'auto'], 3],
     ['وصف المنشور', draft.preferences.writingStyle.mode === 'auto' ? 'تلقائي حسب المحتوى' : prefLabel('writingStyle', draft.preferences.writingStyle.value), 4],
@@ -281,7 +328,7 @@ async function load() {
     catalog = options; draft = state.profile ?? structuredClone(catalog.defaults); etag = state.etag; existing = state.profile !== null; setup = progress.setup;
     draft.preferences.digits ??= {mode: 'auto', value: null};
     document.querySelector('#edition').textContent = catalog.edition ? `v${catalog.edition}` : '';
-    document.querySelector('#save-state').textContent = existing ? 'إعداداتك محفوظة ✓' : 'جاهز لاختياراتك';
+    document.querySelector('#save-state').textContent = state.notices?.length ? state.notices.join(' ') : existing ? 'إعداداتك محفوظة ✓' : 'جاهز لاختياراتك';
     render(); pollTimer = setInterval(refreshStatus, 3000);
   } catch (error) {
     content.replaceChildren(); title('مش قادرين نفتح إعداداتك.', 'إعداداتك محفوظة. خلي المساعد يراجع المشكلة، أو جرّب تفتح الشاشة تاني.'); showError(error.message);

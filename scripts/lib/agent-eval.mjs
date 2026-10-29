@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import {readFileSync} from 'node:fs';
 import {editedMinutes,SWEEP_RECIPE as SWEEP} from './production-accept.mjs';
 
@@ -21,7 +22,7 @@ export function scoreRun({expected,plan,candidate,cues,cutRows,textCheck}){
   const comment=(candidate?.scenes??[]).find(scene=>/comment$/.test(String(scene.family)));
   hard.push(row('keyword-on-screen',candidate?(!expected.ending?.comment||(!!comment&&typeof comment.data?.keyword==='string'&&comment.data.keyword.trim().length>0)):null,'the comment scene shows the keyword',comment?comment.data?.keyword??'':'no comment scene'));
 
-  soft.push(row('style',plan?plan.style===expected.style.id:null,expected.style.id,plan?.style??'no plan'));
+  soft.push(row('style',plan?normalizeStyleId(plan.style)===normalizeStyleId(expected.style.id):null,expected.style.id,plan?.style??'no plan'));
   soft.push(row('style-reason',plan?(expected.style.reasonContains??[]).every(word=>String(plan.reason).includes(word)):null,`reason mentions ${(expected.style.reasonContains??[]).join(', ')||'anything'}`,plan?.reason??'no plan'));
   soft.push(row('hook-start',plan?plan.beats[0]?.fromSec<=expected.hook.maxStartSec:null,`first beat ≤ ${expected.hook.maxStartSec} s`,plan?.beats?.[0]?.fromSec));
   soft.push(row('beat-count',plan?(plan.beats.length>=expected.beats.min&&plan.beats.length<=expected.beats.max):null,`${expected.beats.min}–${expected.beats.max} beats`,plan?.beats?.length));

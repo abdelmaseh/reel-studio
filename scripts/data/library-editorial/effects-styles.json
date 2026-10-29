@@ -2,6 +2,220 @@
   "version": 1,
   "items": [
     {
+      "key": "backdrop:girih",
+      "role": "extension",
+      "labelAr": "نجوم هندسية بتترسم",
+      "explains": "An animated star pattern constructed in code (octagon and square tiling, Hankin contact lines) that draws itself outward, turns slowly and settles to a faint texture behind a scene.",
+      "action": "An arabic-type scene asks for it with backdrop \"girih\"; in code, mount <Backdrop kind=\"girih\" colour=... speed=... density=.../> from engine/src/looks behind the scene content. It is a scene option, not a manifest key of its own.",
+      "useWhen": [
+        "A reflective or calm Arabic text scene wants a quiet geometric ground that moves slowly.",
+        "A style or scene that already accepts a backdrop name needs a decorative layer with no letters in it."
+      ],
+      "avoidWhen": [
+        "The scene is busy or the pattern would compete with small text: keep it at its faint resting opacity.",
+        "The text is a quoted verse that must carry no other effect."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "calm",
+        "reflective",
+        "warm"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Decoration only: it draws nothing under the safe-zone probe and carries no text, so it never counts as content.",
+        "Only arabic-type scenes take a backdrop name today: backdrop \"girih\" on that scene, beside plain, sunburst and paper.",
+        "Choose a line colour with enough contrast to be seen yet quiet: it settles to 15% opacity.",
+        "The pattern is pure geometry with seeded timing, so a frame depends only on the frame number and the props."
+      ],
+      "display": {
+        "explains": "خلفية نجوم هندسية بتترسم من النص لبره وبعدين تهدى وتبقى خيال خفيف.",
+        "useWhen": "لمشهد نص هادي محتاج أرضية زخرفية بتتحرك ببطء.",
+        "avoidWhen": "لو المشهد زحمة أو الكلام صغير والنقش هيزاحمه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/math.ts",
+          "sha256": "8684e207c32d51d0ee60a42e5f377d71268db745e02820fdfa317b4e3c1736c6"
+        },
+        {
+          "path": "engine/src/looks/girih.tsx",
+          "sha256": "dab5e1793d1a8a03c02df19324cb7598533fea42b6df7153994c1a7552e221f1"
+        },
+        {
+          "path": "engine/src/looks/backdrop.tsx",
+          "sha256": "c683e67722505481ee0433490bd372d57af769343e5ef4a0a32c00014b4923b5"
+        }
+      ]
+    },
+    {
+      "key": "backdrop:sunburst",
+      "role": "extension",
+      "labelAr": "شمس بأشعة بتلف",
+      "explains": "Sixteen rays in two tones of the style ground, tinted toward its accent, turning slowly behind a scene. It is a layer of its own: nothing is applied to the scene.",
+      "action": "An arabic-type scene takes it with data.backdrop \"sunburst\" (the editor offers it in the scene form). Elsewhere mount <Backdrop kind=\"sunburst\" colour=... ground=... speed=.../> behind the scene content from engine/src/looks. Not a manifest key.",
+      "useWhen": [
+        "A bold, positive or announcement text scene wants a calm moving ground behind a big Arabic headline.",
+        "A single word or short phrase carries the scene and the rays can frame it."
+      ],
+      "avoidWhen": [
+        "The scene is busy or carries small text: the rays compete with it.",
+        "A reflective or formal mood: use girih or the plain ground."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "warm"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Decoration only: it draws nothing under the safe-zone probe and carries no text, so it never counts as content.",
+        "The two tones are the style background mixed 20 percent and 8 percent toward its accent: text that reads on the ground reads on every ray, checked on every registered style (the accent keeps 3 to 1 where it had it). The rays always turn: the rotation starts at 7.5 degrees and is never zero.",
+        "The rays turn 3 degrees a second at speed 1; a frame depends only on the frame number and the props. A frame of the render costs about 0.05 to 0.12 s more than the plain scene (the effect chain re-runs each frame as the rays turn).",
+        "Renders pin the software GL backend (scripts/lib/render-gl.mjs); the live preview in a normal browser draws the same rays."
+      ],
+      "display": {
+        "explains": "أشعة شمس بلونين من لون الستايل بتلف ببطء ورا نص كبير.",
+        "useWhen": "لمشهد نص عريض وإيجابي أو إعلان.",
+        "avoidWhen": "لو المشهد زحمة أو الكلام صغير، أو الجو هادي ورسمي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/effects.ts",
+          "sha256": "75e517ce52e02288454f1a19ebfbc91346971e9af72ef59b5057ee8d1729a5f9"
+        },
+        {
+          "path": "engine/src/looks/sunburst.tsx",
+          "sha256": "5cbcc5db693056f7786d9c77a97d2cc6f1231df5b6c8cfae8db759b680d91bfb"
+        },
+        {
+          "path": "engine/src/looks/backdrop.tsx",
+          "sha256": "c683e67722505481ee0433490bd372d57af769343e5ef4a0a32c00014b4923b5"
+        },
+        {
+          "path": "engine/src/arabic-type/schema.ts",
+          "sha256": "ccf187f8c7e8580143b4c82611f24f8ae96b5fa243755a4fd04174edcbf8479c"
+        },
+        {
+          "path": "engine/src/arabic-type/scene.tsx",
+          "sha256": "9cda85e5aee91804ae056c5ee0f047f97b31cc21057d2bf6a25c556d6dc90451"
+        }
+      ]
+    },
+    {
+      "key": "backdrop:paper",
+      "role": "extension",
+      "labelAr": "ورقة بملمس خفيف",
+      "explains": "A fine paper grain (fibre and a faint speckle, no folds) multiplied over the scene ground, so the style background keeps its colour and gains a printed-paper texture.",
+      "action": "An arabic-type scene takes it with data.backdrop \"paper\" (the editor offers it in the scene form). Elsewhere mount <Backdrop kind=\"paper\"/> behind the scene content from engine/src/looks. Not a manifest key.",
+      "useWhen": [
+        "A calm, crafted or editorial text scene on a light or cream style wants a tactile ground.",
+        "A quote or a single reflective sentence deserves a printed-page feel."
+      ],
+      "avoidWhen": [
+        "A dark style: the grain is almost invisible and the ground only gets a little darker.",
+        "The scene is busy: the texture adds noise behind small text."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "calm",
+        "reflective",
+        "warm"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Decoration only: it draws nothing under the safe-zone probe and carries no text.",
+        "It is a white sheet of paper grain multiplied over the ground: the ground keeps its hue and is at most 17 percent darker anywhere (10 percent on average); checked on every registered style that text keeps its contrast.",
+        "Nothing depends on the frame: the sheet is drawn once and kept, so it costs almost nothing per frame after the first frame, which takes 2 to 4 seconds in each render tab.",
+        "Renders pin the software GL backend (scripts/lib/render-gl.mjs) because the paper shader draws different pixels on a GPU."
+      ],
+      "display": {
+        "explains": "ملمس ورق خفيف فوق خلفية المشهد، فاللون يفضل زي ما هو ويبان كأنه مطبوع.",
+        "useWhen": "لمشهد نص هادي على ستايل فاتح أو كريمي.",
+        "avoidWhen": "لو الستايل غامق (الملمس هيختفي) أو المشهد زحمة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/effects.ts",
+          "sha256": "75e517ce52e02288454f1a19ebfbc91346971e9af72ef59b5057ee8d1729a5f9"
+        },
+        {
+          "path": "engine/src/looks/paper.tsx",
+          "sha256": "a418e5fa7c0e18cbd45fabc4750daeb170bdd689e6290861e73350b5e63e1c54"
+        },
+        {
+          "path": "engine/src/looks/backdrop.tsx",
+          "sha256": "c683e67722505481ee0433490bd372d57af769343e5ef4a0a32c00014b4923b5"
+        },
+        {
+          "path": "engine/src/arabic-type/schema.ts",
+          "sha256": "ccf187f8c7e8580143b4c82611f24f8ae96b5fa243755a4fd04174edcbf8479c"
+        },
+        {
+          "path": "engine/src/arabic-type/scene.tsx",
+          "sha256": "9cda85e5aee91804ae056c5ee0f047f97b31cc21057d2bf6a25c556d6dc90451"
+        }
+      ]
+    },
+    {
       "key": "camera:punch-step",
       "role": "camera",
       "labelAr": "تكبير بقطعة",
@@ -50,15 +264,15 @@
       "evidence": [
         {
           "path": "engine/src/core/camera.ts",
-          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
         }
       ]
     },
@@ -113,15 +327,15 @@
       "evidence": [
         {
           "path": "engine/src/core/camera.ts",
-          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
         }
       ]
     },
@@ -174,15 +388,276 @@
       "evidence": [
         {
           "path": "engine/src/core/camera.ts",
-          "sha256": "050369d6fa4f8df1bbe16e0ded83ac87f06940e0b3388ba8df45e126e7e57aef"
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
+        }
+      ]
+    },
+    {
+      "key": "camera:dolly",
+      "role": "camera",
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "labelAr": "اقتراب سينمائي",
+      "explains": "One slow, eased push-in across the whole scene draws the eye inward without a cut.",
+      "action": "Set the scene camera to dolly; it pushes in from rest to 1.04 (soft), 1.08 (normal) or 1.14 (strong) across the scene.",
+      "useWhen": [
+        "A single graphic holds the screen for several seconds and the claim should feel like it is closing in.",
+        "A calm or serious beat benefits from sustained attention without a new element."
+      ],
+      "avoidWhen": [
+        "The scene is shorter than about two seconds; the push has no time to read as a move.",
+        "Small text sits near the frame edge; the push crops it by the end.",
+        "The same scene already carries a snap-zoom, orbit or handheld (one move per scene)."
+      ],
+      "intents": [
+        "focus",
+        "claim",
+        "result"
+      ],
+      "moods": [
+        "calm",
+        "serious",
+        "reflective",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "requirements": [
+        "Takeover (full-frame) and split scenes only: on a split scene the move acts on the graphics panel alone, clipped at the seam, while the presenter window, captions and head gates stay still. Presenter scenes keep the camera track and the head gates, and the manifest refuses a scene camera on them.",
+        "Not on one-shot, screen-recording or screen-focus, which already move their own camera.",
+        "strength is soft, normal (default) or strong; the move runs across the whole scene and ends closer than it starts.",
+        "The safe-zone probe ignores camera motion, so the resting layout must already pass; keep small text off the edges."
+      ],
+      "display": {
+        "explains": "اقتراب هادي ومستمر طول المشهد من غير قطع.",
+        "useWhen": "مع مشهد جرافيك واقف كام ثانية وعايزين نشد العين ناحيته.",
+        "avoidWhen": "لو المشهد قصير أو فيه كلام صغير قريب من الحافة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
+        },
+        {
+          "path": "engine/src/core/scene-camera.tsx",
+          "sha256": "7be9daec2b17ba143d40db7911ad1127ed9ee4b967edc9c6e7f915b016dd0322"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        }
+      ]
+    },
+    {
+      "key": "camera:handheld",
+      "role": "camera",
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "labelAr": "كاميرا في الإيد",
+      "explains": "A seeded organic shake makes a flat graphic scene feel filmed by hand, and repeats exactly on every render.",
+      "action": "Set the scene camera to handheld; the shake is seeded by the scene id and scaled to cover its own edges.",
+      "useWhen": [
+        "A documentary, raw or energetic feel is wanted on an otherwise static graphic.",
+        "The scene is a reveal or result where a living frame helps."
+      ],
+      "avoidWhen": [
+        "Dense or small text must stay perfectly steady to be read.",
+        "Evidence, numbers or comparisons must be judged precisely.",
+        "Strong strength on a long scene; the shake becomes tiring."
+      ],
+      "intents": [
+        "reveal",
+        "result"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "warm"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "requirements": [
+        "Takeover (full-frame) and split scenes only: on a split scene the move acts on the graphics panel alone, clipped at the seam, while the presenter window, captions and head gates stay still. Presenter scenes keep the camera track and the head gates, and the manifest refuses a scene camera on them.",
+        "Not on one-shot, screen-recording or screen-focus, which already move their own camera.",
+        "strength soft (breathing), normal (default, hand-held) or strong (walking); the frame is scaled up just enough that the shake never exposes an edge.",
+        "The safe-zone probe ignores camera motion, so the resting layout must already pass; keep small text off the edges."
+      ],
+      "display": {
+        "explains": "اهتزاز خفيف طبيعي يحسّسك إن المشهد مصوّر بالإيد.",
+        "useWhen": "لما عايزين إحساس حيّ على مشهد واقف.",
+        "avoidWhen": "لو الكلام صغير ومحتاج يفضل ثابت أو في أرقام للمقارنة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
+        },
+        {
+          "path": "engine/src/core/scene-camera.tsx",
+          "sha256": "7be9daec2b17ba143d40db7911ad1127ed9ee4b967edc9c6e7f915b016dd0322"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        }
+      ]
+    },
+    {
+      "key": "camera:orbit",
+      "role": "camera",
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "labelAr": "دوران حوالين المشهد",
+      "explains": "The view arcs slowly round a flat graphic scene, giving a still composition depth without changing what it says.",
+      "action": "Set the scene camera to orbit; it sweeps the yaw from one side to the other across the scene (3, 5 or 8 degrees each way) and is upright in the middle.",
+      "useWhen": [
+        "A single graphic or diagram holds the screen for several seconds and needs depth.",
+        "A reflective or editorial moment where life is wanted but no new information."
+      ],
+      "avoidWhen": [
+        "Text near the frame edge must stay square; the turn keystones it.",
+        "The scene is short; the sweep has no time to read as one smooth move.",
+        "Two charts or numbers must be compared precisely; the tilt distorts the comparison."
+      ],
+      "intents": [
+        "reveal",
+        "chapter",
+        "result"
+      ],
+      "moods": [
+        "calm",
+        "reflective",
+        "editorial",
+        "serious"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "requirements": [
+        "Takeover (full-frame) and split scenes only: on a split scene the move acts on the graphics panel alone, clipped at the seam, while the presenter window, captions and head gates stay still. Presenter scenes keep the camera track and the head gates, and the manifest refuses a scene camera on them.",
+        "Not on one-shot, screen-recording or screen-focus, which already move their own camera.",
+        "strength soft, normal (default) or strong; the frame is scaled up just enough that the turn never exposes an edge (up to about 1.07 at strong).",
+        "The safe-zone probe ignores camera motion, so the resting layout must already pass; keep small text off the edges."
+      ],
+      "display": {
+        "explains": "الكاميرا بتلف ببطء حوالين المشهد وتدّي عمق من غير ما تغيّر الكلام.",
+        "useWhen": "مع مشهد جرافيك واقف كام ثانية ومحتاج حياة.",
+        "avoidWhen": "لو الكلام قريب من الحافة أو في أرقام بتتقارن بدقة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
+        },
+        {
+          "path": "engine/src/core/scene-camera.tsx",
+          "sha256": "7be9daec2b17ba143d40db7911ad1127ed9ee4b967edc9c6e7f915b016dd0322"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        }
+      ]
+    },
+    {
+      "key": "camera:snap-zoom",
+      "role": "camera",
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "labelAr": "ضربة زووم",
+      "explains": "A sudden punch-in on a cue gives one beat of a graphic scene a hard accent, then settles back so the scene ends uncropped.",
+      "action": "Set the scene camera to snap-zoom and put at on the scene frame of the beat; it lands within about four frames, holds, and relaxes within a second.",
+      "useWhen": [
+        "One moment of a full-frame graphic scene deserves a hard accent, such as a figure landing or a keyword appearing.",
+        "The beat is known: a reviewed word or an authored reveal frame."
+      ],
+      "avoidWhen": [
+        "More than one accent would fall in the same scene; it would pulse like a strobe.",
+        "Small text sits near the frame edge; the punch crops it for a moment.",
+        "The cue is within a second of the scene end; there is no time to relax."
+      ],
+      "intents": [
+        "focus",
+        "word-emphasis",
+        "reveal"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "requirements": [
+        "Takeover (full-frame) and split scenes only: on a split scene the move acts on the graphics panel alone, clipped at the seam, while the presenter window, captions and head gates stay still. Presenter scenes keep the camera track and the head gates, and the manifest refuses a scene camera on them.",
+        "Not on one-shot, screen-recording or screen-focus, which already move their own camera.",
+        "at is a scene frame inside the scene (0 up to the last frame); left out, the cue lands 40 percent into the scene. Peak scale is 1.05 (soft), 1.10 (normal, default) or 1.18 (strong).",
+        "The safe-zone probe ignores camera motion, so the resting layout must already pass; keep small text off the edges."
+      ],
+      "display": {
+        "explains": "زووم مفاجئ على لحظة واحدة وبعدها المشهد يرجع لحجمه.",
+        "useWhen": "مع لحظة واحدة في مشهد جرافيك محتاجة نبرة قوية.",
+        "avoidWhen": "لو في أكتر من ضربة في نفس المشهد أو الكلام الصغير قريب من الحافة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/camera.ts",
+          "sha256": "ebc1696fb44698b25de3d371de10c77d367c872bd70943093f358830adbb02b5"
+        },
+        {
+          "path": "engine/src/core/scene-camera.tsx",
+          "sha256": "7be9daec2b17ba143d40db7911ad1127ed9ee4b967edc9c6e7f915b016dd0322"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -236,19 +711,19 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/caption-emphasis.ts",
-          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+          "sha256": "80793b859dfff4eddb50efa7deb8d29db823fc39e98fe1e5c67aac8469facf4b"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         }
       ]
     },
@@ -262,7 +737,7 @@
         "An energetic recorded keyword warrants a brief pulse and has room around it."
       ],
       "avoidWhen": [
-        "The style keeps caption pills static, including split-canvas and section-deck.",
+        "The style keeps caption pills static, including section-deck and documentary.",
         "The point needs low-motion reading or the word is not recorded."
       ],
       "intents": [
@@ -301,19 +776,19 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/caption-emphasis.ts",
-          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+          "sha256": "80793b859dfff4eddb50efa7deb8d29db823fc39e98fe1e5c67aac8469facf4b"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         }
       ]
     },
@@ -367,19 +842,19 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/caption-emphasis.ts",
-          "sha256": "759089d89ab3f7d07dcd07b329c5ba55b70c00619fde7cbd76a367f2318d7926"
+          "sha256": "80793b859dfff4eddb50efa7deb8d29db823fc39e98fe1e5c67aac8469facf4b"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         }
       ]
     },
@@ -432,15 +907,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/mask.tsx",
@@ -497,19 +972,19 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/creative-kit/chapter-theme.tsx",
-          "sha256": "77f1305058c915046bb3a420c06718eb08859a68e8616e0c4407de334115992e"
+          "sha256": "7694a2a49aa6cf9af190ee1b3b70dd4bdd9090917dfd9ce4612c2200664275f4"
         }
       ]
     },
@@ -561,15 +1036,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions-dir.tsx",
@@ -625,15 +1100,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions-dir.tsx",
@@ -690,15 +1165,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -706,7 +1181,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -759,15 +1234,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -775,7 +1250,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -829,15 +1304,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -845,7 +1320,81 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        }
+      ]
+    },
+    {
+      "key": "kinetic-emphasis:stretch",
+      "role": "emphasis",
+      "labelAr": "كشيدة تمد الكلمة المسجلة",
+      "explains": "A recorded Arabic token grows along its connections with kashida while it is spoken, then relaxes back to its plain form; the words around it glide apart and back, so there is never a loose gap at rest.",
+      "action": "Lengthen the supplied Arabic sourceIndex at its best joining point over its spoken window (up to six tatweels, rising over 0.35 seconds, held through the word, relaxing over 0.25 seconds); the word stays one text node, its room in the line follows its current width continuously and the neighbouring words move with it, and a token with no legal joining point is drawn plain.",
+      "useWhen": [
+        "One spoken Arabic word carries the point and deserves a calligraphic push."
+      ],
+      "avoidWhen": [
+        "The token is Latin, a number, a name that must stay exactly as written, or shorter than three letters.",
+        "Several words of one phrase would stretch and the push loses its hierarchy."
+      ],
+      "intents": [
+        "word-emphasis",
+        "text",
+        "focus"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Use kind: stretch on a selected sourceIndex in scene:kinetic-text; the word comes from the reviewed recording, never from free-form text.",
+        "Only an Arabic word with a legal joining point stretches (never after a non-joining letter, never inside lam-alef, never at the word edges); any other token is drawn plain and its cue is unchanged.",
+        "The line breaks and the type size are decided once with the longest form, so the line never re-wraps or resizes during the stretch, and a stretching word may sit on its own line when its longest form does not fit beside its neighbours. Inside the line the word takes the room of its current width (measured at every whole tatweel and interpolated between them) and the words around it glide apart and back with no gap at rest. Review the actual reach of the widest form in the line, face clearance and safe zones."
+      ],
+      "display": {
+        "explains": "بتمد الكلمة العربية زي الخط العربي وهي بتتقال، والكلمات اللي جنبها بتبعد وترجع معاها من غير فراغ.",
+        "useWhen": "لكلمة واحدة هي قلب الجملة.",
+        "avoidWhen": "لو الكلمة إنجليزي أو رقم أو اسم لازم يفضل زي ما هو."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/creative-kit/kinetic-words-logic.ts",
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
+        },
+        {
+          "path": "engine/src/creative-kit/kinetic-words.tsx",
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
+        },
+        {
+          "path": "engine/src/arabic/kashida.ts",
+          "sha256": "519d6009587276e879d9c1399a700692a4c6a433a7d75c9aba5c37316774f423"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/schema.ts",
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
+        },
+        {
+          "path": "engine/src/creative-kit/semantic/scenes.tsx",
+          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -900,15 +1449,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -916,7 +1465,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -970,15 +1519,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -986,7 +1535,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -1040,11 +1589,11 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
         },
         {
           "path": "engine/src/core/window-geo.ts",
@@ -1103,15 +1652,340 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/footage.ts",
-          "sha256": "d10107158810918676b5897108b0f13ff6fbd5aac4aa3af7b0437f99f986182f"
+          "sha256": "625bbf88af5e419cef2df03b86c0536e699f51529eb62508d07706c51255c54c"
         },
         {
           "path": "engine/src/core/window-geo.ts",
           "sha256": "8106230679978d9881174a01bd05efb953a80c2025b35928446f64672bf12c9f"
+        }
+      ]
+    },
+    {
+      "key": "look:blueprint",
+      "role": "style",
+      "labelAr": "مخطط هندسي أزرق",
+      "explains": "A technical-drawing finish over the whole picture: blue paper, white line work along every edge, a fine grid and drawing marks without any words or numbers.",
+      "action": "Set the manifest root look to {\"kind\":\"blueprint\"} (editor Look tab, or the brief); captions and transition overlays are drawn on top and stay unfiltered.",
+      "useWhen": [
+        "A how-it-works, tooling or process explanation suits a technical, drawn identity for the whole video.",
+        "The scenes are graphics-led and text-heavy: white outlines keep large Arabic text readable on the blue."
+      ],
+      "avoidWhen": [
+        "The presenter, a product or brand colours must keep their natural colour.",
+        "Small or thin type carries the meaning: line work thins it out."
+      ],
+      "intents": [
+        "process",
+        "tooling",
+        "brand"
+      ],
+      "moods": [
+        "technical",
+        "serious",
+        "calm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Root manifest key look {kind:\"blueprint\"}; no inks. It works over any registered style and over graphics projects.",
+        "It recolours footage and scenes into blue and white: do not combine it with a request to keep profile brand colours.",
+        "Grid, brackets, dimension lines and targets carry no text or numbers, return null under the safe-zone probe and stay inside the organic safe zone.",
+        "A caption without a backing of its own (minimal, or a transparent pill) is drawn on a deep-blue chip with white text, so it is readable on any style.",
+        "Costs about a third of a second extra per rendered frame; review stills of the actual scenes, since line work thins small type."
+      ],
+      "display": {
+        "explains": "بيحوّل الفيديو كله لرسم هندسي: ورق أزرق وخطوط بيضا وشبكة خفيفة.",
+        "useWhen": "لشرح خطوات أو أدوات أو فكرة تقنية.",
+        "avoidWhen": "لو لازم ألوان البراند أو لون المتحدث تفضل زي ما هي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/math.ts",
+          "sha256": "8684e207c32d51d0ee60a42e5f377d71268db745e02820fdfa317b4e3c1736c6"
+        },
+        {
+          "path": "engine/src/looks/blueprint.tsx",
+          "sha256": "323cee5650711a7c7b4084b71b8cd5a4f49a6504f5d72e5b8a0bdc3292c6190f"
+        },
+        {
+          "path": "engine/src/looks/layer.tsx",
+          "sha256": "6e7ccb08de2396e354109b5ffde97347207b932ddd1108a8b485486eab0e1517"
+        },
+        {
+          "path": "engine/src/looks/captions.ts",
+          "sha256": "daabc9172cad99abca9b89fd2d42c626c8cf22c284f64af23aa75d187294e0e6"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "look:riso",
+      "role": "style",
+      "labelAr": "طباعة ريزو بحبرين",
+      "explains": "A two-ink print finish over the whole picture: the footage and scenes are separated into two inks with grain, a few pixels of plate misregistration and warm paper.",
+      "action": "Set the manifest root look to {\"kind\":\"riso\"} with optional inks (two different #RRGGBB colours) in the editor Look tab or the brief; captions and transition overlays are drawn on top and stay unfiltered.",
+      "useWhen": [
+        "A playful, tactile print identity for a whole video fits the topic and the creator accepts a two-colour picture.",
+        "The scenes are graphics-led with large type, which survives the grain."
+      ],
+      "avoidWhen": [
+        "The presenter, a product or brand colours must keep their natural colour.",
+        "Small or thin type carries the meaning: the grain eats it."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "playful",
+        "warm",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Root manifest key look {kind:\"riso\", inks?:[#RRGGBB,#RRGGBB]}: the inks must differ, be separable into two layers and at least one must read on the paper (3:1).",
+        "It recolours footage and scenes into two inks: do not combine it with a request to keep profile brand colours.",
+        "The grain moves every four frames from a seeded hash; no per-frame turbulence, and a frame depends only on its number.",
+        "A caption without a backing of its own (minimal, or a transparent pill) is drawn on a paper chip in the darkest overprint of the inks, so it is readable on any style.",
+        "Costs about a quarter of a second extra per rendered frame; review stills of the actual scenes for small type."
+      ],
+      "display": {
+        "explains": "بيحوّل الفيديو كله لطباعة ريزو بحبرين، بحبيبات وتزحزح خفيف زي الطباعة الحقيقية.",
+        "useWhen": "لهوية خفيفة وملموسة لفيديو كامل.",
+        "avoidWhen": "لو لازم ألوان البراند أو لون المتحدث تفضل زي ما هي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/math.ts",
+          "sha256": "8684e207c32d51d0ee60a42e5f377d71268db745e02820fdfa317b4e3c1736c6"
+        },
+        {
+          "path": "engine/src/looks/riso.tsx",
+          "sha256": "86e71f2d7ae776be8827ad4042a7827082d9ab533523d57c43d2d978300e3458"
+        },
+        {
+          "path": "engine/src/looks/noise.ts",
+          "sha256": "a8e62d59cf7d6f127e61ff5e40ab7ae27b6d1afd3cd4e62e7423bc3accae8e87"
+        },
+        {
+          "path": "engine/src/looks/layer.tsx",
+          "sha256": "6e7ccb08de2396e354109b5ffde97347207b932ddd1108a8b485486eab0e1517"
+        },
+        {
+          "path": "engine/src/looks/captions.ts",
+          "sha256": "daabc9172cad99abca9b89fd2d42c626c8cf22c284f64af23aa75d187294e0e6"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "look:film",
+      "role": "style",
+      "labelAr": "حبيبات فيلم وتعتيم أطراف",
+      "explains": "A light film finish over the whole picture: the corners darken a little and a fine grain moves across the frame, a new grain every frame. The picture itself is unchanged, so faces, screens and baked captions keep their colour.",
+      "action": "Set the manifest root look to {\"kind\":\"film\"} in the editor Look tab or the brief. The look adds one layer over the picture and under the captions; it takes no options.",
+      "useWhen": [
+        "A warm, cinematic or documentary feel fits the topic and the picture must keep its natural colours (a presenter, a product, a screen recording).",
+        "A flat graphics-only video needs a little life without changing its palette."
+      ],
+      "avoidWhen": [
+        "The video is already grainy, dark or heavily compressed: the extra grain adds noise to noise.",
+        "The creator wants a clean, crisp tech look, or small type carries the meaning and the video is short of contrast."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "warm",
+        "reflective",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Root manifest key look {kind:\"film\"}; no other option. It is a layer of its own (a Solid with a vignette and a noise effect blended with overlay), never an effect on the scene pixels.",
+        "The grain amount stays at 0.10 (the family limit is 0.12) and the vignette leaves the middle of the frame untouched: measured on a flat skin tone, the area where a face sits changes by under 1 percent and only the outer edge and corners darken (down to 0.71 at the corners).",
+        "Captions are drawn above the look and need no chip: the grain is light and strongest in the mid-tones, so a transparent caption keeps its outline.",
+        "The grain is a pure function of the frame number (a new seed every frame), so a re-render gives the same bytes on the same GL backend. Renders pin the software GL backend (scripts/lib/render-gl.mjs); the live preview in a normal browser draws the same look with slightly different grain pixels.",
+        "Costs roughly 0.12 to 0.18 s extra per rendered frame in the render browser (measured against the same scene with no look, one render tab, a loaded machine; riso costs about 0.3 s); nothing is drawn under the safe-zone probe."
+      ],
+      "display": {
+        "explains": "حبيبات فيلم خفيفة بتتحرك وتعتيم بسيط على الأطراف. الصورة نفسها زي ما هي، فوشك والشاشة بيفضلوا بألوانهم.",
+        "useWhen": "لإحساس سينمائي دافي من غير ما تغيّر ألوان الصورة.",
+        "avoidWhen": "لو الفيديو أصلاً مليان تشويش أو عايزه نضيف وحاد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/effects.ts",
+          "sha256": "75e517ce52e02288454f1a19ebfbc91346971e9af72ef59b5057ee8d1729a5f9"
+        },
+        {
+          "path": "engine/src/looks/film.tsx",
+          "sha256": "5898db6879b5b5915d26dc0c70ad7a82d291d9762e3f45d90f45fd9adecc4c80"
+        },
+        {
+          "path": "engine/src/looks/layer.tsx",
+          "sha256": "6e7ccb08de2396e354109b5ffde97347207b932ddd1108a8b485486eab0e1517"
+        },
+        {
+          "path": "engine/src/looks/captions.ts",
+          "sha256": "daabc9172cad99abca9b89fd2d42c626c8cf22c284f64af23aa75d187294e0e6"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "look:paper",
+      "role": "style",
+      "labelAr": "ورق مطبوع",
+      "explains": "The whole picture printed on a sheet of warm paper: a fixed paper texture (fibre and a faint grain, no fold lines) is multiplied over the picture at half strength, so whites turn cream and a fibre grain shows in light areas. The sheet never changes, so it does not flicker.",
+      "action": "Set the manifest root look to {\"kind\":\"paper\"} in the editor Look tab or the brief. The look adds one layer over the picture and under the captions; it takes no options.",
+      "useWhen": [
+        "A tactile, printed, craft or editorial feel fits the topic: a story, a book, a recipe, a calm explainer on a light style.",
+        "The scenes are graphics on a light or cream style, where the paper grain is visible."
+      ],
+      "avoidWhen": [
+        "Colour accuracy matters (a product, a brand colour, skin tones the creator wants untouched): the multiply makes everything about 10 percent darker and a little warmer.",
+        "The video is dark: the grain disappears and the picture only loses brightness."
+      ],
+      "intents": [
+        "brand",
+        "chapter"
+      ],
+      "moods": [
+        "warm",
+        "calm",
+        "reflective"
+      ],
+      "energy": [
+        "low"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Root manifest key look {kind:\"paper\"}; no other option. It is a layer of its own (a Solid with the paper effect, multiplied at 50 percent opacity), never an effect on the scene pixels.",
+        "Measured on six skin tones at the shipped strength: about 10 percent darker and warmer (blue about 14 percent lower on the lightest tone); white becomes a cream. Pure black stays black.",
+        "The sheet has no folds and a fixed seed and does not depend on the frame: every frame draws the same sheet and the effect chain is drawn once and kept, so it costs almost nothing per frame after the first (the first frame in each render tab takes 2 to 4 seconds; paper is the heaviest effect).",
+        "Captions are drawn above the look and need no chip: a multiply can only darken what a caption sat on.",
+        "Renders pin the software GL backend (scripts/lib/render-gl.mjs) because the paper shader draws different pixels on a GPU; the live preview in a normal browser draws the same look with slightly different fibre pixels.",
+        "Nothing is drawn under the safe-zone probe."
+      ],
+      "display": {
+        "explains": "الفيديو كله كأنه مطبوع على ورقة دافية. الأبيض بيبقى كريمي ووش الورقة بتبان في الأماكن الفاتحة.",
+        "useWhen": "لإحساس مطبوع وهادي في حكاية أو شرح على ستايل فاتح.",
+        "avoidWhen": "لو دقة الألوان مهمة، أو الفيديو غامق."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/looks/index.ts",
+          "sha256": "006684733bf4a5753090b6b60c683e0f365c138e70906c855214f7782c2ba0d5"
+        },
+        {
+          "path": "engine/src/looks/effects.ts",
+          "sha256": "75e517ce52e02288454f1a19ebfbc91346971e9af72ef59b5057ee8d1729a5f9"
+        },
+        {
+          "path": "engine/src/looks/paper.tsx",
+          "sha256": "a418e5fa7c0e18cbd45fabc4750daeb170bdd689e6290861e73350b5e63e1c54"
+        },
+        {
+          "path": "engine/src/looks/layer.tsx",
+          "sha256": "6e7ccb08de2396e354109b5ffde97347207b932ddd1108a8b485486eab0e1517"
+        },
+        {
+          "path": "engine/src/looks/captions.ts",
+          "sha256": "daabc9172cad99abca9b89fd2d42c626c8cf22c284f64af23aa75d187294e0e6"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         }
       ]
     },
@@ -1162,15 +2036,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -1225,15 +2099,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -1289,15 +2163,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -1351,15 +2225,15 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/graphics-transitions.ts",
-          "sha256": "742f2407b491d504e6cda873914f3ee1bacb5623104f66cbca4d3c39d63d25b8"
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/prepared-edit/PreparedEdit.tsx",
-          "sha256": "fdeb6e45c83281a41af7ee4cea24fba2c5ad3fa993f623b4f6d59587fff8ee3a"
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         },
         {
           "path": "engine/src/core/transitions.tsx",
@@ -1416,7 +2290,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -1473,7 +2347,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -1529,7 +2403,7 @@
       "evidence": [
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -1541,7 +2415,7 @@
       "key": "style:calligraphic-receipts",
       "role": "style",
       "labelAr": "خط عربي وأوراق دليل",
-      "explains": "Supplies a Naskh claim-and-receipt grammar separating a statement from its supplied support.",
+      "explains": "Warm ruled parchment, Aref Ruqaa claims and dry rust brush strokes paired with thermal receipts, Noto Naskh Arabic labels and IBM Plex Mono amounts. Torn parchment caption slips sit over footage.",
       "action": "Pair a strong Arabic claim with readable receipt sheets, brush rules and quiet composition; evidence comes from actual scene data or named assets.",
       "useWhen": [
         "A case study needs to separate a claim from its sourced detail.",
@@ -1588,19 +2462,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/calligraphic-receipts/meta.ts",
-          "sha256": "c45e7491bf604a0cfdcc511f9d109953d3ace231e41295a2316f8317832e849f"
+          "sha256": "d369c5c504f080558e94160f284f93fa66ad5461a5b10d99847857e810199d07"
         },
         {
           "path": "engine/src/styles/calligraphic-receipts/theme.ts",
-          "sha256": "8427125ffdc0e5e17cb573038ef6ac3dcdebfa8c3f316f634017dd8c9da91b5d"
+          "sha256": "fbe0be838074c34f1a2d472e9dcf49f69b0aa69401798d8c99c1f7e80594758f"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -1609,82 +2483,10 @@
         {
           "path": "engine/src/creative-kit/scenes.tsx",
           "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
-        }
-      ]
-    },
-    {
-      "key": "style:campaign-tickets",
-      "role": "style",
-      "labelAr": "تذاكر وأسئلة الجمهور",
-      "explains": "Supplies warm ticket-and-comment grammar for reviewed offers and audience interaction.",
-      "action": "Combine perforated tickets, coral stubs, gold highlights and comment cards; scene data supplies the actual offer and conditions.",
-      "useWhen": [
-        "A real offer or supplied audience question needs a clear invitation.",
-        "Warm campaign material fits the approved identity."
-      ],
-      "avoidWhen": [
-        "The design would imply invented scarcity, comments or customer interest.",
-        "The layout needs presenter PiP inside a takeover."
-      ],
-      "intents": [
-        "cta",
-        "question",
-        "claim",
-        "grouping"
-      ],
-      "moods": [
-        "warm",
-        "energetic",
-        "playful"
-      ],
-      "energy": [
-        "medium"
-      ],
-      "modes": [
-        "recording",
-        "graphics"
-      ],
-      "sourceKinds": [
-        "presenter",
-        "screen",
-        "none"
-      ],
-      "requires": [],
-      "requirements": [
-        "It owns no family; ticket-offer/comment-stack have separate contracts and factual copy needs support.",
-        "Use its own warm gold palette and Cairo default; profile colours are not automatic.",
-        "PiP is not allowed; retain normal split where the scene permits it.",
-        "A visual ticket does not establish an entitlement, price, scarcity claim or testimonial."
-      ],
-      "display": {
-        "explains": "هوية تذاكر دافية وكروت أسئلة وتعليقات.",
-        "useWhen": "لعرض حقيقي أو سؤال جمهور موثق.",
-        "avoidWhen": "لو هتوحي بندرة أو تعليقات متخيلة."
-      },
-      "evidence": [
-        {
-          "path": "engine/src/styles/campaign-tickets/meta.ts",
-          "sha256": "b42e02bd2e2a9de94cfc59bb7b54d6fa42ea0f025ab0415d6b1e39d845fd748b"
         },
         {
-          "path": "engine/src/styles/campaign-tickets/theme.ts",
-          "sha256": "ee91a4fe07bc0d0da47794dd7176ffe15fe576d7f553fc8ea68464d9378bff62"
-        },
-        {
-          "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
-        },
-        {
-          "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
-        },
-        {
-          "path": "engine/src/creative-kit/primitives.tsx",
-          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
-        },
-        {
-          "path": "engine/src/creative-kit/semantic/scenes.tsx",
-          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+          "path": "engine/src/styles/calligraphic-receipts/designs/index.ts",
+          "sha256": "8c169378c9910aa2e37fe0d047ef0925c132ea6b6b1c2c5d4f428996612b871b"
         }
       ]
     },
@@ -1743,7 +2545,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/grid-glide/meta.ts",
-          "sha256": "a081030bc92ebf33ea5ce678aeb778b9bbcde8e7a60086c8ef2e6a6ce5b42784"
+          "sha256": "b90c962417bb856abb22417fc70b800b55d84ef3aebb8ad4e4a9da17cdc63f48"
         },
         {
           "path": "engine/src/styles/grid-glide/theme.ts",
@@ -1751,15 +2553,15 @@
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/styles/scene-renderers.tsx",
-          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+          "sha256": "245311e7dee71d3c153f193579552a73df11e65eee034de6cfb809c550a7696f"
         },
         {
           "path": "engine/src/styles/grid-glide/scenes/schema.ts",
@@ -1780,85 +2582,10 @@
       ]
     },
     {
-      "key": "style:judgment-board",
-      "role": "style",
-      "labelAr": "لوحة مقارنة وحكم",
-      "explains": "Supplies a two-column verdict grammar with a clear divider and restrained hierarchy.",
-      "action": "Organise supplied alternatives on serif-led verdict cards; the selected scene authors the supported comparison and conclusion.",
-      "useWhen": [
-        "An opinion or comparison has explicit criteria and supplied alternatives.",
-        "Both sides should remain readable before the conclusion."
-      ],
-      "avoidWhen": [
-        "Red/green styling would falsely settle an unsupported claim.",
-        "The explanation needs a continuously moving input rather than a held board."
-      ],
-      "intents": [
-        "comparison",
-        "claim",
-        "evidence"
-      ],
-      "moods": [
-        "editorial",
-        "serious",
-        "calm"
-      ],
-      "energy": [
-        "low",
-        "medium"
-      ],
-      "modes": [
-        "recording",
-        "graphics"
-      ],
-      "sourceKinds": [
-        "presenter",
-        "screen",
-        "none"
-      ],
-      "requires": [],
-      "requirements": [
-        "The style owns no family and creates no factual verdict; author supported titles, details and evidence.",
-        "Use its own palette and Plex Display default; profile brand colours are not automatic.",
-        "Shared family layouts apply; inferred PiP still requires source/head review."
-      ],
-      "display": {
-        "explains": "هوية لوحة تخلي البدائل والحكم واضحين.",
-        "useWhen": "لمقارنة بمعايير ونتيجة مدعومة.",
-        "avoidWhen": "لو الألوان هتحكم من غير دليل."
-      },
-      "evidence": [
-        {
-          "path": "engine/src/styles/judgment-board/meta.ts",
-          "sha256": "89a1e7cd74684fc45521bf99ad9646364f57f2293d96615870d859f27f772892"
-        },
-        {
-          "path": "engine/src/styles/judgment-board/theme.ts",
-          "sha256": "fed3bb5d71db198a279b45f19b6c34cf613f2f60166567e93c2fc78f78b732bf"
-        },
-        {
-          "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
-        },
-        {
-          "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
-        },
-        {
-          "path": "engine/src/creative-kit/primitives.tsx",
-          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
-        },
-        {
-          "path": "engine/src/creative-kit/scenes.tsx",
-          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
-        }
-      ]
-    },
-    {
       "key": "style:kinetic-paper",
       "role": "style",
       "labelAr": "ورق وكلمات قوية",
-      "explains": "Supplies poster-like ink-and-paper grammar for emphatic explanations.",
+      "explains": "Warm paper, oversized Lalezar headlines and Cairo body copy; black ink slabs, lime edges, perforated tickets and stacked comment cards. Fixed pilot choreography; saved headline fonts take precedence.",
       "action": "Use heavy poster type, ink frames, signal strips and deliberate staggered reveals; a supported scene authors the actual explanation.",
       "useWhen": [
         "A strong spoken idea benefits from bold typographic hierarchy.",
@@ -1905,19 +2632,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/kinetic-paper/meta.ts",
-          "sha256": "927ff46319e59656581a9b917b6a98c618b28bf70497cc9c0fd17001a0f32586"
+          "sha256": "67c885167db04f265903f738e852e3820c910a441ebf2ac81833b908e053db5d"
         },
         {
           "path": "engine/src/styles/kinetic-paper/theme.ts",
-          "sha256": "e26eabb6d4638fe35b6daa832d8a8606e3a549c5c4e5c43c38a8c7e8fbe0aa09"
+          "sha256": "55a7030f6802b8872d654055c1f5b5a4794b4722e2e425b0621e2f765b8135a7"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -1926,6 +2653,10 @@
         {
           "path": "engine/src/creative-kit/scenes.tsx",
           "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+        },
+        {
+          "path": "engine/src/styles/kinetic-paper/designs/index.ts",
+          "sha256": "30730d7c4631a8d2d018fcc2b904858c6acb07a4bb7f5e5ab0b31bbb54786f52"
         }
       ]
     },
@@ -1933,7 +2664,7 @@
       "key": "style:liquid-glass",
       "role": "style",
       "labelAr": "زجاج مضيء وعدسة",
-      "explains": "Supplies dark aurora and translucent-panel grammar for grouped details.",
+      "explains": "Dark aurora with real translucent glass, bright lens rims and a magnified copy of the selected graphics inside the lens. Grid Sans headlines, Plex Display figures and IBM Plex Mono measurements; saved headline fonts take precedence.",
       "action": "Use glass panels, product sans type and lens rims; token-lens or another family supplies actual grouping and focus.",
       "useWhen": [
         "A technical explanation groups ideas or focuses on supplied details.",
@@ -1981,19 +2712,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/liquid-glass/meta.ts",
-          "sha256": "f7348e12887042979dfedebcc2852637b91b1417a3c295b53296dd59f55ca595"
+          "sha256": "8de67fac6fd8f35450514e3b3bb73164c9e843b293efacb1d546e949b48763dc"
         },
         {
           "path": "engine/src/styles/liquid-glass/theme.ts",
-          "sha256": "95029ff8f86898d6a193a625e94e7e5773f63e8000ee45201021dbab5cdd6b9b"
+          "sha256": "9fa5d4b52a677b28bd38966a0ccde6120e4d0a3578138659a0a6864af3409bae"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2002,14 +2733,18 @@
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/liquid-glass/designs/index.ts",
+          "sha256": "564986ce99ecccad8ccf38c61c897718e063fcd2d4f37e50be1d979b920f383b"
         }
       ]
     },
     {
       "key": "style:magazine-interview",
       "role": "style",
-      "labelAr": "حوار بفصول واقتباسات",
-      "explains": "Supplies magazine-column grammar with chapters, quote rules and speaker attribution.",
+      "labelAr": "مجلة",
+      "explains": "A print magazine alternating navy and cream pages, gold hairlines and folios; Alexandria thin/heavy contrast with Source Serif 4 accents and IBM Plex Mono numerals. Captions follow each page's ink and ground.",
       "action": "Use editorial headings and chapter rules with a legible speaker name/role; reviewed scene data supplies quotes.",
       "useWhen": [
         "An interview or spoken opinion needs chapter structure and correctly attributed quotations.",
@@ -2057,19 +2792,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/magazine-interview/meta.ts",
-          "sha256": "b3dc040546e68adf6015a9181ec8b529ed3043bdc10929e80e3006f387e6b17d"
+          "sha256": "c14db172c8486d403db09c258b15a1c1738e197061c16536bbc29ba0c57a57d3"
         },
         {
           "path": "engine/src/styles/magazine-interview/theme.ts",
-          "sha256": "026ac1473c8156015be2e4a5a47b1fdcdbfea847f122bad1006bb9ff37b5e2e0"
+          "sha256": "c0f8e61646dc90e4402d66f4cd6dc4ca5392761b3fc7b4819208c462df9e2e02"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2078,6 +2813,10 @@
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
           "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+        },
+        {
+          "path": "engine/src/styles/magazine-interview/designs/index.ts",
+          "sha256": "90dbbf076c4d65249c3455cd2fbb409aa7162c14970fa3c2a7d05972a19eec2a"
         }
       ]
     },
@@ -2135,7 +2874,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/one-shot/meta.ts",
-          "sha256": "b237bf17a2bee56ba7590b988b41e1d1e555d0f6ed7ca650f1b5cb3e62432e51"
+          "sha256": "aea5b7840f914bdba7c0b73b61b02472a0b3576999dc5a4f8e9d0ac56a3e120c"
         },
         {
           "path": "engine/src/styles/one-shot/theme.ts",
@@ -2143,15 +2882,15 @@
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/styles/scene-renderers.tsx",
-          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+          "sha256": "245311e7dee71d3c153f193579552a73df11e65eee034de6cfb809c550a7696f"
         },
         {
           "path": "engine/src/styles/one-shot/scenes/schema.ts",
@@ -2159,7 +2898,7 @@
         },
         {
           "path": "engine/src/styles/one-shot/scenes/math.ts",
-        "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
+          "sha256": "581b523cf8a96170bbebd560f437a0f53ec12624557a45ba0ed32083b4b74d9d"
         },
         {
           "path": "engine/src/styles/one-shot/scenes/scene.tsx",
@@ -2167,7 +2906,7 @@
         },
         {
           "path": "engine/src/styles/one-shot/scenes/worlds.tsx",
-        "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
+          "sha256": "0d2bdc4007c41589c440cd16d95bc36ef97c6a4d69d5e3b367554679df4447a9"
         }
       ]
     },
@@ -2225,7 +2964,7 @@
       "evidence": [
         {
           "path": "engine/src/styles/cartoon/meta.ts",
-          "sha256": "6e1a94a0452f3c061a4b10dc7719a5935ce97d6959b216b659c64f0e01851554"
+          "sha256": "23fab67c3ff9955fb3ba1cc6b557e8f08c50a2f84bcea616a7151d9618d2b6dd"
         },
         {
           "path": "engine/src/styles/cartoon/theme.ts",
@@ -2233,15 +2972,15 @@
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/styles/scene-renderers.tsx",
-          "sha256": "cf2b82e7c6a390e4c68d406a269d5ec328f076c5376ba9dda3be767245289b7a"
+          "sha256": "245311e7dee71d3c153f193579552a73df11e65eee034de6cfb809c550a7696f"
         },
         {
           "path": "engine/src/styles/cartoon/scenes/schema.ts",
@@ -2261,7 +3000,7 @@
       "key": "style:paper-collage",
       "role": "style",
       "labelAr": "كولاج ورقي مترابط",
-      "explains": "Supplies layered taped-paper grammar whose meaningful pieces form a coherent whole.",
+      "explains": "A paper worktable with torn coloured sheets, fibre, tape and layered cutouts. Reem Kufi headlines, irregular edges and teal paper swaps preserve each piece's identity; the palette stays fixed.",
       "action": "Use taped cards, tabs, readable overlap and restrained depth; a suitable scene preserves object identity through assembly or comparison.",
       "useWhen": [
         "A story or comparison has pieces with distinct explanatory roles.",
@@ -2311,19 +3050,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/paper-collage/meta.ts",
-          "sha256": "0f220d13c98a7a47db6c44c7a943ac6bd1c8b2292e746f4e63422ba0566ac94b"
+          "sha256": "f558d2da9c290f7a6dd3e2c026a8a0ed6795c4bbd50799e4e4a0200b8cabf8da"
         },
         {
           "path": "engine/src/styles/paper-collage/theme.ts",
-          "sha256": "baf48ce5fe4b4e1a6bd861e3d88bde209135d5cdae0c8ce0b1b8b5550311c821"
+          "sha256": "a2da79b25255384d75bed854b8f5499d0931b4e0d77835baad2d89c8c8da876b"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/primitives.tsx",
@@ -2335,83 +3074,11 @@
         },
         {
           "path": "instructions/styles/paper-collage.md",
-          "sha256": "729133e30cb5ff960661785275f4efd2a091d24581492bb7c2ce97ceb1f07a06"
-        }
-      ]
-    },
-    {
-      "key": "style:scrapbook-route",
-      "role": "style",
-      "labelAr": "رحلة ورقية بمحطات",
-      "explains": "Supplies paper-route grammar with station markers and optional taped photos.",
-      "action": "Arrange route-paper cards and numbered markers as a journey; route-stops supplies ordered cues and optional images.",
-      "useWhen": [
-        "A tutorial or story follows supplied ordered milestones.",
-        "Optional photos have clear roles and provenance."
-      ],
-      "avoidWhen": [
-        "A decorative route would be presented as a real geographic map.",
-        "The plan needs branching, feedback or a moving payload absent from the selected family."
-      ],
-      "intents": [
-        "chronology",
-        "process",
-        "grouping"
-      ],
-      "moods": [
-        "warm",
-        "editorial",
-        "reflective"
-      ],
-      "energy": [
-        "low",
-        "medium"
-      ],
-      "modes": [
-        "recording",
-        "graphics"
-      ],
-      "sourceKinds": [
-        "presenter",
-        "screen",
-        "none"
-      ],
-      "requires": [],
-      "requirements": [
-        "The style is grammar, not map geometry or a conditional workflow; use an actual scene contract.",
-        "Its paper palette and Tajawal default do not automatically inherit profile colours.",
-        "PiP is not allowed; shared scene layout limits still apply.",
-        "Named sources are required for optional photos; geography needs verified geometry and labels."
-      ],
-      "display": {
-        "explains": "هوية رحلة على ورق بمحطات واضحة.",
-        "useWhen": "لخطوات أو محطات مرتبة وليها مصدر.",
-        "avoidWhen": "لو الزخرفة هتتقدم كخريطة حقيقية."
-      },
-      "evidence": [
-        {
-          "path": "engine/src/styles/scrapbook-route/meta.ts",
-          "sha256": "f8c58007c494d33683e0b6c2072d8668ffbe3a86f801115a9720c27852ef831c"
+          "sha256": "5b5ddd03990a192e7c8937ea3565b68e3815d4dcf2a7cb111075e9cb4edc1f0f"
         },
         {
-          "path": "engine/src/styles/scrapbook-route/theme.ts",
-          "sha256": "4d3abf271d9fd095aa2d0e5d7befb113cc6c680f01886b9141c02fb82a555f39"
-        },
-        {
-          "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
-        },
-        {
-          "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
-        },
-        {
-          "path": "engine/src/creative-kit/primitives.tsx",
-          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
-        },
-        {
-          "path": "engine/src/creative-kit/semantic/scenes.tsx",
-          "sha256": "5dd920c7e640f2d529a37060448bb31b8d18d129d156b4c14ae4af3787ee2de5"
+          "path": "engine/src/styles/paper-collage/designs/index.ts",
+          "sha256": "ec2d3d24b4ea0abf4fd0199f153ce600400e4773a9391ad8cac27529cd27e32f"
         }
       ]
     },
@@ -2467,19 +3134,19 @@
       "evidence": [
         {
           "path": "engine/src/styles/section-deck/meta.ts",
-          "sha256": "caeb66fc1dc8b3be3f934b2f5119a1e90b4a19c25b7455ee5c70992ccc63c6a9"
+          "sha256": "79d675d8d41c3acff825f407db2980b49dc5717505cf22129d5872b45315bd2d"
         },
         {
           "path": "engine/src/styles/section-deck/theme.ts",
-          "sha256": "f4ffd8b3d8091342b7a17f78e11f08c806be952172c01da8f3523eda411e1984"
+          "sha256": "37c5e882f1f43fbb7617177d40d2cc6b5a03e6720673125a99565120ee3c084c"
         },
         {
           "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
         },
         {
           "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
         },
         {
           "path": "engine/src/creative-kit/scenes.tsx",
@@ -2487,164 +3154,7 @@
         },
         {
           "path": "instructions/styles/section-deck.md",
-          "sha256": "46e5955e14b84116c09b72cfd9384e0614dc65ade8fb83c81c584141a045fb21"
-        }
-      ]
-    },
-    {
-      "key": "style:split-canvas",
-      "role": "style",
-      "labelAr": "شرح بصري مع المتحدث",
-      "explains": "Supplies warm product-UI grammar for simultaneous presenter delivery and visual explanation.",
-      "action": "Use a product canvas above a continuous presenter window, rounded cards, accent rules and stable caption pills; the selected scene supplies the explanatory action.",
-      "useWhen": [
-        "A presenter and one demonstrated graphic idea should remain visible together.",
-        "Supported profile brand colours belong to the approved identity."
-      ],
-      "avoidWhen": [
-        "The upper graphic only repeats captions.",
-        "Evidence would be unreadable above the presenter or a different style is fixed."
-      ],
-      "intents": [
-        "process",
-        "evidence",
-        "focus",
-        "tooling",
-        "comparison"
-      ],
-      "moods": [
-        "technical",
-        "warm",
-        "energetic"
-      ],
-      "energy": [
-        "low",
-        "medium"
-      ],
-      "modes": [
-        "recording",
-        "graphics"
-      ],
-      "sourceKinds": [
-        "presenter",
-        "screen",
-        "none"
-      ],
-      "requires": [],
-      "requirements": [
-        "Grammar alone does not supply a process or screen scene; inspect each selected family layout.",
-        "Brand support uses one ground with primary/accent highlights alternating under the supported profile policy.",
-        "Caption pills are static and reject caption-emphasis:pop; declared PiP still needs real source/head review."
-      ],
-      "display": {
-        "explains": "هوية UI دافية والشرح فوق المتحدث.",
-        "useWhen": "لشرح فيه متحدث وديمو واضح معاه.",
-        "avoidWhen": "لو الديمو هيصغر ومش هيتقري."
-      },
-      "evidence": [
-        {
-          "path": "engine/src/styles/split-canvas/meta.ts",
-          "sha256": "a159deac3f5fe5a14bb606e8c7ba2d1b4bfae08a9abd4b8720931265a4eabb0f"
-        },
-        {
-          "path": "engine/src/styles/split-canvas/theme.ts",
-          "sha256": "8df7ee508d2b0aba014fa95f92cfe0d809686a8624535f6b832da64ecf2683aa"
-        },
-        {
-          "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
-        },
-        {
-          "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
-        },
-        {
-          "path": "engine/src/creative-kit/primitives.tsx",
-          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
-        },
-        {
-          "path": "engine/src/creative-kit/scenes.tsx",
-          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
-        },
-        {
-          "path": "instructions/styles/split-canvas.md",
-          "sha256": "01755839282688a378d4cff6f34221870e474b97cf5d3865f3a7d5de95ebcbee"
-        }
-      ]
-    },
-    {
-      "key": "style:stepped-editorial",
-      "role": "style",
-      "labelAr": "تكوين تحريري متدرج",
-      "explains": "Supplies an editorial-spread grammar with offset plates and marked supporting detail.",
-      "action": "Use serif-led headings, offset plates and yellow-marker annotations while the scene carries the actual argument.",
-      "useWhen": [
-        "An opinion or case study moves from a claim to marked support.",
-        "Editorial hierarchy connects successive thoughts without replacing their source."
-      ],
-      "avoidWhen": [
-        "Offsets or marker strokes make evidence harder to read.",
-        "A fixed UI or collage identity would change merely for variety."
-      ],
-      "intents": [
-        "claim",
-        "evidence",
-        "focus",
-        "chapter"
-      ],
-      "moods": [
-        "editorial",
-        "serious",
-        "reflective"
-      ],
-      "energy": [
-        "low",
-        "medium"
-      ],
-      "modes": [
-        "recording",
-        "graphics"
-      ],
-      "sourceKinds": [
-        "presenter",
-        "screen",
-        "none"
-      ],
-      "requires": [],
-      "requirements": [
-        "This style supplies composition and annotations, not argument truth or object continuity.",
-        "Its own palette and Plex Display default do not automatically inherit profile colours.",
-        "Shared layouts and head clearance remain required; PiP support is inferred."
-      ],
-      "display": {
-        "explains": "هوية تحريرية تبرز الكلام والدليل بعلامات.",
-        "useWhen": "لرأي أو دراسة حالة ليها سند واضح.",
-        "avoidWhen": "لو العلامات هتصعب القراءة."
-      },
-      "evidence": [
-        {
-          "path": "engine/src/styles/stepped-editorial/meta.ts",
-          "sha256": "088b476514424caf3d09d9172cb32485eb5d80b2737fc6069488fc8d82917852"
-        },
-        {
-          "path": "engine/src/styles/stepped-editorial/theme.ts",
-          "sha256": "4201d72e1ac01c3e41ded0502dc48044ce7e1e7d866f8d3f45eb26748fe0b696"
-        },
-        {
-          "path": "engine/src/styles/registry.ts",
-          "sha256": "de41b16bbbb1cfa08a1c76444d29647a74f62665d48683dc235f2935eacd76ad"
-        },
-        {
-          "path": "engine/src/styles/themes.ts",
-          "sha256": "b43ae6b625fdb87d2f00f20b3da8244e05d8989581ef3093257b12d518b3bd34"
-        },
-        {
-          "path": "engine/src/creative-kit/primitives.tsx",
-          "sha256": "d88c38906b63e1ba18fc3b4bc05df919bd8e0339ddb463de289256752fe2a08a"
-        },
-        {
-          "path": "engine/src/creative-kit/scenes.tsx",
-          "sha256": "b65feba99902ed0a47691f6992be19d3a01d8b3d4ecd4064db5bc1a6c372e059"
+          "sha256": "41b20ef94d72e3231631b62e8394bb5a2f280a88645535155c0e98ec95c32e2e"
         }
       ]
     },
@@ -2698,15 +3208,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -2714,7 +3224,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -2768,15 +3278,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -2784,7 +3294,7 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
         }
       ]
     },
@@ -2839,15 +3349,15 @@
       "evidence": [
         {
           "path": "engine/src/creative-kit/kinetic-words-logic.ts",
-          "sha256": "ae3803b530e7cf77a81530ceafc3d0af75b8eb34577c439eb420bfe860367764"
+          "sha256": "505ddf3ff314d4ceb308571eaba1f2cac145ad7b715a32666c596e939f4d6ae4"
         },
         {
           "path": "engine/src/creative-kit/kinetic-words.tsx",
-          "sha256": "13151ac5772d044c66639591f3bd7ddb98389e13273c3ae0384d050b1af9b32b"
+          "sha256": "2a01ca18cbcdfc39f2954f7c8ab9bd77fb558b9c270df37a1f0ebd9d2064169a"
         },
         {
           "path": "engine/src/creative-kit/semantic/schema.ts",
-          "sha256": "d3b1ab37ea2199b104af21b1805e419b0a266c3c3d7341feef750c3bfc29b323"
+          "sha256": "5886a10b0ecc16df6726e2efb45e6f4fa1687d45959abb7c8fd23d4c1718c8ac"
         },
         {
           "path": "engine/src/creative-kit/semantic/scenes.tsx",
@@ -2855,7 +3365,1773 @@
         },
         {
           "path": "engine/src/prepared-edit/schema.ts",
-          "sha256": "6e50372de6bb41d57c37b9b5d75ffb5994f94d4232043679d75291df45980716"
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        }
+      ]
+    },
+    {
+      "key": "style:documentary",
+      "role": "style",
+      "labelAr": "وثائقي",
+      "explains": "Paper map and cut-out image grammar for supplied geographic or archival explanations.",
+      "action": "Use warm paper, dark red routes, joined Arabic labels and torn photo cards; normal presenter scenes remain available.",
+      "useWhen": [
+        "The creator supplied the places, meaning or named image used in the explanation."
+      ],
+      "avoidWhen": [
+        "Geography, image provenance or historical meaning has not been verified."
+      ],
+      "intents": [
+        "focus",
+        "chronology",
+        "evidence"
+      ],
+      "moods": [
+        "editorial",
+        "serious",
+        "warm"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Requires documentary style; owned scenes are takeover only. Preserve joined Arabic and authored factual meaning.",
+        "The installed map is public-domain Natural Earth, checked by eye: land and sea, and country borders from the Palestine point of view (Palestine a separate state labelled «فلسطين», the Golan part of Syria). Border-free mode draws land, sea, the route and city dots only.",
+        "The installed map has no named cities: every place is an authored {name, lon, lat} with reviewed coordinates. The route is illustrative, never a measured road or border; illustration placeholders must be replaced before delivery."
+      ],
+      "display": {
+        "explains": "ورق وخرايط وصور مقصوصة للشرح الجغرافي أو الأرشيفي.",
+        "useWhen": "لما تكون إنت محدد الأماكن والمعنى أو الصورة المسمّاة.",
+        "avoidWhen": "لو الجغرافيا أو مصدر الصورة أو المعنى التاريخي لسه مش متأكد منه."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/documentary/meta.ts",
+          "sha256": "4ed1e7f3aa9389d93cc9d7a558a9589f42cdbf8ba270f96c2b689c75c0bff722"
+        },
+        {
+          "path": "engine/src/styles/documentary/theme.ts",
+          "sha256": "c30063c2288252a088d7fac929d11c9d6b8008d933d9aa139c7b46ec3b138281"
+        },
+        {
+          "path": "engine/src/styles/documentary/scenes/schema.ts",
+          "sha256": "01ea1cc8398d5883ba74d90b7656431d24e67259562d5ff2d5b2ae99c77ba863"
+        },
+        {
+          "path": "engine/src/maps/project.ts",
+          "sha256": "9261afe8af39adc6e3dd4e75c6f239f85af25baa4ed477f66bb8f840e435d390"
+        },
+        {
+          "path": "engine/src/maps/draw.tsx",
+          "sha256": "2b52bb5fb30c643c8ebf75cd0c9990c9412d569768b499771e4b06be4a487c5d"
+        },
+        {
+          "path": "instructions/styles/documentary.md",
+          "sha256": "1583428c01423d8a34655681f8e26dcf72aa2efa332de4fd9f73b4c23e18d072"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:iris",
+      "role": "transition",
+      "labelAr": "دايرة",
+      "explains": "A circular aperture grows from a supplied origin to introduce the incoming graphics.",
+      "action": "Grow a ClipReveal circle from the normalized origin to cover the graphics panel.",
+      "useWhen": [
+        "An authored graphic needs a distinct entrance at its scene boundary."
+      ],
+      "avoidWhen": [
+        "The incoming scene uses a presenter layout.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "intentLayouts": {
+        "cut": [
+          "split",
+          "takeover"
+        ],
+        "reveal": [
+          "split",
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Anchor exactly to the incoming scene first frame and finish within that scene; use one graphics entrance.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "دايرة بين فكرتين واضحتين.",
+        "useWhen": "عند أول مشهد جرافيك جديد.",
+        "avoidWhen": "لو وش المتكلم لازم يفضل ظاهر في المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/iris.tsx",
+          "sha256": "010710a41bebaccb00b17c314561bc1f3b911acfe531dc749928a58576731b5a"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/core/mask.tsx",
+          "sha256": "c35fdf27c871d20c1a3ec3634397da45c66fc8651bc18f3df1a01c5e24e47e70"
+        },
+        {
+          "path": "engine/src/core/mask-geo.ts",
+          "sha256": "c2a3511eebcbeed8a8adb1c9a5b72e7e06f5076c0294ca0188420d6e6eac2810"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:keyhole",
+      "role": "transition",
+      "labelAr": "ثقب مفتاح",
+      "explains": "A keyhole silhouette expands into an incoming graphic, suggesting access or discovery.",
+      "action": "Grow the joined head-and-stem polygon around the origin until the graphics panel is open.",
+      "useWhen": [
+        "An authored graphic needs a distinct entrance at its scene boundary."
+      ],
+      "avoidWhen": [
+        "The incoming scene uses a presenter layout.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "intentLayouts": {
+        "cut": [
+          "split",
+          "takeover"
+        ],
+        "reveal": [
+          "split",
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Anchor exactly to the incoming scene first frame and finish within that scene; use one graphics entrance.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "ثقب مفتاح بين فكرتين واضحتين.",
+        "useWhen": "عند أول مشهد جرافيك جديد.",
+        "avoidWhen": "لو وش المتكلم لازم يفضل ظاهر في المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/keyhole.tsx",
+          "sha256": "6c98fa8d763f2f8c51f91a689505c7731682adf092d07464db7f7fc24d143dd8"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/core/mask.tsx",
+          "sha256": "c35fdf27c871d20c1a3ec3634397da45c66fc8651bc18f3df1a01c5e24e47e70"
+        },
+        {
+          "path": "engine/src/core/mask-geo.ts",
+          "sha256": "c2a3511eebcbeed8a8adb1c9a5b72e7e06f5076c0294ca0188420d6e6eac2810"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:blinds",
+      "role": "transition",
+      "labelAr": "شرايح",
+      "explains": "Six horizontal shutters open with the right edge leading into the next graphic.",
+      "action": "Open six slat polygons in one union mask; mount the incoming scene only once.",
+      "useWhen": [
+        "An authored graphic needs a distinct entrance at its scene boundary."
+      ],
+      "avoidWhen": [
+        "The incoming scene uses a presenter layout.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "intentLayouts": {
+        "cut": [
+          "split",
+          "takeover"
+        ],
+        "reveal": [
+          "split",
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Anchor exactly to the incoming scene first frame and finish within that scene; use one graphics entrance.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "شرايح بين فكرتين واضحتين.",
+        "useWhen": "عند أول مشهد جرافيك جديد.",
+        "avoidWhen": "لو وش المتكلم لازم يفضل ظاهر في المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/blinds.tsx",
+          "sha256": "ee8809024a734f8fa93afa464377d8fc50cdf1b69d80eff411383cc3daa90a1a"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:dot-zoom",
+      "role": "transition",
+      "labelAr": "زووم في النقطة",
+      "explains": "An ink-dot aperture resolves a 90x exponential zoom into the new graphics.",
+      "action": "Reveal the incoming scene through a circle while its exponential scale settles about the supplied origin.",
+      "useWhen": [
+        "An authored graphic needs a distinct entrance at its scene boundary."
+      ],
+      "avoidWhen": [
+        "The incoming scene uses a presenter layout.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "intentLayouts": {
+        "cut": [
+          "split",
+          "takeover"
+        ],
+        "reveal": [
+          "split",
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Anchor exactly to the incoming scene first frame and finish within that scene; use one graphics entrance.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "زووم في النقطة بين فكرتين واضحتين.",
+        "useWhen": "عند أول مشهد جرافيك جديد.",
+        "avoidWhen": "لو وش المتكلم لازم يفضل ظاهر في المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/dot-zoom.tsx",
+          "sha256": "59f20e4c45746ab840fba10e78e83f6b97d8cd3ad8dd60dcdf641e1cc2580a93"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/core/mask.tsx",
+          "sha256": "c35fdf27c871d20c1a3ec3634397da45c66fc8651bc18f3df1a01c5e24e47e70"
+        },
+        {
+          "path": "engine/src/core/mask-geo.ts",
+          "sha256": "c2a3511eebcbeed8a8adb1c9a5b72e7e06f5076c0294ca0188420d6e6eac2810"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:zoom-through",
+      "role": "transition",
+      "labelAr": "زووم من خلال",
+      "explains": "A magnified blurred entrance settles into a clear view of the next graphic.",
+      "action": "Start the incoming graphic at 1.4 scale and 18px blur, then settle to its resting layout.",
+      "useWhen": [
+        "An authored graphic needs a distinct entrance at its scene boundary."
+      ],
+      "avoidWhen": [
+        "The incoming scene uses a presenter layout.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "intentLayouts": {
+        "cut": [
+          "split",
+          "takeover"
+        ],
+        "reveal": [
+          "split",
+          "takeover"
+        ]
+      },
+      "requirements": [
+        "Anchor exactly to the incoming scene first frame and finish within that scene; use one graphics entrance.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "زووم من خلال بين فكرتين واضحتين.",
+        "useWhen": "عند أول مشهد جرافيك جديد.",
+        "avoidWhen": "لو وش المتكلم لازم يفضل ظاهر في المشهد."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/zoom-through.tsx",
+          "sha256": "bbf7ac5dd36d6b7d2d0e0a65449304ee5d64c2c1e5f8db6bd0b77d6f65d923c5"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:paper-tear",
+      "role": "transition",
+      "labelAr": "تقطيع ورق",
+      "explains": "An opaque paper sheet covers a cut and separates along one repeatable jagged tear.",
+      "action": "Slide a paper sheet over the cut, then separate two halves sharing the same seeded tear edge.",
+      "useWhen": [
+        "A deliberate chapter or idea boundary can be briefly covered."
+      ],
+      "avoidWhen": [
+        "Speech or evidence must remain continuously visible across the cut.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "warm"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "atFrame is the covered cut centre; half the duration follows it and must finish before signoff.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "تقطيع ورق بين فكرتين واضحتين.",
+        "useWhen": "عند نقلة واضحة تستحمل تغطية قصيرة.",
+        "avoidWhen": "لو الكلام أو الدليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/paper-tear.tsx",
+          "sha256": "f789740e00d77241a971518c90bd9d9e583a8d599630a28b688eb395e0ac9f0a"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:page-turn",
+      "role": "transition",
+      "labelAr": "قلب صفحة",
+      "explains": "An Arabic-book page fold travels from the left edge to the right across a covered cut.",
+      "action": "Cover the cut with paper, then sweep the tilted fold left to right with a curled strip and soft shadow.",
+      "useWhen": [
+        "A deliberate chapter or idea boundary can be briefly covered."
+      ],
+      "avoidWhen": [
+        "Speech or evidence must remain continuously visible across the cut.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "warm"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "atFrame is the covered cut centre; half the duration follows it and must finish before signoff.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "The opaque paper back replaces the demo mirrored outgoing image to avoid cloning scene video."
+      ],
+      "display": {
+        "explains": "قلب صفحة بين فكرتين واضحتين.",
+        "useWhen": "عند نقلة واضحة تستحمل تغطية قصيرة.",
+        "avoidWhen": "لو الكلام أو الدليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/page-turn.tsx",
+          "sha256": "3e43a0cc00fe1a0c04c235a80bddf9429736d1f1a439cf0dc203310fcc1aa82b"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:pen-dot-curtain",
+      "role": "transition",
+      "labelAr": "ستارة نقطة الحبر",
+      "explains": "A falling ink dot spreads into overlapping pen-dot diamonds and opens from the centre.",
+      "action": "Close a rotated diamond lattice outwards, cover the cut, then shrink its diamonds from the centre outwards.",
+      "useWhen": [
+        "A deliberate chapter or idea boundary can be briefly covered."
+      ],
+      "avoidWhen": [
+        "Speech or evidence must remain continuously visible across the cut.",
+        "The action needs to explain a relationship within one scene rather than merely connect scenes."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial",
+        "energetic"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "atFrame is the covered cut centre; half the duration follows it and must finish before signoff.",
+        "Use authored graphics and named media; this transition does not provide evidence, claims or creator approval.",
+        "Motion is deterministic and decoration is omitted under a safe-zone probe."
+      ],
+      "display": {
+        "explains": "ستارة نقطة الحبر بين فكرتين واضحتين.",
+        "useWhen": "عند نقلة واضحة تستحمل تغطية قصيرة.",
+        "avoidWhen": "لو الكلام أو الدليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/pen-dot-curtain.tsx",
+          "sha256": "c6941f858e98a6fb699d48659f620a46225e230165fae977dc5b669e9e6a216e"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:pixel-curtain",
+      "role": "transition",
+      "labelAr": "ستارة بكسلات",
+      "explains": "A curtain in the style background colour builds from nothing out of small square cells, covers the whole frame at the cut, and dissolves away cell by cell to reveal the incoming scene.",
+      "action": "Add a transition {\"kind\":\"pixel-curtain\",\"atFrame\":<cut>,\"durationInFrames\":24} in the editor Effects tab or the brief. atFrame is the fully covered frame; half the duration falls before it and half after.",
+      "useWhen": [
+        "A deliberate chapter or idea boundary can be briefly covered, in a graphics-led or playful video.",
+        "A digital, screen or tech subject where a pixel dissolve fits the tone."
+      ],
+      "avoidWhen": [
+        "Speech or evidence must remain continuously visible across the cut.",
+        "The video is calm, reflective or formal: the cells read as playful."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "playful",
+        "energetic",
+        "technical"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "atFrame is the covered cut centre; half the duration follows it and must finish before signoff. The default is 24 frames (12 build, 12 dissolve); the editor accepts 1 to 120.",
+        "The curtain colour is the style theme background, handed in by PreparedEdit as the paper prop; it is one Solid with the pixel-dissolve effect (about 45 pixel cells on the 1080 x 1920 frame, seeded so the same cells go first), never an effect on the scenes under it.",
+        "At atFrame nothing has dissolved: the whole frame is the curtain colour (the node carries data-cut-cover=\"full\" on that frame).",
+        "It also covers the captions for the covered frames, like every overlay; do not place it on a spoken word the creator needs to hear and read.",
+        "Costs about 0.01 s extra per live frame (24 frames in all, measured). Deterministic and silent by itself: the generic transition sound cue lands on atFrame like any transition (a soft landing, never a sweep). Nothing is drawn under the safe-zone probe.",
+        "Renders pin the software GL backend (scripts/lib/render-gl.mjs)."
+      ],
+      "display": {
+        "explains": "ستارة من مربعات صغيرة بلون خلفية الستايل بتقفل الشاشة وبعدين بتتفكك مربع مربع وتكشف المشهد الجاي.",
+        "useWhen": "عند نقلة واضحة بين فكرتين في فيديو خفيف أو رقمي.",
+        "avoidWhen": "لو الكلام أو الدليل لازم يفضل ظاهر، أو الفيديو هادي ورسمي."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/pixel-curtain.tsx",
+          "sha256": "86148a7f5903ade803868a8a1482674e410e823d0ab80dc30c1c1167764d70af"
+        },
+        {
+          "path": "engine/src/core/transitions-v4/shared.tsx",
+          "sha256": "183f27caff22523449d2aecc60f3d06e6b3c4790b780bc642491ba8c05429327"
+        },
+        {
+          "path": "engine/src/looks/effects.ts",
+          "sha256": "75e517ce52e02288454f1a19ebfbc91346971e9af72ef59b5057ee8d1729a5f9"
+        },
+        {
+          "path": "engine/src/prepared-edit/transition-registry.tsx",
+          "sha256": "56f56d7eddd70245562d4d88ff98de98d00f0f60a5e98192c0274fac574bfd7f"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "caption-skin:spoken-box",
+      "role": "emphasis",
+      "labelAr": "سكين الكابشن · صندوق الكلمة المنطوقة",
+      "explains": "A word-sized dark box follows the currently spoken caption token.",
+      "action": "Back the active token with an intrinsic word box, switching at its mapped start and end frames.",
+      "useWhen": [
+        "The creator chooses spoken-box for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "الكلمة المنطوقة عليها صندوق غامق.",
+        "useWhen": "لما توقيت كل كلمة واضح.",
+        "avoidWhen": "لو المطلوب خلفية للسطر كله."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-skin:karaoke",
+      "role": "emphasis",
+      "labelAr": "سكين الكابشن · كاريوكي",
+      "explains": "A warm highlight and underline track the currently spoken caption token.",
+      "action": "Keep the whole cue visible and highlight only the latest active mapped word, clearing during silence.",
+      "useWhen": [
+        "The creator chooses karaoke for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "تمييز الكلمة مع النطق.",
+        "useWhen": "لمتابعة الكلمات مع الصوت.",
+        "avoidWhen": "لو التمييز المتحرك مشتت."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-skin:bold-outline",
+      "role": "emphasis",
+      "labelAr": "سكين الكابشن · حدود عريضة",
+      "explains": "White caption text stays distinct through a broad dark contour.",
+      "action": "Draw a four-pixel dark stroke behind white fill, with a dark baseline shadow and no backing plate.",
+      "useWhen": [
+        "The creator chooses bold-outline for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "كلام أبيض بحدود غامقة.",
+        "useWhen": "للكلام فوق خلفية متنوعة.",
+        "avoidWhen": "لو الخط رفيع أو صغير جدًا."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-skin:soft-shadow",
+      "role": "emphasis",
+      "labelAr": "سكين الكابشن · ظل ناعم",
+      "explains": "White caption text sits over a soft dark halo without a backing plate.",
+      "action": "Use layered dark shadows behind joined whole-word text, keeping the original cue layout.",
+      "useWhen": [
+        "The creator chooses soft-shadow for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "كلام أبيض بظل ناعم.",
+        "useWhen": "لخلفية بسيطة ومقروءة.",
+        "avoidWhen": "لو الخلفية مزدحمة أو فاتحة جدًا."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-skin:paper-tag",
+      "role": "emphasis",
+      "labelAr": "سكين الكابشن · قصاصة ورق",
+      "explains": "A cream paper tag separates a literal caption line from the underlying image.",
+      "action": "Draw dark caption ink on a cream strip with dashed paper edges and a short lower shadow.",
+      "useWhen": [
+        "The creator chooses paper-tag for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "warm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "الكلام على قصاصة ورق.",
+        "useWhen": "لإحساس ورقي هادي.",
+        "avoidWhen": "لو القصاصة بتغطي تفصيلة مهمة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-presentation:pill",
+      "role": "emphasis",
+      "labelAr": "شكل الكابشن · كبسولة",
+      "explains": "The basic caption plate follows the selected style pill palette and radius.",
+      "action": "Use the normal themed or legacy pill painting when captions.skin is absent.",
+      "useWhen": [
+        "The creator chooses pill for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "شكل الكابشن الأساسي للستايل.",
+        "useWhen": "للحفاظ على هوية الستايل.",
+        "avoidWhen": "لو سكين الكابشن مختار."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-presentation:minimal",
+      "role": "emphasis",
+      "labelAr": "شكل الكابشن · نص بلا خلفية",
+      "explains": "A basic caption line uses white shadowed text without a backing plate.",
+      "action": "Paint transparent caption backing and dark text shadows when captions.skin is absent.",
+      "useWhen": [
+        "The creator chooses minimal for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "كلام أبيض من غير خلفية.",
+        "useWhen": "فوق خلفية بسيطة وغامقة.",
+        "avoidWhen": "لو التباين ضعيف أو سكين مختار."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-presentation:ink-strip",
+      "role": "emphasis",
+      "labelAr": "شكل الكابشن · شريط داكن",
+      "explains": "A dark full-line strip separates a basic caption cue from the footage.",
+      "action": "Draw a dark low-radius caption strip with white text when captions.skin is absent.",
+      "useWhen": [
+        "The creator chooses ink-strip for reviewed literal captions."
+      ],
+      "avoidWhen": [
+        "This drawing would obscure the source or reduce text contrast."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "low",
+        "medium"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "A captions.skin choice overrides captions.presentation. Reset the skin to use the basic presentation.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "شريط غامق وراه الكلام.",
+        "useWhen": "لما الكلام محتاج خلفية واضحة.",
+        "avoidWhen": "لو سكين مختار أو بيغطي تفاصيل."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-skins.tsx",
+          "sha256": "c039fb0e0d69085d6c28aef36eccafa2e12cdb1ae64b81191a6d9ac27af3c88c"
+        }
+      ]
+    },
+    {
+      "key": "caption-emphasis:stretch",
+      "role": "emphasis",
+      "labelAr": "تأكيد الكابشن · كشيدة",
+      "explains": "One Arabic caption word expands along legal connections during its spoken window while the caption keeps its size and chunking; the words next to it glide apart and back and the caption box widens and narrows with it, so there is no loose gap at rest.",
+      "action": "Use stretchWord for up to six tatweels: grow for about 0.35 seconds and relax over 0.25 seconds within the mapped word time; chunk and size the cue with the longest form, then give the word the room of its current width (continuous between whole tatweels) so the centred caption grows by half the gain on each side.",
+      "useWhen": [
+        "An authored emphasis on a reviewed Arabic caption word supports the spoken point."
+      ],
+      "avoidWhen": [
+        "The style keeps captions static, the word has no legal join, or no reviewed timing is available."
+      ],
+      "intents": [
+        "text",
+        "word-emphasis"
+      ],
+      "moods": [
+        "calm",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen"
+      ],
+      "requires": [
+        "reviewed-words"
+      ],
+      "requirements": [
+        "Uses existing reviewed words and their mapped frames; never a scene family or a fabricated transcript.",
+        "Refused for styles with defaults.staticCaptions. Arabic remains joined; Latin and slotless words stay unchanged.",
+        "The cue is chunked and sized once with the longest form, so it never re-chunks or changes size during the stretch; the word's room and the caption box follow its current width. The safe-zone probe still sees the plain word in a box as wide as the longest form.",
+        "Review actual source contrast, face clearance and caption fit; library samples are authored renderer demonstrations only."
+      ],
+      "display": {
+        "explains": "الكلمة العربية تتمدد وترجع، والكلمات اللي جنبها بتتحرك معاها من غير فراغ، والكابشن بيوسع ويضيق معاها.",
+        "useWhen": "لتأكيد كلمة عربية بتوقيت واضح.",
+        "avoidWhen": "لو الكابشن ثابت أو الكلمة بلا وصلة مناسبة."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/preference-options.ts",
+          "sha256": "7a84e98444c98e8191c0d5453617963bb1cdb5c5c6658530493ba163df15a168"
+        },
+        {
+          "path": "engine/src/prepared-edit/schema.ts",
+          "sha256": "7d446fbf3fae3b7e6775eaf15b371da682ea4fc0dbd5da1a02a40cbc0bc2b792"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        },
+        {
+          "path": "engine/src/prepared-edit/caption-emphasis.ts",
+          "sha256": "80793b859dfff4eddb50efa7deb8d29db823fc39e98fe1e5c67aac8469facf4b"
+        },
+        {
+          "path": "engine/src/arabic/kashida.ts",
+          "sha256": "519d6009587276e879d9c1399a700692a4c6a433a7d75c9aba5c37316774f423"
+        }
+      ]
+    },
+    {
+      "key": "style:layered-speaker",
+      "role": "style",
+      "labelAr": "كلمات ورا المتكلم وحواليه",
+      "explains": "Supplies a poster grammar around an on-camera speaker: heavy white words with dark outlines, one marker-yellow accent and hand-drawn marks, layered behind and around a cut-out of the speaker.",
+      "action": "Use ink night and marker yellow with heavy Cairo words; the owned layered-speaker scene puts the big word behind the head and the others around it, and a hand-drawn mark lands on the key word.",
+      "useWhen": [
+        "An opinion, a story or a hook where the creator’s face carries the video and a few words deserve the poster treatment.",
+        "A matte of the speaker can be cut from the source, or the big word can sit above the head."
+      ],
+      "avoidWhen": [
+        "There is no on-camera speaker, or the speaker is too small, too far or constantly crossing the frame.",
+        "A long explainer needs cards, lists or numbers rather than one to three key words."
+      ],
+      "intents": [
+        "claim",
+        "reveal",
+        "word-emphasis"
+      ],
+      "moods": [
+        "energetic",
+        "playful",
+        "editorial"
+      ],
+      "energy": [
+        "medium",
+        "high"
+      ],
+      "modes": [
+        "recording"
+      ],
+      "sourceKinds": [
+        "presenter"
+      ],
+      "requires": [],
+      "requirements": [
+        "The owned layered-speaker family is presenter only and valid in this style alone; picture-in-picture is not allowed because the layering needs the full-frame speaker.",
+        "Uses its own palette, a Cairo default and minimal captions that stay on screen; profile colours are not applied.",
+        "The words are the creator’s own key words and the marks are decoration: no invented claim, number or speech.",
+        "The big word and its matte are a newer technique: show the fast preview first and check the matte edges on stills."
+      ],
+      "display": {
+        "explains": "ستايل كلمات ثقيلة حوالين المتكلم بعلامة بخط اليد.",
+        "useWhen": "لرأي أو حكاية أو هوك وشك فيها هو المهم.",
+        "avoidWhen": "لو مفيش متكلم ظاهر أو الشرح طويل بكروت وأرقام."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/styles/layered-speaker/meta.ts",
+          "sha256": "8680a3f63f2ae203448d6e28ee40af6877dc66e165484670a5f0c943b1618f91"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/theme.ts",
+          "sha256": "76f83c15c971b87fdeee015a024b3331d270f6feda7f250a65a4b142f610158e"
+        },
+        {
+          "path": "engine/src/styles/registry.ts",
+          "sha256": "749a7d36a5510d6a85b3fee634539d567777cd058f38896b62880b07662b7deb"
+        },
+        {
+          "path": "engine/src/styles/themes.ts",
+          "sha256": "70dc1c31358f8a40aef6dfd29d06d7b42f42809ae9867a7060f13ae1e13d6032"
+        },
+        {
+          "path": "engine/src/styles/scene-renderers.tsx",
+          "sha256": "245311e7dee71d3c153f193579552a73df11e65eee034de6cfb809c550a7696f"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/schema.ts",
+          "sha256": "42af141bd6e7b868f9209d51d2cf69be910c247c3aa900e1e97e390579e77bde"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/math.ts",
+          "sha256": "f5e07ef0c61eebd64542f67eaa61d73cde3fcdc6d3e6e5ba50c43cc3f3f5ef4b"
+        },
+        {
+          "path": "engine/src/styles/layered-speaker/scenes/scene.tsx",
+          "sha256": "e73a4b78dca384293913467ddf9c2de1fd663dd624edb584a864cd3ef36a10b4"
+        },
+        {
+          "path": "instructions/styles/layered-speaker.md",
+          "sha256": "e792778966930afc5471c461d3a0664579b033e45f9b81cc7d4e873e1e64d0d9"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:ink-slab",
+      "role": "transition",
+      "labelAr": "لوح حبر",
+      "explains": "A black ink slab with a lime leading edge travels right to left, revealing the pre-rolled incoming graphics behind its trailing edge.",
+      "action": "Add {kind:\"ink-slab\",atFrame:<adjacent scene cut>,durationInFrames:12}. The manifest cut and all audio/caption/camera times remain unchanged.",
+      "useWhen": [
+        "A strong adjacent idea change in kinetic-paper; the outgoing graphics remain behind the slab."
+      ],
+      "avoidWhen": [
+        "Continuous visibility of speech or evidence is required."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Entrance; duration 12, lead 10, tail 12, full canvas; presenter graphics are supported.",
+        "Graphics-only drawing overlap; manifest, captions, audio and camera remain nominal.",
+        "Follow the lead/tail and ownership rules in graphics-transitions.ts. No dir, shape or origin options."
+      ],
+      "display": {
+        "explains": "لوح حبر بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/ink-slab.tsx",
+          "sha256": "b58e85eb33fec72376bb173e00460bfe80d8f1de56c9800a39f87ed9d8fda643"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/drawing-timeline.ts",
+          "sha256": "010b147d69580681d3bab8d9489f1e8ca422166b993c0873f140a741282f68e8"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:magazine-flip",
+      "role": "transition",
+      "labelAr": "قلب صفحة مجلة",
+      "explains": "The outgoing magazine page hinges from its left edge in perspective above the incoming page, with a darkening leaf and cast shadow.",
+      "action": "Add {kind:\"magazine-flip\",atFrame:<adjacent scene cut>,durationInFrames:14}. The manifest cut and all audio/caption/camera times remain unchanged.",
+      "useWhen": [
+        "A print-magazine chapter or verdict change between two adjacent graphics pages."
+      ],
+      "avoidWhen": [
+        "Continuous visibility of speech or evidence is required."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Centred overlay; duration 14, lead 15 (eight before the flip starts), tail 7; takeover/split only. Outgoing drawn once.",
+        "Graphics-only drawing overlap; manifest, captions, audio and camera remain nominal.",
+        "Follow the lead/tail and ownership rules in graphics-transitions.ts. No dir, shape or origin options."
+      ],
+      "display": {
+        "explains": "قلب صفحة مجلة بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/magazine-flip.tsx",
+          "sha256": "f15052bb0d76da8812c7167752d5447b00dd3daa3064d99aa240e7d423775034"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/drawing-timeline.ts",
+          "sha256": "010b147d69580681d3bab8d9489f1e8ca422166b993c0873f140a741282f68e8"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:lens-zoom",
+      "role": "transition",
+      "labelAr": "عدسة",
+      "explains": "A real lens on the outgoing graphics expands across the canvas, blends to the incoming graphics inside its disc and settles without moving the footage plate.",
+      "action": "Add {kind:\"lens-zoom\",atFrame:<adjacent scene cut>,durationInFrames:14}. The manifest cut and all audio/caption/camera times remain unchanged.",
+      "useWhen": [
+        "A detail-to-next-idea transition in liquid-glass with an outgoing graphics target."
+      ],
+      "avoidWhen": [
+        "Continuous visibility of speech or evidence is required."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Entrance; duration 14, lead/tail 14; outgoing held at its last nominal frame; takeover/split only.",
+        "Graphics-only drawing overlap; manifest, captions, audio and camera remain nominal.",
+        "Follow the lead/tail and ownership rules in graphics-transitions.ts. No dir, shape or origin options."
+      ],
+      "display": {
+        "explains": "عدسة بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/lens-zoom.tsx",
+          "sha256": "1ca27dccb5de7ee182cec8263ad70385f4c819880b7f70c4b0b64422d39cabb7"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/drawing-timeline.ts",
+          "sha256": "010b147d69580681d3bab8d9489f1e8ca422166b993c0873f140a741282f68e8"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "graphics-transition:paper-pull",
+      "role": "transition",
+      "labelAr": "سحب الورقة",
+      "explains": "The retained outgoing parchment sheet lifts upward with its torn edge and shadow, revealing the already running incoming sheet underneath.",
+      "action": "Add {kind:\"paper-pull\",atFrame:<adjacent scene cut>,durationInFrames:14}. The manifest cut and all audio/caption/camera times remain unchanged.",
+      "useWhen": [
+        "A claim-to-receipt or receipt-to-receipt change in calligraphic-receipts."
+      ],
+      "avoidWhen": [
+        "Continuous visibility of speech or evidence is required."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Entrance; duration 14, lead/tail 14; freeze outgoing at its last nominal frame; requires two takeover sheets.",
+        "Graphics-only drawing overlap; manifest, captions, audio and camera remain nominal.",
+        "Follow the lead/tail and ownership rules in graphics-transitions.ts. No dir, shape or origin options."
+      ],
+      "display": {
+        "explains": "سحب الورقة بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/paper-pull.tsx",
+          "sha256": "a97b4022186b650cbf13c3d08c963dba44a0d2a29e25333613ceaa61273e7620"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/drawing-timeline.ts",
+          "sha256": "010b147d69580681d3bab8d9489f1e8ca422166b993c0873f140a741282f68e8"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
+        }
+      ]
+    },
+    {
+      "key": "overlay:paper-swap",
+      "role": "transition",
+      "labelAr": "تبديل الورقة",
+      "explains": "A large torn teal sheet with tape crosses right to left, covering the cut at its centre and uncovering the incoming paper composition.",
+      "action": "Add {kind:\"paper-swap\",atFrame:<adjacent scene cut>,durationInFrames:14}. The manifest cut and all audio/caption/camera times remain unchanged.",
+      "useWhen": [
+        "An adjacent paper-collage idea change that can briefly cover the picture."
+      ],
+      "avoidWhen": [
+        "Continuous visibility of speech or evidence is required."
+      ],
+      "intents": [
+        "cut",
+        "reveal"
+      ],
+      "moods": [
+        "editorial"
+      ],
+      "energy": [
+        "medium"
+      ],
+      "modes": [
+        "recording",
+        "graphics"
+      ],
+      "sourceKinds": [
+        "presenter",
+        "screen",
+        "none"
+      ],
+      "requires": [],
+      "requirements": [
+        "Centred overlay; duration 14, incoming lead 12, full canvas; fixed right-to-left direction.",
+        "Graphics-only drawing overlap; manifest, captions, audio and camera remain nominal.",
+        "Follow the lead/tail and ownership rules in graphics-transitions.ts. No dir, shape or origin options."
+      ],
+      "display": {
+        "explains": "تبديل الورقة بعناصر توضيحية من بيانات المبدع.",
+        "useWhen": "لما الفكرة تحتاج الحركة دي.",
+        "avoidWhen": "لو الحركة هتغطي كلام أو دليل لازم يفضل ظاهر."
+      },
+      "evidence": [
+        {
+          "path": "engine/src/core/transitions-v4/paper-swap.tsx",
+          "sha256": "4ebb43054412b6df78ebecf0c5fd9fbf388d25d4d1243772cdeab80afdf82e39"
+        },
+        {
+          "path": "engine/src/prepared-edit/graphics-transitions.ts",
+          "sha256": "c9db34ffd959b5260db0c38567bb722b0f74321a17cc5c801019ec16a6be7b45"
+        },
+        {
+          "path": "engine/src/prepared-edit/drawing-timeline.ts",
+          "sha256": "010b147d69580681d3bab8d9489f1e8ca422166b993c0873f140a741282f68e8"
+        },
+        {
+          "path": "engine/src/prepared-edit/PreparedEdit.tsx",
+          "sha256": "5e72963d6bd3502846458dd4b6cbf41fee89def54e0dd1a93e59154a6fe99c42"
         }
       ]
     }

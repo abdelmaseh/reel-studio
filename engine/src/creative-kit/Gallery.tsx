@@ -1,9 +1,11 @@
+import {familyDesign} from '../styles/family-designs';
+import type {EditScene} from '../prepared-edit/schema.ts';
 import React from "react";
 import { Sequence, type CalculateMetadataFunction } from "remotion";
 import { SafeRoot } from "../core/safe";
 import { FlashBloom, LightLeak, Whiteout } from "../core/transitions";
 import { getGalleryCut } from "../styles/themes";
-import { getSceneTheme } from "./primitives";
+import { getSceneTheme, getSceneGeometry } from "./primitives";
 import {
   creativeGallerySchema,
   getGalleryDuration,
@@ -34,12 +36,19 @@ export const calculateCreativeGalleryMetadata: CalculateMetadataFunction<
 const GalleryScene: React.FC<{
   family: SceneFamily;
   props: CreativeGalleryProps;
-}> = ({ family, props }) => {
+  sectionIndex?: number;
+}> = ({ family, props, sectionIndex }) => {
   const options = {
     style: props.style,
     motion: props.motion,
     layout: props.layout,
   };
+  const Design = familyDesign(props.style, family);
+  if (Design) {
+    const seam = getSceneGeometry(props.style, 'split').canvasHeight;
+    const scene = {id:family,family,layout:props.layout,motion:props.motion,fromFrame:0,durationInFrames:props.framesPerScene,data:props[family]} as EditScene;
+    return <Design scene={scene} style={props.style} sectionIndex={sectionIndex} geometry={{windowTop:seam,windowHeight:1920-seam,videoWidth:1080,videoLeft:0,videoTop:-340}} aspect={16/9} seam={seam}/>;
+  }
   switch (family) {
     case "intro":
       return <IntroScene {...options} data={props.intro} />;
@@ -77,7 +86,7 @@ export const CreativeKitGallery: React.FC<CreativeGalleryProps> = (input) => {
           from={slot.from}
           durationInFrames={slot.durationInFrames}
         >
-          <GalleryScene family={slot.family} props={props} />
+          <GalleryScene family={slot.family} props={props} sectionIndex={props.layout==='takeover'?index+1:undefined} />
           {index > 0 && galleryCut !== "none" ? (
             galleryCut === "flash-bloom" ? (
               <FlashBloom at={0} />

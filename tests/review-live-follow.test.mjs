@@ -24,6 +24,13 @@ function setup() {
   return {manifest, store, follower, updates, incoming, typing: value => {typing = value;}};
 }
 
+test('a legacy style update is normalized before it enters the live store', () => {
+  const {store, follower, incoming} = setup();
+  follower.receive(incoming(next => {next.manifest.style = 'split-canvas';}));
+  assert.equal(store.getSnapshot().manifest.style, 'section-deck');
+  assert.ok(follower.getProject().warnings.includes('الستايل ده اتدمج في section-deck.'));
+});
+
 test('an assistant caption and cut update reaches the visible store without reloading', () => {
   const {store, follower, updates, incoming} = setup();
   follower.receive(incoming(next => {

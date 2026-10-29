@@ -1,3 +1,4 @@
+import {normalizeStyleId} from '../../engine/src/styles/registry.ts';
 import './project-tmp.mjs';
 import path from 'node:path';
 import { createRequire } from 'node:module';
@@ -50,8 +51,9 @@ export function normalizeMixOptions(args) {
   const under = numeric('under', MIX_UNDER_DEFAULT_DB, 0, 40), ceilPad = numeric('ceilPad', 0.8, 0, 6);
   let style = null;
   if (args.style !== undefined) {
-    style = STYLE_IDS.includes(args.style) ? args.style : Object.keys(profiles).find(key => args.style === profiles[key].slug);
-    if (!style) throw new Error(`--style accepts ${STYLE_IDS.join(', ')} (or the two legacy Style DNA slugs).`);
+    const requested = normalizeStyleId(args.style);
+    style = STYLE_IDS.includes(requested) ? requested : Object.keys(profiles).find(key => requested === profiles[key].slug);
+    if (!style) throw new Error(`--style accepts ${STYLE_IDS.join(', ')} (or the legacy Style DNA slug).`);
   }
   if (args.tighten !== undefined && ![true, false, '1', '0', 'on', 'off'].includes(args.tighten)) throw new Error('--tighten accepts 1/on or 0/off.');
   const voice = parseVoiceMode(args.voice);

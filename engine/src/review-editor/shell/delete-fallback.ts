@@ -1,9 +1,8 @@
 import type { EditManifest } from "../../prepared-edit/schema.ts";
 import type { SelectionTarget } from "../types.ts";
+import { isOverlayKind,transitionUsesOutgoing,TRANSITION_RULES } from "../../prepared-edit/graphics-transitions.ts";
 
 export type DeleteOutcome = { manifest: EditManifest; label: string } | { error: string };
-
-const OVERLAY = ["whiteout", "leak", "bloom", "burn"];
 
 export function deleteSelection(m: EditManifest, sel: SelectionTarget): DeleteOutcome {
   switch (sel.kind) {
@@ -23,7 +22,7 @@ export function deleteSelection(m: EditManifest, sel: SelectionTarget): DeleteOu
       const scene = m.scenes.find((s) => s.id === sel.id);
       if (!scene) return { error: "المشهد ده مش موجود." };
       const next: EditManifest = { ...m, scenes: m.scenes.filter((s) => s.id !== sel.id) };
-      if (m.transitions) next.transitions = m.transitions.filter((t) => !(t.atFrame === scene.fromFrame && !OVERLAY.includes(t.kind)));
+      if (m.transitions) next.transitions = m.transitions.filter((t) => !(t.atFrame === scene.fromFrame && (!isOverlayKind(t.kind)||Boolean(TRANSITION_RULES[t.kind].lead || TRANSITION_RULES[t.kind].needsOutgoing)) || transitionUsesOutgoing(t,scene)));
       if (m.footage?.pip?.sceneIds.includes(sel.id)) {
         const left = m.footage.pip.sceneIds.filter((id) => id !== sel.id);
         if (left.length) next.footage = { ...m.footage, pip: { ...m.footage.pip, sceneIds: left } };

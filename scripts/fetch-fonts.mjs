@@ -44,13 +44,15 @@ const additive = Boolean(args.family);
 const declaredVariable = DECLARED_FONTS.find((spec) => spec.family === args.family && spec.axes);
 // A declared italic travels with an explicit --weights/--subsets request for the same family.
 const declaredItalic = DECLARED_FONTS.find((spec) => spec.family === args.family && spec.italic)?.italic;
+// Without --weights/--subsets, a declared family asks for exactly its declared weights and subsets (Lalezar has no 700).
+const declaredSpec = DECLARED_FONTS.find((spec) => spec.family === args.family);
 const requested = additive
   ? [declaredVariable && args.weights === undefined && args.subsets === undefined
       ? declaredVariable
       : {
           family: String(args.family),
-          weights: String(args.weights ?? '400,700').split(',').map(Number),
-          subsets: String(args.subsets ?? 'arabic,latin').split(','),
+          weights: String(args.weights ?? declaredSpec?.weights?.join(',') ?? '400,700').split(',').map(Number),
+          subsets: String(args.subsets ?? declaredSpec?.subsets?.join(',') ?? 'arabic,latin').split(','),
           ...(declaredItalic ? {italic: declaredItalic} : {}),
         }]
   : DECLARED_FONTS;

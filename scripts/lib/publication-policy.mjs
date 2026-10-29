@@ -1,3 +1,6 @@
+import {readFileSync} from 'node:fs';
+import {resolve} from 'node:path';
+
 const textFile = /\.(?:mjs|cjs|js|ts|tsx|json|md|css|html|ps1|cmd|txt|svg|yml|yaml)$|(?:^|\/)(?:LICENSE|\.gitignore|\.prettierrc|\.env\.(?:example|template))$|^\.githooks\//i;
 const privatePath = /^(?:Raw|Reference|Projects|Outputs|Tools|state|\.cache|\.superpowers)\/|(?:^|\/)(?:node_modules|\.git)\/|(?:^|\/)PROFILE\.json$|^docs\/superpowers\/.+/i;
 const rules = [
@@ -31,6 +34,17 @@ export function scanPublicationFile(file, data) {
     } catch { issues.push({file, line: 1, rule: 'invalid profile example'}); }
   }
   return issues;
+}
+
+/** Read the publishable working-tree paths, tolerating files removed since Git listed them. */
+export function readWorkingTreePublicationFiles(root, paths) {
+  return [...new Set(paths)].flatMap(relative => {
+    try { return [{path: relative, data: readFileSync(resolve(root, relative))}]; }
+    catch (error) {
+      if (error.code === 'ENOENT' || error.code === 'ENOTDIR') return [];
+      throw error;
+    }
+  });
 }
 
 export function scanPublicationFiles(files) {

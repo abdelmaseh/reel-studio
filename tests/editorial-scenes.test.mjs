@@ -11,6 +11,7 @@ import {profileToBrief} from '../scripts/lib/branding.mjs';
 import {sceneCues} from '../scripts/lib/scene-cues.mjs';
 import {verifyKineticAssets} from '../scripts/lib/prepared-props.mjs';
 import {CATALOG,catalogDemo} from '../engine/src/motion-concepts/catalog.ts';
+import {STYLE_IDS} from '../engine/src/styles/registry.ts';
 import {fieldsForFamily} from '../engine/src/review-editor/panels/form-schema.ts';
 import {addSceneFromTemplate} from '../engine/src/review-editor/ops/scenes.ts';
 
@@ -51,12 +52,12 @@ test('evidence wipe bounds authored timing and media references',()=>{
 });
 test('every registered style can compete automatically and explicit/profile choices win',()=>{
   const candidates=recommendEditorStyle(brief()).candidates.map(candidate=>candidate.style);
-  assert.equal(new Set(candidates).size,14);
+  assert.equal(new Set(candidates).size,STYLE_IDS.length);
   assert.equal(recommendEditorStyle(brief('story','calm')).style,'paper-collage');
-  assert.equal(recommendEditorStyle(brief('opinion','editorial')).style,'judgment-board');
+  assert.equal(recommendEditorStyle(brief('opinion','editorial')).style,'calligraphic-receipts');
   const fixed=brief();fixed.preferences.style={mode:'fixed',value:'liquid-glass'};
   assert.equal(recommendEditorStyle(fixed).style,'liquid-glass');
-  assert.equal(recommendEditorStyle({...fixed,style:'stepped-editorial'}).style,'stepped-editorial');
+  assert.equal(recommendEditorStyle({...fixed,style:'magazine-interview'}).style,'magazine-interview');
 });
 test('editorial beats reach the normal director and retain literal captions',()=>{
   const raw=brief('explainer','energetic',{beats:[{id:'words',fromSec:0,toSec:3,intent:'kinetic-text',data:kineticData},{id:'evidence',fromSec:3,toSec:6,intent:'evidence-wipe',data:evidenceData}]});

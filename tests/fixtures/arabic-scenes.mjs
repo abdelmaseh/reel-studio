@@ -5,6 +5,11 @@ const scene = (family, layout, data, durationInFrames = 240) => ({id: family, fa
 export const ARABIC_KEYWORD = 'قالب';
 
 export const ARABIC_SCENES = Object.freeze([
+  scene('arabic-type','takeover',{text:'فكرة واضحة 2024',move:'decrypt'}),
+  scene('figures','takeover',{variant:'counter',value:42,label:'قيمة توضيحية 2',unit:'وحدة'}),
+  ...['slot','bars','ring'].map(variant=>Object.assign(scene('figures','takeover',variant==='bars'?{variant,bars:[{label:'الفئة 1',value:42},{label:'الفئة 2',value:64}],unit:'وحدة'}:variant==='ring'?{variant,value:42,max:100,label:'من 100'}:{variant,value:42,label:'قيمة توضيحية 2'}),{id:'figures-'+variant})),
+  ...['bubbles','typing','notifications'].map(variant=>Object.assign(scene('chat-thread','takeover',{variant,title:'مثال شات 2',messages:[{from:'them',text:'رسالة كاملة 42',at:30},{from:'me',text:'رد واضح 3',at:90}]}),{id:'chat-thread-'+variant})),
+  scene('proof-screen','takeover',{page:'dashboard',title:'صفحة توضيحية 2024',url:'موقعك.com',blocks:[{kind:'heading',text:'خطوة 1 من 3'},{kind:'stat',text:'قيمة توضيحية',value:42.5},{kind:'row',text:'الصف 2',value:10},{kind:'button',text:'راجع 3 تفاصيل'}],focus:1,path:'focus'}),
   scene('intro', 'takeover', {kicker: 'خطوة 1 من 3', title: 'فكرة واضحة', subtitle: 'اشرح فكرتك في 3 جمل', caption: 'تعليق 2024'}),
   scene('proof', 'takeover', {label: 'عدد المتابعين', value: 12500, suffix: '%', source: 'المصدر 2024', caption: 'رقم حقيقي', valueFit: 'final'}),
   scene('process', 'takeover', {title: 'ثلاث خطوات', steps: [

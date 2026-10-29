@@ -1,8 +1,13 @@
+import {arabicTypeSceneVariants,arabicTypeTemplateData} from '../engine/src/arabic-type/schema.ts';
+import {arabicTypeMinimumSeconds} from '../engine/src/arabic-type/timing.ts';
+import {figuresSceneVariants} from '../engine/src/creative-kit/figures/schema.ts';
+import {chatThreadSceneVariants} from '../engine/src/creative-kit/chat-thread/schema.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {editSceneSchema} from '../engine/src/prepared-edit/schema.ts';
 import {kineticSceneVariants} from '../engine/src/creative-kit/kinetic/schema.ts';
 import {librarySceneVariants} from '../engine/src/motion-library/schema.ts';
+import {proofScreenSceneVariants} from '../engine/src/creative-kit/proof-screen/schema.ts';
 import {SAMPLE_NUMBER, manifestSampleNumbers, sampleNumberPaths} from '../engine/src/prepared-edit/sample-numbers.ts';
 import {KIT_LAYOUT, KIT_TEMPLATE_FAMILIES, TEMPLATE_TEXT, kitTemplate, kitTemplateData} from '../engine/src/review-editor/ops/templates.ts';
 import {sceneTimingIssues} from '../engine/src/review-editor/ops/anchors.ts';
@@ -68,9 +73,9 @@ test('the sample figure is valid for the two schemas that show a figure and is f
 });
 
 test('every kit template validates, fits its timing rules and keeps the schema layout at 24 to 60 fps and at every room', () => {
-  assert.deepEqual([...KIT_TEMPLATE_FAMILIES], ['checklist', 'data-story', 'count', 'outcome', 'statement', 'creator-cta']);
+  assert.deepEqual([...KIT_TEMPLATE_FAMILIES], ['arabic-type', 'figures', 'chat-thread', 'checklist', 'data-story', 'count', 'outcome', 'statement', 'creator-cta', 'proof-screen']);
   for (const family of KIT_TEMPLATE_FAMILIES) {
-    const variant = [...kineticSceneVariants, ...librarySceneVariants].find((schema) => schema.shape.family.value === family);
+    const variant = [...kineticSceneVariants, ...librarySceneVariants, ...arabicTypeSceneVariants, ...figuresSceneVariants, ...chatThreadSceneVariants, ...proofScreenSceneVariants].find((schema) => schema.shape.family.value === family);
     assert.ok(variant, family);
     const layoutSchema = variant.shape.layout;
     const allowed = 'value' in layoutSchema ? [layoutSchema.value] : layoutSchema.options;
@@ -78,8 +83,8 @@ test('every kit template validates, fits its timing rules and keeps the schema l
     if ('value' in layoutSchema) assert.equal(KIT_LAYOUT[family], layoutSchema.value, `${family}: a literal layout gives the table value`);
     else assert.equal(KIT_LAYOUT[family], 'takeover', `${family}: the data-story choice takes the full canvas`);
     for (const fps of FPS) {
-      const wanted = Math.round(({statement: 90}[family] ?? 120) * fps / 30);
-      const least = Math.ceil(2 * fps);
+      const wanted = Math.round(({statement: 90, 'arabic-type': 150}[family] ?? 120) * fps / 30);
+      const least = Math.ceil((family === 'arabic-type' ? arabicTypeMinimumSeconds(arabicTypeTemplateData) : 2) * fps);
       for (const room of [undefined, least, least + 7, wanted - 1, wanted, wanted + 50]) {
         const scene = sceneOf(family, fps, room);
         const label = `${family} at ${fps} fps, room ${room}`;
@@ -87,7 +92,7 @@ test('every kit template validates, fits its timing rules and keeps the schema l
         if (room !== undefined) assert.ok(scene.durationInFrames <= room, label);
         const parsed = editSceneSchema.safeParse(scene);
         assert.equal(parsed.success, true, `${label}: ${parsed.error?.message}`);
-        assert.deepEqual(sceneTimingIssues(parsed.data), [], label);
+        assert.deepEqual(sceneTimingIssues(parsed.data,fps), [], label);
         assert.equal(validateData(family, scene.data).ok, true, label);
       }
     }
@@ -95,8 +100,8 @@ test('every kit template validates, fits its timing rules and keeps the schema l
 });
 
 test('templates are 120 frames at 30 fps except the statement, and gaps shorter than a template shrink the keys with it', () => {
-  assert.deepEqual(KIT_TEMPLATE_FAMILIES.map((family) => kitTemplate(family, 30).frames), [120, 120, 120, 120, 90, 120]);
-  assert.deepEqual(KIT_TEMPLATE_FAMILIES.map((family) => kitTemplate(family, 60).frames), [240, 240, 240, 240, 180, 240]);
+  assert.deepEqual(KIT_TEMPLATE_FAMILIES.map((family) => kitTemplate(family, 30).frames), [150, 120, 120, 120, 120, 120, 120, 90, 120, 120]);
+  assert.deepEqual(KIT_TEMPLATE_FAMILIES.map((family) => kitTemplate(family, 60).frames), [300, 240, 240, 240, 240, 240, 240, 180, 240, 240]);
   assert.deepEqual(kitTemplate('checklist', 30).data.items.map((item) => item.atFrame), [20, 48, 76]);
   assert.deepEqual(kitTemplate('checklist', 60).data.items.map((item) => item.atFrame), [40, 96, 152]);
   const half = kitTemplate('checklist', 30, 60);
@@ -115,7 +120,7 @@ test('templates are 120 frames at 30 fps except the statement, and gaps shorter 
 });
 
 test('template text is Arabic placeholders, the figure is the sentinel and the structural choices stay in English', () => {
-  const structural = new Set(['variant', 'suffix', 'display', 'keyword', 'handle']);
+  const structural = new Set(['variant', 'suffix', 'display', 'keyword', 'handle', 'move', 'from', 'page', 'path', 'kind']);
   for (const family of KIT_TEMPLATE_FAMILIES) {
     for (const {path, value} of leaves(kitTemplateData[family])) {
       const key = path.split('.').at(-1);
@@ -138,7 +143,7 @@ test('every field of every kit template has an Arabic label in the form', () => 
   }
 });
 
-test('the picker offers the six templates after the original kit and offers creator-cta only when the profile supports it', () => {
+test('the picker offers the eight templates after the original kit and offers creator-cta only when the profile supports it', () => {
   assert.equal(TEMPLATE_FAMILIES[0], 'intro');
   for (const family of KIT_TEMPLATE_FAMILIES) assert.ok(TEMPLATE_FAMILIES.includes(family), family);
   assert.deepEqual(templateFamiliesFor('section-deck').filter((family) => KIT_TEMPLATE_FAMILIES.includes(family)), [...KIT_TEMPLATE_FAMILIES]);
@@ -506,6 +511,6 @@ test('the count template ships no suffix, so a real figure is drawn as typed', a
   assert.ok(shown.includes('1,250'), shown);
   assert.equal(shown.includes('1,250+'), false, 'no claim nobody typed');
   Object.assign(real.data, {suffix: '+'});
-  assert.ok((await rendered(real, {frame: 100})).includes('1,250+'), 'a suffix the creator types is still drawn');
+  assert.match(await rendered(real, {frame: 100}), /1,250\s*\+/, 'a suffix the creator types is still drawn');
   assert.equal(editSceneSchema.safeParse({...count, data: {...count.data, suffix: '123456789'}}).success, false, 'the length limit stays');
 });

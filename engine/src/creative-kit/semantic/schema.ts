@@ -36,7 +36,7 @@ export const semanticSceneVariants=[
   base.extend({family:z.literal('kinetic-text'),data:z.object({...heading,
     sourceIndices:z.array(sourceIndex).min(1).max(32).refine(indices=>indices.every((value,index)=>index===0||value>indices[index-1]),'Source word indices must be strictly ordered'),
     lang:z.enum(['ar','en']),enter:z.enum(['rise','pop','fade']),
-    emphasis:z.array(z.object({sourceIndex,kind:z.enum(['accent','latin','pop','underline','weight'])}).strict()).max(32).optional(),
+    emphasis:z.array(z.object({sourceIndex,kind:z.enum(['accent','latin','pop','underline','weight','stretch'])}).strict()).max(32).optional(),
   }).strict().superRefine((data,ctx)=>{
     if(data.emphasis?.some(mark=>!data.sourceIndices.includes(mark.sourceIndex)))ctx.addIssue({code:'custom',message:'Emphasis must identify a selected recorded word'});
   })}),

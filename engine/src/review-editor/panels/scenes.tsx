@@ -9,6 +9,7 @@ import type { Issue, Selection } from "../types.ts";
 import { Badge, Empty, NoticeBar, NumInput, Section, hueOf, memoWithoutPlayhead, runOp, useNotice, usePlayheadGetter, useRunner } from "./kit.tsx";
 import { SCENES_TEXT, familyLabel } from "./family-labels.ts";
 import { SchemaForm } from "./schema-form.tsx";
+import { SceneCameraRow } from "./scene-camera.tsx";
 import type { ApplyFn } from "../store.ts";
 import {CATALOG} from '../../motion-concepts/catalog.ts';
 import type {ConceptId} from '../../motion-concepts/types.ts';
@@ -93,6 +94,7 @@ const SceneCard = memo(function SceneCard({ scene, index, open, selected, fps, i
               </>
             ) : <button type="button" className="danger" onClick={() => setArmed(true)}>حذف</button>}
           </div>
+          <SceneCameraRow scene={scene} run={run} />
           <SchemaForm
             family={scene.family}
             data={scene.data}

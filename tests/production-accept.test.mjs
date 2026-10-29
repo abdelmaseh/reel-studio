@@ -50,21 +50,21 @@ test('editorial: plan.json and the table agree; more than three text-only beats 
   const beats=[{id:'b1',kind:'visual',fromSec:0,toSec:3,family:'intro',libraryKey:'scene:intro',textOnly:false},{id:'b2',kind:'text',fromSec:3,toSec:5,family:'statement',libraryKey:'',textOnly:true},{id:'b3',kind:'comment',fromSec:5,toSec:7,family:'comment',libraryKey:'scene:comment',textOnly:false},{id:'b4',kind:'presenter',fromSec:7,toSec:9,family:'follow',libraryKey:'',textOnly:false}];
   const row=b=>`| ${b.id.slice(1)} | ${b.id} | ${b.kind} | «…» 0–3 | one idea | A → B → C | cue on «…» | split | none | ${b.family} | ${b.libraryKey||'-'} | subtitle | readability |`;
   const table=['| # | Beat id | Kind | Phrase / time | Takeaway | Visual action | Timing | Layout | Assets | Implementation | Library key | Text/sound | Review concern |','| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |'];
-  const plan={version:1,style:'split-canvas',reason:'presenter stays with a demo',takeaway:'t',purpose:'explainer',tone:'calm',ending:{comment:true,follow:true},beats:beats.map(b=>({...b,kind:b.kind==='comment'?'visual':b.kind}))};
+  const plan={version:1,style:'section-deck',reason:'presenter stays with a demo',takeaway:'t',purpose:'explainer',tone:'calm',ending:{comment:true,follow:true},beats:beats.map(b=>({...b,kind:b.kind==='comment'?'visual':b.kind}))};
   await f.put(`${f.task}/plan.json`,plan);
-  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: split-canvas — presenter stays with a demo\nTakeaway: t\n\n${[...table,...beats.map(row)].join('\n')}\n`);
+  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: section-deck — presenter stays with a demo\nTakeaway: t\n\n${[...table,...beats.map(row)].join('\n')}\n`);
   await f.put(`${f.task}/result.json`,{choices:[{key:'scene:intro',context:{},reason:'r'},{key:'scene:comment',context:{},reason:'r'}]});
   const ok=await acceptTask({role:'editorial',task:f.task});
   assert.equal(ok.ok,true,JSON.stringify(ok.checks));
   const many={...plan,beats:[plan.beats[0],...[1,2,3,4].map(n=>({id:`t${n}`,kind:'text',fromSec:n,toSec:n+1,family:'statement',libraryKey:'',textOnly:true})),...plan.beats.slice(2)]};
   await f.put(`${f.task}/plan.json`,many);
-  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: split-canvas — r\nTakeaway: t\n\n${[...table,...many.beats.map(row)].join('\n')}\n`);
+  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: section-deck — r\nTakeaway: t\n\n${[...table,...many.beats.map(row)].join('\n')}\n`);
   const bad=await acceptTask({role:'editorial',task:f.task});
   assert.equal(bad.ok,false);assert.equal(ids(bad)['translation-test'],'fail');
   await f.put(`${f.task}/plan.json`,plan);
-  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: split-canvas — r\nTakeaway: t\n\n${[...table,...[beats[1],beats[0],...beats.slice(2)].map(row)].join('\n')}\n`);
+  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: section-deck — r\nTakeaway: t\n\n${[...table,...[beats[1],beats[0],...beats.slice(2)].map(row)].join('\n')}\n`);
   assert.equal(ids(await acceptTask({role:'editorial',task:f.task}))['plan-table'],'fail','table rows must name the plan beats in order');
-  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: split-canvas — r\nTakeaway: t\n\n${[...table,...beats.map(row)].join('\n')}\n`);
+  await f.put(`${f.task}/EDITORIAL_PLAN.md`,`Style: section-deck — r\nTakeaway: t\n\n${[...table,...beats.map(row)].join('\n')}\n`);
   await fs.rm(path.join(ROOT,f.task,'result.json'));
   assert.equal(ids(await acceptTask({role:'editorial',task:f.task})).choices,'fail','result.json with the choices is required');
   await f.put(`${f.task}/plan.json`,{...plan,beats:[]});
@@ -80,7 +80,7 @@ test('editorial: plan.json and the table agree; more than three text-only beats 
 
 test('sound: catalog recipes, minimum gap, nothing after the sign-off, no sweeps',async t=>{
   const f=await fixture(t,'sound');
-  await f.put(`${f.root}/production/r1/tasks/edit/edit.json`,{style:'split-canvas',source:{fps:30,totalFrames:1800},segments:[{fromFrame:0,toFrame:1800}],signoffFromFrame:1700,scenes:[{id:'f',family:'follow',fromFrame:1500,durationInFrames:150}],sounds:[]});
+  await f.put(`${f.root}/production/r1/tasks/edit/edit.json`,{style:'section-deck',source:{fps:30,totalFrames:1800},segments:[{fromFrame:0,toFrame:1800}],signoffFromFrame:1700,scenes:[{id:'f',family:'follow',fromFrame:1500,durationInFrames:150}],sounds:[]});
   const cues=sounds=>({version:1,fps:30,sounds,dropped:[],proxies:{cuesPerMinute:0,minGapSec:0,followCardCues:0,afterSignoff:0},under:7,passage:{fromSec:0,toSec:10},questions:['a','b','c'],band:'calm'});
   const good=Array.from({length:40},(_,i)=>({atFrame:i*36,recipe:'soft-pop',gain:0.4,event:'e',reason:'appear'}));
   await f.put(`${f.task}/cues.json`,cues(good));await f.put(`${f.task}/sound-review.md`,'ok\n');
@@ -174,7 +174,7 @@ test('sound: the candidate is required, the band follows its brief tone, sweep t
   await f.put(`${f.task}/cues.json`,cues(good));await f.put(`${f.task}/sound-review.md`,'ok\n');
   assert.equal(ids(await acceptTask({role:'sound',task:f.task}))['edit-candidate'],'fail');
   const edit=`${f.root}/production/r1/tasks/edit`;
-  await f.put(`${edit}/edit.json`,{style:'split-canvas',source:{fps:30,totalFrames:1800},segments:[{fromFrame:0,toFrame:1800}],signoffFromFrame:1700,scenes:[],sounds:[]});
+  await f.put(`${edit}/edit.json`,{style:'section-deck',source:{fps:30,totalFrames:1800},segments:[{fromFrame:0,toFrame:1800}],signoffFromFrame:1700,scenes:[],sounds:[]});
   await f.put(`${edit}/brief.json`,{tone:'calm'});
   assert.equal((await acceptTask({role:'sound',task:f.task})).ok,true);
   await f.put(`${edit}/brief.json`,{tone:'energetic'});

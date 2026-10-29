@@ -1,7 +1,8 @@
+import {aliasPolicy} from '../styles/style-compat.ts';
 import { clamp01, mix } from "./motion.ts";
 import { boxInZone, noNegZero, type Rect, type Size, type ZoneLike } from "./device-geo.ts";
 import type { StyleId } from "../creative-kit/styles";
-import { pipPolicies } from "../styles/registry.ts";
+import { normalizeStyleId, pipPolicies } from "../styles/registry.ts";
 import type { PipPolicy } from "../styles/types.ts";
 
 export type PipCorner = "top-left" | "top-right" | "bottom-left" | "bottom-right";
@@ -276,10 +277,13 @@ export type { PipPolicy };
 export const PIP_POLICY: Record<StyleId, PipPolicy> = pipPolicies();
 
 
-export const pipAllowed = (style: string): PipPolicy =>
-  Object.prototype.hasOwnProperty.call(PIP_POLICY, style)
+export const pipAllowed = (style: string, styleAlias?: string): PipPolicy => {
+  style = normalizeStyleId(style);
+  if (aliasPolicy(style, styleAlias)?.pip) return {allowed: true, basis: 'inference', evidence: `Explicit PiP preserved from migrated style "${styleAlias}".`};
+  return Object.prototype.hasOwnProperty.call(PIP_POLICY, style)
     ? PIP_POLICY[style as StyleId]
     : { allowed: false, basis: "inference", evidence: `unknown style id "${style}" — no DNA to consult` };
+};
 
 export const assertPipAllowed = (style: string): void => {
   const p = pipAllowed(style);

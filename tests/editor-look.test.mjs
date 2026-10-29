@@ -41,7 +41,7 @@ test('the Look choices are the very lists the planner and the settings screen us
   assert.equal(LOOK_OPTIONS.groupings, CAPTION_GROUPING);
   assert.equal(LOOK_OPTIONS.presentations, CAPTION_PRESENTATION);
   assert.equal(LOOK_OPTIONS.digits, DIGIT_CHOICES);
-  assert.deepEqual([...LOOK_KEYS], ['fontFamily', 'captionsGrouping', 'captionsPresentation', 'digits']);
+  assert.deepEqual([...LOOK_KEYS], ['fontFamily', 'captionsGrouping', 'captionsPresentation', 'captionsSkin', 'digits', 'look']);
 });
 
 test('a Look patch writes only its own keys, clears what may be cleared and treats an equal value as no change', () => {
@@ -264,7 +264,7 @@ test('every Look option has an Arabic label, the digits row shows the three owne
   assert.equal(digitsPatchValue('auto'), null);
   assert.equal(digitsPatchValue('latin'), 'latin');
   assert.equal(digitsPatchValue('arabic-indic'), 'arabic-indic');
-  assert.deepEqual(LOOK_COALESCE, {fontFamily: 'look:font', captionsGrouping: 'look:grouping', captionsPresentation: 'look:presentation', digits: 'look:digits'});
+  assert.deepEqual(LOOK_COALESCE, {fontFamily: 'look:font', captionsGrouping: 'look:grouping', captionsPresentation: 'look:presentation', captionsSkin: 'look:skin', digits: 'look:digits', look: 'look:effect'});
   assert.deepEqual(Object.keys(LOOK_COALESCE).sort(), [...LOOK_KEYS].sort());
   assert.equal(new Set(Object.values(LOOK_COALESCE)).size, LOOK_KEYS.length);
   assert.deepEqual(Object.keys(LOOK_STEP).sort(), [...LOOK_KEYS].sort());
@@ -336,7 +336,7 @@ test('the Look tab renders the style, every choice and the right notes and disab
   const resetButton = (html, section) => tag(html, 'button', `${section === LOOK_TEXT.digits ? LOOK_TEXT.resetDigits : LOOK_TEXT.reset}: ${section}`);
   const m = legacy();
   const html = render(m);
-  for (const text of [LOOK_TEXT.title, LOOK_TEXT.hint, LOOK_TEXT.styleNote, 'liquid-glass', `${LOOK_TEXT.fontDefault} (Cairo)`, LOOK_TEXT.clausesNote, LOOK_TEXT.digitsNote]) assert.ok(html.includes(text), text);
+  for (const text of [LOOK_TEXT.title, LOOK_TEXT.hint, LOOK_TEXT.styleNote, 'liquid-glass', `${LOOK_TEXT.fontDefault} (Grid Sans)`, LOOK_TEXT.clausesNote, LOOK_TEXT.digitsNote]) assert.ok(html.includes(text), text);
   for (const font of FONT_CHOICES) assert.ok(html.includes(`>${fontLabel(font)}</option>`), font);
   for (const label of Object.values(GROUPING_LABEL)) assert.ok(html.includes(`>${label}</option>`), label);
   for (const label of Object.values(PRESENTATION_LABEL)) assert.ok(html.includes(`>${label}</option>`), label);

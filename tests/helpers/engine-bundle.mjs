@@ -15,6 +15,11 @@ export * from ${JSON.stringify(REMOTION)};
 export const useCurrentFrame = () => globalThis.__SSR_FRAME__ ?? 0;
 export const useVideoConfig = () => ({width: 1080, height: 1920, fps: globalThis.__SSR_FPS__ ?? 30, durationInFrames: 600, id: 'ssr', defaultProps: {}, props: {},
   defaultCodec: null, defaultOutName: null, defaultVideoImageFormat: null, defaultPixelFormat: null, defaultProResProfile: null});
+// <Solid> draws a canvas through its effect chain in a browser and mounts a <Sequence>, which needs a registered composition. The stand-in is the
+// canvas the real one renders, carrying the colour and the effect list (type and parameters) so a test can read what a layer would draw.
+import * as SolidReact from 'react';
+export const Solid = ({width, height, color, effects = [], style}) => SolidReact.createElement('canvas', {width, height, 'data-solid': color ?? '',
+  'data-effects': JSON.stringify(effects.map((effect) => ({type: effect.definition.type, params: effect.params}))), style: {width, height, ...style}});
 `;
 
 // Opt-in (`media: true`): plain stand-ins for the media components, which need a registered composition to render.
@@ -24,13 +29,25 @@ export const staticFile = (file) => '/' + file;
 export const Sequence = ({children}) => React.createElement(React.Fragment, null, children);
 export const Img = ({src, style}) => React.createElement('img', {src, style});
 export const OffthreadVideo = ({src, style, trimBefore}) => React.createElement('video', {src, style, 'data-trim-before': trimBefore});
+export const Audio = ({src}) => React.createElement('audio', {src});
 `;
 
 // Opt-in (`plateStub: true`): a plain <video> in place of core/plate, whose Footage needs a registered composition.
 const PLATE_STUB = `
 import React from 'react';
+export const CamPlate=({children})=>React.createElement(React.Fragment,null,children);
+export const WindowPlate=CamPlate;export const ContinuousWindowPlate=CamPlate;
 export const Footage = ({src, startFromSec = 0, muted = false, objectFit, style}) =>
   React.createElement('video', {'data-footage': src, 'data-start-from-sec': String(startFromSec), 'data-muted': String(muted), 'data-object-fit': objectFit, style});
+`;
+
+// On by default for `ssr: true` bundles (`lottieStub: false` turns it off): a plain element in place of @remotion/lottie, whose lottie-web needs a
+// real browser document. Scenes mount stickers (creative-kit/sticker-view), so any bundle of a scene view or PreparedEdit reaches lottie-web, and
+// the fake `document = {}` of an SSR bundle makes it fail when it loads.
+const LOTTIE_STUB = `
+import React from 'react';
+export const Lottie = ({animationData, loop, playbackRate}) =>
+  React.createElement('svg', {'data-lottie-player': String(animationData?.fr ?? ''), 'data-loop': String(Boolean(loop)), 'data-rate': String(playbackRate ?? 1)});
 `;
 
 // Deterministic stand-in for the browser text measurement of @remotion/layout-utils.
@@ -69,13 +86,17 @@ const lockManifest = (lock) => ({
   },
 });
 
-const ssrAdapters = ({media = false, plateStub = false} = {}) => ({
+const ssrAdapters = ({media = false, plateStub = false, lottieStub = true, timeline = false} = {}) => ({
   name: 'ssr-adapters',
   setup(b) {
     b.onResolve({filter: /^remotion$/}, () => ({path: 'remotion-shim', namespace: 'engine-test'}));
     b.onResolve({filter: /^@remotion\/layout-utils$/}, () => ({path: 'layout-utils', namespace: 'engine-test'}));
-    b.onLoad({filter: /^remotion-shim$/, namespace: 'engine-test'}, () => ({contents: media ? REMOTION_SHIM + MEDIA_SHIM : REMOTION_SHIM, loader: 'js', resolveDir: ROOT}));
+    b.onLoad({filter: /^remotion-shim$/, namespace: 'engine-test'}, () => ({contents: timeline ? (REMOTION_SHIM + MEDIA_SHIM).replace('export const useCurrentFrame = () => globalThis.__SSR_FRAME__ ?? 0;', 'const FrameClock=SolidReact.createContext(null); export const useCurrentFrame=()=>SolidReact.useContext(FrameClock) ?? globalThis.__SSR_FRAME__ ?? 0;').replace('export const Sequence = ({children}) => React.createElement(React.Fragment, null, children);', 'export const Sequence=({children,from=0,durationInFrames=Infinity,style,layout})=>{const local=useCurrentFrame()-from;if(local<0||local>=durationInFrames)return null;return React.createElement(FrameClock.Provider,{value:local},layout===\"none\"?children:React.createElement(\"div\",{style},children));};') : media ? REMOTION_SHIM + MEDIA_SHIM : REMOTION_SHIM, loader: 'js', resolveDir: ROOT}));
     b.onLoad({filter: /^layout-utils$/, namespace: 'engine-test'}, () => ({contents: LAYOUT_UTILS, loader: 'js'}));
+    if (lottieStub) {
+      b.onResolve({filter: /^@remotion\/lottie$/}, () => ({path: 'lottie-stub', namespace: 'engine-test'}));
+      b.onLoad({filter: /^lottie-stub$/, namespace: 'engine-test'}, () => ({contents: LOTTIE_STUB, loader: 'js', resolveDir: ROOT}));
+    }
     if (plateStub) b.onLoad({filter: /core[\\/]plate\.tsx$/}, () => ({contents: PLATE_STUB, loader: 'tsx', resolveDir: path.join(ROOT, 'engine', 'src', 'core')}));
     b.onLoad({filter: /core[\\/]fonts\.ts$/}, async ({path: file}) => {
       let source = await readFile(file, 'utf8');
@@ -88,13 +109,15 @@ const ssrAdapters = ({media = false, plateStub = false} = {}) => ({
 });
 
 /** Bundles `entry` (TSX source resolved from the repository root) and returns its exports. */
-export async function bundleEngine(entry, {ssr = false, media = false, plateStub = false} = {}) {
+export async function bundleEngine(entry, {ssr = false, media = false, plateStub = false, lottieStub = true, timeline = false, sourceOverrides = {}} = {}) {
   const lock = JSON.parse(await readFile(path.join(ROOT, 'versions.lock.json'), 'utf8'));
   const result = await build({
     stdin: {contents: entry, resolveDir: ROOT, loader: 'tsx'},
     nodePaths: [path.join(ROOT, 'engine', 'node_modules')],
     bundle: true, write: false, platform: 'node', format: 'cjs', logLevel: 'silent',
-    plugins: ssr ? [lockManifest(lock), ssrAdapters({media, plateStub})] : [lockManifest(lock)],
+    plugins: [
+      {name:'source-overrides',setup(b){b.onLoad({filter:/./},({path:file})=>{const key=path.relative(ROOT,file).replaceAll('\\','/');return sourceOverrides[key]===undefined?undefined:{contents:sourceOverrides[key],loader:file.endsWith('tsx')?'tsx':'ts',resolveDir:path.dirname(file)};});}},
+      ...(ssr ? [lockManifest(lock), ssrAdapters({media, plateStub, lottieStub, timeline})] : [lockManifest(lock)])],
   });
   if (ssr) globalThis.document ??= {};
   const module = {exports: {}};

@@ -84,6 +84,8 @@ For the `grid-glide` style a brief may also carry `watermark`: `false` leaves th
 
 In the `cartoon` style the whole recording is one `cartoon` beat (acts, sentences, cards; the character comes from `preferences.character` or the generic default) followed by one `cartoon-ending` beat (the comment part when a keyword is on, the follow part when the follow card is on, and `tail.at` on the first word of the recorded sign-off when it is on). Set `sourceKind` to `"cartoon"`: the beats must cover the whole edit, and every time inside them is a word anchor on the reviewed words. Prepare builds the mouth table (`prepared/mouth.json`) from the recording. Read [styles/cartoon.md](styles/cartoon.md).
 
+In the `layered-speaker` style a beat with intent `layered-speaker` puts one to four key words around the speaker (`words[]`, one per place: `behind`, `above`, `left`, `right`) and may draw one or two hand-drawn marks. The recorded picture stays on screen and the recorded captions stay with it. For the big word behind the head, cut the speaker out first with `node scripts/matte.mjs make` and attach it with `node scripts/matte.mjs attach` (see [the guide](styles/layered-speaker.md)); without a matte the big word sits above the head. Use it once or twice per video, on the moment that carries the point.
+
 ## 5. Plan and preview (creative review)
 
 ```

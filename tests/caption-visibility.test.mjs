@@ -42,6 +42,17 @@ test('only explicit false hides recording overlays and the live toggle preserves
   const empty={...hidden.manifest,purpose:'delivery',captions:{...hidden.manifest.captions,status:'reviewed',reviewer:'Example reviewer',words:[]}};
   assert.throws(()=>assertDeliveryReady(empty),/nonempty reviewed caption words/);
 });
+test('under a recording the caption drops to the presenter line during the four full-frame V4 families only',async()=>{
+  for(const family of ['arabic-type','figures','chat-thread','proof-screen'])assert.equal(visibility.captionLoweredByScene({family}),true,family);
+  for(const family of ['comparison','statement','layered-speaker','map-route'])assert.equal(visibility.captionLoweredByScene({family}),false,family);
+  assert.equal(visibility.captionLoweredByScene(undefined),false);
+  const {PRESENTER_CAPTION_CENTER,CAPTION_BAND_HALF}=await import('../engine/src/creative-kit/head-clear.ts');
+  // The lowest of their content (proof-screen's device frame ends at y 1320) stays above the middle of the lowered caption band.
+  assert.ok(PRESENTER_CAPTION_CENTER-CAPTION_BAND_HALF>=1300 && PRESENTER_CAPTION_CENTER+CAPTION_BAND_HALF<=1540);
+  const source=await fs.readFile(new URL('../engine/src/prepared-edit/PreparedEdit.tsx',import.meta.url),'utf8');
+  assert.ok(source.includes("layout==='takeover'&&captionLoweredByScene(scene)?PRESENTER_CAPTION_CENTER"));
+});
+
 test('the actual CaptionTrack produces no generated overlay when a recording explicitly hides captions',async()=>{
   const root=fileURLToPath(new URL('../',import.meta.url)),require=createRequire(new URL('../engine/package.json',import.meta.url)),{build}=require('esbuild');
   const output=await build({stdin:{contents:`import React from 'react';import {renderToStaticMarkup} from 'react-dom/server';import {CaptionTrack} from './engine/src/prepared-edit/PreparedEdit';export const render=(edit,compiled)=>renderToStaticMarkup(React.createElement(CaptionTrack,{edit,compiled,center:1320}));`,loader:'tsx',resolveDir:root},

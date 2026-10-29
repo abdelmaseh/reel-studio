@@ -1,18 +1,21 @@
+import {arabicTypeTemplateData} from '../../arabic-type/schema.ts';
+import {arabicTypeMinimumSeconds} from '../../arabic-type/timing.ts';
 import { SAMPLE_NUMBER } from "../../prepared-edit/sample-numbers.ts";
 
 /** Scene families the editor can add as ready templates beyond the original kit. */
-export const KIT_TEMPLATE_FAMILIES = ["checklist", "data-story", "count", "outcome", "statement", "creator-cta"] as const;
+export const KIT_TEMPLATE_FAMILIES = ["arabic-type", "figures", "chat-thread", "checklist", "data-story", "count", "outcome", "statement", "creator-cta", "proof-screen"] as const;
 export type KitTemplateFamily = (typeof KIT_TEMPLATE_FAMILIES)[number];
 export type KitLayout = "presenter" | "split" | "takeover";
 
 export const isKitFamily = (family: string): family is KitTemplateFamily => (KIT_TEMPLATE_FAMILIES as readonly string[]).includes(family);
 
 /** Length of each template at 30 fps; other rates scale it. */
-const BASE_FRAMES: Record<KitTemplateFamily, number> = { checklist: 120, "data-story": 120, count: 120, outcome: 120, statement: 90, "creator-cta": 120 };
+const BASE_FRAMES: Record<KitTemplateFamily, number> = { "arabic-type": 150, figures: 120, "chat-thread": 120, checklist: 120, "data-story": 120, count: 120, outcome: 120, statement: 90, "creator-cta": 120, "proof-screen": 120 };
 
 /** The layout each family's schema allows: a literal gives its value and the data-story choice takes the full canvas. */
 export const KIT_LAYOUT: Record<KitTemplateFamily, KitLayout> = {
-  checklist: "takeover", "data-story": "takeover", count: "split", outcome: "split", statement: "presenter", "creator-cta": "presenter",
+  "arabic-type": "takeover", figures: "takeover", "chat-thread": "takeover", checklist: "takeover", "data-story": "takeover", count: "split", outcome: "split", statement: "presenter", "creator-cta": "presenter",
+  "proof-screen": "takeover",
 };
 
 /** Neutral Arabic notes the add operation returns. */
@@ -25,6 +28,11 @@ type Scale = (frames: number) => number;
 
 function templateData(family: KitTemplateFamily, f: Scale, d: Scale): Record<string, unknown> {
   switch (family) {
+    case "arabic-type": return {...arabicTypeTemplateData};
+    case "figures":return {variant:"counter",value:SAMPLE_NUMBER,label:"اكتب اسم الرقم",unit:"اكتب الوحدة"};
+    case "chat-thread":return {variant:"bubbles",title:"اكتب عنوان المحادثة",messages:[{from:"them",text:"اكتب الرسالة الأولى",at:f(12)},{from:"me",text:"اكتب الرد",at:f(55)}]};
+    case "proof-screen":
+      return {page:"web",title:"اكتب عنوان الصفحة",blocks:[{kind:"heading",text:"اكتب الفكرة الأساسية"},{kind:"text",text:"اكتب شرحك من البريف"},{kind:"stat",text:"اكتب وصف الرقم ومصدره",value:SAMPLE_NUMBER}],focus:2,path:"focus"};
     case "checklist":
       return {
         kicker: "اكتب السطر الصغير", title: "اكتب عنوان القائمة", variant: "blueprint",
@@ -65,7 +73,7 @@ function templateData(family: KitTemplateFamily, f: Scale, d: Scale): Record<str
 export function kitTemplate(family: KitTemplateFamily, fps: number, room?: number): { data: Record<string, unknown>; frames: number; layout: KitLayout } {
   const wanted = Math.max(1, Math.round((BASE_FRAMES[family] * fps) / 30));
   const frames = room === undefined ? wanted : Math.min(wanted, Math.floor(room));
-  const least = Math.ceil(2 * fps);
+  const least = Math.ceil((family === "arabic-type" ? arabicTypeMinimumSeconds(arabicTypeTemplateData) : 2) * fps);
   if (frames < least) throw new RangeError(`A ${family} template needs at least ${least} frames at ${fps} fps; got ${frames}.`);
   const k = (fps / 30) * (frames / wanted);
   const f: Scale = (n) => Math.max(0, Math.round(n * k));

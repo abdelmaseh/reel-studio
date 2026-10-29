@@ -15,7 +15,19 @@ export const DECLARED_FONTS = Object.freeze([
   {family: 'Noto Kufi Arabic', weights: [400, 700], subsets: ['arabic', 'latin']},
   {family: 'Readex Pro', weights: [400, 700], subsets: ['arabic', 'latin']},
   {family: 'El Messiri', weights: [400, 700], subsets: ['arabic', 'latin']},
+  // V4 families (OFL, Google Fonts). Reem Kufi, Alexandria and Marhey are variable: one file per subset, axes checked on download.
+  {family: 'Lalezar', weights: [400], subsets: ['arabic', 'latin']},
+  {family: 'Aref Ruqaa', weights: [400, 700], subsets: ['arabic', 'latin']},
+  {family: 'Aref Ruqaa Ink', weights: [400, 700], subsets: ['arabic', 'latin']},
+  {family: 'Reem Kufi', weights: [400], subsets: ['arabic', 'latin'], axes: {wght: [400, 700]}},
+  {family: 'Amiri', weights: [400, 700], subsets: ['arabic', 'latin']},
+  {family: 'Alexandria', weights: [400], subsets: ['arabic', 'latin'], axes: {wght: [100, 900]}},
+  {family: 'Marhey', weights: [400], subsets: ['arabic', 'latin'], axes: {wght: [300, 700]}},
 ]);
+
+// The V4 additions. Pins in versions.lock.json come from `node scripts/fetch-fonts.mjs --family "<name>" --lock` after the
+// owner approves the download; until then the tests allow exactly these families to be declared without a pin.
+export const V4_FONT_FAMILIES = Object.freeze(['Lalezar', 'Aref Ruqaa', 'Aref Ruqaa Ink', 'Reem Kufi', 'Amiri', 'Alexandria', 'Marhey']);
 
 export const slug = (family) => family.replace(/[^A-Za-z0-9]+/g, '');
 

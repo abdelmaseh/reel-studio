@@ -15,6 +15,7 @@ import {
   type SafeTarget,
   type TypeStyle,
 } from "../core/type";
+import { stretchWord } from "../arabic/kashida.ts";
 import { Mark, markWobble } from "./emphasis";
 import {
   ENTERED,
@@ -24,8 +25,13 @@ import {
   enterPose,
   markGeometry,
   placeTokens,
+  reservedText,
   resolveEmphasis,
   resolveTypeUnit,
+  stretchAmount,
+  stretchCount,
+  stretchRoom,
+  stretchWidths,
   tokenColor,
   tokenEnter,
   tokenFlow,
@@ -39,6 +45,7 @@ import {
   type LineDirection,
   type SpokenWord,
   type TokenEnter,
+  type TokenFlow,
   type TokenRect,
   type TranscriptLanguage,
   type TypeUnit,
@@ -80,14 +87,47 @@ export const UNDERLINE_DUR = 8;
 type SpokenLayout = {
   fontSize: number;
   lineBox: number;
+  /** Where the words sit when every stretching word is at its widest: the worst case the safe-zone probe and the overflow check see. */
   rects: TokenRect[];
   styles: MeasuredStyle[];
   height: number;
   stroke: number;
+  /** The line breaks, fixed for the whole animation: they are decided with the longest form of every word. */
+  lines: number[][];
+  flows: TokenFlow[][];
+  place: { gap: number; lineBox: number; width: number; dir: LineDirection; align: Align };
+  /** Each word's measured width (the longest form, for a stretching word). */
+  widths: number[];
+  /** A stretching word's measured width at 0 ... STRETCH_PEAK tatweels, so its room can follow its real width. Null for any other word. */
+  forms: (readonly number[] | null)[];
 };
 
 const underlineSeed = (t: WordToken): string => `underline:${t.sourceIndex}:${t.part}`;
 const markTarget = (r: TokenRect) => ({ x: r.left, y: r.top, width: r.width, height: r.height });
+
+/** Where the words sit at `frame`: a stretching word takes the room of its current width, and the words around it follow. */
+const roomsAt = (layout: SpokenLayout, tokens: readonly WordToken[], frame: number, fps: number): TokenRect[] =>
+  placeTokens(
+    layout.lines.map((row) =>
+      row.map((i) => {
+        const form = layout.forms[i];
+        return form === null ? layout.widths[i] : stretchRoom(form, stretchAmount(frame, tokens[i].enterFrame, tokens[i].endFrame, fps));
+      }),
+    ),
+    { ...layout.place, flows: layout.flows },
+  ).rects;
+
+/**
+ * The stretched word as it is drawn: centred in its room and at most half a tatweel wider or narrower than it, because the word grows
+ * in whole tatweels while its room grows smoothly. It stays inside the widest room it ever takes (or its own room, if that is wider).
+ */
+const drawnRect = (room: TokenRect, widest: TokenRect, drawn: number): TokenRect => {
+  const width = Math.min(widest.width, Math.max(0, Math.ceil(drawn)));
+  const least = Math.min(room.left, widest.left);
+  const most = Math.max(room.left + room.width, widest.left + widest.width);
+  const left = Math.round(room.left + (room.width - width) / 2);
+  return { ...room, left: Math.max(least, Math.min(left, most - width)), width };
+};
 
 const layoutSpoken = (
   tokens: readonly WordToken[],
@@ -104,7 +144,10 @@ const layoutSpoken = (
     heavyWeight: number;
   },
 ): SpokenLayout => {
-  const text = tokens.map((t) => t.text).join(" ");
+  // The line is fitted and wrapped with the longest form of every stretching word, so the breaks (and the type size) never change while
+  // a word stretches. Where each word sits inside its line is decided per frame, from its current width (see roomsAt).
+  const longest = tokens.map((t, i) => reservedText(t.text, kinds[i]));
+  const text = longest.join(" ");
   let max = o.base.fontSize;
   for (;;) {
     const fitted = fitOnLines(text, o.base, {
@@ -115,22 +158,16 @@ const layoutSpoken = (
       lineHeight: o.lineHeight,
     });
     const size = fitted.fontSize;
-    const lines = assignLines(tokens, fitted.lines);
-    const measured = tokens.map((t, i) =>
-      measure(t.text, tokenTypeStyle(o.base, kinds[i], size, { latinFamily: o.latinFamily, heavyWeight: o.heavyWeight })),
-    );
+    const lines = assignLines(longest.map((word) => ({ text: word })), fitted.lines);
+    const styleOf = (i: number) => tokenTypeStyle(o.base, kinds[i], size, { latinFamily: o.latinFamily, heavyWeight: o.heavyWeight });
+    const measured = tokens.map((_, i) => measure(longest[i], styleOf(i)));
     const gap = measure(" ", { ...o.base, fontSize: size }).width;
     const lineBox = px(size * o.lineHeight);
+    const flows = lines.map((row) => row.map((i) => tokenFlow(tokens[i].text)));
+    const place = { gap, lineBox, width: o.width, dir: o.dir, align: o.align };
     const placed = placeTokens(
       lines.map((row) => row.map((i) => measured[i].width)),
-      {
-        gap,
-        lineBox,
-        width: o.width,
-        dir: o.dir,
-        align: o.align,
-        flows: lines.map((row) => row.map((i) => tokenFlow(tokens[i].text))),
-      },
+      { ...place, flows },
     );
     if (fitted.fits && placed.fits) {
       return {
@@ -140,6 +177,16 @@ const layoutSpoken = (
         styles: measured.map((m) => m.style),
         height: placed.height,
         stroke: Math.max(4, px(size * 0.08)),
+        lines,
+        flows,
+        place,
+        widths: measured.map((m) => m.width),
+        forms: tokens.map((t, i) => {
+          if (!kinds[i].includes("stretch")) return null;
+          const widths = stretchWidths(t.text, (form) => measure(form, styleOf(i)).width);
+          // A word with no legal slot never grows: there is no room to follow.
+          return widths[widths.length - 1] > widths[0] ? widths : null;
+        }),
       };
     }
     if (size <= o.minSize) {
@@ -214,7 +261,7 @@ export const SpokenLine: React.FC<SpokenLineProps> = ({
   target = "organic",
   onOverflow = "throw",
 }) => {
-  const { frame } = useClock();
+  const { frame, fps } = useClock();
   const probe = useProbe();
   const dir = directionFor(lang);
   const { fontFamily, fontSize, fontWeight = 800 } = font;
@@ -262,15 +309,30 @@ export const SpokenLine: React.FC<SpokenLineProps> = ({
   if (untilFrame !== undefined && frame >= untilFrame) return null;
   const fade = probe || untilFrame === undefined ? 1 : clamp01((untilFrame - frame) / SPOKEN_EXIT_FRAMES);
   const ink = markColor ?? accent;
+  // A stretching word takes the room of its current width and the words around it follow, so there is never a loose gap at rest.
+  // The probe sees the widest room, as the overflow check above does. A line with no stretching word is laid out once.
+  const rooms =
+    probe === null && layout.forms.some((form) => form !== null) ? roomsAt(layout, tokens, frame, fps) : layout.rects;
   return (
     <div style={{ position: "absolute", left: px(box.left), top: px(box.top), width: px(box.width), height: layout.height, opacity: fade }}>
       {tokens.map((t, i) => {
         const { enter: tokenIn, preset } = tokenEnter(enter, kinds[i]);
+        const form = layout.forms[i];
+        let text = t.text;
+        let rect = rooms[i];
+        if (form !== null) {
+          if (probe !== null) text = reservedText(t.text, kinds[i]);
+          else {
+            const count = stretchCount(frame, t.enterFrame, t.endFrame, fps);
+            text = stretchWord(t.text, count);
+            rect = drawnRect(rooms[i], layout.rects[i], form[count]);
+          }
+        }
         return (
           <SpokenToken
             key={`t:${t.sourceIndex}:${t.part}`}
-            text={t.text}
-            rect={layout.rects[i]}
+            text={text}
+            rect={rect}
             measured={layout.styles[i]}
             dir={dir}
             color={tokenColor(kinds[i], { color, accent })}
@@ -287,7 +349,7 @@ export const SpokenLine: React.FC<SpokenLineProps> = ({
             key={`u:${t.sourceIndex}:${t.part}`}
             kind="underline"
             dir={dir}
-            target={markTarget(layout.rects[i])}
+            target={markTarget(rooms[i])}
             at={t.enterFrame + UNDERLINE_DELAY}
             dur={UNDERLINE_DUR}
             color={ink}

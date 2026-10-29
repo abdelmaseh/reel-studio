@@ -83,7 +83,7 @@ test('whip-pan is refused over B-roll and over a project scene with a clip, and 
   // The manifest rule (engine/src/prepared-edit/schema.ts) must hand the contracts to that function, or a project-scene clip would be decoded once per echo.
   const issuesOf = (scenes, withContracts = true) => {
     const m = reviewManifest('wire-test');
-    Object.assign(m, {style: 'split-canvas', scenes, transitions: whip, ...(withContracts ? {projectScenes} : {})});
+    Object.assign(m, {style: 'section-deck', scenes, transitions: whip, ...(withContracts ? {projectScenes} : {})});
     m.source.totalFrames = 900;
     m.segments = [{fromFrame: 0, toFrame: 900}];
     const parsed = editManifestSchema.safeParse(m);

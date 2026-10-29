@@ -1,0 +1,12 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "Paper changes stay silent so geographic movement is not confused with a factual event."},
+    "stamp": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "No invented archival stamp sound."},
+    "swap": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "Map focus and city labels stay silent."},
+    "click": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "No interface click is implied by a city dot."},
+    "count": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A route does not assert a distance, time or count."},
+    "reveal": {"recipe": "paper-reveal", "gain": 0.35, "leadSec": 0, "confidence": "low", "basis": "inferred", "evidence": "A quiet paper landing can mark a supplied image card arriving, once per card."},
+    "type": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "Arabic names appear as joined whole labels without typing sounds."}
+  }
+}

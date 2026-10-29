@@ -1,6 +1,7 @@
 import { loadFont } from "@remotion/fonts";
 import { cancelRender, continueRender, delayRender, staticFile } from "remotion";
 import manifest from "../../public/fonts/manifest.json";
+import template from "../../public/fonts/manifest.template.json";
 
 
 
@@ -63,6 +64,20 @@ export const FAMILY = {
   readex: "Readex Pro",
 
   messiri: "El Messiri",
+
+  lalezar: "Lalezar",
+
+  arefRuqaa: "Aref Ruqaa",
+
+  arefRuqaaInk: "Aref Ruqaa Ink",
+
+  reemKufi: "Reem Kufi",
+
+  amiri: "Amiri",
+
+  alexandria: "Alexandria",
+
+  marhey: "Marhey",
 } as const;
 
 export type FamilyName = (typeof FAMILY)[keyof typeof FAMILY];
@@ -113,7 +128,7 @@ type Face = {
 
 
 
-const FACES: Face[] = [
+const BASE_FACES: Face[] = [
 
 
   { family: FAMILY.cairo, source: "Cairo", subset: "arabic", file: 400, css: "200 1000" },
@@ -187,6 +202,31 @@ type ManifestEntry = {
 };
 
 const ENTRIES = manifest as ManifestEntry[];
+
+// V4 families (OFL, downloaded at setup like the others). Reem Kufi, Alexandria and Marhey are variable: one file per subset covers the range in `css`.
+// A V4 family is required once the tracked manifest.template.json pins it (`fetch-fonts.mjs --family X --lock` writes it), so a missing file then fails
+// below exactly as for every earlier family. Until the pins exist the family registers only when its files are installed, and a video that asks
+// for it anyway stops with assertFamilyAvailable() instead of silently falling back to a system font.
+const V4_FACES: Face[] = (["arabic", "latin"] as const).flatMap<Face>((subset) => [
+  { family: FAMILY.lalezar, source: "Lalezar", subset, file: 400, css: "400" },
+  { family: FAMILY.arefRuqaa, source: "Aref Ruqaa", subset, file: 400, css: "400" },
+  { family: FAMILY.arefRuqaa, source: "Aref Ruqaa", subset, file: 700, css: "700" },
+  { family: FAMILY.arefRuqaaInk, source: "Aref Ruqaa Ink", subset, file: 400, css: "400" },
+  { family: FAMILY.arefRuqaaInk, source: "Aref Ruqaa Ink", subset, file: 700, css: "700" },
+  { family: FAMILY.reemKufi, source: "Reem Kufi", subset, file: 400, css: "400 700" },
+  { family: FAMILY.amiri, source: "Amiri", subset, file: 400, css: "400" },
+  { family: FAMILY.amiri, source: "Amiri", subset, file: 700, css: "700" },
+  { family: FAMILY.alexandria, source: "Alexandria", subset, file: 400, css: "100 900" },
+  { family: FAMILY.marhey, source: "Marhey", subset, file: 400, css: "300 700" },
+]);
+
+const PINNED_SOURCES = new Set((template as { family: string }[]).map((e) => e.family));
+const INSTALLED_SOURCES = new Set(ENTRIES.map((e) => e.family));
+
+const FACES: Face[] = [
+  ...BASE_FACES,
+  ...V4_FACES.filter((f) => PINNED_SOURCES.has(f.source) || INSTALLED_SOURCES.has(f.source)),
+];
 
 
 
@@ -319,6 +359,24 @@ export const fontsReady = (): boolean => ready && missingFamilies().length === 0
 
 
 export const familyReady = (family: string): boolean => missingFamilies().indexOf(family) === -1;
+
+/** True when the family's faces are registered. Every earlier family always is; a V4 family is only when its files are pinned or installed. */
+export const familyRegistered = (family: string): boolean => LOADED_FAMILIES.indexOf(family) !== -1;
+
+const V4_FAMILIES: string[] = V4_FACES.reduce<string[]>((acc, f) => {
+  if (acc.indexOf(f.family) === -1) acc.push(f.family);
+  return acc;
+}, []);
+
+/** Stops a video that asks for a V4 font whose files are not installed, with the setup step that fixes it. Other names pass. */
+export const assertFamilyAvailable = (family: string): void => {
+  if (V4_FAMILIES.indexOf(family) !== -1 && !familyRegistered(family)) {
+    throw new Error(
+      `core/fonts: ${family} is a V4 font and its files are not installed. ` +
+        `Run \`node scripts/studio.mjs setup --steps fonts\` (it downloads the pinned fonts and checks their sha256).`,
+    );
+  }
+};
 
 
 

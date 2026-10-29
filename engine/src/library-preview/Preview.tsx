@@ -1,17 +1,29 @@
+import {familyDesign} from '../styles/family-designs';
+import {editSceneSchema} from '../prepared-edit/schema.ts';
+import {familySupported} from '../styles/registry.ts';
+import {ArabicTypeSceneView} from '../arabic-type/scene';
+import {arabicTypeSceneSchema} from '../arabic-type/schema.ts';
+import {FiguresSceneView} from '../creative-kit/figures/scene';
+import {figuresSceneSchema} from '../creative-kit/figures/schema.ts';
+import {ChatThreadSceneView} from '../creative-kit/chat-thread/scene';
+import {chatThreadSceneSchema} from '../creative-kit/chat-thread/schema.ts';
 import React from 'react';
 import {AbsoluteFill, useCurrentFrame, type CalculateMetadataFunction} from 'remotion';
 import {SafeRoot, CanvasFill} from '../core/safe';
-import {CreativeFonts, Reveal, getSceneTheme} from '../creative-kit/primitives';
+import {CreativeFonts, Reveal, getSceneTheme, getSceneGeometry} from '../creative-kit/primitives';
 import {getConcept} from '../motion-concepts/registry';
 import {IntroScene, ProofScene, ProcessScene, ComparisonScene, CommentGateScene, FollowScene} from '../creative-kit/scenes';
 import {KineticSceneRenderer} from '../creative-kit/kinetic/scenes';
 import {kineticSceneSchema} from '../creative-kit/kinetic/schema.ts';
 import {SemanticSceneRenderer} from '../creative-kit/semantic/scenes';
 import {semanticSceneSchema} from '../creative-kit/semantic/schema.ts';
+import {ProofScreenScene} from '../creative-kit/proof-screen/scene';
+import {proofScreenSceneSchema} from '../creative-kit/proof-screen/schema.ts';
 import {LibrarySceneRenderer} from '../motion-library/scenes';
 import {librarySceneSchema} from '../motion-library/schema.ts';
 import {StyleSceneRenderer} from '../styles/scene-renderers';
 import {styleSceneSchema} from '../styles/scenes.ts';
+import {LAYERED_PREVIEW_HEAD, LayeredStandInRoom, LayeredStandInSpeaker} from './layered-stand-in';
 import {PreparedPlateProvider, ScreenRecordingScene} from '../screen-recording/ScreenRecordingScene';
 import {screenRecordingSceneSchema} from '../screen-recording/schema.ts';
 import {SpokenLine} from '../creative-kit/kinetic-words';
@@ -19,15 +31,23 @@ import type {TokenEnter, EmphasisKind} from '../creative-kit/kinetic-words-logic
 import {CaptionTrack} from '../prepared-edit/PreparedEdit';
 import type {EditManifest} from '../prepared-edit/schema.ts';
 import type {compileEdit} from '../prepared-edit/timeline.ts';
-import {emphasisPunch, toCamKeys, type PunchKind} from '../core/camera';
+import {emphasisPunch, toCamKeys, SCENE_CAMERA_MOVES, type PunchKind, type SceneCameraMove} from '../core/camera';
+import {SceneCamera} from '../core/scene-camera';
 import {useCamBox} from '../core/plate';
 import {layoutTransitionState} from '../prepared-edit/footage.ts';
 import {Whiteout, LightLeak, FlashBloom, FilmBurn} from '../core/transitions';
 import {WhipPan, LightScan} from '../core/transitions-dir';
 import {ClipReveal} from '../core/mask';
 import {ChapterCrossfade} from '../creative-kit/chapter-theme';
+import {TRANSITIONS} from '../prepared-edit/transition-registry';
+import {TRANSITION_DEFAULTS} from '../review-editor/ops/events';
+import type {TransitionKind} from '../prepared-edit/graphics-transitions';
+import {LookLayer} from '../looks/layer';
+import {Backdrop} from '../looks/backdrop';
+import {BACKDROP_LABEL, type BackdropKind, type LookKind} from '../looks/index.ts';
 import {getPreviewDefinition, PREVIEW_SCREEN_VIDEO, PREVIEW_SCREEN_SIZE, previewFixtureIssues, previewAuthoredWords} from './fixtures.ts';
 import type {LibraryPreviewProps, PreviewDefinition} from './types.ts';
+import type {CaptionSkin,CaptionPresentation} from '../core/preference-options.ts';
 
 export const calculateLibraryPreviewMetadata: CalculateMetadataFunction<LibraryPreviewProps> = ({props}) => {
   const definition = getPreviewDefinition(props.previewKey);
@@ -56,6 +76,10 @@ const Placeholder: React.FC<{top?: number; height?: number}> = ({top = 1080, hei
   <div style={{position: 'absolute', left: 120, right: 170, top: Math.min(180, height / 4 + 60), color: '#9EB4BC', fontFamily: 'IBM Plex Mono', fontSize: 22, textAlign: 'center'}}>ABSTRACT PLACEHOLDER · NO PERSON</div>
 </div>;
 
+/** A scene camera move on neutral graphics, at its strongest so the gallery shows the move plainly. */
+const SceneCameraDemo: React.FC<{move: SceneCameraMove; durationInFrames: number}> = ({move, durationInFrames}) => <SceneCamera
+  camera={{move, strength: 'strong', ...(move === 'snap-zoom' ? {at: 45} : {})}} sceneId={`preview-${move}`} durationInFrames={durationInFrames}><NeutralGraphics/></SceneCamera>;
+
 const CameraDemo: React.FC<{preset: string}> = ({preset}) => {
   const keys = emphasisPunch({kind: preset as PunchKind, atFrame: 60, scale: 1.07, holdFrames: 60, releaseFrames: 6, pushFrames: 30, anchor: {x: .5, y: .45}});
   const box = useCamBox(toCamKeys(keys, 30), 1080, 1920);
@@ -79,29 +103,62 @@ const TextDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => {
   const {layer, preset} = definition.fixture;
   const theme = getSceneTheme(definition.style);
   const words = previewAuthoredWords(layer === 'kinetic-emphasis' && preset === 'latin');
-  if (layer === 'caption-emphasis') {
+  if (layer === 'caption-emphasis' || layer === 'caption-skin' || layer === 'caption-presentation') {
     // Render the actual CaptionTrack against an isolated authored cue, without compileEdit or a fake source manifest.
-    const edit = {style: definition.style, scenes: [], captions: {mode: 'words', presentation: 'pill', grouping: 'single', emphasis: [{sourceIndex: 1, kind: preset}]}} as unknown as EditManifest;
+    const edit = {style: definition.style, source: {fps: definition.fps}, scenes: [], captions: {mode: 'words',
+      presentation: layer === 'caption-presentation' ? preset as CaptionPresentation : 'pill',
+      ...(layer === 'caption-skin' ? {skin: preset as CaptionSkin} : {}), grouping: 'single',
+      ...(layer === 'caption-emphasis' ? {emphasis: [{sourceIndex: 1, kind: preset}]} : {})}} as unknown as EditManifest;
     const compiled = {captionGroups: [{fromFrame: 15, toFrame: 165, words: authoredWords}], words: authoredWords} as ReturnType<typeof compileEdit>;
     return <><NeutralGraphics label="تأكيد داخل كارت النص"/><CaptionTrack edit={edit} compiled={compiled} center={1390}/></>;
   }
   return <>
     <div style={{position: 'absolute', left: 100, top: 490, width: 800, height: 600, border: `2px solid ${theme.dim}`, borderRadius: 24}}/>
     <SpokenLine words={words} lang="ar" font={{fontFamily: theme.ar, fontSize: 115, fontWeight: 800}}
-      box={{left: 145, top: 670, width: 690}} color={theme.text} accent={theme.accent} maxLines={3} minSize={40}
+      box={{left: 145, top: 670, width: 690}} color={theme.text} accent={theme.accent} maxLines={layer === 'kinetic-emphasis' && preset === 'stretch' ? 2 : 3} minSize={40}
       enter={layer === 'word-entrance' ? preset as TokenEnter : 'rise'}
       emphasis={layer === 'kinetic-emphasis' ? [{sourceIndex: 1, kind: preset as EmphasisKind}] : []}
       origin={0} untilFrame={180} align="center"/>
   </>;
 };
 
+/** A look over neutral graphics and a stand-in for the speaker, with the real caption track drawn above it: the look never touches the captions. */
+const LookDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => {
+  const edit = {style: definition.style, scenes: [], captions: {mode: 'words', presentation: 'minimal', grouping: 'single'}} as unknown as EditManifest;
+  const compiled = {captionGroups: [{fromFrame: 15, toFrame: 165, words: authoredWords}], words: authoredWords} as ReturnType<typeof compileEdit>;
+  return <>
+    <LookLayer look={{kind: definition.fixture.preset as LookKind}}><NeutralGraphics label="فكرة واحدة واضحة"/><Placeholder top={1180} height={560}/></LookLayer>
+    <CaptionTrack edit={edit} compiled={compiled} center={1330}/>
+  </>;
+};
+
 const EffectDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => {
   const frame = useCurrentFrame();
   const {layer, preset} = definition.fixture;
+  if (layer === 'camera' && (SCENE_CAMERA_MOVES as readonly string[]).includes(preset)) return <SceneCameraDemo move={preset as SceneCameraMove} durationInFrames={definition.durationInFrames}/>;
+  if (layer === 'look') return <LookDemo definition={definition}/>;
+  if (layer === 'backdrop') return <><Backdrop kind={preset as BackdropKind} colour="#E2B85F" ground={getSceneTheme(definition.style).background}/><NeutralGraphics label={`خلفية ${BACKDROP_LABEL[preset as BackdropKind]}`}/></>;
   if (layer === 'camera') return <CameraDemo preset={preset}/>;
   if (layer === 'layout-transition') return <LayoutDemo preset={preset}/>;
-  if (layer.includes('emphasis') || layer === 'word-entrance') return <TextDemo definition={definition}/>;
+  if (layer.includes('emphasis') || layer === 'word-entrance' || layer === 'caption-skin' || layer === 'caption-presentation') return <TextDemo definition={definition}/>;
   if (layer === 'scene-entrance') return <>{[0, 1, 2].map(index => <Reveal key={index} motion={preset} order={index * 5} style={{position: 'absolute', left: 140, top: 460 + index * 245, width: 720, height: 175, background: index === 1 ? '#E2B85F' : '#D8E8E6', borderRadius: 24, color: '#17333D', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Cairo', fontSize: 48, fontWeight: 800}}>{['فكرة', 'خطوة', 'صورة'][index]}</Reveal>)}</>;
+  if (['iris','keyhole','blinds','dot-zoom','zoom-through','paper-tear','page-turn','pen-dot-curtain','pixel-curtain','ink-slab','magazine-flip','lens-zoom','paper-pull','paper-swap'].includes(preset)) {
+    const kind=preset as TransitionKind,entry=TRANSITIONS[kind],Component=entry.Component;
+    const duration=TRANSITION_DEFAULTS[kind].durationInFrames;
+    if(entry.lead || entry.needsOutgoing){
+      const cut=60, before=<NeutralGraphics label="الفكرة قبل الانتقال"/>, after=<NeutralGraphics label="الفكرة بعد الانتقال" variant/>;
+      if(frame<cut-(entry.lead??0))return <>{before}</>;
+      if(entry.needsOutgoing)return <Component atFrame={cut} durationInFrames={duration} fps={definition.fps} outgoing={before} outgoingLens={{cx:540,cy:800,r:140,zoom:1.5,blur:0,vis:1,spin:1.5}} timingManaged box={{x:0,y:0,width:1080,height:1920}}>{after}</Component>;
+      if(entry.phase==='overlay')return <>{frame<cut?before:after}<Component atFrame={cut} durationInFrames={duration} fps={definition.fps}/></>;
+      return <>{frame<cut+ (entry.tail??0)?before:null}<Component atFrame={cut} durationInFrames={duration} fps={definition.fps} box={{x:0,y:0,width:1080,height:1920}}>{after}</Component></>;
+    }
+    if(entry.phase==='overlay')return <>
+      {frame<60?<NeutralGraphics label="الفكرة قبل الانتقال"/>:<NeutralGraphics label="الفكرة بعد الانتقال" variant/>}
+      <Component atFrame={60} durationInFrames={duration} fps={definition.fps} {...(preset==='pixel-curtain'?{paper:getSceneTheme(definition.style).background}:{})}/>
+    </>;
+    return <>{frame<45?<NeutralGraphics label="الفكرة قبل الانتقال"/>:
+      <Component atFrame={45} durationInFrames={duration} fps={definition.fps} box={{x:0,y:0,width:1080,height:1920}}><NeutralGraphics label="الفكرة بعد الانتقال" variant/></Component>}</>;
+  }
   if (layer === 'overlay') return <><NeutralGraphics/>
     {preset === 'whiteout' ? <Whiteout at={2} dur={.6}/> : preset === 'leak' ? <LightLeak at={2} dur={.75}/> : preset === 'bloom' ? <FlashBloom at={2} decaySec={.6}/> : <FilmBurn at={2} dur={.75}/>}</>;
   const bounds = {x: 0, y: 0, width: 1080, height: 1920};
@@ -115,26 +172,35 @@ const EffectDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => 
   </>;
 };
 
-const SceneDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => {
+export const SceneDemo: React.FC<{definition: PreviewDefinition}> = ({definition}) => {
   const {fixture, style} = definition;
+  if(definition.status==='unsupported')return <div style={{position:'absolute',top:550,left:100,right:150,color:'#FFFFFF',fontFamily:'Cairo',fontSize:48,direction:'rtl'}}>{definition.reason}</div>;
   const scene = fixture.scene;
   const options = {style, layout: scene?.layout === 'split' ? 'split' as const : 'takeover' as const, motion: scene?.motion, showCaption: false};
   let content: React.ReactNode;
-  switch (fixture.kind) {
+  const Design=scene && familyDesign(style,scene.family);
+  if(scene && !familySupported(style,scene.family))return <div>Style {style} does not support family {scene.family}.</div>;
+  if(Design)content=<Design sectionIndex={1} scene={editSceneSchema.parse(scene)} style={style} geometry={style === 'section-deck' ? {...splitGeo, windowTop: 1056, windowHeight: 864} : splitGeo} aspect={1920 / 1080} seam={getSceneGeometry(style, 'split').canvasHeight} headBox={scene.family === 'layered-speaker' ? LAYERED_PREVIEW_HEAD : null} words={fixture.words ?? (scene.family === 'kinetic-text' ? authoredWords : [])}/>;
+  else switch (fixture.kind) {
     case 'concept': {const Component = getConcept(String(fixture.concept)).Component; return <Component style={style} data={fixture.data} mode="once" backdrop="canvas"/>;}
     case 'creative': {
       const components: Record<string, React.ComponentType<any>> = {intro: IntroScene, proof: ProofScene, process: ProcessScene, comparison: ComparisonScene, comment: CommentGateScene, follow: FollowScene};
       const Component = components[scene.family]; content = <Component {...options} data={scene.data}/>; break;
     }
+    case 'figures': content = <FiguresSceneView scene={figuresSceneSchema.parse(scene)} style={style}/>; break;
+    case 'chat-thread': content = <ChatThreadSceneView scene={chatThreadSceneSchema.parse(scene)} style={style}/>; break;
     case 'kinetic': content = <KineticSceneRenderer scene={kineticSceneSchema.parse(scene)} style={style} geometry={splitGeo} aspect={1920 / 1080} seam={1040}/>; break;
+    case 'arabic-type': content = <ArabicTypeSceneView scene={arabicTypeSceneSchema.parse(scene)} style={style}/>; break;
     case 'semantic': content = <SemanticSceneRenderer scene={semanticSceneSchema.parse(scene)} style={style} words={scene.family === 'kinetic-text' ? authoredWords : []}/>; break;
     case 'library': content = <LibrarySceneRenderer scene={librarySceneSchema.parse(scene)} style={style} seam={1040}/>; break;
-    case 'style-scene': content = <StyleSceneRenderer scene={styleSceneSchema.parse(scene)} style={style} words={fixture.words ?? []}/>; break;
+    case 'proof-screen': content = <ProofScreenScene scene={proofScreenSceneSchema.parse(scene)} style={style}/>; break;
+    case 'style-scene': content = <StyleSceneRenderer scene={styleSceneSchema.parse(scene)} style={style} words={fixture.words ?? []}
+      {...(scene.family === 'layered-speaker' ? {headBox: LAYERED_PREVIEW_HEAD, standIn: <LayeredStandInSpeaker/>} : {})}/>; break;
     case 'screen-recording': content = <PreparedPlateProvider plate={{src: PREVIEW_SCREEN_VIDEO, ...PREVIEW_SCREEN_SIZE}}><ScreenRecordingScene scene={screenRecordingSceneSchema.parse(scene)} style={style}/></PreparedPlateProvider>; break;
     case 'effect': return <EffectDemo definition={definition}/>;
     default: return <div style={{position: 'absolute', top: 550, left: 100, right: 150, color: '#FFFFFF', fontFamily: 'Cairo', fontSize: 48, direction: 'rtl'}}>المشهد محتاج حزمة خاصة بالمشروع</div>;
   }
-  return <>{scene?.layout === 'presenter' || scene?.layout === 'split' ? <Placeholder/> : null}{content}</>;
+  return <>{scene?.family === 'layered-speaker' ? <LayeredStandInRoom/> : scene?.layout === 'presenter' || scene?.layout === 'split' ? <Placeholder/> : null}{content}</>;
 };
 
 export const LibraryItemPreview: React.FC<LibraryPreviewProps> = (props) => {

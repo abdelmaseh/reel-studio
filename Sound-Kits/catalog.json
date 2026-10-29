@@ -160,6 +160,118 @@
     {
       "id": "cartoon-stamp", "name": "Cartoon stamp", "use": "One weighted impact when a black stamp lands, a block is crossed out or a layer drops in the cartoon style.", "duration": 0.5,
       "hits": [{ "t": 0, "sound": "impact", "gain": 0.18, "pan": 0, "opts": { "seed": 701 } }]
+    },
+    {
+      "id": "cc0-click-minimal", "name": "CC0 click minimal", "use": "One dry damped press: a screenshot, a capture, a pressed button.", "duration": 0.16,
+      "hits": [{ "t": 0, "sound": "sample:click-minimal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-click-mechanical", "name": "CC0 click mechanical", "use": "A firmer mechanical press for a real product button.", "duration": 0.18,
+      "hits": [{ "t": 0, "sound": "sample:click-mechanical", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-click-snap", "name": "CC0 click snap", "use": "A short soft snap when something locks into place.", "duration": 0.2,
+      "hits": [{ "t": 0, "sound": "sample:click-snap", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-click-tiny", "name": "CC0 click tiny", "use": "A very short tick-like click (about 20 ms); stack it under a bigger sound or use it alone at low gain.", "duration": 0.03,
+      "hits": [{ "t": 0, "sound": "sample:click-tiny", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-click-metal", "name": "CC0 click metal", "use": "A small metal latch click for a capture or a confirmed selection.", "duration": 0.46,
+      "hits": [{ "t": 0, "sound": "sample:click-metal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-pop-minimal", "name": "CC0 pop minimal", "use": "A small pop for a badge, chip or sticker that appears.", "duration": 0.35,
+      "hits": [{ "t": 0, "sound": "sample:pop-minimal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-pop-rubber", "name": "CC0 pop rubber", "use": "A rounder pop for a card or highlight that appears.", "duration": 0.32,
+      "hits": [{ "t": 0, "sound": "sample:pop-rubber", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-pop-organic", "name": "CC0 pop organic", "use": "A warmer pop for a hand-made element (paper, tape, sticker).", "duration": 0.31,
+      "hits": [{ "t": 0, "sound": "sample:pop-organic", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-pop-zen", "name": "CC0 pop zen", "use": "A light pop with a soft tail for a calm reveal.", "duration": 0.28,
+      "hits": [{ "t": 0, "sound": "sample:pop-zen", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-pop-select", "name": "CC0 pop select", "use": "A tiny pop (about 60 ms) for a chip or a list item that appears.", "duration": 0.07,
+      "hits": [{ "t": 0, "sound": "sample:pop-select", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-chime-minimal", "name": "CC0 chime minimal", "use": "A short chime after a click: done, confirmed, installed.", "duration": 0.6,
+      "hits": [{ "t": 0, "sound": "sample:chime-minimal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-chime-zen", "name": "CC0 chime zen", "use": "A softer chime for a calm result.", "duration": 0.59,
+      "hits": [{ "t": 0, "sound": "sample:chime-zen", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-chime-bright", "name": "CC0 chime bright", "use": "A short bright confirmation (about 0.3 s).", "duration": 0.31,
+      "hits": [{ "t": 0, "sound": "sample:chime-bright", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-chime-soft", "name": "CC0 chime soft", "use": "A short soft confirmation (about 0.3 s).", "duration": 0.34,
+      "hits": [{ "t": 0, "sound": "sample:chime-soft", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-tick-minimal", "name": "CC0 tick minimal", "use": "One step of a counter or a progress bar.", "duration": 0.22,
+      "hits": [{ "t": 0, "sound": "sample:tick-minimal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-tick-1", "name": "CC0 tick 1", "use": "A short counter tick.", "duration": 0.06,
+      "hits": [{ "t": 0, "sound": "sample:tick-1", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-tick-2", "name": "CC0 tick 2", "use": "A shorter, higher counter tick; alternate with tick-1.", "duration": 0.04,
+      "hits": [{ "t": 0, "sound": "sample:tick-2", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-tick-3", "name": "CC0 tick 3", "use": "A third counter tick for variation.", "duration": 0.07,
+      "hits": [{ "t": 0, "sound": "sample:tick-3", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-type-minimal", "name": "CC0 type minimal", "use": "One key tap; vary the pick and the gain for a short uneven burst.", "duration": 0.1,
+      "hits": [{ "t": 0, "sound": "sample:type-minimal", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-type-mechanical", "name": "CC0 type mechanical", "use": "A firmer key tap for a code or terminal line.", "duration": 0.1,
+      "hits": [{ "t": 0, "sound": "sample:type-mechanical", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-type-organic", "name": "CC0 type organic", "use": "A softer key tap for a chat or search box.", "duration": 0.12,
+      "hits": [{ "t": 0, "sound": "sample:type-organic", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-reject-dull", "name": "CC0 reject dull", "use": "A wrong answer or a rejected option: one short dull click at a low gain.", "duration": 0.27,
+      "hits": [{ "t": 0, "sound": "sample:reject-dull", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-landing-cinematic", "name": "CC0 landing cinematic", "use": "A soft low landing for a stamp or a heavy card (about 0.6 s).", "duration": 0.6,
+      "hits": [{ "t": 0, "sound": "sample:landing-cinematic", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-landing-soft-heavy", "name": "CC0 landing soft heavy", "use": "A soft heavy thud: a weighted landing or a chapter change.", "duration": 0.54,
+      "hits": [{ "t": 0, "sound": "sample:landing-soft-heavy", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-landing-soft-medium", "name": "CC0 landing soft medium", "use": "A lighter soft thud for a card that settles.", "duration": 0.13,
+      "hits": [{ "t": 0, "sound": "sample:landing-soft-medium", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-landing-wood", "name": "CC0 landing wood", "use": "A dry wooden thud for a stamp or a block that drops.", "duration": 0.32,
+      "hits": [{ "t": 0, "sound": "sample:landing-wood", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-landing-plank", "name": "CC0 landing plank", "use": "A hollow plank knock for a board or a panel that lands.", "duration": 0.79,
+      "hits": [{ "t": 0, "sound": "sample:landing-plank", "gain": 0.3, "pan": 0, "opts": {} }]
+    },
+    {
+      "id": "cc0-paper-flip", "name": "CC0 paper flip", "use": "A single page turn for the Arabic page-turn move. Paper foley, not a sweep; drop it if you treat page turns as sweeps.", "duration": 0.23,
+      "hits": [{ "t": 0, "sound": "sample:paper-flip", "gain": 0.3, "pan": 0, "opts": {} }]
     }
   ]
 }

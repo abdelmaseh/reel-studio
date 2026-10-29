@@ -1,7 +1,8 @@
 import { z } from "zod";
 import { STYLE_IDS } from "./styles.ts";
+import {normalizeStyleId} from "../styles/registry.ts";
 
-export const styleSchema = z.enum(STYLE_IDS);
+export const styleSchema = z.preprocess((value) => normalizeStyleId(value), z.enum(STYLE_IDS));
 
 
 

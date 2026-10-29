@@ -1,0 +1,12 @@
+{
+  "dna": "instructions/STYLES.md",
+  "kinds": {
+    "transition": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "The speaker is already on screen when a layered scene starts, so nothing changes at the cut and the scene start stays silent."},
+    "stamp": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "No stamp lands in this style; the hand-drawn mark has its own cue."},
+    "swap": {"recipe": "highlight-swipe", "gain": 0.6, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "A hand-drawn mark touching down on the key word: one small pop on the frame the pen lands."},
+    "click": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "Nothing is pressed in this style."},
+    "count": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "No counter runs in this style."},
+    "reveal": {"recipe": "soft-pop", "gain": 0.6, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "The big word landing behind the speaker: one small pop; the bar growing and the words beside the head stay silent."},
+    "type": {"recipe": null, "gain": 0, "leadSec": 0, "confidence": "none", "basis": "authored", "evidence": "Nothing is typed in this style."}
+  }
+}

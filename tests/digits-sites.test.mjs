@@ -2,15 +2,20 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {createFrameRenderer} from '../scripts/lib/ssr-frames.mjs';
 import {editSceneSchema} from '../engine/src/prepared-edit/schema.ts';
-import {toArabicIndic} from '../engine/src/core/digits.ts';
+import {mapsDigits, toArabicIndic} from '../engine/src/core/digits.ts';
 import {bundleEngine} from './helpers/engine-bundle.mjs';
 import {ARABIC_KEYWORD, ARABIC_SCENES} from './fixtures/arabic-scenes.mjs';
 import {strayDigitTokens, textNodes} from './helpers/markup.mjs';
+import {magazineTemplateData} from '../engine/src/styles/magazine-interview/scenes/templates.ts';
+import {receiptsTemplateData} from '../engine/src/styles/calligraphic-receipts/scenes/templates.ts';
 
 const {finalValueTemplate} = await bundleEngine(`export {finalValueTemplate} from './engine/src/creative-kit/value-fit.ts';`);
 const renderer = await createFrameRenderer();
-const STYLES = ['section-deck', 'paper-collage', 'liquid-glass', 'kinetic-paper'];
+const STYLES = ['section-deck', 'paper-collage', 'liquid-glass', 'kinetic-paper', 'calligraphic-receipts', 'magazine-interview'];
 const render = (input, style, options = {}) => renderer.renderScene({scene: editSceneSchema.parse(structuredClone(input)), style, frame: 200, ...options});
+// V4 adds English instrument labels (STEP 01, LABEL 01). As with authored English
+// copy, these follow displayDigits' whole-line rule; every eligible number is still audited.
+const mappedText = html => textNodes(html).filter(mapsDigits).join('\n');
 
 // Text keys whose values are file names, identifiers or choices are never digits to show.
 const PROTECTED = new Set(['id', 'family', 'layout', 'motion', 'src', 'kind', 'fit', 'variant', 'display', 'handle', 'valueFit', 'suffix', 'lang', 'enter']);
@@ -18,11 +23,16 @@ const withArabicIndic = (value, key = '') => Array.isArray(value) ? value.map((i
   : value && typeof value === 'object' ? Object.fromEntries(Object.entries(value).map(([name, item]) => [name, withArabicIndic(item, name)]))
     : typeof value === 'string' && !PROTECTED.has(key) ? toArabicIndic(value) : value;
 
-test('under arabic-indic no Latin digit stays on screen in any family, in four styles', () => {
+test('under arabic-indic no Latin digit stays on screen in any family, in all six rebuilt V4 styles', () => {
   for (const style of STYLES) {
     for (const input of ARABIC_SCENES) {
-      const stray = strayDigitTokens(render(input, style, {digits: 'arabic-indic'}));
+      const html = render(input, style, {digits: 'arabic-indic'});
+      const stray = strayDigitTokens(mappedText(html));
       assert.deepEqual(stray, [], `${style} ${input.id}: ${stray.join(' ')}`);
+      const nodes = textNodes(html);
+      for (const text of textNodes(render(input, style)).filter(text => !mapsDigits(text) && /[0-9]/.test(text))) {
+        assert.ok(nodes.includes(text), `${style} ${input.id}: English line stays verbatim: ${text}`);
+      }
     }
   }
 });
@@ -31,7 +41,7 @@ test('under latin no Arabic-Indic digit stays on screen, even when the words wer
   for (const style of STYLES) {
     for (const input of ARABIC_SCENES) {
       const written = {...input, data: withArabicIndic(input.data)};
-      const stray = strayDigitTokens(render(written, style, {digits: 'latin'}), {pattern: /[٠-٩۰-۹]/});
+      const stray = strayDigitTokens(mappedText(render(written, style, {digits: 'latin'})), {pattern: /[٠-٩۰-۹]/});
       assert.deepEqual(stray, [], `${style} ${input.id}: ${stray.join(' ')}`);
     }
   }
@@ -56,6 +66,35 @@ test('the comment keyword keeps its digits verbatim', () => {
   assert.ok(ctaNodes.includes(`اكتب ${keyword} وسأرسل لك ٣ نصائح`), ctaNodes);
   const stack = ARABIC_SCENES.find((item) => item.family === 'comment-stack');
   assert.ok(textNodes(render({...stack, data: {...stack.data, keyword}}, 'section-deck', {digits: 'arabic-indic'})).join(' ').includes(keyword));
+});
+
+test('all rebuilt comment designs keep a numeric keyword verbatim while mapping the promise', () => {
+  const comment = ARABIC_SCENES.find(item => item.family === 'comment');
+  for (const style of STYLES) for (const digits of ['latin', 'arabic-indic']) {
+    const keyword = digits === 'latin' ? 'خطة٣٠' : 'خطة30';
+    const nodes = textNodes(render({...comment, data: {...comment.data, keyword, promise: `${keyword} · 5`}}, style, {digits}));
+    assert.ok(nodes.join(' ').includes(keyword), `${style}: keyword stays verbatim`);
+    assert.ok(nodes.join(' ').includes(digits === 'latin' ? '5' : '٥'), `${style}: the promise's own number maps`);
+  }
+});
+
+test('V4 verdict and claim-proof map authored and generated numbers without mutating the scene data', () => {
+  const own = [
+    ['magazine-interview', 'verdict', {...magazineTemplateData.verdict, question: 'النتيجة 2024'}],
+    ['calligraphic-receipts', 'claim-proof', {...receiptsTemplateData['claim-proof'], note: 'المصدر 2024'}],
+  ];
+  for (const [style, family, data] of own) {
+    const input = {id: family, family, layout: 'takeover', motion: 'land', fromFrame: 0, durationInFrames: 300, data};
+    const original = structuredClone(input);
+    for (const digits of ['latin', 'arabic-indic']) {
+      const written = {...input, data: digits === 'latin' ? withArabicIndic(data) : data};
+      const html = render(written, style, {digits});
+      assert.deepEqual(strayDigitTokens(mappedText(html), {pattern: digits === 'latin' ? /[٠-٩۰-۹]/ : /[0-9]/}), [], `${style}: ${digits}`);
+      assert.ok(textNodes(html).join(' ').includes(digits === 'latin' ? '2024' : '٢٠٢٤'));
+    }
+    assert.deepEqual(input, original);
+    assert.equal(render(input, style), render(input, style, {digits: null}));
+  }
 });
 
 test('the width template uses the widest glyph of the chosen set', () => {

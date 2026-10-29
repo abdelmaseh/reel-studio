@@ -2,7 +2,7 @@ import React, { memo, useEffect, useId, useMemo, useRef, useState } from "react"
 import { getIn, removeIn, setIn, type Path } from "../ops/paths.ts";
 import { clipOptionLabel } from "../ops/broll.ts";
 import {
-  blankValue, blankVariant, defaultItem, fieldHint, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex, scalarVariantIndex, recordKeyIssue,
+  enumOptionLabel, blankValue, blankVariant, defaultItem, fieldHint, fieldsForFamily, familyDataSchema, formDataWithDefaults, issuesByPath, parseNumberText, validateData, variantIndex, scalarVariantIndex, recordKeyIssue,
   type ArrayField, type Field, type JsonField, type NumberField, type ObjectField, type StringField, type UnionField, type ScalarUnionField, type RecordField,
 } from "./form-schema.ts";
 import { CLIP_TEXT } from "./family-labels.ts";
@@ -140,7 +140,7 @@ const FieldView: React.FC<FieldProps> = ({ field, path, draft, ctx }) => {
               <span className="sf-fixed" dir="ltr">{String(field.options[0])}</span>
             ) : (
               <select value={String(current)} onChange={(e) => ctx.change(path, field.options.find((o) => String(o) === e.target.value), key)}>
-                {field.options.map((o) => <option key={String(o)} value={String(o)}>{String(o)}</option>)}
+                {field.options.map((o) => <option key={String(o)} value={String(o)}>{enumOptionLabel(field.key,o)}</option>)}
               </select>
             )}
           </label>

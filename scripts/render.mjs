@@ -16,6 +16,8 @@ import { VOICE_MODES, resolveRenderAudioMode } from './lib/mix-contract.mjs';
 import { plateGate, validateHeadFlags, headGatePlan, headCheckArgv, headGateResult, envelopeProblems, headBanner, installHeadEnvelope, readEnvelopeBack, headMethodConflict } from './lib/delivery-gates.mjs';
 import {renderIdentity,createRenderInputGuard,chunkProfile,chunkBudget,renderChunks,validateChunk,assembleChunks,CHUNK_POLICY,mediaContract} from './lib/render-chunks.mjs';
 import {recordStudioEvent} from './lib/studio-stats.mjs';
+import {deliveredStyle} from './lib/delivered-style.mjs';
+import { renderChromiumOptions } from './lib/render-gl.mjs';
 
 const args = parseArgs(process.argv.slice(2));
 const comp = args._[0];
@@ -70,7 +72,7 @@ const { serveUrl, hash, cached } = await getServeUrl({ force: !!args['force-bund
 
 
 const { renderMedia, selectComposition } = requireFromEngine('@remotion/renderer');
-const composition = await selectComposition({ serveUrl, id: comp, inputProps, logLevel: 'warn' });
+const composition = await selectComposition({ serveUrl, id: comp, inputProps, logLevel: 'warn', chromiumOptions: renderChromiumOptions() });
 log(`composition ${comp}: ${composition.width}x${composition.height} @${composition.fps} fps, ${composition.durationInFrames} frames`);
 if (mode === 'deliver' && composition.fps < SPEC.video.fps.organicMin) throw new Error(`Delivery fps ${composition.fps} is below ${SPEC.video.fps.organicMin}; use an approved delivery-rate composition`);
 
@@ -135,6 +137,7 @@ if(useChunks){
 
 let safe = null;
 let head = null;
+let arabic = null;
 if (mode === 'deliver') {
   const step = Number(args['safe-step'] ?? 0.5);
   if (!(step > 0 && step <= 0.5)) throw new Error('--safe-step must be positive and <= 0.5 seconds for delivery');
@@ -145,6 +148,14 @@ if (mode === 'deliver') {
     ...(channel === 'ads' ? ['--strict-ads'] : []), ...(args['safe-bands'] ? ['--bands', path.resolve(args['safe-bands'])] : [])], { cwd: ROOT, allowFail: true });
   if (!checked.ok) throw new Error(`Safe-zone gate failed: ${checked.stderr.slice(-1600)} ${checked.stdout.slice(-1000)}`);
   safe = { ok: true, directory: `${finalOut}.checks`, stepSec: step };
+  // Arabic gate: broken joins and glyphs the font lacks stop the delivery; the items that need eyes are listed for the QA report.
+  const arabicGate = (await import('./lib/arabic-check.mjs')).renderArabicGate(inputProps);
+  if (arabicGate) {
+    if (!arabicGate.ok) throw new Error(`Arabic gate failed: ${arabicGate.message}`);
+    arabic = { ok: true, needsReview: arabicGate.counts.needsReview, review: arabicGate.review };
+    for (const line of arabicGate.review) warnings.push(`arabic ${line}`);
+    log(`arabic gate: ok${arabicGate.review.length ? `, ${arabicGate.review.length} item(s) need review (node scripts/arabic-check.mjs)` : ''}`);
+  }
 
 
 
@@ -219,6 +230,7 @@ const renderStart = Date.now();
 const renderOptions={
   composition,
   serveUrl,
+  chromiumOptions: renderChromiumOptions(),
   codec: 'h264',
   outputLocation: raw,
   inputProps,
@@ -266,7 +278,8 @@ if(useChunks){
     render:({range,out:part})=>renderMedia({...renderOptions,outputLocation:part,frameRange:range,muted:true,enforceAudioTrack:false,onProgress:undefined}),
     validate:(file,range)=>validateChunk(file,range,expected)});
   const audioFile=args.muted?null:path.join(outParts.dir,'full-duration-audio.wav');
-  if(audioFile)await renderMedia({composition,serveUrl,inputProps,codec:'wav',outputLocation:audioFile,overwrite:true,sampleRate:48000,enforceAudioTrack:true,logLevel:'warn'});
+  // The audio pass mounts every frame, look included, so it keeps the picture render's tab count instead of the default (half the cores).
+  if(audioFile)await renderMedia({composition,serveUrl,inputProps,codec:'wav',outputLocation:audioFile,overwrite:true,sampleRate:48000,enforceAudioTrack:true,logLevel:'warn',concurrency,chromiumOptions:renderChromiumOptions()});
   await guard.check();
   await assembleChunks({parts:chunks.parts,audio:audioFile,out:raw,fps:composition.fps,frames:composition.durationInFrames});
   if(audioFile)await fs.rm(audioFile,{force:true});
@@ -383,7 +396,7 @@ if (mode === 'deliver' && (args['motion-crop'] || args['motion-plan'])) {
 } else if (mode === 'deliver') motion = { exempt: 'static-graphics', presenterChecked: false };
 const digest = createHash('sha256');
 for await (const chunk of createReadStream(out)) digest.update(chunk);
-const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, chunks, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, audio: mix?.audio ?? {mode: audioMode, expectedSilence: false}, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
+const report = { ok: true, comp, mode, out: finalOut, bytes: stat.size, outputSha256: digest.digest('hex'), bundle: { hash, cached }, chunks, frames: frameRange ?? [0, composition.durationInFrames - 1], timing: { renderSec, finalizeSec, totalSec: +sec() }, master, audio: mix?.audio ?? {mode: audioMode, expectedSilence: false}, sfx: sfxStem ? { stem: sfxStem, mix } : null, igCheck: check, safe, arabic, motion, plates: plateDecision, head, warnings, inputProps, mediaSelection:composition.props.__editorMediaSelection??null };
 await writeJson(`${out}.qc.json`, report);
 return report;
 }, { sidecars: ['.qc.json', ...(mode === 'deliver' ? ['.checks'] : [])] });
@@ -391,6 +404,7 @@ console.log(JSON.stringify(published, null, 2));
 if (mode === 'deliver') await fs.rm(assertProjectOutput(`${finalOut}.head-check`), { recursive: true, force: true });
 if (published.head?.status === 'NEEDS-REVIEW') process.stderr.write(`\n${headBanner(published.head, published.head.directory)}\n`);
 if (comp !== 'Doctor') await recordStudioEvent(ROOT, 'studio_used');
+if (comp !== 'Doctor' && mode === 'deliver') await recordStudioEvent(ROOT, 'reel_delivered', {detail: {style: deliveredStyle(comp, inputProps.edit), output: finalOut}});
 
 
 function ffmpeg(ffArgs) {

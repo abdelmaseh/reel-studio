@@ -23,7 +23,7 @@ Explainers, tutorials and comparisons that fall into clear sections.
 - **Decision:** Choose it when the argument naturally divides into sections, stages or comparison criteria. Define each section's question and answer before deciding how many scenes it needs.
 - **Composition/material:** Use a dark section ground, a concise kicker, an accent headline and semantic chips. Keep the main answer visually stronger than the section label. Palette cycling follows the supported deck rules, not a different color for each sentence.
 - **Timing/action:** Establish a section, reveal the relationship that explains it, and hold the answer. Stagger items in reading or causal order. A short spoken aside may keep the existing section without a new reveal.
-- **Transition/sound:** Carry the section's selected item or direction into the next state. A chapter change can reset the ground after the prior thought resolves. Use restrained ticks for real stage changes; avoid a sting for every chip. Effects follow [SOUND.md](../SOUND.md).
+- **Transition/sound:** Prefer the signature `blinds` between adjacent takeover scenes. This remains a director choice; code preserves authored transitions. Carry the section's selected item or direction into the next state. A chapter change can reset the ground after the prior thought resolves. Use restrained ticks for real stage changes; avoid a sting for every chip. Effects follow [SOUND.md](../SOUND.md).
 - **Application/review:** `process`, `comparison` and the appropriate semantic families can structure the material; check their actual layout support. Review whether the headings explain a progression rather than creating unrelated slide cards.
 
 ### Decision order
